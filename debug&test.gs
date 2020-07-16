@@ -50,5 +50,7 @@ function recheckRecord() {
 }
 //測試函數
 function test(){
-  addResident("aa", "aa", "姊妹", "A1", "zz")
+  var a = dealOnTime;
+  Logger.log(a);
+  Logger.log(a("準時到"))
 }
