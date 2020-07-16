@@ -80,9 +80,9 @@
          if(!check) return false;
          var form = document.forms['reset_form'];
          var resident = form['resident'];
-         var problem = form['problem'];        
+         var problem = form['problem'];
          google.script.run.withSuccessHandler(function(res){
-           switch(res){
+           switch(res[0]){
            case 0:
            document.getElementById("resident_alert").classList.add("hidden");
            document.getElementById("problem_alert").classList.add("hidden");
@@ -90,14 +90,14 @@
            break;
            case -1:
             document.getElementById("resident_alert").classList.remove("hidden");
-            alert("重置失敗");
+            alert("重置失敗\n" + res[1]);
            break;
            case -2:
             document.getElementById("problem_alert").classList.remove("hidden");
-            alert("重置失敗");
+            alert("重置失敗\n" + res[1]);
            break;
            }
-         }).withFailureHandler(alert("系統錯誤!! 請聯繫管理員 ")).reset(resident.value, problem.value);
+         }).withFailureHandler(alert("系統重置需要一段時間，約一到兩分鐘，若兩分鐘之後系統仍無反應，請聯繫管理員 ")).reset(resident.value, problem.value);
       }
         </script>
     </head>

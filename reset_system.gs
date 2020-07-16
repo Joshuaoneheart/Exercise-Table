@@ -86,6 +86,7 @@ function check_resident(string){
     if(texts.length <= 1) continue;
     if(texts.length != 4) return [0, "每行應提供四個資訊，請確認內容中不包含逗號"];
     if(!(texts[1] == 's' || texts[1] == 'b')) return [0, "第" + (i + 1) + "個住戶的性別只能是'b'或's'"];
+    for(text in texts) Logger.log(texts[text].length)
     for(text in texts) if(!texts[text].length) return [0, "第" + (i + 1) + "個住戶的資訊包含空白"];
     residents[texts[0]] = {}
     if(texts[0] in sysVariable.resident){
