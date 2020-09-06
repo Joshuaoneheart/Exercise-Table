@@ -13,8 +13,8 @@ function doGet(e){
   if(para.page == "notification"){
   return HtmlService.createHtmlOutputFromFile('notification.html');
   }
-  else if(para.page == "reset"){
-    return HtmlService.createHtmlOutputFromFile('reset_page.html');
+  else if(para.page == "index"){
+    return HtmlService.createHtmlOutputFromFile('index.html');
   }
 }
 

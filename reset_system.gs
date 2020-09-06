@@ -2,6 +2,7 @@ var system_id = "1P0Xs1v1yeOUbj0PhmWmAXD_F2mkwoFQi"
 var system_folder_id = "1ZglvAgIDoz3kNEU_tOSU3YG3BLlFNGez"
 var sysVariable;
 var gloVariable = {};
+
 class Problem{
   constructor(title, type, subtitle, choices, type_function, score){
     this.title = title;
@@ -12,6 +13,7 @@ class Problem{
     this.score = score;
   }
 }
+
 function get_systemVariable() {
   var jsonFile = DriveApp.getFileById(system_id);
   content = JSON.parse(jsonFile.getBlob().getDataAsString());
@@ -22,10 +24,12 @@ function get_systemVariable() {
   content.lastWeek = makeWeekTitle(1, 1);
   return content;
 }
+
 function get_enabled(){
   get_systemVariable();
   return sysVariable.enabled;
 }
+
 function once(){
   var jsonFile = DriveApp.getFileById(system_id);
   var content = JSON.parse(jsonFile.getBlob().getDataAsString());
@@ -53,6 +57,7 @@ function set_systemVariable(enabled) {
   content.enabled = enabled;
   jsonFile.setContent(JSON.stringify(content));
 }
+
 function shutdown(){
   var jsonFile = DriveApp.getFileById(system_id);
   content = JSON.parse(jsonFile.getBlob().getDataAsString());
@@ -61,6 +66,7 @@ function shutdown(){
   Logger.log(content.enabled);
   jsonFile.setContent(JSON.stringify(content));
 }
+
 function reboot(){
   var jsonFile = DriveApp.getFileById(system_id);
   content = JSON.parse(jsonFile.getBlob().getDataAsString());
@@ -68,26 +74,36 @@ function reboot(){
   jsonFile.setContent(JSON.stringify(content));
   openForm();
 }
+
 //系統啟動判斷，能啟動為1反之為0
 function start(){
   get_systemVariable();
   if(!sysVariable.enabled) return 0;
   return 1;
 }
+
 function check_resident(string){
     //檢查resident csv檔格式正確與否(每行為一住戶，左至右+依序為姓名、性別、活力組、住處)
   var residents = {};
   var residences = {};
   var groups = {};
   var unregistered = [];
-  var lines = string.split("\n");
-  for(let i = 0; i < lines.length;i++){
+  var category = ["姓名","性別","活力組","住處"];
+  var lines = string.split("\r\n");
+  let tmp_group = lines[0].split(',')
+  let tmp_residence = lines[1].split(',')
+  Logger.log(tmp_group, tmp_residence);
+  
+  for(idx in tmp_group)if(tmp_group[idx]) groups[tmp_group[idx]] = {member:[]};
+  for(idx in tmp_residence)if(tmp_residence[idx]) residences[tmp_residence[idx]] = {member:[]};
+  Logger.log(groups, residences)
+  
+  for(let i = 2; i < lines.length;i++){
     var texts = lines[i].split(',');
     if(texts.length <= 1) continue;
     if(texts.length != 4) return [0, "每行應提供四個資訊，請確認內容中不包含逗號"];
-    if(!(texts[1] == 's' || texts[1] == 'b')) return [0, "第" + (i + 1) + "個住戶的性別只能是'b'或's'"];
-    for(text in texts) Logger.log(texts[text].length)
-    for(text in texts) if(!texts[text].length) return [0, "第" + (i + 1) + "個住戶的資訊包含空白"];
+    if(!(texts[1] == 's' || texts[1] == 'b')) return [0, "住戶" + texts[0] + "的性別只能是'b'或's'"];
+    for(text in texts) if(!texts[text].length) return [0, "住戶" + texts[0] + "的" + category[text] + "不可為空"];
     residents[texts[0]] = {}
     if(texts[0] in sysVariable.resident){
       if(texts[1] != sysVariable.resident[texts[0]].gender) return [0];
@@ -96,10 +112,10 @@ function check_resident(string){
     }
     else unregistered.push(texts[0]);
     residents[texts[0]]["gender"] = texts[1];
-    if(!(texts[2] in groups)) groups[texts[2]] = {member:[]};
+    if(!(texts[2] in groups)) return [0, texts[2] + "活力組不存在"];
     residents[texts[0]]["group"] = texts[2];
     groups[texts[2]].member.push(texts[0]);
-    if(!(texts[3] in residences)) residences[texts[3]] = {member:[]};
+    if(!(texts[3] in residences)) return [0, texts[3] + "住處不存在"];
     residents[texts[0]]["residence"] = texts[3];
     residences[texts[3]].member.push(texts[0]);
  }
@@ -107,8 +123,9 @@ function check_resident(string){
   sysVariable.group = groups;
   sysVariable.residence = residences;
   sysVariable.unregistered = unregistered;
- return [1];
+ return [1, ""];
 }
+
 function add_problem(argu){
   var title = argu[0];
   var type = argu[1];
@@ -234,9 +251,10 @@ function add_problem(argu){
   gloVariable.problem.push(problem);
   return [1];
 }
+
 function check_problem(string){
 //檢查problem csv檔格式正確與否，回傳[正確與否(bool), 錯誤訊息]
-  string = string.split('\n');
+  string = string.split("\r\n");
   var section = [];
   var section_index = 0;
   var onset = 2;
@@ -264,22 +282,23 @@ function check_problem(string){
   sysVariable.problem = gloVariable.problem;
   return [1, ""];
 }
+
 function reset(resident, problem){
-//取得sysVariable
-start();
-var semester = sysVariable.semester;
-var form = FormApp.openById(sysVariable.id.form);
-//var items = form.getItems();
-var resident_out = check_resident(resident);
-var problem_out = check_problem(problem);
+  //取得sysVariable
+  if(start()) return [-1, "系統未關閉"];
+  var semester = sysVariable.semester;
+  var form = FormApp.openById(sysVariable.id.form);
+  //var items = form.getItems();
+  var resident_out = check_resident(resident);
+  var problem_out = check_problem(problem);
   Logger.log(resident_out, problem_out)
-//預備system.json內資料
-if(!resident_out[0]) return [-1, resident_out[1]];
-else if(!problem_out[0]) return [-2, problem_out[1]];
+  //預備system.json內資料
+  if(!resident_out[0]) return [-2, resident_out[1]];
+  else if(!problem_out[0]) return [-3, problem_out[1]];
   /*
-var system_folder = DriveApp.getFolderById(system_folder_id);
-var backup_folder = DriveApp.createFolder("操練表系統" + sysVariable.semester);
-var files = system_folder.getFiles();
+  var system_folder = DriveApp.getFolderById(system_folder_id);
+  var backup_folder = DriveApp.createFolder("操練表系統" + sysVariable.semester);
+  var files = system_folder.getFiles();
   while(files.hasNext()){
     let file = files.next();
     file.makeCopy(backup_folder);
@@ -293,49 +312,49 @@ var files = system_folder.getFiles();
       file.setTrashed(true);
    }
   }
-var score_rule = items[0];
-var award_rule = items[1];
-var finish_page = items[items.length - 2]
-var feedback = items[items.length - 1];
+  var score_rule = items[0];
+  var award_rule = items[1];
+  var finish_page = items[items.length - 2]
+  var feedback = items[items.length - 1];
 */
 /*
-//刪除所有回覆
-form.deleteAllResponses();
-//刪除原有表單的題目
-while(form.getItems().length > 2){
-  form.deleteItem(2);
-}
-var item = form.addMultipleChoiceItem()
-item.setChoiceValues(Object.keys(sysVariable.resident).sort(function(a, b){
-if(sysVariable.resident[a].gender == 'b') return -1;
-else if(sysVariable.resident[b].gender == 'b') return 1;
-else if(b[0] > a[0]) return -1;
-else return 1;
-}))
-item.setTitle("我的名字是");
-var section = 0;
-for(let i = 0;i < sysVariable.problem.length;i++){
-  if(i == sysVariable.section[section][2]) section++;
-  if(section < sysVariable.section.length){
-  if(i == sysVariable.section[section][1]){
-    item = form.addPageBreakItem();
-    item.setTitle(sysVariable.section[section][0]);
+  //刪除所有回覆
+  form.deleteAllResponses();
+  //刪除原有表單的題目
+  while(form.getItems().length > 2){
+    form.deleteItem(2);
   }
+  var item = form.addMultipleChoiceItem();
+  item.setChoiceValues(Object.keys(sysVariable.resident).sort(function(a, b){
+    if(sysVariable.resident[a].gender == 'b') return -1;
+    else if(sysVariable.resident[b].gender == 'b') return 1;
+    else if(b[0] > a[0]) return -1;
+    else return 1;
+  }))
+  item.setTitle("我的名字是");
+  var section = 0;
+  for(let i = 0;i < sysVariable.problem.length;i++){
+    if(i == sysVariable.section[section][2]) section++;
+    if(section < sysVariable.section.length){
+      if(i == sysVariable.section[section][1]){
+        item = form.addPageBreakItem();
+        item.setTitle(sysVariable.section[section][0]);
+      }
+    }
+    sysVariable.problem[i].type_function(form);
   }
-  sysVariable.problem[i].type_function(form);
-}
-item = form.addPageBreakItem();
-item.setTitle("填寫完畢")
-item = form.addTextItem();
-item.setTitle("回饋/ Feedback")
-Logger.log(sysVariable.problem)
-//寫入system.json及重置data.json
-var jsonFile = DriveApp.getFileById(system_id);
-var dataFile = DriveApp.getFileById(sysVariable.id.data);
-var data = {};
-data[sysVariable.thisWeek] = {};
-jsonFile.setContent(JSON.stringify(sysVariable));
-dataFile.setContent(JSON.stringify(data));
+  item = form.addPageBreakItem();
+  item.setTitle("填寫完畢")
+  item = form.addTextItem();
+  item.setTitle("回饋/ Feedback")
+  Logger.log(sysVariable.problem)
+  //寫入system.json及重置data.json
+  var jsonFile = DriveApp.getFileById(system_id);
+  var dataFile = DriveApp.getFileById(sysVariable.id.data);
+  var data = {};
+  data[sysVariable.thisWeek] = {};
+  jsonFile.setContent(JSON.stringify(sysVariable));
+  dataFile.setContent(JSON.stringify(data));
   */
-return 0;
+  return [0];
 }

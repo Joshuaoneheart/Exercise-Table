@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html class="no-js">
-    
     <head>
         <title>Admin Home Page</title>
         <!-- Bootstrap -->
@@ -31,6 +30,75 @@
         if(banner.classList.contains("hidden")) banner.classList.remove("hidden");
         else banner.classList.add("hidden")
         }
+        function upload(item, name){
+        var form = document.forms['reset_form'];
+        //上傳csv檔，若不是csv，跑出錯誤信息
+        if(item.files[0].type != "application/vnd.ms-excel"){
+        item.parentElement.getElementsByClassName("alert").item(0).classList.remove("hidden");
+        form["reset_system_btn"].disabled = true;
+        return -1;
+        }
+        var reader = new FileReader();
+        var progressBar = item.parentElement.getElementsByClassName("progress").item(0);
+        progressBar.classList.remove("hidden");
+        reader.onload = event => {
+        // 取得檔案完整內容
+        progressBar.classList.add("hidden");
+        if(typeof(form[name]) != 'undefined' && form[name] != null){
+        form.removeChild(form[name]);
+        }
+        var input = document.createElement("input");
+        input.type = "hidden";
+        input.value = event.target.result;
+        input.name = name;
+        form.appendChild(input);
+        var resident = form['resident'];
+        var problem = form['problem'];
+        //確認是否都有檔案
+        if((typeof(resident) != 'undefined' && resident != null) &&
+        (typeof(problem) != 'undefined' && problem != null)){
+          form["reset_system_btn"].disabled = false;
+        }
+        else form["reset_system_btn"].disabled = true;
+        //console.log(event.target.result);
+        };
+        reader.onprogress = function (evt) {
+        // 確定 evt 是否為 ProgressEvent
+        if (evt.lengthComputable) {
+        // 計算百分比
+        let percentLoaded = Math.round((evt.loaded / evt.total) * 100);
+        //更新進度條
+        progressBar.style.width = percentLoaded + "%";
+        // 注意：這裡的百分比的數字不會到 100
+        console.log(percentLoaded);
+        }
+        };
+        var text = reader.readAsText(item.files[0]);      
+      }
+      function reset_system(item){
+         var check = confirm("確定重置系統嗎?");
+         if(!check) return false;
+         var form = document.forms['reset_form'];
+         var resident = form['resident'];
+         var problem = form['problem'];
+         google.script.run.withSuccessHandler(function(res){
+           switch(res[0]){
+           case 0:
+           document.getElementById("resident_alert").classList.add("hidden");
+           document.getElementById("problem_alert").classList.add("hidden");
+           alert("重置成功");
+           break;
+           case -1:
+            document.getElementById("resident_alert").classList.remove("hidden");
+            alert("重置失敗\n" + res[1]);
+           break;
+           case -2:
+            document.getElementById("problem_alert").classList.remove("hidden");
+            alert("重置失敗\n" + res[1]);
+           break;
+           }
+         }).withFailureHandler(alert("系統重置需要一段時間，約一到兩分鐘，若兩分鐘之後系統仍無反應，請聯繫管理員 ")).reset(resident.value, problem.value);
+      }
         </script>
     </head>
     
@@ -152,11 +220,11 @@
                         <li>
                             <a href="#" onClick="window.open('https://script.google.com/macros/s/AKfycbzJwl9NTOszYoQL-8yjLWcxHD28vEf0X8Fhf-iDch4/dev?page=notification')"><i class="icon-chevron-right"></i> 公告</a>
                         </li>
-                        <li class="active">
+                        <li>
                             <a href="//drive.google.com/open?id=1UHbM2snEH_7afLGu3kk8WU338N2YdgO-"><i class="icon-chevron-right"></i> 總覽</a>
                         </li>
-                        <li>
-                            <a href="//drive.google.com/open?id=1ZY2I-1GtNqL9woVa26nsrx3C3mFzCzm7"><i class="icon-chevron-right"></i> 活力組操練情形</a>
+                        <li class="active">
+                            <a href ="#" onClick="window.open('https://script.google.com/macros/s/AKfycbzJwl9NTOszYoQL-8yjLWcxHD28vEf0X8Fhf-iDch4/dev?page=vitual_group')"><i class="icon-chevron-right"></i> 活力組操練情形</a>
                         </li>
                         <li>
                             <a href="//drive.google.com/open?id=1kaMiOoYyydVFDI__bpgG2wM4HIHT2bGc"><i class="icon-chevron-right"></i> 個人操練情形</a>
@@ -252,33 +320,43 @@
                             </div>
                             <div class="block-content">
                             
-                            <form class="form-horizontal">
+                            <form name="reset_form" class="form-horizontal" onSubmit="return false;">
                                       <fieldset>
                                         <div class="alert alert-info">
-										<button class="close" data-dismiss="alert" onClick="this.parentElement.classList.add('hidden')">×</button>
+										<button class="close" data-dismiss="alert" onClick="this.parentElement.remove()">×</button>
 										<strong>Info!</strong> 請確保上傳檔案格式正確無誤，參照 "系統操作指引"
-									</div>
+                                        </div>
                                         <div class="control-group">
                                           <label class="control-label" for="focusedInput">住戶名單</label>
                                           <div class="controls">
-                                            <input type="file" id="file-upload" onChange="" accept=".csv,.xls,.xlsx">
+                                            <input type="file" id="file-upload" onChange="upload(this,'resident')" accept=".csv">
+                                          <div class="progress hidden">
+											<div style="width: 0%;" class="bar"></div>
                                           </div>
-                                        </div>
-                                        <div class="control-group">
-                                          <label class="control-label">活力組及住處名單</label>
-                                          <div class="controls">
-                                            <input type="file" id="file-upload" onChange="" accept=".csv,.xls,.xlsx">
+                                          <div class="alert alert-error alert-block hidden" id="resident_alert">
+										<a class="close" data-dismiss="alert" onClick="this.parentElement.classList.add('hidden')">×</a>
+										<h4 class="alert-heading">Error!</h4>
+										檔案格式錯誤
+									</div>
                                           </div>
                                         </div>
                                         <div class="control-group">
                                           <label class="control-label" for="disabledInput">表單問題列表</label>
                                           <div class="controls">
-                                            <input type="file" id="file-upload" onChange="" accept=".csv,.xls,.xlsx">
+                                            <input type="file" id="file-upload" onChange="upload(this,'problem')" accept=".csv">
+                                            <div class="progress hidden">
+											<div style="width: 0%;" class="bar"></div>
+                                            </div>
+                                            <div class="alert alert-error alert-block hidden" id="problem_alert">
+										<a class="close" data-dismiss="alert" onClick="this.parentElement.classList.add('hidden')">×</a>
+										<h4 class="alert-heading">Error!</h4>
+										檔案格式錯誤
+									</div>
                                           </div>
                                         </div>
                                         <div class="form-actions">
-                                          <button type="submit" class="btn btn-primary">Save changes</button>
-                                          <button type="reset" class="btn">Cancel</button>
+                                          <button name="reset_system_btn" type="submit" onClick="reset_system(this)" disabled="true" class="btn btn-primary">Reset System</button>
+                                          <button type="reset" class="btn" onClick="var form = document.forms['reset_form'];form['reset_system_btn'].disabled = true;form.removeChild(form['resident']);form.removeChild(form['problem']);">Cancel</button>
                                         </div>
                                       </fieldset>
                                     </form>
