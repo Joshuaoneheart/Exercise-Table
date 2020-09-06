@@ -17,19 +17,35 @@
         <![endif]-->
         <script src="//drive.google.com/open?id=1U0Lz7TYkyM3wZUuffNUMweu8pOZsTnYv"></script>
         <script>
+        //紀錄當前所在分頁的全域變數
+        var cur_page = "announcement";
         function change_page(page_name){
           google.script.run.withSuccessHandler(function(res){
             var main_section = document.getElementById("main-section");
             main_section.innerHTML = res;
           }).get_page(page_name);
+          
+          console.log(cur_page + "_btn");
+          var last_btn = document.getElementById(cur_page + "_btn");
+          last_btn.classList.remove("active");
+          cur_page = page_name;
+          var cur_btn = document.getElementById(cur_page + "_btn");
+          cur_btn.classList.add("active");
           load(page_name);
         }
         window.onload = function(){
-          change_page("announcement")
+          change_page("announcement");
         }
         </script>
         <!--script of reset_page-->
         <script>
+        function sleep(milliseconds) {
+          var start = new Date().getTime();
+          for (var i = 0; i < 1e7; i++) {
+            if ((new Date().getTime() - start) > milliseconds) break;
+          }
+        }
+
         function show_toggle(item){
           if(item.parentElement.classList.contains("open")) item.parentElement.classList.remove("open");
           else item.parentElement.classList.add("open");
@@ -119,6 +135,8 @@
         function load(page_name){
           switch(page_name){
           case "system_setting":
+            //等待頁面跑完再載入動態資料
+            sleep(300);
             google.script.run.withSuccessHandler(
             function(res){
               if(res) document.getElementById("enabled").innerHTML = "開啟 ";
@@ -126,7 +144,6 @@
             }).get_enabled(); 
             break;
           }
-          
         }
 </script>
     </head>
@@ -246,34 +263,34 @@
             <div class="row-fluid">
                 <div class="span3" id="sidebar">
                     <ul class="nav nav-list bs-docs-sidenav nav-collapse collapse">
-                        <li>
+                        <li id="announcement_btn"  class="active">
                             <a href="javascript:void(0)" onclick="change_page('announcement');"><i class="icon-chevron-right"></i> 公告</a>
                         </li>
-                        <li>
-                            <a href="//drive.google.com/open?id=1UHbM2snEH_7afLGu3kk8WU338N2YdgO-"><i class="icon-chevron-right"></i> 總覽</a>
+                        <li id="summary_btn">
+                            <a href="javascript:void(0)" onclick="change_page('summary');"><i class="icon-chevron-right"></i> 總覽</a>
                         </li>
-                        <li>
-                            <a href="//drive.google.com/open?id=1ZY2I-1GtNqL9woVa26nsrx3C3mFzCzm7"><i class="icon-chevron-right"></i> 活力組操練情形</a>
+                        <li id="">
+                            <a href="javascript:void(0)" onclick="change_page('vital_group');"><i class="icon-chevron-right"></i> 活力組操練情形</a>
                         </li>
-                        <li>
-                            <a href="//drive.google.com/open?id=1kaMiOoYyydVFDI__bpgG2wM4HIHT2bGc"><i class="icon-chevron-right"></i> 個人操練情形</a>
+                        <li id="">
+                            <a href="javascript:void(0)" onclick="change_page('individual');"><i class="icon-chevron-right"></i> 個人操練情形</a>
                         </li>
-                        <li>
-                            <a href="//drive.google.com/open?id=1Mtyp2hxpAg2O7A0gHld3flP309hnoNyp"><i class="icon-chevron-right"></i> 修改住戶名冊</a>
+                        <li id="">
+                            <a href="javascript:void(0)" onclick="change_page('resident_modify');"><i class="icon-chevron-right"></i> 修改住戶名冊</a>
                         </li>
-                        <li>
-                            <a href="//drive.google.com/open?id=1kSy7Ql0MZQhNfCZVz-qD8glCIP8NYUPP"><i class="icon-chevron-right"></i> 修改表單</a>
+                        <li id="">
+                            <a href="javascript:void(0)" onclick="change_page('form_modify');"><i class="icon-chevron-right"></i> 修改表單</a>
                         </li>
-                        <li>
+                        <li id="form_review_btn">
                             <a href="javascript:void(0)" onclick="change_page('form_review');"><i class="icon-chevron-right"></i> 表單預覽</a>
                         </li>
-                        <li class="active">
+                        <li id="system_setting_btn">
                             <a href="javascript:void(0)" onclick="change_page('system_setting');"><i class="icon-chevron-right"></i> 系統設定</a>
                         </li>
                         <li>
-                            <a href="#"><span class="badge badge-success pull-right">731</span> 行事曆</a>
+                            <a href="javascript:void(0)" onclick="change_page('calendar');"><span class="badge badge-success pull-right">731</span> 行事曆</a>
                         </li>
-                        <li>
+                        <li id="instruction_btn">
                             <a href="javascript:void(0)" onclick="change_page('instruction');"><span class="badge badge-success pull-right">812</span> 系統操作指引</a>
                         </li>
                         <li>
