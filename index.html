@@ -2,6 +2,7 @@
 <html class="no-js">
     <head>
         <title>Admin Home Page</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
         <!-- Bootstrap -->
         <!--bootstrap.min.css-->
         <link href="//drive.google.com/uc?id=17ompsephkLOP5aAZolEJYSMf9aN6FdZK&export=download" rel="stylesheet" media="screen">
@@ -36,6 +37,50 @@
         window.onload = function(){
           change_page("announcement");
         }
+        </script>
+        <!-- modal -->
+        <script>
+        function show_modal(){
+          var modal = document.getElementById("modal");
+          modal.classList.add("in");
+          modal.style = "display: block;";
+          modal["aria-hidden"] = "false";
+        }
+        
+        function close_modal(){
+          var modal = document.getElementById("modal");
+          modal.classList.remove("in");
+          modal.style = "display: none;";
+          modal["aria-hidden"] = "true"
+        }
+        
+        </script>
+        <!--script of vital_group-->
+        <script>
+          function reset_group(){
+            document.getElementsByName('group_select')[0].options[0] = new Option('請先選取弟兄或姊妹', '請先選取弟兄或姊妹');
+            document.getElementsByName('group_select')[0].length = 1;
+            document.getElementById('submit_btn').disabled = true;
+          }
+          
+          function refresh_group(index){
+             google.script.run.withSuccessHandler(
+              function(res){
+                var groups = Object.keys(res.group).sort();
+                var length = 0;
+                var group_select = document.getElementsByName("group_select")[0];
+                var submit_btn = document.getElementById("submit_btn");
+                if(!index){ reset_group();return;}
+                for(var i=0;i<groups.length;i++){
+                  if((index == 1 && groups[i][0] == 'B') || (index == 2 && groups[i][0] == 'S')){
+                    group_select.options[length] = new Option(groups[i].substr(1, 2), groups[i].substr(1, 2));	// 設定新選項
+                    length++;
+                  }
+                }
+                group_select.length=length;	// 刪除多餘的選項
+                submit_btn.disabled = false;
+              }).get_systemVariable();
+          }
         </script>
         <!--script of reset_page-->
         <script>
@@ -141,7 +186,19 @@
             function(res){
               if(res) document.getElementById("enabled").innerHTML = "開啟 ";
               else document.getElementById("enabled").innerHTML = "關閉 ";
-            }).get_enabled(); 
+            }).start(); 
+            break;
+            case "summary":
+              sleep(300);
+              google.script.run.withSuccessHandler(
+              function(res){
+                //顯示未註冊人位
+                console.log(res.unregistered.length)
+                document.getElementById("unregistered_number").innerHTML = res.unregistered.length;
+              }).get_systemVariable(); 
+            break;
+            case "individual":
+              sleep(300);
             break;
           }
         }
@@ -269,16 +326,16 @@
                         <li id="summary_btn">
                             <a href="javascript:void(0)" onclick="change_page('summary');"><i class="icon-chevron-right"></i> 總覽</a>
                         </li>
-                        <li id="">
+                        <li id="vital_group_btn">
                             <a href="javascript:void(0)" onclick="change_page('vital_group');"><i class="icon-chevron-right"></i> 活力組操練情形</a>
                         </li>
-                        <li id="">
+                        <li id="individual_btn">
                             <a href="javascript:void(0)" onclick="change_page('individual');"><i class="icon-chevron-right"></i> 個人操練情形</a>
                         </li>
-                        <li id="">
+                        <li id="resident_modify_btn">
                             <a href="javascript:void(0)" onclick="change_page('resident_modify');"><i class="icon-chevron-right"></i> 修改住戶名冊</a>
                         </li>
-                        <li id="">
+                        <li id="form_modify_btn">
                             <a href="javascript:void(0)" onclick="change_page('form_modify');"><i class="icon-chevron-right"></i> 修改表單</a>
                         </li>
                         <li id="form_review_btn">
@@ -341,6 +398,15 @@
                 <p>&copy; Vincent Gabriel 2013</p>
             </footer>
         </div>
+         <div id="modal" class="modal hide" aria-hidden="true" style="display: none;">
+			<div class="modal-header">
+			  <button onclick="close_modal();" data-dismiss="modal" class="close" type="button">×</button>
+			  <h3>Modal header</h3>
+			</div>
+			<div class="modal-body">
+			  <p>Modal Example Body</p>
+			</div>
+		</div>
         <!--/.fluid-container-->
         <script src="//drive.google.com/open?id=1-Pw-CoFlQRZHPyprkz1BZCWLBm0-Dvi3"></script>
         <script src="//drive.google.com/open?id=1QrJDYI6O6FJVw44hmTJdcLdU3IN5Vj3E"></script>

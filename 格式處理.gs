@@ -21,15 +21,7 @@ function dealGender(gender){
   }
   return -1;
 }
-function isChina(s){   
-var patrn=/[\u4E00-\u9FA5]|[\uFE30-\uFFA0]/gi;   
-if(!patrn.exec(s)){   
-return false;   
-}  
-else{   
-return true;   
-} 
-}
+
 function get_format_function(type){
   var format_function = function(x){return x;};
   switch(type){
@@ -54,6 +46,7 @@ function get_format_function(type){
   }
   return format_function;
 }
+
 function get_score_function(type){
   var score_function;
   switch(type){

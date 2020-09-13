@@ -2,9 +2,13 @@
 function getFormResponse() {
   //if(!start()) return;
   start();
+  //測試
+  gloVariable.thisWeek = "test";
+  //測試
   //獲得資料
   var dataFile = DriveApp.getFileById(sysVariable.id.data);
-  var data = JSON.parse(dataFile.getBlob().getDataAsString());
+  var data = read_json(sysVariable.id.data);
+  data[gloVariable.thisWeek] = {};
   var form = FormApp.openById(sysVariable.id.form);
   //取得表單回覆內容
   var formResponse = form.getResponses();
@@ -16,10 +20,11 @@ function getFormResponse() {
   var url = formResponse[last].getEditResponseUrl(); 
   var name = itemResponses[0].getResponse();
   var gender = (sysVariable.resident[name].gender == "b")? "弟兄":"姊妹";
-  data[sysVariable.thisWeek][name] = {};
+  data[gloVariable.thisWeek][name] = {};
   var index = 1;
   for(var i = 0;i < sysVariable.problem_number;i++)
   {
+    //跳過區塊
     if(itemResponses[index].getItem().getType() == "PageBreakItem") index++;
     while(sysVariable.problem[i].title != itemResponses[index].getItem().getTitle()) i++;
     var content = itemResponses[index].getResponse();
@@ -30,7 +35,7 @@ function getFormResponse() {
     else content = get_format_function(problem.type)(content);
     let score = get_score_function(problem.type)(problem, content);
     total_score += score;
-    data[sysVariable.thisWeek][name][i] = [content, score];
+    data[gloVariable.thisWeek][name][problem.title] = [content, score];
     index++;
   }
   dataFile.setContent(JSON.stringify(data));

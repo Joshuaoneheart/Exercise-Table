@@ -14,76 +14,63 @@ class Problem{
   }
 }
 
+//讀入system.json檔案作為系統變數
 function get_systemVariable() {
-  var jsonFile = DriveApp.getFileById(system_id);
-  content = JSON.parse(jsonFile.getBlob().getDataAsString());
+  content = read_json(system_id)
   sysVariable = content;
   //這周的周檔名字串
-  content.thisWeek = makeWeekTitle(0, 1);
+  gloVariable.thisWeek = makeWeekTitle(0, 1);
   //上週的周檔名字串
-  content.lastWeek = makeWeekTitle(1, 1);
+  gloVariable.lastWeek = makeWeekTitle(1, 1);
   return content;
 }
 
-function get_enabled(){
-  get_systemVariable();
-  return sysVariable.enabled;
-}
-
 function once(){
-  var jsonFile = DriveApp.getFileById(system_id);
-  var content = JSON.parse(jsonFile.getBlob().getDataAsString());
   /*
-  problem index: title,col,score_function,write_function 
-  for(let person in content.resident){
-    Logger.log(person)
-    if(person == "許晨星") g = "s";
-    else if(person =="游一心") g = "b";
-    content.resident[person] = {gender:g,token:content.resident[person]}
-  }
-   content.dp_col = []
-  for(let i = 0;i < content.problem_number;i++){
-    content.dp_col.push(0);
-  }
-  content.problem_number
-  content.id.record//加一個list紀錄問題在第幾行
-  //加一個list存問題資訊*/
+  get_systemVariable();
+  Logger.log(sysVariable.unregistered);
+  */
+  get_systemVariable();
+  sendToLine("這是操練表系統的測試\n請不要驚慌","蕭善涓");
+}
+
+//讀取json檔
+function read_json(file_id){
+  var jsonFile = DriveApp.getFileById(file_id);
+  return JSON.parse(jsonFile.getBlob().getDataAsString());
+}
+
+//寫入json檔
+function write_json(file_id, content) {
+  var jsonFile = DriveApp.getFileById(file_id);
   jsonFile.setContent(JSON.stringify(content));
 }
 
-function set_systemVariable(enabled) {
-  var jsonFile = DriveApp.getFileById(system_id);
-  content = JSON.parse(jsonFile.getBlob().getDataAsString());
-  content.enabled = enabled;
-  jsonFile.setContent(JSON.stringify(content));
-}
-
+//關閉系統
 function shutdown(){
-  var jsonFile = DriveApp.getFileById(system_id);
-  content = JSON.parse(jsonFile.getBlob().getDataAsString());
+  var content = read_json(system_id);
   closeForm();
   content.enabled = 0;
   Logger.log(content.enabled);
-  jsonFile.setContent(JSON.stringify(content));
+  write_json(system_id, content);
 }
 
+//開啟系統
 function reboot(){
-  var jsonFile = DriveApp.getFileById(system_id);
-  content = JSON.parse(jsonFile.getBlob().getDataAsString());
+  var content = read_json(system_id);
   content.enabled = 1;
-  jsonFile.setContent(JSON.stringify(content));
+  write_json(system_id, content);
   openForm();
 }
 
 //系統啟動判斷，能啟動為1反之為0
 function start(){
   get_systemVariable();
-  if(!sysVariable.enabled) return 0;
-  return 1;
+  return sysVariable.enabled;
 }
 
+//檢查resident csv檔格式正確與否
 function check_resident(string){
-    //檢查resident csv檔格式正確與否(每行為一住戶，左至右+依序為姓名、性別、活力組、住處)
   var residents = {};
   var residences = {};
   var groups = {};
@@ -101,9 +88,9 @@ function check_resident(string){
   for(let i = 2; i < lines.length;i++){
     var texts = lines[i].split(',');
     if(texts.length <= 1) continue;
-    if(texts.length != 4) return [0, "每行應提供四個資訊，請確認內容中不包含逗號"];
+    //if(texts.length != 4) return [0, "每行應提供四個資訊，請確認內容中不包含逗號"];
     if(!(texts[1] == 's' || texts[1] == 'b')) return [0, "住戶" + texts[0] + "的性別只能是'b'或's'"];
-    for(text in texts) if(!texts[text].length) return [0, "住戶" + texts[0] + "的" + category[text] + "不可為空"];
+    for(var text;text < 4;text++) if(!texts[text].length) return [0, "住戶" + texts[0] + "的" + category[text] + "不可為空"];
     residents[texts[0]] = {}
     if(texts[0] in sysVariable.resident){
       if(texts[1] != sysVariable.resident[texts[0]].gender) return [0];
@@ -126,6 +113,7 @@ function check_resident(string){
  return [1, ""];
 }
 
+//處理問題的格式並新增問題
 function add_problem(argu){
   var title = argu[0];
   var type = argu[1];
@@ -246,14 +234,13 @@ function add_problem(argu){
       }
       break;
   }
-  get_systemVariable()
   var problem = new Problem(title, type, subtitle, choices, type_function, score);
   gloVariable.problem.push(problem);
   return [1];
 }
 
-function check_problem(string){
 //檢查problem csv檔格式正確與否，回傳[正確與否(bool), 錯誤訊息]
+function check_problem(string){
   string = string.split("\r\n");
   var section = [];
   var section_index = 0;
@@ -283,21 +270,26 @@ function check_problem(string){
   return [1, ""];
 }
 
+//系統重置函式
 function reset(resident, problem){
   //取得sysVariable
   if(start()) return [-1, "系統未關閉"];
-  var semester = sysVariable.semester;
   var form = FormApp.openById(sysVariable.id.form);
-  //var items = form.getItems();
+  //存下上個系統的學期資料
+  var semester = sysVariable.semester;
+  // 對上傳文檔做格式檢查並預備system.json內資料
   var resident_out = check_resident(resident);
   var problem_out = check_problem(problem);
   Logger.log(resident_out, problem_out)
-  //預備system.json內資料
   if(!resident_out[0]) return [-2, resident_out[1]];
   else if(!problem_out[0]) return [-3, problem_out[1]];
-  /*
+  Logger.log(sysVariable.problem);
+  Logger.log(sysVariable.resident);
+  Logger.log(sysVariable.unregistered);
+  
+  //備份之前系統資料
   var system_folder = DriveApp.getFolderById(system_folder_id);
-  var backup_folder = DriveApp.createFolder("操練表系統" + sysVariable.semester);
+  var backup_folder = DriveApp.createFolder("操練表系統" + semester);
   var files = system_folder.getFiles();
   while(files.hasNext()){
     let file = files.next();
@@ -312,12 +304,9 @@ function reset(resident, problem){
       file.setTrashed(true);
    }
   }
-  var score_rule = items[0];
-  var award_rule = items[1];
-  var finish_page = items[items.length - 2]
-  var feedback = items[items.length - 1];
-*/
-/*
+  
+  
+  //更動表單
   //刪除所有回覆
   form.deleteAllResponses();
   //刪除原有表單的題目
@@ -332,6 +321,7 @@ function reset(resident, problem){
     else return 1;
   }))
   item.setTitle("我的名字是");
+  item.setRequired(true);
   var section = 0;
   for(let i = 0;i < sysVariable.problem.length;i++){
     if(i == sysVariable.section[section][2]) section++;
@@ -348,13 +338,14 @@ function reset(resident, problem){
   item = form.addTextItem();
   item.setTitle("回饋/ Feedback")
   Logger.log(sysVariable.problem)
+  
   //寫入system.json及重置data.json
-  var jsonFile = DriveApp.getFileById(system_id);
-  var dataFile = DriveApp.getFileById(sysVariable.id.data);
   var data = {};
-  data[sysVariable.thisWeek] = {};
-  jsonFile.setContent(JSON.stringify(sysVariable));
-  dataFile.setContent(JSON.stringify(data));
-  */
+  //紀錄最後一次重置系統的時間
+  sysVariable.last_change = JSON.stringify(new Date());
+  
+  //寫入系統變數並清空資料
+  write_json(system_id, sysVariable);
+  write_json(sysVariable.id.data, data);
   return [0];
 }
