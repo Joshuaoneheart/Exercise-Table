@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html class="no-js">
+    <head>
+        <title>Admin Home Page</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <!-- Bootstrap -->
+        <!--bootstrap.min.css-->
+        <link href="//drive.google.com/uc?id=17ompsephkLOP5aAZolEJYSMf9aN6FdZK&export=download" rel="stylesheet" media="screen">
+        <!--bootstrap-responsive.min.css-->
+        <link href="//drive.google.com/uc?id=1qNuaxOrnltFGBwox8f_TP5DsEiYoEeI_&export=download" rel="stylesheet" media="screen">
+        <!--jquery.easy-pie-chart.css-->
+        <link href="//drive.google.com/uc?id=10L_Y1oAV6w4nq740XtHWh6LirHRydM8X&export=download" rel="stylesheet" media="screen">
+        <!--style.css-->
+        <link href="//drive.google.com/uc?id=1x5TnbSM6F2GqyfsQlMEjmJW5Ftk9RmBB" rel="stylesheet" media="screen">
+        <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+        <!--[if lt IE 9]>
+            <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+        <script src="//drive.google.com/open?id=1U0Lz7TYkyM3wZUuffNUMweu8pOZsTnYv"></script>
+        <script>
+        //紀錄當前所在分頁的全域變數
+        var cur_page = "announcement";
+        function change_page(page_name){
+          google.script.run.withSuccessHandler(function(res){
+            var main_section = document.getElementById("main-section");
+            main_section.innerHTML = res;
+          }).get_page(page_name);
+          
+          console.log(cur_page + "_btn");
+          var last_btn = document.getElementById(cur_page + "_btn");
+          last_btn.classList.remove("active");
+          cur_page = page_name;
+          var cur_btn = document.getElementById(cur_page + "_btn");
+          cur_btn.classList.add("active");
+          load(page_name);
+        }
+        window.onload = function(){
+          change_page("announcement");
+        }
+        </script>
+        <!-- modal -->
+        <script>
+        function show_modal(){
+          var modal = document.getElementById("modal");
+          modal.classList.add("in");
+          modal.style = "display: block;";
+          modal["aria-hidden"] = "false";
+        }
+        
+        function close_modal(){
+          var modal = document.getElementById("modal");
+          modal.classList.remove("in");
+          modal.style = "display: none;";
+          modal["aria-hidden"] = "true"
+        }
+        
+        </script>
+        <!--script of vital_group-->
+        <script>
+          function reset_group(){
+            document.getElementsByName('group_select')[0].options[0] = new Option('請先選取弟兄或姊妹', '請先選取弟兄或姊妹');
+            document.getElementsByName('group_select')[0].length = 1;
+            document.getElementById('submit_btn').disabled = true;
+          }
+          
+          function refresh_group(index){
+             google.script.run.withSuccessHandler(
+              function(res){
+                var groups = Object.keys(res.group).sort();
+                var length = 0;
+                var group_select = document.getElementsByName("group_select")[0];
+                var submit_btn = document.getElementById("submit_btn");
+                if(!index){ reset_group();return;}
+                for(var i=0;i<groups.length;i++){
+                  if((index == 1 && groups[i][0] == 'B') || (index == 2 && groups[i][0] == 'S')){
+                    group_select.options[length] = new Option(groups[i].substr(1, 2), groups[i].substr(1, 2));	// 設定新選項
+                    length++;
+                  }
+                }
+                group_select.length=length;	// 刪除多餘的選項
+                submit_btn.disabled = false;
+              }).get_systemVariable();
+          }
+        </script>
+        <!--script of reset_page-->
+        <script>
+        function sleep(milliseconds) {
+          var start = new Date().getTime();
+          for (var i = 0; i < 1e7; i++) {
+            if ((new Date().getTime() - start) > milliseconds) break;
+          }
+        }
+
+        function show_toggle(item){
+          if(item.parentElement.classList.contains("open")) item.parentElement.classList.remove("open");
+          else item.parentElement.classList.add("open");
+        }
+        
+        function alert_success(){
+          var banner = document.getElementsByClassName("alert-success").item(0);
+          if(banner.classList.contains("hidden")) banner.classList.remove("hidden");
+          else banner.classList.add("hidden")
+        }
+        
+        function upload(item, name){
+          var form = document.forms['reset_form'];
+          //上傳csv檔，若不是csv，跑出錯誤信息
+          if(item.files[0].type != "application/vnd.ms-excel"){
+            item.parentElement.getElementsByClassName("alert").item(0).classList.remove("hidden");
+            form["reset_system_btn"].disabled = true;
+            return -1;
+          }
+          var reader = new FileReader();
+          var progressBar = item.parentElement.getElementsByClassName("progress").item(0);
+          progressBar.classList.remove("hidden");
+          reader.onload = event => {
+          // 取得檔案完整內容
+            progressBar.classList.add("hidden");
+            if(typeof(form[name]) != 'undefined' && form[name] != null){
+              form.removeChild(form[name]);
+            }
+            var input = document.createElement("input");
+            input.type = "hidden";
+            input.value = event.target.result;
+            input.name = name;
+            form.appendChild(input);
+            var resident = form['resident'];
+            var problem = form['problem'];
+            //確認是否都有檔案
+            if((typeof(resident) != 'undefined' && resident != null) &&
+            (typeof(problem) != 'undefined' && problem != null)){
+              form["reset_system_btn"].disabled = false;
+            }
+            else form["reset_system_btn"].disabled = true;
+            //console.log(event.target.result);
+            };
+            reader.onprogress = function (evt) {
+            // 確定 evt 是否為 ProgressEvent
+            if (evt.lengthComputable) {
+              // 計算百分比
+              let percentLoaded = Math.round((evt.loaded / evt.total) * 100);
+              //更新進度條
+              progressBar.style.width = percentLoaded + "%";
+              // 注意：這裡的百分比的數字不會到 100
+              console.log(percentLoaded);
+            }
+          };
+          var text = reader.readAsText(item.files[0]);      
+        }
+
+        function reset_system(item){
+          var check = confirm("確定重置系統嗎?");
+          if(!check) return false;
+          var form = document.forms['reset_form'];
+          var resident = form['resident'];
+          var problem = form['problem'];
+          google.script.run.withSuccessHandler(function(res){
+            switch(res[0]){
+              case 0:
+                document.getElementById("resident_alert").classList.add("hidden");
+                document.getElementById("problem_alert").classList.add("hidden");
+                alert("重置成功");
+                break;
+              case -1:
+                alert("重置失敗\n" + res[1]);
+                break;
+              case -2:
+                document.getElementById("resident_alert").classList.remove("hidden");
+                alert("重置失敗\n" + res[1]);
+                break;
+              case -3:
+                document.getElementById("problem_alert").classList.remove("hidden");
+                alert("重置失敗\n" + res[1]);
+                break;
+            }
+          }).withFailureHandler(alert("系統重置需要一段時間，約一到兩分鐘，若兩分鐘之後系統仍無反應，請聯繫管理員 ")).reset(resident.value, problem.value);
+        }
+
+        //分頁的載入函式
+        function load(page_name){
+          switch(page_name){
+          case "system_setting":
+            //等待頁面跑完再載入動態資料
+            sleep(300);
+            google.script.run.withSuccessHandler(
+            function(res){
+              if(res) document.getElementById("enabled").innerHTML = "開啟 ";
+              else document.getElementById("enabled").innerHTML = "關閉 ";
+            }).start(); 
+            break;
+            case "summary":
+              sleep(300);
+              google.script.run.withSuccessHandler(
+              function(res){
+                //顯示未註冊人位
+                console.log(res.unregistered.length)
+                document.getElementById("unregistered_number").innerHTML = res.unregistered.length;
+              }).get_systemVariable(); 
+            break;
+            case "individual":
+              sleep(300);
+            break;
+          }
+        }
+</script>
+    </head>
+    
+    <body>
+        <div class="navbar navbar-fixed-top">
+            <div class="navbar-inner">
+                <div class="container-fluid">
+                    <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"> <span class="icon-bar"></span>
+                     <span class="icon-bar"></span>
+                     <span class="icon-bar"></span>
+                    </a>
+                    <a class="brand" href="#">Exercise Table</a>
+                    <div class="nav-collapse collapse">
+                        <ul class="nav pull-right">
+                            <li class="dropdown">
+                                <a href="#" role="button" class="dropdown-toggle" data-toggle="dropdown"> <i class="icon-user"></i> Vincent Gabriel <i class="caret"></i>
+
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a tabindex="-1" href="#">Profile</a>
+                                    </li>
+                                    <li class="divider"></li>
+                                    <li>
+                                        <a tabindex="-1" href="login.html">Logout</a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <ul class="nav">
+                            <li class="active">
+                                <a href="#">Dashboard</a>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" data-toggle="dropdown" class="dropdown-toggle">Settings <b class="caret"></b>
+
+                                </a>
+                                <ul class="dropdown-menu" id="menu1">
+                                    <li>
+                                        <a href="#">Tools <i class="icon-arrow-right"></i>
+
+                                        </a>
+                                        <ul class="dropdown-menu sub-menu">
+                                            <li>
+                                                <a href="#">Reports</a>
+                                            </li>
+                                            <li>
+                                                <a href="#">Logs</a>
+                                            </li>
+                                            <li>
+                                                <a href="#">Errors</a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li>
+                                        <a href="#">SEO Settings</a>
+                                    </li>
+                                    <li>
+                                        <a href="#">Other Link</a>
+                                    </li>
+                                    <li class="divider"></li>
+                                    <li>
+                                        <a href="#">Other Link</a>
+                                    </li>
+                                    <li>
+                                        <a href="#">Other Link</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" role="button" class="dropdown-toggle" data-toggle="dropdown">Content <i class="caret"></i>
+
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a tabindex="-1" href="#">Blog</a>
+                                    </li>
+                                    <li>
+                                        <a tabindex="-1" href="#">News</a>
+                                    </li>
+                                    <li>
+                                        <a tabindex="-1" href="#">Custom Pages</a>
+                                    </li>
+                                    <li>
+                                        <a tabindex="-1" href="#">Calendar</a>
+                                    </li>
+                                    <li class="divider"></li>
+                                    <li>
+                                        <a tabindex="-1" href="#">FAQ</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" role="button" class="dropdown-toggle" data-toggle="dropdown">Users <i class="caret"></i>
+
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a tabindex="-1" href="#">User List</a>
+                                    </li>
+                                    <li>
+                                        <a tabindex="-1" href="#">Search</a>
+                                    </li>
+                                    <li>
+                                        <a tabindex="-1" href="#">Permissions</a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                    <!--/.nav-collapse -->
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <div class="row-fluid">
+                <div class="span3" id="sidebar">
+                    <ul class="nav nav-list bs-docs-sidenav nav-collapse collapse">
+                        <li id="announcement_btn"  class="active">
+                            <a href="javascript:void(0)" onclick="change_page('announcement');"><i class="icon-chevron-right"></i> 公告</a>
+                        </li>
+                        <li id="summary_btn">
+                            <a href="javascript:void(0)" onclick="change_page('summary');"><i class="icon-chevron-right"></i> 總覽</a>
+                        </li>
+                        <li id="vital_group_btn">
+                            <a href="javascript:void(0)" onclick="change_page('vital_group');"><i class="icon-chevron-right"></i> 活力組操練情形</a>
+                        </li>
+                        <li id="individual_btn">
+                            <a href="javascript:void(0)" onclick="change_page('individual');"><i class="icon-chevron-right"></i> 個人操練情形</a>
+                        </li>
+                        <li id="resident_modify_btn">
+                            <a href="javascript:void(0)" onclick="change_page('resident_modify');"><i class="icon-chevron-right"></i> 修改住戶名冊</a>
+                        </li>
+                        <li id="form_modify_btn">
+                            <a href="javascript:void(0)" onclick="change_page('form_modify');"><i class="icon-chevron-right"></i> 修改表單</a>
+                        </li>
+                        <li id="form_review_btn">
+                            <a href="javascript:void(0)" onclick="change_page('form_review');"><i class="icon-chevron-right"></i> 表單預覽</a>
+                        </li>
+                        <li id="system_setting_btn">
+                            <a href="javascript:void(0)" onclick="change_page('system_setting');"><i class="icon-chevron-right"></i> 系統設定</a>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0)" onclick="change_page('calendar');"><span class="badge badge-success pull-right">731</span> 行事曆</a>
+                        </li>
+                        <li id="instruction_btn">
+                            <a href="javascript:void(0)" onclick="change_page('instruction');"><span class="badge badge-success pull-right">812</span> 系統操作指引</a>
+                        </li>
+                        <li>
+                            <a href="#"><span class="badge badge-info pull-right">27</span> 聯絡管理員</a>
+                        </li>
+                    </ul>
+                </div>
+                
+                    <!--/span-->
+                <div class="span9" id="content">
+                    <div class="row-fluid">
+                        <div class="alert alert-success hidden">
+							<button type="button" onClick="alert_success()" class="close" data-dismiss="alert">&times;</button>
+                            <h4>Success</h4>
+                        	The operation completed successfully</div>
+                        	<div class="navbar">
+                            	<div class="navbar-inner">
+	                                <ul class="breadcrumb">
+	                                    <i class="icon-chevron-left hide-sidebar"><a href='#' title="Hide Sidebar" rel='tooltip'>&nbsp;</a></i>
+	                                    <i class="icon-chevron-right show-sidebar" style="display:none;"><a href='#' title="Show Sidebar" rel='tooltip'>&nbsp;</a></i>
+	                                    <li>
+	                                        <a href="#">Dashboard</a> <span class="divider">/</span>	
+	                                    </li>
+	                                    <li>
+	                                        <a href="#">Settings</a> <span class="divider">/</span>	
+	                                    </li>
+	                                    <li class="active">Tools</li>
+	                                </ul>
+                            	</div>
+                        	</div>
+                    	</div>
+                    <section id="main-section">
+                    <!-- block -->
+                        <div class="block">
+                            <div class="navbar navbar-inner block-header">
+                                <div class="muted pull-left">標題列</div>
+                            </div>
+                            <div class="block-content">
+                            內文
+                            </div>
+                        </div>
+                        <!-- /block -->
+                    </section>
+                    </div>
+            </div>
+            <hr>
+            <footer>
+                <p>&copy; Vincent Gabriel 2013</p>
+            </footer>
+        </div>
+         <div id="modal" class="modal hide" aria-hidden="true" style="display: none;">
+			<div class="modal-header">
+			  <button onclick="close_modal();" data-dismiss="modal" class="close" type="button">×</button>
+			  <h3>Modal header</h3>
+			</div>
+			<div class="modal-body">
+			  <p>Modal Example Body</p>
+			</div>
+		</div>
+        <!--/.fluid-container-->
+        <script src="//drive.google.com/open?id=1-Pw-CoFlQRZHPyprkz1BZCWLBm0-Dvi3"></script>
+        <script src="//drive.google.com/open?id=1QrJDYI6O6FJVw44hmTJdcLdU3IN5Vj3E"></script>
+        <script src="//drive.google.com/open?id=1TF87wUXakKSai5tcjZjw37OMRoDojIKG"></script>
+        <script src="//drive.google.com/open?id=1NNuggUWnF0GzolbdosmfxbQ0sRvaHiC7"></script>
+        <script>
+        $(function() {
+            // Easy pie charts
+            $('.chart').easyPieChart({animate: 1000});
+        });
+        </script>
+    </body>
+
+</html>

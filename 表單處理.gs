@@ -1,30 +1,14 @@
-//處理外部傳來的get request (在網址後加上?[key]=[value])
-function doGet(e){
-  var para = e.parameter;
-  Logger.log(e)
-  Logger.log(para.function);
-  //根據function的value提供不同的網站服務
-  if(para.function == "test"){
-    return HtmlService.createHtmlOutputFromFile('notification.html');
-  }
-  else if(para.function == "registration"){
-    return HtmlService.createHtmlOutputFromFile('Token.html');
-  }
-  if(para.page == "notification"){
-  return HtmlService.createHtmlOutputFromFile('notification.html');
-  }
-  else if(para.page == "reset"){
-    return HtmlService.createHtmlOutputFromFile('reset_page.html');
-  }
-}
-
 //取得表單的回覆
 function getFormResponse() {
   //if(!start()) return;
   start();
+  //測試
+  gloVariable.thisWeek = "test";
+  //測試
   //獲得資料
   var dataFile = DriveApp.getFileById(sysVariable.id.data);
-  var data = JSON.parse(dataFile.getBlob().getDataAsString());
+  var data = read_json(sysVariable.id.data);
+  data[gloVariable.thisWeek] = {};
   var form = FormApp.openById(sysVariable.id.form);
   //取得表單回覆內容
   var formResponse = form.getResponses();
@@ -36,10 +20,11 @@ function getFormResponse() {
   var url = formResponse[last].getEditResponseUrl(); 
   var name = itemResponses[0].getResponse();
   var gender = (sysVariable.resident[name].gender == "b")? "弟兄":"姊妹";
-  data[sysVariable.thisWeek][name] = {};
+  data[gloVariable.thisWeek][name] = {};
   var index = 1;
   for(var i = 0;i < sysVariable.problem_number;i++)
   {
+    //跳過區塊
     if(itemResponses[index].getItem().getType() == "PageBreakItem") index++;
     while(sysVariable.problem[i].title != itemResponses[index].getItem().getTitle()) i++;
     var content = itemResponses[index].getResponse();
@@ -50,7 +35,7 @@ function getFormResponse() {
     else content = get_format_function(problem.type)(content);
     let score = get_score_function(problem.type)(problem, content);
     total_score += score;
-    data[sysVariable.thisWeek][name][i] = [content, score];
+    data[gloVariable.thisWeek][name][problem.title] = [content, score];
     index++;
   }
   dataFile.setContent(JSON.stringify(data));

@@ -5,13 +5,16 @@ function sendToLine(message, name){
   var index = 0;
   //廣播給所有住戶(name需指定為broadcast)
   if(name == "broadcast"){
-    for(person in sysVariable.resident){
+    for(person in Object.keys(sysVariable.resident)){
       token.push(sysVariable.resident[person].token);
     }
   }
   else{
     token = [sysVariable.resident[name].token];
   }
+  //測試
+  token = ["yAmgC64jDyZbsmg0UkMngrceWOV2JpnZO3HJnh3y8dN"]
+  //測試
   //如果填表單的人尚未註冊，傳訊息給開發者
   for(let i = 0;i < token.length;i++){
   var options =
