@@ -1,38 +1,22 @@
 //向特定用戶發送line訊息
 //如果name = broadcast傳送訊息到gvar_sheet_id["token"]試算表中的type工作表中的每個人
-function sendToLine(message, name, type){
-  token = [];
+function sendToLine(message, name){
+  var token = [];
   var index = 0;
+  //廣播給所有住戶(name需指定為broadcast)
   if(name == "broadcast"){
-    sheet = SpreadsheetApp.openById(gvar_sheet_id["token"]).getSheetByName(type);
-    for(let i = 1;i <= sheet.getLastRow();i++){
-      range = sheet.getRange(i, 2);
-      token[index] = range.getValue();
-       Logger.log(token[index]);
-      index++;
+    for(person in Object.keys(sysVariable.resident)){
+      token.push(sysVariable.resident[person].token);
     }
   }
   else{
-    token[index] = getInfo(name);
+    token = [sysVariable.resident[name].token];
   }
+  //測試
+  token = ["yAmgC64jDyZbsmg0UkMngrceWOV2JpnZO3HJnh3y8dN"]
+  //測試
   //如果填表單的人尚未註冊，傳訊息給開發者
   for(let i = 0;i < token.length;i++){
-  if(token[i] == -1){
-    sheet = SpreadsheetApp.openById(gvar_sheet_id["token"]).getSheetByName("serving one");
-    message = name + "還沒註冊";
-    for(let i = 1;i <= sheet.getLastRow();i++){
-      var sys_admin = sheet.getRange(i, 2).getValue();
-    var options =
-  {
-      method  : "post",
-      payload : "message=" + message,
-      headers : {"Authorization" : "Bearer "+ sys_admin},
-      muteHttpExceptions : true
-  }; 
-  UrlFetchApp.fetch("https://notify-api.line.me/api/notify", options);
-  }
-    return;
-  }
   var options =
   {
       method  : "post",
@@ -45,20 +29,11 @@ function sendToLine(message, name, type){
 }
 //發送每週提醒訊息
 function sendWeeklyNotice(){
-  var docBody = DocumentApp.openById(gvar_notice_document_id).getBody();
+  if(!start()) return;
+  var docBody = DocumentApp.openById(sysVariable.id.notice_document).getBody();
   var message = "\n";
   message += docBody.getText();
-  var date = new Date();
-  var keyTable = SpreadsheetApp.openById(gvar_sheet_id["record"]);
-  var sheet = keyTable.getSheetByName(gvar_thisWeek);
-  for(var i = 4;i <= sheet.getLastRow();i++){
-    let name = sheet.getRange(i, 2).getValue();
-    //如果姓名格並非有填表單的顏色才傳提醒訊息
-    if(sheet.getRange(i, 2).getBackground() != gvar_acceptedColor && name != ""){
-      sendToLine(message, name);
-      sheet.getRange(i, 2).setBackground(gvar_wrongColor);
-    }
-  }
+  sendToLine(message,"broadcast")
 }
 //發送註冊訊息給line Api
 function sendRequest(code){
@@ -69,12 +44,10 @@ function sendRequest(code){
     "client_id" : 'RsaeiNItcqlH8rgeTxBjA8' ,
     "client_secret" :'DFS5gEYOMJSI3p9X6sPdOrm7BdazNPNKGlCOnA2MRIs',
   };
-  Logger.log(message)
   message = encodeFormData(message);
   var options = {
     "method" : "POST",
     "payload" : message
-   //"headers" : {"Content-Type" : "application/x-www-form-urlencoded"}
   };
   token = UrlFetchApp.fetch("https://notify-bot.line.me/oauth/token",options).getContentText();
   token = JSON.parse(token)["access_token"].toString();
@@ -93,24 +66,4 @@ function encodeFormData(data) {
          pairs.push(name + "=" + value);   // Remember name=value pair
     }
     return pairs.join('&'); // Return joined pairs separated with &
-}
-function sendRankToServingOne(individuals, in_number, groups, gp_number){
-  message = "操練表系統排名 " + makeWeekTitle(2, 2) + "\n";
-  message += "個人獎\n";
-  for(let i = 0;i < in_number;i++){
-    message += "第" + (i + 1) + "名: "
-    message += individuals[i].name + "\n";
-    message += "平均分數 " + individuals[i].average + "\n";
-    message += "平均晨興天數 " + individuals[i].revivalAvg + "\n\n";
-  }
-  message += "團體獎\n"
-  for(let i = 0;i < gp_number;i++){
-    message += "第" + (i + 1) + "名: ";
-    message += groups[i].name + "\n";
-    message += "平均分數 " + groups[i].average + "\n";
-    message += "平均晨興天數 " + groups[i].revivalAvg;
-    if(i != gp_number) message += "\n";
-  }
-  sendToLine(message, "broadcast", "serving one");
-  Logger.log(message);
 }

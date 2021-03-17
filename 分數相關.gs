@@ -67,5 +67,6 @@ function getTopGroup(number){
   return output;
 }
 function getRank(){
+  if(!start()) return;
   sendRankToServingOne(getTop(3), 3, getTopGroup(2), 2);
 }
