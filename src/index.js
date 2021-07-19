@@ -2,7 +2,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 /* import jquery */
-import $ from "jquery";
+import $ from 'jquery'
 import 'jquery-ui-dist/jquery-ui.js'
 
 /* import firebase */
@@ -234,6 +234,14 @@ $(function() {
       this.frame_ref.current.main.current.setState({page: "Announcement"});
     }
 
+	logout(){
+		firebase.auth().signOut().catch((error) => {
+			// var errorCode = error.code;
+			var errorMessage = error.message;
+			window.alert("Error : " + errorMessage);
+		});
+	}
+
     render () {
 	  /*
       if(window.account != undefined){
@@ -257,7 +265,7 @@ $(function() {
           <div className="navbar navbar-fixed-top">
             <div className="navbar-inner">
                   <div className="container-fluid">
-                      <a href="/#" className="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"> <span className="icon-bar"></span>
+                      <a href="/#" className="btn btn-navbar" data-bs-toggle="collapse" data-bs-target=".nav-collapse"> <span className="icon-bar"></span>
                         <span className="icon-bar"></span>
                         <span className="icon-bar"></span>
                       </a>
@@ -265,7 +273,7 @@ $(function() {
                       <div className="nav-collapse collapse">
                           <ul className="nav pull-right">
                               <li className="dropdown">
-                                  <a href="/#" role="button" className="dropdown-toggle" data-toggle="dropdown"> <i className="icon-user"></i> {this.name} <i className="caret"></i>
+                                  <a href="/#" role="button" className="dropdown-toggle" data-bs-toggle="dropdown"> <i className="icon-user"></i> {this.name} <i className="caret"></i>
 
                                   </a>
                                   <ul className="dropdown-menu">
@@ -274,7 +282,7 @@ $(function() {
                                       </li>
                                       <li className="divider"></li>
                                       <li>
-                                          <a tabIndex="-1" href="login.html">Logout</a>
+                                          <a tabIndex="-1" href="/#" onClick={this.logout}>Logout</a>
                                       </li>
                                   </ul>
                               </li>
@@ -284,7 +292,7 @@ $(function() {
                                   <a href="/#">Dashboard</a>
                               </li>
                               <li className="dropdown">
-                                  <a href="/#" data-toggle="dropdown" className="dropdown-toggle">Settings <b className="caret"></b>
+                                  <a href="/#" data-bs-toggle="dropdown" className="dropdown-toggle">Settings <b className="caret"></b>
 
                                   </a>
                                   <ul className="dropdown-menu" id="menu1">
@@ -320,7 +328,7 @@ $(function() {
                                   </ul>
                               </li>
                               <li className="dropdown">
-                                  <a href="/#" role="button" className="dropdown-toggle" data-toggle="dropdown">Content <i className="caret"></i>
+                                  <a href="/#" role="button" className="dropdown-toggle" data-bs-toggle="dropdown">Content <i className="caret"></i>
 
                                   </a>
                                   <ul className="dropdown-menu">
@@ -343,7 +351,7 @@ $(function() {
                                   </ul>
                               </li>
                               <li className="dropdown">
-                                  <a href="/#" role="button" className="dropdown-toggle" data-toggle="dropdown">Users <i className="caret"></i>
+                                  <a href="/#" role="button" className="dropdown-toggle" data-bs-toggle="dropdown">Users <i className="caret"></i>
 
                                   </a>
                                   <ul className="dropdown-menu">
