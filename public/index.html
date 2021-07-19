@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <title>Admin Home Page</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <!--bootstrap.min.css-->
+  <link href="Front_end/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen" async>
+  <!--bootstrap-responsive.min.css-->
+  <link href="Front_end/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" media="screen">
+  <!--bootstrap_supplement.css-->
+  <link href="Front_end/bootstrap/css/bootstrap_supplement.css" rel="stylesheet" media="screen">
+  <!--jquery ui-->
+  <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/smoothness/jquery-ui.css">
+  <!--bootstrap-->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/4.2.0/bootstrap/main.min.css" integrity="sha512-mK6wVf3xsmNcJnp0ZI+YORb6jQBsAIIwkOfMV47DHIiwvkSgR0t7GNCVBiotLQWWR8AND/LxWHAatnja1fU7kQ==" crossorigin="anonymous" />
+  <style>
+    #external-events {
+      float: left;
+      left: 20px;
+      top: 20px;
+      width: 150px;
+      padding: 0 10px;
+      border: 1px solid #ccc;
+      background: #eee;
+      text-align: left;
+    }
+        
+    #external-events h4 {
+      font-size: 16px;
+      margin-top: 0;
+      padding-top: 1em;
+    }
+        
+    .external-event { /* try to mimick the look of a real event */
+      margin: 10px 0;
+      padding: 2px 4px;
+      background: #3366CC;
+      color: #fff;
+      font-size: .85em;
+      cursor: pointer;
+      z-index: 99999999;
+    }
+        
+    #external-events p {
+      margin: 1.5em 0;
+      font-size: 11px;
+      color: #666;
+    }
+        
+    #external-events p input {
+        margin: 0;
+        vertical-align: middle;
+        }
+        
+    body {
+      margin-top: 40px;
+      font-size: 14px;
+      font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
+    }
+
+    #external-events .fc-event {
+      margin: 3px 0;
+      cursor: move;
+    }
+
+    #calendar-wrap {
+      margin-left: 200px;
+    }
+
+    #calendar {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    body.dragging, body.dragging * {
+      cursor: move
+    }
+
+    .dragged {
+      position: absolute;
+      opacity: 0.5;
+      z-index: 2000;
+    }
+
+    .wrapper {
+      display:flex;
+      flex-direction:column;
+    }
+    .grid-row {
+      margin-bottom: 1em
+    }
+    .grid-row, .grid-header {
+      display:flex;
+    /*   flex: 1 0 auto; */
+    /*   height: auto; */
+    }
+    .sig-section-comments{
+      display: flex;
+      margin-top:1em;
+      justify-content: flex-end;
+    }
+    .sig-section-comments label{
+      width:180px;
+    }
+    .sig-section-comments textarea {
+      width:67%;
+    }
+    .grid-header {
+      align-items: flex-end;
+    }
+    .header-item {
+      width:100px;
+      text-align:center;
+    /*   border:1px solid transparent; */
+    }
+    .header-item:nth-child(1) {
+      width:180px;
+    }
+    .subtitle {
+      font-size: 0.7em;
+    }
+    .flex-item:before {
+      content: '';
+      padding-top:26%;
+    }
+    .flex-item {
+      display:flex;
+    /*   flex-basis:25%; */
+      width:100px;
+      border-bottom:1px solid #ccc;
+      justify-content: center;
+      align-items:center;
+    /*   text-align:left; */
+      font-size: 1em;
+      font-weight:normal;
+      color:#999;
+    }
+    .flex-item:nth-child(1) {
+      border:none;
+      font-size:1.15em;
+      color:#000;
+      width:180px;
+      justify-content: left;
+    }
+    /* HTML5 Boilerplate accessible hidden styles */
+
+    [type="radio"], [type="checkbox"] {
+      border: 0; 
+      clip: rect(0 0 0 0); 
+      height: 1px; margin: -1px; 
+      overflow: hidden; 
+      padding: 0; 
+      position: absolute; 
+      width: 1px;
+    }
+
+    /* the basic, unchecked style */
+    [type="radio"] + span:before,
+    [type="checkbox"] + span:before{
+      content: '';
+      display: inline-block;
+      width: 1.5em;
+      height: 1.5em;
+      vertical-align: -0.25em;
+      border-radius:.25em;
+      border: 0.125em solid #fff;
+      box-shadow: 0 0 0 0.15em #555;
+      transition: 0.5s ease all;
+    }
+    [type="checkbox"] + span:before {
+      margin-right: 0.75em;
+    }
+
+    /* the checked style using the :checked pseudo class */
+    [type="radio"]:checked + span:before,
+    [type="checkbox"]:checked + span:before{
+      background: green;
+      box-shadow: 0 0 0 0.25em #666;
+    }
+
+    /* never forget focus styling */
+    [type="radio"]:focus span:after {
+      content: '\0020\2190';
+      font-size: 1.5em;
+      line-height: 1;
+      vertical-align: -0.125em;
+    }
+/*
+    fieldset {
+      font-size: 1em;
+      border: 2px solid #000;
+      padding: 2em;
+      border-radius: 0.5em;
+      margin-bottom: 20px;
+    }
+
+    legend {
+      color: #fff;
+      background: #000;
+      padding: 0.25em 1em;
+      border-radius: 1em;
+    }
+    */
+  </style>
+  </head>
+  <body id="login">
+    <div class="container" id="root"></div>
+		<!--jquery.easy-pie-chart.css-->
+		<link href="Front_end/vendors/easypiechart/jquery.easy-pie-chart.css" rel="stylesheet" media="screen">
+		<!--style.css-->
+		<link href="Front_end/assets/styles.css" rel="stylesheet" media="screen">
+		<!--Front_end/assets/DT_bootstrap.css-->
+		<link href="Front_end/assets/DT_bootstrap.css" rel="stylesheet" media="screen">
+		<!--datapicker.css-->
+		<link href="Front_end/vendors/datepicker.css" rel="stylesheet" media="screen">
+		<!--uniform.default.min.css-->
+		<link href="Front_end/vendors/uniform.default.css" rel="stylesheet" media="screen">
+		<!--chosen.min.css-->
+		<link href="Front_end/vendors/chosen.min.css" rel="stylesheet" media="screen">
+  </body>
+</html>
