@@ -2533,3 +2533,5 @@
       return <span><img src={this.profile_img} className="square" style={{borderRadius: "50%", border: "1px solid rgba(255,0,0,1.00)"}} />{this.props.title}</span>
     }
   }
+
+export { Index }
