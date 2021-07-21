@@ -21,43 +21,43 @@ import listPlugin from '@fullcalendar/list';
 
 class Login extends React.Component {
 
-	constructor (props) {
-	  super(props);
-	  this.account = React.createRef();
-	  this.password = React.createRef();
-	}
+    constructor (props) {
+      super(props);
+      this.account = React.createRef();
+      this.password = React.createRef();
+    }
 
-	login () {
-	  firebase.auth().signInWithEmailAndPassword(this.account.current.value + "@hall19.com", this.password.current.value).catch(
-	  	  function(error){
-			  //var errorCode = error.code;
-			  var errorMessage = error.message;
-			  window.alert("Error : " + errorMessage);
-		  })
-	}
-	render (){
-	  return (
-		<form className="form-signin" style={{borderRadius:"14px"}}>
-		  <h2 style={{marginBottom: "22px"}} className="form-signin-heading">Please sign in</h2>
-		  <div className="control-group" id="account_group">
-			<div className="controls">
-			  <input style={{marginBottom: "8px"}}type="text" className="input-block-level" placeholder="Account" ref={this.account}/>
-			  <span style={{marginTop: "5px", display: "none"}} className="help-inline" id="account_warning">帳號不存在</span>
-			</div>
-		  </div>
-		  <div className="control-group" id="password_group">
-			<div className="controls">
-			  <input style={{marginBottom: "8px"}} type="password" className="input-block-level" placeholder="Password" ref={this.password}/>
-			  <span className="help-inline" style={{display: "none"}} id="password_warning">密碼錯誤</span>
-			</div>
-		  </div>
-		  <div style={{padding: "10px"}}>
-			<button style={{float: "center", marginRight: "30px"}} className="btn btn-large btn-primary" onClick={(e) => {e.preventDefault();this.login();}} type="submit">Sign in</button>
-			<button style={{float: "center", marginTop: "12px"}} className="btn" type="submit" onClick={() => this.props.change_page(Register)}>Sign up</button>
-		  </div>
-		</form>
-	  );
-	}
+    login () {
+      firebase.auth().signInWithEmailAndPassword(this.account.current.value + "@hall19.com", this.password.current.value).catch(
+	      function(error){
+		      //var errorCode = error.code;
+		      var errorMessage = error.message;
+		      window.alert("Error : " + errorMessage);
+	      })
+    }
+    render (){
+      return (
+	    <form className="form-signin" style={{borderRadius:"14px"}}>
+	      <h2 style={{marginBottom: "22px"}} className="form-signin-heading">Please sign in</h2>
+	      <div className="control-group" id="account_group">
+		    <div className="controls">
+		      <input style={{marginBottom: "0px"}} type="text" className="input-block-level" placeholder="Account" ref={this.account}/>
+		      <span style={{marginTop: "5px", display: "none"}} className="help-inline" id="account_warning">帳號不存在</span>
+		    </div>
+	      </div>
+	      <div className="control-group" id="password_group">
+		    <div className="controls">
+		      <input style={{marginBottom: "8px"}} type="password" className="input-block-level" placeholder="Password" ref={this.password}/>
+		      <span className="help-inline" style={{display: "none"}} id="password_warning">密碼錯誤</span>
+		    </div>
+	      </div>
+	      <div style={{padding: "10px"}}>
+		    <button style={{float: "center", marginRight: "30px"}} className="btn btn-large btn-primary" onClick={(e) => {e.preventDefault();this.login();}} type="submit">Sign in</button>
+		    <button style={{float: "center", marginTop: "12px"}} className="btn" type="submit" onClick={() => this.props.change_page(Register)}>Sign up</button>
+	      </div>
+	    </form>
+      );
+    }
 
 }
 
