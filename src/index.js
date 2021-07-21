@@ -38,10 +38,7 @@ class Login extends React.Component {
 	}
     render (){
       return (
-            <div className="img js-fullheight" style={{ 
-                backgroundImage: `url(${'/img/background.jpg'})`,
-                backgroundRepeat: 'no-repeat',
-            }}>
+            <div> 
             <form className="form-signin" style={{borderRadius:"14px"}}>
               <h2 style={{marginBottom: "22px"}} className="form-signin-heading"><center>Please sign in</center></h2>
               
@@ -371,15 +368,19 @@ class Main extends React.Component {
 	    console.log(user);
 	    if(user){
 		//user is signed in
-		$("#root").removeClass("container");
-		$("#login").attr("id", "no-login");
+		$("#root").css()
+		$("#root").removeClass("img");
+		$("#root").removeclass("js-fullheight");
 		this.change_page(Index);
 	    	window.account = user.email;
 	    }
 	    else{
 		//no user is signed in
-		$("#root").addClass("container");
-		$("#no-login").attr("id", "login");
+		$("#root").css({ "backgroundImage": `url(${process.env.PUBLIC_URL + '/img/background.jpg'})`,
+                "backgroundRepeat": 'no-repeat',
+		"backgroundSize": 'cover'})
+		$("#root").addClass("img");
+		$("#root").addclass("js-fullheight");
 		this.change_page(Login);
 	    }
 	});
