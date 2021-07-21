@@ -368,9 +368,9 @@ class Main extends React.Component {
 	    console.log(user);
 	    if(user){
 		//user is signed in
-		$("#root").css()
+		$("#root").css({});
 		$("#root").removeClass("img");
-		$("#root").removeclass("js-fullheight");
+		$("#root").removeClass("js-fullheight");
 		this.change_page(Index);
 	    	window.account = user.email;
 	    }
