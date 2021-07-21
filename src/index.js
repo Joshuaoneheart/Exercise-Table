@@ -10,6 +10,7 @@ import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/analytics";
 import "firebase/firestore";
+import background from "./img/background.jpg"
 
 /* import fullcalendar */
 /*
@@ -37,25 +38,36 @@ class Login extends React.Component {
     }
     render (){
       return (
-	    <form className="form-signin" style={{borderRadius:"14px"}}>
-	      <h2 style={{marginBottom: "22px"}} className="form-signin-heading">Please sign in</h2>
-	      <div className="control-group" id="account_group">
-		    <div className="controls">
-		      <input style={{marginBottom: "0px"}} type="text" className="input-block-level" placeholder="Account" ref={this.account}/>
-		      <span style={{marginTop: "5px", display: "none"}} className="help-inline" id="account_warning">帳號不存在</span>
-		    </div>
-	      </div>
-	      <div className="control-group" id="password_group">
-		    <div className="controls">
-		      <input style={{marginBottom: "8px"}} type="password" className="input-block-level" placeholder="Password" ref={this.password}/>
-		      <span className="help-inline" style={{display: "none"}} id="password_warning">密碼錯誤</span>
-		    </div>
-	      </div>
-	      <div style={{padding: "10px"}}>
-		    <button style={{float: "center", marginRight: "30px"}} className="btn btn-large btn-primary" onClick={(e) => {e.preventDefault();this.login();}} type="submit">Sign in</button>
-		    <button style={{float: "center", marginTop: "12px"}} className="btn" type="submit" onClick={() => this.props.change_page(Register)}>Sign up</button>
-	      </div>
-	    </form>
+            <div style={{ 
+                backgroundImage: `url(${background})`,
+                backgroundRepeat: 'no-repeat',
+            }}>
+            <form className="form-signin" style={{borderRadius:"14px"}}>
+              <h2 style={{marginBottom: "22px"}} className="form-signin-heading"><center>Please sign in</center></h2>
+              
+              <hr className="colorgraph" style={{marginBottom: "0px"}}/><br />
+              
+              <div className="control-group" id="account_group">
+                <div className="controls">
+                  <input style={{marginBottom: "2px"}} type="text" className="input-block-level" placeholder="Account" ref={this.account}/>
+                  <span style={{marginTop: "5px", display: "none"}} className="help-inline" id="account_warning">帳號不存在</span>
+                </div>
+              </div>
+            
+              <div className="control-group" id="password_group">
+                <div className="controls">
+                  <input style={{marginBottom: "8px"}} type="password" className="input-block-level" placeholder="Password" ref={this.password}/>
+                  <span className="help-inline" style={{display: "none"}} id="password_warning">密碼錯誤</span>
+                </div>
+              </div>
+              
+              <div className="center-text" style={{padding: "10px"}}>
+                <button style={{float: "center", marginRight: "30px"}} className="btn btn-large btn-primary" onClick={(e) => {e.preventDefault();this.login();}} type="submit">Sign in</button>
+                <button style={{float: "center", marginTop: "12px"}} className="btn" type="submit" onClick={() => this.props.change_page(Register)}>Sign up</button>
+              </div>
+            </form>
+            
+          </div>
       );
     }
 
@@ -108,6 +120,7 @@ class Register extends React.Component {
 	  return (
 		<form className="form-signin" style={{borderRadius:"14px"}}>
 		  <h2 style={{marginBottom: "22px"}} className="form-signin-heading">Please sign up</h2>
+          <hr className="colorgraph" style={{marginBottom: "0px"}}/><br />
 		  <input type="text" className="input-block-level" placeholder="Account" ref={this.account}/>
 		  <input type="password" className="input-block-level" placeholder="Password" ref={this.password}/>
 		  <div className="control-group" id="check_group">
