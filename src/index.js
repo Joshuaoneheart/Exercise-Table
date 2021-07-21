@@ -10,7 +10,7 @@ import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/analytics";
 import "firebase/firestore";
-import background from "./img/background.jpg"
+// import background from "%PUBLIC_URL/img/background.jpg"
 
 /* import fullcalendar */
 /*
@@ -38,8 +38,8 @@ class Login extends React.Component {
     }
     render (){
       return (
-            <div style={{ 
-                backgroundImage: `url(${background})`,
+            <div className="img js-fullheight" style={{ 
+                backgroundImage: `url(${'/img/background.jpg'})`,
                 backgroundRepeat: 'no-repeat',
             }}>
             <form className="form-signin" style={{borderRadius:"14px"}}>
