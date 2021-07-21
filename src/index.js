@@ -42,23 +42,34 @@ class Login extends React.Component {
 	render (){
 	  return (
 		<form className="form-signin" style={{borderRadius:"14px"}}>
-		  <h2 style={{marginBottom: "22px"}} className="form-signin-heading">Please sign in</h2>
-		  <div className="control-group" id="account_group">
-			<div className="controls">
-			  <input style={{marginBottom: "8px"}}type="text" className="input-block-level" placeholder="Account" ref={this.account}/>
-			  <span style={{marginTop: "5px", display: "none"}} className="help-inline" id="account_warning">帳號不存在</span>
-			</div>
-		  </div>
-		  <div className="control-group" id="password_group">
-			<div className="controls">
-			  <input style={{marginBottom: "8px"}} type="password" className="input-block-level" placeholder="Password" ref={this.password}/>
-			  <span className="help-inline" style={{display: "none"}} id="password_warning">密碼錯誤</span>
-			</div>
-		  </div>
-		  <div style={{padding: "10px"}}>
+		  
+          <h2 style={{marginBottom: "22px"}} className="form-signin-heading"> <center>Please sign in</center> </h2>
+          
+          <hr className="colorgraph" /><br />
+		 
+          <div className="text-center">
+              <div className="control-group" id="account_group">
+                <div className="controls">
+                  <input style={{marginBottom: "0px"}} type="text" className="form-control" placeholder="Account" ref={this.account}/>
+                  <span style={{marginTop: "0px", display: "none"}} className="help-inline" id="account_warning">帳號不存在</span>
+                </div>
+              </div>
+          </div>
+
+          <div className="text-center">
+            <div className="control-group" id="password_group">
+                <div className="controls">
+                    <input style={{marginBottom: "0px"}} type="password" className="form-control" placeholder="Password" ref={this.password}/>
+                    <span className="help-inline" style={{display: "none"}} id="password_warning">密碼錯誤</span>
+                </div>
+            </div>
+          </div>
+
+		  <div style={{padding: "0px"}} className="text-center">
 			<button style={{float: "center", marginRight: "30px"}} className="btn btn-large btn-primary" onClick={(e) => {e.preventDefault();this.login();}} type="submit">Sign in</button>
 			<button style={{float: "center", marginTop: "12px"}} className="btn" type="submit" onClick={() => this.props.change_page(Register)}>Sign up</button>
 		  </div>
+
 		</form>
 	  );
 	}
