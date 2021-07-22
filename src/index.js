@@ -124,22 +124,41 @@ class Register extends React.Component {
 
 	render () {
 	  return (
-		<form className="form-signin" style={{borderRadius:"14px"}}>
-		  <h2 style={{marginBottom: "22px"}} className="form-signin-heading">Please sign up</h2>
+       <div>
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+         <div className="container">
+          <div className="row justify-content-center">
+            <div className="col-md-6 text-center mb-5">
+		     <h2 style={{marginBottom: "22px"}} className="form-signin-heading">Please sign up</h2>
+            </div>
+          </div>
+
+       <div className="row justify-content-center">
+        <div className="col-md-6 col-lg-4">
+		 <form className="form-signin" >
           <hr className="colorgraph" style={{marginBottom: "0px"}}/><br />
-		  <input type="text" className="input-block-level" placeholder="Account" ref={this.account}/>
-		  <input type="password" className="input-block-level" placeholder="Password" ref={this.password}/>
-		  <div className="control-group" id="check_group">
-			<div className="controls">
-			  <input style={{marginBottom: "8px"}} type="password" className="input-block-level" onChange={() => this.onChange()} placeholder="Check Your Password" ref={this.check_password}/>
-			  <span className="help-inline" style={{display: "none"}} id="warning">與密碼不相符</span>
-			</div>
-		  </div>
-		  <div style={{padding: "10px"}}>
-			<button style={{float: "center", marginRight: "30px"}} id="sign_up_btn" className="btn btn-large btn-primary" onClick={(e) => {e.preventDefault();this.register();}} type="submit">Sign up</button>
+		  <div className="form-group">
+		   <input type="text" className="input-block-level" placeholder="Account" ref={this.account}/>
+		  </div> 
+		  <div className="form-group">
+		   <input type="password" className="input-block-level" placeholder="Password" ref={this.password}/>
+		  </div> 
+          <div className="control-group" id="check_group">
+			 <div className="controls">
+			   <input style={{marginBottom: "8px"}} type="password" className="input-block-level" onChange={() => this.onChange()} placeholder="Check Your Password" ref={this.check_password}/>
+			   <span className="help-inline" style={{display: "none"}} id="warning">與密碼不相符</span>
+			 </div>
+		   </div>
+		   <div className="form-group">
+		 	<button style={{float: "center", marginRight: "30px"}} id="sign_up_btn" className="btn btn-large btn-primary" onClick={(e) => {e.preventDefault();this.register();}} type="submit">Sign up</button>
 			<button style={{float: "center", marginTop: "12px"}} className="btn" onClick={() => this.props.change_page(Login)} type="submit" >Back to Sign in</button>
 		  </div>
 		</form>
+       </div>
+      </div>
+       </div>
+      </div>
 	  );
 	}
 
