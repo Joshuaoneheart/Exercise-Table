@@ -37,11 +37,11 @@ class Login extends React.Component {
 	}
     render (){
       return (
-          <div>
+           <div>
             <title>Login Page</title>
             <meta charSet="utf-8" />
             <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-            <section className="ftco-section">
+             <section className="ftco-section">
               <div className="container">
                 <div className="row justify-content-center">
                  <div className="col-md-6 text-center mb-5">
@@ -71,9 +71,9 @@ class Login extends React.Component {
               </div>
             </div>
           </div>
-          </div>
+         </div>
         </section>
-      </div>
+       </div>
       );
     }
 
