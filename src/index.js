@@ -188,182 +188,131 @@ $(function() {
 
 class Index extends React.Component {
 
-constructor (props) {
-    super(props);
-    this.frame_ref = React.createRef();
-}
+    constructor (props) {
+	super(props);
+	this.frame_ref = React.createRef();
+    }
 
-componentDidMount () {
-  var index = 0;
-  window.db.doc("data").collection("unfilled").get().then((snapshot) => {
-    window.week_list = [];
-    snapshot.forEach((doc) => {
-      window.week_list.push(doc.id);
-      index++;
-      if(index === snapshot.docs.length){
-	window.week_list.sort((a, b) => {
-	  var a_t = a.split("-").join("~").split("~");
-	  var b_t = b.split("-").join("~").split("~");
-	  a_t = a_t.map(Number);
-	  b_t = b_t.map(Number);
-	  if(a_t[0] >= 8) a_t[0] -= 12;
-	  if(b_t[0] >= 8) b_t[0] -= 12;
-	  return (a_t[0] === b_t[0])? ((a_t[1] < b_t[1])? 1 : -1) : ((a_t[0] < b_t[0])? 1 : -1);
-	});
-      }
-    });
-  });
-  window.db.doc("system").get().then((snapshot) => {window.sysVar = snapshot.data();
-   this.setState({isLoad: true});
-  }
-  );
-}
-
-toMainPage = () => {
-  this.frame_ref.current.main.current.setState({page: "Announcement"});
-}
-
-    logout(){
-	    firebase.auth().signOut().catch((error) => {
-		    // var errorCode = error.code;
-		    var errorMessage = error.message;
-		    window.alert("Error : " + errorMessage);
+    componentDidMount () {
+      var index = 0;
+      window.db.doc("data").collection("unfilled").get().then((snapshot) => {
+	window.week_list = [];
+	snapshot.forEach((doc) => {
+	  window.week_list.push(doc.id);
+	  index++;
+	  if(index === snapshot.docs.length){
+	    window.week_list.sort((a, b) => {
+	      var a_t = a.split("-").join("~").split("~");
+	      var b_t = b.split("-").join("~").split("~");
+	      a_t = a_t.map(Number);
+	      b_t = b_t.map(Number);
+	      if(a_t[0] >= 8) a_t[0] -= 12;
+	      if(b_t[0] >= 8) b_t[0] -= 12;
+	      return (a_t[0] === b_t[0])? ((a_t[1] < b_t[1])? 1 : -1) : ((a_t[0] < b_t[0])? 1 : -1);
 	    });
+	  }
+	});
+      });
+      window.db.doc("system").get().then((snapshot) => {window.sysVar = snapshot.data();
+       this.setState({isLoad: true});
+      }
+      );
     }
 
-render () {
-      /*
-  if(window.account != undefined){
-    this.name = window.account.name;
-    switch(window.account.privilege){
-      case 0:
-	this.frame = Admin_Frame;
-      break;
-      case 1:
-	this.frame = Frame;
-      break;
-      case 2:
-	this.frame = User_Frame;
-      break;
+    toMainPage = () => {
+      this.frame_ref.current.main.current.setState({page: "Announcement"});
     }
-  }
-  else this.frame = Loading;
-	    */
-  return (
-    <div>
-      <div className="navbar navbar-fixed-top">
-	<div className="navbar-inner">
-	      <div className="container-fluid">
-		  <a href="/#" className="btn btn-navbar" data-bs-toggle="collapse" data-bs-target=".nav-collapse"> <span className="icon-bar"></span>
-		    <span className="icon-bar"></span>
-		    <span className="icon-bar"></span>
-		  </a>
-		  <a className="brand" href="/#" onClick={this.toMainPage}>Exercise Table</a>
-		  <div className="nav-collapse collapse">
-		      <ul className="nav pull-right">
-			  <li className="dropdown">
-			      <a href="/#" role="button" className="dropdown-toggle" data-bs-toggle="dropdown"> <i className="icon-user"></i> {this.name} <i className="caret"></i>
 
-			      </a>
-			      <ul className="dropdown-menu">
-				  <li>
-				      <a tabIndex="-1" href="/#">Profile</a>
-				  </li>
-				  <li className="divider"></li>
-				  <li>
-				      <a tabIndex="-1" href="/#" onClick={this.logout}>Logout</a>
-				  </li>
-			      </ul>
-			  </li>
-		      </ul>
-		      <ul className="nav">
-			  <li className="active">
-			      <a href="/#">Dashboard</a>
-			  </li>
-			  <li className="dropdown">
-			      <a href="/#" data-bs-toggle="dropdown" className="dropdown-toggle">Settings <b className="caret"></b>
+	logout(){
+		firebase.auth().signOut().catch((error) => {
+			// var errorCode = error.code;
+			var errorMessage = error.message;
+			window.alert("Error : " + errorMessage);
+		});
+	}
 
-			      </a>
-			      <ul className="dropdown-menu" id="menu1">
-				  <li>
-				      <a href="/#">Tools <i className="icon-arrow-right"></i>
-
-				      </a>
-				      <ul className="dropdown-menu sub-menu">
-					  <li>
-					      <a href="/#">Reports</a>
-					  </li>
-					  <li>
-					      <a href="/#">Logs</a>
-					  </li>
-					  <li>
-					      <a href="/#">Errors</a>
-					  </li>
-				      </ul>
-				  </li>
-				  <li>
-				      <a href="/#">SEO Settings</a>
-				  </li>
-				  <li>
-				      <a href="/#">Other Link</a>
-				  </li>
-				  <li className="divider"></li>
-				  <li>
-				      <a href="/#">Other Link</a>
-				  </li>
-				  <li>
-				      <a href="/#">Other Link</a>
-				  </li>
-			      </ul>
-			  </li>
-			  <li className="dropdown">
-			      <a href="/#" role="button" className="dropdown-toggle" data-bs-toggle="dropdown">Content <i className="caret"></i>
-
-			      </a>
-			      <ul className="dropdown-menu">
-				  <li>
-				      <a tabIndex="-1" href="/#">Blog</a>
-				  </li>
-				  <li>
-				      <a tabIndex="-1" href="/#">News</a>
-				  </li>
-				  <li>
-				      <a tabIndex="-1" href="/#">Custom Pages</a>
-				  </li>
-				  <li>
-				      <a tabIndex="-1" href="/#">Calendar</a>
-				  </li>
-				  <li className="divider"></li>
-				  <li>
-				      <a tabIndex="-1" href="/#">FAQ</a>
-				  </li>
-			      </ul>
-			  </li>
-			  <li className="dropdown">
-			      <a href="/#" role="button" className="dropdown-toggle" data-bs-toggle="dropdown">Users <i className="caret"></i>
-
-			      </a>
-			      <ul className="dropdown-menu">
-				  <li>
-				      <a tabIndex="-1" href="/#">User List</a>
-				  </li>
-				  <li>
-				      <a tabIndex="-1" href="/#">Search</a>
-				  </li>
-				  <li>
-				      <a tabIndex="-1" href="/#">Permissions</a>
-				  </li>
-			      </ul>
-			  </li>
-		      </ul>
-		  </div>
-	      </div>
-	  </div>
-      </div>
-	      {/*{React.createElement(this.frame, {ref: this.frame_ref})}}*/}
-    </div>
-  );
-}
+    render () {
+	  /*
+      if(window.account != undefined){
+	this.name = window.account.name;
+	switch(window.account.privilege){
+	  case 0:
+	    this.frame = Admin_Frame;
+	  break;
+	  case 1:
+	    this.frame = Frame;
+	  break;
+	  case 2:
+	    this.frame = User_Frame;
+	  break;
+	}
+      }
+      else this.frame = Loading;
+		*/
+      return (
+<div>
+	<div className="navbar fixed-top navbar-dark bg-dark">
+		<a className="navbar-brand" href="/#" onClick={this.toMainPage}>Exercise Table</a>
+		<a href="/#" className="btn navbar-toggler" data-bs-toggle="collapse" data-bs-target=".nav-collapse"> 
+			<span className="icon-bar"></span>
+			<span className="icon-bar"></span>
+			<span className="icon-bar"></span>
+		</a>
+		<div className="nav-collapse collapse">
+			<ul className="navbar-nav pull-right">
+				<li className="dropdown">
+					<a href="/#" role="button" className="dropdown-toggle" data-bs-toggle="dropdown"> <i className="bi bi-person-circle"></i> {this.name} <i className="caret"></i></a>
+					<ul className="dropdown-menu">
+						<li><a tabIndex="-1" href="/#">Profile</a></li>
+						<li className="divider"></li>
+						<li><a tabIndex="-1" href="/#" onClick={this.logout}>Logout</a></li>
+					</ul>
+				</li>
+			</ul>
+			<ul className="navbar-nav">
+				<li className="active"><a href="/#">Dashboard</a></li>
+				<li className="dropdown">
+		  			<a href="/#" data-bs-toggle="dropdown" className="dropdown-toggle">Settings <b className="caret"></b></a>
+					<ul className="dropdown-menu" id="menu1">
+						<li><a href="/#">Tools <i className="icon-arrow-right"></i></a>
+							<ul className="dropdown-menu sub-menu">
+								<li><a href="/#">Reports</a></li>
+								<li><a href="/#">Logs</a></li>
+		  						<li><a href="/#">Errors</a></li>
+							</ul>
+						</li>
+						<li><a href="/#">SEO Settings</a></li>
+						<li><a href="/#">Other Link</a></li>
+						<li className="divider"></li>
+						<li><a href="/#">Other Link</a></li>
+						<li><a href="/#">Other Link</a></li>
+					</ul>
+				</li>
+				<li className="dropdown">
+					<a href="/#" role="button" className="dropdown-toggle" data-bs-toggle="dropdown">Content <i className="caret"></i></a>
+					<ul className="dropdown-menu">
+						<li><a tabIndex="-1" href="/#">Blog</a></li>
+						<li><a tabIndex="-1" href="/#">News</a></li>
+						<li><a tabIndex="-1" href="/#">Custom Pages</a></li>
+						<li><a tabIndex="-1" href="/#">Calendar</a></li>
+						<li className="divider"></li>
+						<li><a tabIndex="-1" href="/#">FAQ</a></li>
+					</ul>
+				</li>
+				<li className="dropdown"><a href="/#" role="button" className="dropdown-toggle" data-bs-toggle="dropdown">Users <i className="caret"></i></a>
+					<ul className="dropdown-menu">
+						<li><a tabIndex="-1" href="/#">User List</a></li>
+						<li><a tabIndex="-1" href="/#">Search</a></li>
+						<li><a tabIndex="-1" href="/#">Permissions</a></li>
+					</ul>
+				</li>
+			</ul>
+		</div>
+	</div>
+	{/*{React.createElement(this.frame, {ref: this.frame_ref})}}*/}
+</div>
+      );
+    }
 }
 
 class Main extends React.Component {
@@ -377,7 +326,7 @@ class Main extends React.Component {
 	    console.log(user);
 	    if(user){
 		//user is signed in
-		$("#root").css({});
+		$("#root").removeAttr("style");
 		$("#root").removeClass("img");
 		$("#root").removeClass("js-fullheight");
 		this.change_page(Index);
