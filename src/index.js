@@ -380,7 +380,7 @@ class Main extends React.Component {
                 "backgroundRepeat": 'no-repeat',
 		"backgroundSize": 'cover'})
 		$("#root").addClass("img");
-		$("#root").addclass("js-fullheight");
+		$("#root").addClass("js-fullheight");
 		this.change_page(Login);
 	    }
 	});
