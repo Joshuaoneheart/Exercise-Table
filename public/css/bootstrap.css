@@ -7,6 +7,60 @@
  *
  * Designed and built with all the love in the world by @mdo and @fat.
  */
+.media {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: start;
+  -ms-flex-align: start;
+  align-items: flex-start; }
+
+.media-body {
+  -webkit-box-flex: 1;
+  -ms-flex: 1;
+  flex: 1; }
+
+.login-wrap {
+  position: relative;
+  color: rgba(255, 255, 255, 0.9); }
+  .login-wrap h3 {
+    font-weight: 300;
+    color: #fff; }
+  .login-wrap .social {
+    width: 100%; }
+    .login-wrap .social a {
+      width: 100%;
+      display: block;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      color: #000;
+      background: #fff; }
+      .login-wrap .social a:hover {
+        background: #000;
+        color: #fff;
+        border-color: #000; }
+.login-wrap{
+	position: relative;
+	color: rgba(255,255,255,.9);
+	h3{
+		font-weight: 300;
+		color: $white;
+	}
+	.social{
+		width: 100%;
+		a{
+			width: 100%;
+			display: block;
+			border: 1px solid rgba(255,255,255,.4);
+			color: $black;
+			background: $white;
+			&:hover{
+				background: $black;
+				color: $white;
+				border-color: $black;
+			}
+		}
+	}
+}
 
 .colorgraph {
   height: 7px;
@@ -238,7 +292,7 @@ body {
   font-size: 14px;
   line-height: 20px;
   color: #333333;
-  background-color: #ffffff;
+  background-color: transparent;
 }
 
 a {

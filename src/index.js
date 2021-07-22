@@ -10,7 +10,6 @@ import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/analytics";
 import "firebase/firestore";
-// import background from "%PUBLIC_URL/img/background.jpg"
 
 /* import fullcalendar */
 /*
@@ -38,32 +37,46 @@ class Login extends React.Component {
 	}
     render (){
       return (
-            <div> 
-            <form className="form-signin" style={{borderRadius:"14px"}}>
-              <h2 style={{marginBottom: "22px"}} className="form-signin-heading"><center>Please sign in</center></h2>
-              
-              <hr className="colorgraph" style={{marginBottom: "0px"}}/><br />
-              
-              <div className="control-group" id="account_group">
-                <div className="controls">
-                  <input style={{marginBottom: "2px"}} type="text" className="input-block-level" placeholder="Account" ref={this.account}/>
-                  <span style={{marginTop: "5px", display: "none"}} className="help-inline" id="account_warning">帳號不存在</span>
+              <div className="container">
+               <div className="login-wrap-p0">
+               
+                <div className="row justify-content-center"> 
+                  <div className="col-md-6 text-center mb-5">
+                        <h2 style={{marginBottom: "22px"}} className="form-signin-heading"><center>Please sign in</center></h2>
+                  </div>
                 </div>
-              </div>
-            
-              <div className="control-group" id="password_group">
-                <div className="controls">
-                  <input style={{marginBottom: "8px"}} type="password" className="input-block-level" placeholder="Password" ref={this.password}/>
-                  <span className="help-inline" style={{display: "none"}} id="password_warning">密碼錯誤</span>
+                <div className="row justify-content-center"> 
+                  <div className="col-md-6 col-lg-4">
+                    <hr className="colorgraph" style={{marginBottom: "10px"}}/><br />
+                  </div>
                 </div>
+                
+             <div className="row justify-content-center"> 
+              <div className="col-md-6 col-lg-4">      
+                <form className="form-signin" style={{borderRadius:"5px", position:"relative"}}>
+                    <div className="form-group text-center" id="account_group">
+                     <div className="controls">
+                      <input style={{marginBottom: "2px"}} type="text" className="input-block-level" placeholder="Account" ref={this.account}/>
+                      <span style={{marginTop: "5px", display: "none"}} className="help-inline" id="account_warning">帳號不存在</span>
+                    </div>
+                  </div>
+                
+                  <div className="form-group text-center" id="password_group">
+                    <div className="controls">
+                      <input style={{marginBottom: "8px"}} type="password" className="input-block-level" placeholder="Password" ref={this.password}/>
+
+                      <span className="help-inline" style={{display: "none"}} id="password_warning">密碼錯誤</span>
+                    </div>
+                  </div>
+                  
+                    <button style={{float: "center", marginRight: "30px"}} className="btn btn-large btn-primary" onClick={(e) => {e.preventDefault();this.login();}} type="submit">Sign in</button>
+                    <button style={{float: "center", marginTop: "12px"}} className="btn" type="submit" onClick={() => this.props.change_page(Register)}>Sign up</button>
+
+                </form>
               </div>
-              
-              <div className="center-text" style={{padding: "10px"}}>
-                <button style={{float: "center", marginRight: "30px"}} className="btn btn-large btn-primary" onClick={(e) => {e.preventDefault();this.login();}} type="submit">Sign in</button>
-                <button style={{float: "center", marginTop: "12px"}} className="btn" type="submit" onClick={() => this.props.change_page(Register)}>Sign up</button>
-              </div>
-            </form>
-            
+            </div>
+          
+            </div>
           </div>
       );
     }
