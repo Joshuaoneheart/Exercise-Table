@@ -37,47 +37,43 @@ class Login extends React.Component {
 	}
     render (){
       return (
+          <div>
+            <title>Login Page</title>
+            <meta charSet="utf-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+            <section className="ftco-section">
               <div className="container">
-               <div className="login-wrap-p0">
-               
-                <div className="row justify-content-center"> 
-                  <div className="col-md-6 text-center mb-5">
-                        <h2 style={{marginBottom: "22px"}} className="form-signin-heading"><center>Please sign in</center></h2>
-                  </div>
-                </div>
-                <div className="row justify-content-center"> 
-                  <div className="col-md-6 col-lg-4">
-                    <hr className="colorgraph" style={{marginBottom: "10px"}}/><br />
-                  </div>
-                </div>
-                
-             <div className="row justify-content-center"> 
-              <div className="col-md-6 col-lg-4">      
-                <form className="form-signin" style={{borderRadius:"5px", position:"relative"}}>
-                    <div className="form-group text-center" id="account_group">
-                     <div className="controls">
-                      <input style={{marginBottom: "2px"}} type="text" className="input-block-level" placeholder="Account" ref={this.account}/>
-                      <span style={{marginTop: "5px", display: "none"}} className="help-inline" id="account_warning">帳號不存在</span>
-                    </div>
-                  </div>
-                
-                  <div className="form-group text-center" id="password_group">
-                    <div className="controls">
-                      <input style={{marginBottom: "8px"}} type="password" className="input-block-level" placeholder="Password" ref={this.password}/>
+                <div className="row justify-content-center">
+                 <div className="col-md-6 text-center mb-5">
+                  <h2 className="heading-section">Login Page</h2>
+                 </div>
+              </div>
+               <div className="row justify-content-center">
+                <div className="col-md-6 col-lg-4">
+                 <div className="login-wrap p-0">
+                    <h3 className="mb-4 text-center">Please Sign in</h3>
+                    <form action="#" className="signin-form">
+                        <div className="form-group">
+                         <input style={{marginBottom: "2px"}} type="text" className="input-block-level" placeholder="Account" ref={this.account}/>
+                         <span style={{marginTop: "5px", display: "none"}} className="help-inline" id="account_warning">帳號不存在</span>
+                       </div>
+                        <div className="form-group">
+                         <input style={{marginBottom: "8px"}} type="password" className="input-block-level" placeholder="Password" ref={this.password}/>
 
-                      <span className="help-inline" style={{display: "none"}} id="password_warning">密碼錯誤</span>
-                    </div>
-                  </div>
+                         <span className="help-inline" style={{display: "none"}} id="password_warning">密碼錯誤</span>
+                       </div>
                   
-                    <button style={{float: "center", marginRight: "30px"}} className="btn btn-large btn-primary" onClick={(e) => {e.preventDefault();this.login();}} type="submit">Sign in</button>
-                    <button style={{float: "center", marginTop: "12px"}} className="btn" type="submit" onClick={() => this.props.change_page(Register)}>Sign up</button>
-
+                    <div className="form-group">
+                        <button style={{float: "center", marginRight: "30px"}} className="btn btn-large btn-primary" onClick={(e) => {e.preventDefault();this.login();}} type="submit">Sign in</button>
+                        <button style={{float: "center", marginTop: "12px"}} className="btn" type="submit" onClick={() => this.props.change_page(Register)}>Sign up</button>
+                    </div>
                 </form>
               </div>
             </div>
-          
-            </div>
           </div>
+          </div>
+        </section>
+      </div>
       );
     }
 
