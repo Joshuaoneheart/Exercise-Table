@@ -272,7 +272,7 @@ class Index extends React.Component {
 <div>
 	<div className="navbar fixed-top navbar-dark bg-dark">
 		<a className="navbar-brand" href="/#" onClick={this.toMainPage}>Exercise Table</a>
-		<a href="/#" className="btn navbar-toggler" data-bs-toggle="collapse" data-bs-target=".nav-collapse"> 
+		<a href="/#" className="btn navbar-toggler" data-toggle="collapse" data-target=".nav-collapse"> 
 			<span className="icon-bar"></span>
 			<span className="icon-bar"></span>
 			<span className="icon-bar"></span>
@@ -280,7 +280,7 @@ class Index extends React.Component {
 		<div className="nav-collapse collapse">
 			<ul className="navbar-nav pull-right">
 				<li className="dropdown">
-					<a href="/#" role="button" className="dropdown-toggle" data-bs-toggle="dropdown"> <i className="bi bi-person-circle"></i> {this.name} <i className="caret"></i></a>
+					<a href="/#" role="button" className="dropdown-toggle" data-toggle="dropdown"> <i className="bi bi-person-circle"></i> {this.name} <i className="caret"></i></a>
 					<ul className="dropdown-menu">
 						<li><a tabIndex="-1" href="/#">Profile</a></li>
 						<li className="divider"></li>
@@ -291,7 +291,7 @@ class Index extends React.Component {
 			<ul className="navbar-nav">
 				<li className="active"><a href="/#">Dashboard</a></li>
 				<li className="dropdown">
-		  			<a href="/#" data-bs-toggle="dropdown" className="dropdown-toggle">Settings <b className="caret"></b></a>
+		  			<a href="/#" data-toggle="dropdown" className="dropdown-toggle">Settings <b className="caret"></b></a>
 					<ul className="dropdown-menu" id="menu1">
 						<li><a href="/#">Tools <i className="icon-arrow-right"></i></a>
 							<ul className="dropdown-menu sub-menu">
@@ -308,7 +308,7 @@ class Index extends React.Component {
 					</ul>
 				</li>
 				<li className="dropdown">
-					<a href="/#" role="button" className="dropdown-toggle" data-bs-toggle="dropdown">Content <i className="caret"></i></a>
+					<a href="/#" role="button" className="dropdown-toggle" data-toggle="dropdown">Content <i className="caret"></i></a>
 					<ul className="dropdown-menu">
 						<li><a tabIndex="-1" href="/#">Blog</a></li>
 						<li><a tabIndex="-1" href="/#">News</a></li>
@@ -318,7 +318,7 @@ class Index extends React.Component {
 						<li><a tabIndex="-1" href="/#">FAQ</a></li>
 					</ul>
 				</li>
-				<li className="dropdown"><a href="/#" role="button" className="dropdown-toggle" data-bs-toggle="dropdown">Users <i className="caret"></i></a>
+				<li className="dropdown"><a href="/#" role="button" className="dropdown-toggle" data-toggle="dropdown">Users <i className="caret"></i></a>
 					<ul className="dropdown-menu">
 						<li><a tabIndex="-1" href="/#">User List</a></li>
 						<li><a tabIndex="-1" href="/#">Search</a></li>
