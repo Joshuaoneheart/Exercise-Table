@@ -269,64 +269,86 @@ class Index extends React.Component {
       else this.frame = Loading;
 		*/
       return (
-<div>
-	<div className="navbar fixed-top navbar-dark bg-dark">
-		<a className="navbar-brand" href="/#" onClick={this.toMainPage}>Exercise Table</a>
-		<a href="/#" className="btn navbar-toggler" data-toggle="collapse" data-target=".nav-collapse"> 
-			<span className="icon-bar"></span>
-			<span className="icon-bar"></span>
-			<span className="icon-bar"></span>
-		</a>
-		<div className="nav-collapse collapse">
-			<ul className="navbar-nav pull-right">
-				<li className="dropdown">
-					<a href="/#" role="button" className="dropdown-toggle" data-toggle="dropdown"> <i className="bi bi-person-circle"></i> {this.name} <i className="caret"></i></a>
-					<ul className="dropdown-menu">
-						<li><a tabIndex="-1" href="/#">Profile</a></li>
-						<li className="divider"></li>
-						<li><a tabIndex="-1" href="/#" onClick={this.logout}>Logout</a></li>
-					</ul>
+<div className="wrapper">
+	<div className="sidebar">
+		<div className="logo">
+			<a href="/#" className="simply-text logo-normal">Exercising Table</a>
+		</div>
+		<div className="sidebar-wrapper">
+			<ul class="nav">
+				<li class="nav-item active  ">
+					<a class="nav-link" href="/#">
+						<i class="material-icons">dashboard</i>
+						<p>Dashboard</p>
+					</a>
 				</li>
 			</ul>
-			<ul className="navbar-nav">
-				<li className="active"><a href="/#">Dashboard</a></li>
-				<li className="dropdown">
-		  			<a href="/#" data-toggle="dropdown" className="dropdown-toggle">Settings <b className="caret"></b></a>
-					<ul className="dropdown-menu" id="menu1">
-						<li><a href="/#">Tools <i className="icon-arrow-right"></i></a>
-							<ul className="dropdown-menu sub-menu">
-								<li><a href="/#">Reports</a></li>
-								<li><a href="/#">Logs</a></li>
-		  						<li><a href="/#">Errors</a></li>
+		</div>		  
+	</div>
+	<div className="main-panel">
+		<nav className="navbar navbar-expand-lg fixed-top navbar-dark" id="topNavbar">
+			<div className="container-fiuld">
+				<div className="navbar-wrapper">
+					<a className="navbar-brand" href="/#">Exercising Table</a>
+				</div>
+				<a href="/#" className="navbar-toggler" data-toggle="collapse" data-target="#topNavbar"> 
+					<span className="sr-only">Toggle Navigation</span>
+					<span className="navbar-toggler-icon icon-bar"></span>
+					<span className="navbar-toggler-icon icon-bar"></span>
+					<span className="navbar-toggler-icon icon-bar"></span>
+				</a>
+				<div className="collapse nav-collapse justify-content-end">
+					<ul className="navbar-nav">
+						<li className="nav-item dropdown">
+							<a href="/#" role="button" className="dropdown-toggle nav-link" data-toggle="dropdown"> <i className="material-icons">person</i> {this.name} </a>
+							<ul className="dropdown-menu">
+								<li><a tabIndex="-1" href="/#">Profile</a></li>
+								<li className="divider"></li>
+								<li><a tabIndex="-1" href="/#" onClick={this.logout}>Logout</a></li>
 							</ul>
 						</li>
-						<li><a href="/#">SEO Settings</a></li>
-						<li><a href="/#">Other Link</a></li>
-						<li className="divider"></li>
-						<li><a href="/#">Other Link</a></li>
-						<li><a href="/#">Other Link</a></li>
 					</ul>
-				</li>
-				<li className="dropdown">
-					<a href="/#" role="button" className="dropdown-toggle" data-toggle="dropdown">Content <i className="caret"></i></a>
-					<ul className="dropdown-menu">
-						<li><a tabIndex="-1" href="/#">Blog</a></li>
-						<li><a tabIndex="-1" href="/#">News</a></li>
-						<li><a tabIndex="-1" href="/#">Custom Pages</a></li>
-						<li><a tabIndex="-1" href="/#">Calendar</a></li>
-						<li className="divider"></li>
-						<li><a tabIndex="-1" href="/#">FAQ</a></li>
+					<ul className="navbar-nav">
+						<li className="nav-item active"><a href="/#">Dashboard</a></li>
+						<li className="nav-item dropdown">
+							<a href="/#" data-toggle="dropdown" className="nav-link dropdown-toggle">Settings <b className="caret"></b></a>
+							<ul className="dropdown-menu" id="menu1">
+								<li><a href="/#">Tools <i className="icon-arrow-right"></i></a>
+									<ul className="dropdown-menu sub-menu">
+										<li><a href="/#">Reports</a></li>
+										<li><a href="/#">Logs</a></li>
+										<li><a href="/#">Errors</a></li>
+									</ul>
+								</li>
+								<li><a href="/#">SEO Settings</a></li>
+								<li><a href="/#">Other Link</a></li>
+								<li className="divider"></li>
+								<li><a href="/#">Other Link</a></li>
+								<li><a href="/#">Other Link</a></li>
+							</ul>
+						</li>
+						<li className="nav-item dropdown">
+							<a href="/#" role="button" className="dropdown-toggle" data-toggle="dropdown">Content </a>
+							<ul className="dropdown-menu">
+								<li><a tabIndex="-1" href="/#">Blog</a></li>
+								<li><a tabIndex="-1" href="/#">News</a></li>
+								<li><a tabIndex="-1" href="/#">Custom Pages</a></li>
+								<li><a tabIndex="-1" href="/#">Calendar</a></li>
+								<li className="divider"></li>
+								<li><a tabIndex="-1" href="/#">FAQ</a></li>
+							</ul>
+						</li>
+						<li className="nav-item dropdown"><a href="/#" role="button" className="dropdown-toggle" data-toggle="dropdown">Users</a>
+							<ul className="dropdown-menu">
+								<li><a tabIndex="-1" href="/#">User List</a></li>
+								<li><a tabIndex="-1" href="/#">Search</a></li>
+								<li><a tabIndex="-1" href="/#">Permissions</a></li>
+							</ul>
+						</li>
 					</ul>
-				</li>
-				<li className="dropdown"><a href="/#" role="button" className="dropdown-toggle" data-toggle="dropdown">Users <i className="caret"></i></a>
-					<ul className="dropdown-menu">
-						<li><a tabIndex="-1" href="/#">User List</a></li>
-						<li><a tabIndex="-1" href="/#">Search</a></li>
-						<li><a tabIndex="-1" href="/#">Permissions</a></li>
-					</ul>
-				</li>
-			</ul>
-		</div>
+				</div>
+		  	</div>
+		</nav>
 	</div>
 	{/*{React.createElement(this.frame, {ref: this.frame_ref})}}*/}
 </div>
