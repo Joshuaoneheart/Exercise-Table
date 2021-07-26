@@ -286,7 +286,7 @@ class Index extends React.Component {
 		</div>		  
 	</div>
 	<div className="main-panel">
-		<nav className="navbar navbar-expand-lg fixed-top navbar-dark" id="topNavbar">
+		<nav id="topNavbar" className="navbar navbar-expand-lg fixed-top navbar-absolute navbar-dark">
 			<div className="container-fiuld">
 				<div className="navbar-wrapper">
 					<a className="navbar-brand" href="/#">Exercising Table</a>
@@ -305,44 +305,6 @@ class Index extends React.Component {
 								<li><a tabIndex="-1" href="/#">Profile</a></li>
 								<li className="divider"></li>
 								<li><a tabIndex="-1" href="/#" onClick={this.logout}>Logout</a></li>
-							</ul>
-						</li>
-					</ul>
-					<ul className="navbar-nav">
-						<li className="nav-item active"><a href="/#">Dashboard</a></li>
-						<li className="nav-item dropdown">
-							<a href="/#" data-toggle="dropdown" className="nav-link dropdown-toggle">Settings <b className="caret"></b></a>
-							<ul className="dropdown-menu" id="menu1">
-								<li><a href="/#">Tools <i className="icon-arrow-right"></i></a>
-									<ul className="dropdown-menu sub-menu">
-										<li><a href="/#">Reports</a></li>
-										<li><a href="/#">Logs</a></li>
-										<li><a href="/#">Errors</a></li>
-									</ul>
-								</li>
-								<li><a href="/#">SEO Settings</a></li>
-								<li><a href="/#">Other Link</a></li>
-								<li className="divider"></li>
-								<li><a href="/#">Other Link</a></li>
-								<li><a href="/#">Other Link</a></li>
-							</ul>
-						</li>
-						<li className="nav-item dropdown">
-							<a href="/#" role="button" className="dropdown-toggle" data-toggle="dropdown">Content </a>
-							<ul className="dropdown-menu">
-								<li><a tabIndex="-1" href="/#">Blog</a></li>
-								<li><a tabIndex="-1" href="/#">News</a></li>
-								<li><a tabIndex="-1" href="/#">Custom Pages</a></li>
-								<li><a tabIndex="-1" href="/#">Calendar</a></li>
-								<li className="divider"></li>
-								<li><a tabIndex="-1" href="/#">FAQ</a></li>
-							</ul>
-						</li>
-						<li className="nav-item dropdown"><a href="/#" role="button" className="dropdown-toggle" data-toggle="dropdown">Users</a>
-							<ul className="dropdown-menu">
-								<li><a tabIndex="-1" href="/#">User List</a></li>
-								<li><a tabIndex="-1" href="/#">Search</a></li>
-								<li><a tabIndex="-1" href="/#">Permissions</a></li>
 							</ul>
 						</li>
 					</ul>
@@ -405,7 +367,7 @@ var firebaseConfig = {
     appId: "1:820908125256:web:dbd81b7b5fcadf7c743c7d",
     measurementId: "G-TJ2TJXC3N7"
 };
-ReactDOM.render(<Loading pattern="Pulse" />, document.getElementById('root'));
+//ReactDOM.render(<Loading pattern="Pulse" />, document.getElementById('root'));
 // Initialize Firebase
 if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
@@ -416,4 +378,4 @@ firebase.analytics();
 window.semester = "109上";
 window.db = firebase.firestore().collection(window.semester);
 window.Announcement_db = firebase.firestore().collection("公告");
-ReactDOM.render(<Main />, document.getElementById('root'));
+//ReactDOM.render(<Main />, document.getElementById('root'));
