@@ -20,13 +20,13 @@ const _nav =  [
     _tag: 'CSidebarNavItem',
     name: '個人',
     to: '/theme/colors',
-    icon: 'cil-drop',
+    icon: 'cil-user',
   },
   {
     _tag: 'CSidebarNavItem',
     name: '活力組',
     to: '/theme/typography',
-    icon: 'cil-pencil',
+    icon: 'cil-bar-chart',
   },
   {
     _tag: 'CSidebarNavTitle',
@@ -36,25 +36,25 @@ const _nav =  [
     _tag: 'CSidebarNavItem',
     name: '住戶管理',
     to: '/charts',
-    icon: 'cil-chart-pie'
+    icon: 'cil-house'
   },
   {
     _tag: 'CSidebarNavItem',
     name: '活力組管理',
     to: '/charts',
-    icon: 'cil-chart-pie'
+    icon: 'cil-group'
   },
   {
     _tag: 'CSidebarNavItem',
     name: '修改表單',
     to: '/charts',
-    icon: 'cil-chart-pie'
+    icon: 'cil-pencil'
   },
   {
     _tag: 'CSidebarNavItem',
     name: '表單預覽',
     to: '/charts',
-    icon: 'cil-chart-pie'
+    icon: 'cil-spreadsheet'
   },
   {
     _tag: 'CSidebarNavDivider'

@@ -48,7 +48,6 @@ class App extends Component {
 				  <Route path="/" name="Home" render={props => 
 					  <FirebaseAuthConsumer>
 					  	{({ isSignedIn, user, providerId }) => {
-							console.log(isSignedIn, user, providerId)
 							if(isSignedIn && user.email === "admin@hall19.com") return <TheLayout firebase={firebase}/>;
 							else return <Login firebase={firebase} />;
 						}}
