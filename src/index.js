@@ -18,10 +18,6 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import listPlugin from '@fullcalendar/list';
 */
-/* import stylesheets */
-import './css/bootstrap.min.css'
-import './css/bootstrap_supplement.css'
-import './css/bootstrap-responsive.min.css'
 
 class Login extends React.Component {
 
