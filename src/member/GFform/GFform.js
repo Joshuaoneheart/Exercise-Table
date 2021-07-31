@@ -18,11 +18,11 @@ import {
   CModalTitle,
 } from "@coreui/react";
 import Select from "react-select";
-import { loading } from "src/Components";
-import { AccountContext } from "src/hooks/context";
-import { GetWeeklyBase } from "src/utils/date";
-import { AddGF } from "src/db/GF";
-import { firebase } from "src/db/firebase";
+import { loading } from "Components";
+import { AccountContext } from "hooks/context";
+import { GetWeeklyBase } from "utils/date";
+import { AddGF } from "db/GF";
+import { firebase } from "db/firebase";
 import {
   FirestoreDocument,
   FirestoreCollection,

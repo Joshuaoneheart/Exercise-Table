@@ -14,9 +14,9 @@ import {
 import CIcon from "@coreui/icons-react";
 
 // routes config
-import routes from "../routes/routes";
-import Brand from "src/Components/brand";
-import { AccountContext } from "src/hooks/context";
+import routes from "routes/routes";
+import { Brand } from "Components";
+import { AccountContext } from "hooks/context";
 
 import {
   TheHeaderDropdown,

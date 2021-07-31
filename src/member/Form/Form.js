@@ -20,9 +20,9 @@ import {
   CCardHeader,
   CButton,
 } from "@coreui/react";
-import { loading } from "src/Components";
-import { AccountContext } from "src/hooks/context";
-import { GetWeeklyBase } from "src/utils/date";
+import { loading } from "Components";
+import { AccountContext } from "hooks/context";
+import { GetWeeklyBase } from "utils/date";
 import {
   FirestoreDocument,
   FirestoreCollection,

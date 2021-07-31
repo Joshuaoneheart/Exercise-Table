@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { CCard, CCardBody, CCardHeader, CCol, CRow } from "@coreui/react";
-import { AccountContext } from "src/hooks/context";
+import { AccountContext } from "hooks/context";
 
 const ModifyCard = () => {
   var account = useContext(AccountContext);

@@ -18,7 +18,7 @@ import {
   CTabs,
   CCardHeader,
 } from "@coreui/react";
-import { loading } from "src/Components";
+import { loading } from "Components";
 import { FirestoreCollection } from "@react-firebase/firestore";
 const Problem = (props) => {
   var frame = [];

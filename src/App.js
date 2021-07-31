@@ -2,15 +2,15 @@ import { useState, lazy, Suspense } from "react";
 import { HashRouter, Route, Switch } from "react-router-dom";
 import "./scss/style.scss";
 
-import { history } from "src/utils/history";
+import { history } from "utils/history";
 import {
   FirebaseAuthProvider,
   FirebaseAuthConsumer,
 } from "@react-firebase/auth";
 import { FirestoreProvider } from "@react-firebase/firestore";
-import { config, firebase } from "src/db/firebase";
+import { config, firebase } from "db/firebase";
 import { AccountContext } from "./hooks/context";
-import { loading } from "src/Components";
+import { loading } from "./Components";
 
 // Containers
 const TheLayout = lazy(() => import("./Containers/TheLayout"));
