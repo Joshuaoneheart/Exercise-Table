@@ -1,5 +1,7 @@
 import React from 'react';
 
+//Admin
+const ModifyResident = React.lazy(() => import("./views/admin/modifyresident/ModifyResident"))
 const Toaster = React.lazy(() => import('./views/notifications/toaster/Toaster'));
 const Tables = React.lazy(() => import('./views/base/tables/Tables'));
 
@@ -78,7 +80,8 @@ const routes = [
   { path: '/notifications/toaster', name: 'Toaster', component: Toaster },
   { path: '/widgets', name: 'Widgets', component: Widgets },
   { path: '/users', exact: true,  name: 'Users', component: Users },
-  { path: '/users/:id', exact: true, name: 'User Details', component: User }
+  { path: '/users/:id', exact: true, name: 'User Details', component: User },
+  { path: '/modifyresident', exact: true, name: 'Modify Residents', component: ModifyResident }
 ];
 
 export default routes;

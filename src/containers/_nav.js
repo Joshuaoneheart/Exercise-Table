@@ -35,7 +35,7 @@ const _nav =  [
   {
     _tag: 'CSidebarNavItem',
     name: '住戶管理',
-    to: '/charts',
+    to: '/modifyresident',
     icon: 'cil-house'
   },
   {

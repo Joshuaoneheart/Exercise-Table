@@ -5,6 +5,7 @@ import {
 	  FirebaseAuthProvider,
 	  FirebaseAuthConsumer
 } from "@react-firebase/auth";
+import { FirestoreProvider, FirestoreDocument } from "@react-firebase/firestore"
 import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore"
@@ -46,12 +47,20 @@ class App extends Component {
 				  <Route exact path="/404" name="Page 404" render={props => <Page404 {...props}/>} />
 				  <Route exact path="/500" name="Page 500" render={props => <Page500 {...props}/>} />
 				  <Route path="/" name="Home" render={props => 
-					  <FirebaseAuthConsumer>
-					  	{({ isSignedIn, user, providerId }) => {
-							if(isSignedIn && user.email === "admin@hall19.com") return <TheLayout firebase={firebase}/>;
-							else return <Login firebase={firebase} />;
-						}}
-					  </FirebaseAuthConsumer>
+					  <FirestoreProvider {...config} firebase={firebase}>
+						  <FirestoreDocument path="/109上/system">
+					  		{d => {
+								console.log(d);
+								return <div></div>;
+							}}
+						  </FirestoreDocument>
+						  <FirebaseAuthConsumer>
+							{({ isSignedIn, user, providerId }) => {
+								if(isSignedIn && user.email === "admin@hall19.com") return <TheLayout firebase={firebase}/>;
+								else return <Login firebase={firebase} />;
+							}}
+						  </FirebaseAuthConsumer>
+					  </FirestoreProvider>
 				  	} 
 				  />	
 				</Switch>
