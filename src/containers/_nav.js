@@ -41,7 +41,7 @@ const _nav =  [
   {
     _tag: 'CSidebarNavItem',
     name: '活力組管理',
-    to: '/charts',
+    to: '/modifygroup',
     icon: 'cil-group'
   },
   {
