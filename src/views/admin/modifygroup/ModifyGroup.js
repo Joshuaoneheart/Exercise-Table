@@ -33,10 +33,7 @@ const ModifyCard = (props) => {
 						   {props.data.value[i]["member"][j]}
 						 </CCol>
 						 <CCol xs="1" sm="1" md="1">
-							 <CButton block variant="ghost" color="secondary"><CIcon name="cil-pencil"/></CButton>
-						 </CCol>
-						 <CCol xs="1" sm="1" md="1">
-							 <CButton block variant="ghost" color="danger"><CIcon name="cil-trash"/></CButton>
+							 <CButton block variant="ghost" color="secondary"><CIcon name="cil-trash"/></CButton>
 						 </CCol>
 					 </CRow>
 				</CListGroupItem>
