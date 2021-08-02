@@ -23,6 +23,7 @@
     "url": "git@github.com:coreui/coreui-free-react-admin-template.git"
   },
   "dependencies": {
+    "@babel/preset-env": "^7.4.0",
     "@coreui/chartjs": "^2.0.0",
     "@coreui/coreui": "^3.4.0",
     "@coreui/icons": "^2.0.0",
@@ -37,6 +38,7 @@
     "core-js": "^3.9.1",
     "enzyme": "^3.11.0",
     "firebase": "^8.8.0",
+    "firebase-admin": "^9.11.0",
     "prop-types": "^15.7.2",
     "react": "^17.0.2",
     "react-app-polyfill": "^2.0.0",
@@ -44,8 +46,7 @@
     "react-redux": "^7.2.3",
     "react-router-dom": "^5.2.0",
     "redux": "^4.0.5",
-    "sass": "^1.32.8",
-	"@babel/preset-env": "^7.4.0"
+    "sass": "^1.32.8"
   },
   "devDependencies": {
     "@babel/core": "^7.13.14",

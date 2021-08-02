@@ -50,6 +50,7 @@ class App extends Component {
 					  <FirestoreProvider {...config} firebase={firebase}>
 						  <FirebaseAuthConsumer>
 							{({ isSignedIn, user, providerId }) => {
+								if(user !== null) console.log(user.uid);
 								if(isSignedIn && user.email === "admin@hall19.com") return <TheLayout firebase={firebase}/>;
 								else return <Login firebase={firebase} />;
 							}}

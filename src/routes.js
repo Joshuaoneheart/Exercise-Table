@@ -4,7 +4,6 @@ import React from 'react';
 const ModifyResident = React.lazy(() => import("./views/admin/modifyresident/ModifyResident"))
 const ModifyGroup = React.lazy(() => import("./views/admin/modifygroup/ModifyGroup"))
 const Toaster = React.lazy(() => import('./views/notifications/toaster/Toaster'));
-const Tables = React.lazy(() => import('./views/base/tables/Tables'));
 
 const Breadcrumbs = React.lazy(() => import('./views/base/breadcrumbs/Breadcrumbs'));
 const Cards = React.lazy(() => import('./views/base/cards/Cards'));
@@ -39,7 +38,6 @@ const Colors = React.lazy(() => import('./views/theme/colors/Colors'));
 const Typography = React.lazy(() => import('./views/theme/typography/Typography'));
 const Widgets = React.lazy(() => import('./views/widgets/Widgets'));
 const Users = React.lazy(() => import('./views/users/Users'));
-const User = React.lazy(() => import('./views/users/User'));
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },
@@ -61,7 +59,6 @@ const routes = [
   { path: '/base/popovers', name: 'Popovers', component: Popovers },
   { path: '/base/progress-bar', name: 'Progress Bar', component: ProgressBar },
   { path: '/base/switches', name: 'Switches', component: Switches },
-  { path: '/base/tables', name: 'Tables', component: Tables },
   { path: '/base/tabs', name: 'Tabs', component: Tabs },
   { path: '/base/tooltips', name: 'Tooltips', component: Tooltips },
   { path: '/buttons', name: 'Buttons', component: Buttons, exact: true },
@@ -81,7 +78,6 @@ const routes = [
   { path: '/notifications/toaster', name: 'Toaster', component: Toaster },
   { path: '/widgets', name: 'Widgets', component: Widgets },
   { path: '/users', exact: true,  name: 'Users', component: Users },
-  { path: '/users/:id', exact: true, name: 'User Details', component: User },
   { path: '/modifyresident', exact: true, name: 'Modify Residents', component: ModifyResident },
   { path: '/modifygroup', exact: true, name: 'Modify Groups', component: ModifyGroup }
 ];
