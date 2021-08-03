@@ -47,7 +47,7 @@ const _nav =  [
   {
     _tag: 'CSidebarNavItem',
     name: '修改表單',
-    to: '/charts',
+    to: '/modifyform',
     icon: 'cil-pencil'
   },
   {

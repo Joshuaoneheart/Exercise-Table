@@ -3,6 +3,7 @@ import React from 'react';
 //Admin
 const ModifyResident = React.lazy(() => import("./views/admin/modifyresident/ModifyResident"))
 const ModifyGroup = React.lazy(() => import("./views/admin/modifygroup/ModifyGroup"))
+const ModifyForm = React.lazy(() => import("./views/admin/modifyform/ModifyForm"))
 const Toaster = React.lazy(() => import('./views/notifications/toaster/Toaster'));
 
 const Breadcrumbs = React.lazy(() => import('./views/base/breadcrumbs/Breadcrumbs'));
@@ -79,7 +80,8 @@ const routes = [
   { path: '/widgets', name: 'Widgets', component: Widgets },
   { path: '/users', exact: true,  name: 'Users', component: Users },
   { path: '/modifyresident', exact: true, name: 'Modify Residents', component: ModifyResident },
-  { path: '/modifygroup', exact: true, name: 'Modify Groups', component: ModifyGroup }
+  { path: '/modifygroup', exact: true, name: 'Modify Groups', component: ModifyGroup },
+  { path: '/modifyform', exact: true, name: 'Modify Form', component: ModifyForm }
 ];
 
 export default routes;

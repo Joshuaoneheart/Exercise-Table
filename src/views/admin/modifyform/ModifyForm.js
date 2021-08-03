@@ -26,12 +26,13 @@ const ModifyCard = (props) => {
   for(var i = 0;i < data.ids.length;i++){
 	titles.push(<CListGroupItem key={i} onClick={function(i){setActiveTab(i)}.bind(null, i)} action active={activeTab === i}>{data.ids[i]}</CListGroupItem>)
 	var tmp_content = [];
-	for(var j = 0;j < data.value[i]["member"].length;j++){
+	console.log(data.value[i]);
+	for(var j = 0;j < data.value[i]["problem"].length;j++){
 		tmp_content.push(
 			<CListGroupItem key={j}>
 				<CRow className="align-items-center">							
 					<CCol xs="5" sm="9" md="9" lg="10">	
-						{data.value[i]["member"][j]}
+						{data.value[i]["problem"][j]["title"]}
 					</CCol>
 					<CCol xs="1" sm="1" md="1">
 						<CButton block variant="ghost" color="secondary"><CIcon name="cil-pencil"/></CButton>
@@ -67,16 +68,16 @@ const ModifyCard = (props) => {
   )
 }
 
-const ModifyResident = () => {
+const ModifyForm = () => {
 
   return (
     <>
       <CRow>
-	    <FirestoreCollection path="/residences/">
+	    <FirestoreCollection path="/form/">
 	  {d => {return d.isLoading? loading: (<CCol>
 			  <CCard>
 				<CCardHeader>
-				  住戶名冊修改
+				  表單修改
 				</CCardHeader>
 	  			<ModifyCard data={d} />
 			  </CCard>
@@ -87,4 +88,4 @@ const ModifyResident = () => {
   )
 }
 
-export default ModifyResident
+export default ModifyForm

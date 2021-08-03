@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react'
-import { useHistory, useLocation } from 'react-router-dom'
+import React, { useState } from 'react'
 import {
   CBadge,
   CButton,
@@ -30,14 +29,7 @@ const loading = (
 )
 
 const Users = () => {
-  const history = useHistory()
-  const queryPage = useLocation().search.match(/page=([0-9]+)/, '')
-  const currentPage = Number(queryPage && queryPage[1] ? queryPage[1] : 1)
-  const [page, setPage] = useState(currentPage)
 
-  const pageChange = newPage => {
-    currentPage !== newPage && history.push(`/users?page=${newPage}`)
-  }
   const [details, setDetails] = useState([])
 
 const toggleDetails = (index) => {
@@ -50,10 +42,6 @@ const toggleDetails = (index) => {
    	}
 	setDetails(newDetails)
 }
-
-  useEffect(() => {
-    currentPage !== page && setPage(currentPage)
-  }, [currentPage, page])
 
   return (
     <CRow>
@@ -88,7 +76,6 @@ const toggleDetails = (index) => {
 					columnFilter
 					pagination
 					itemsPerPage={10}
-					activePage={page}
 					scopedSlots = {{
 					  'status':
 						(item)=>(
