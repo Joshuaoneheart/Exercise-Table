@@ -24,7 +24,17 @@ const ModifyCard = (props) => {
   var titles = [];
   var contents = [];
   for(var i = 0;i < data.ids.length;i++){
-	titles.push(<CListGroupItem key={i} onClick={function(i){setActiveTab(i)}.bind(null, i)} action active={activeTab === i}>{data.ids[i]}</CListGroupItem>)
+	titles.push(
+        <CListGroupItem key={i} onClick={function(i){setActiveTab(i)}.bind(null, i)} action active={activeTab === i}>
+            <CRow className="align-items-center">							
+                <CCol xs="5" sm="9" md="9" lg="10">	
+                    {data.ids[i]}
+                </CCol>
+                <CCol xs="1" sm="1" md="1">
+                    <CButton block variant="ghost" color="danger"><CIcon name="cil-trash"/></CButton>
+                </CCol>
+            </CRow>
+        </CListGroupItem>)
 	var tmp_content = [];
 	for(var j = 0;j < data.value[i]["member"].length;j++){
 		tmp_content.push(
@@ -56,11 +66,13 @@ const ModifyCard = (props) => {
 				  <CListGroup id="list-tab" role="tablist">
 	  				{titles}
 				  </CListGroup>
+                  <CButton block variant="ghost" color="secondary"><CIcon name="cil-library-add"/></CButton>
 				</CCol>
 				<CCol xs="8">
 				  <CTabContent>
 	  				{contents}
 				  </CTabContent>
+                  <CButton block variant="ghost" color="secondary"><CIcon name="cil-user-plus"/></CButton>
 				</CCol>
 			  </CRow>
 			</CCardBody>
