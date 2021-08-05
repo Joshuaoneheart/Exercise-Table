@@ -47,7 +47,7 @@ const ModifyCard = (props) => {
 						<CButton block variant="ghost" color="secondary"><CIcon name="cil-pencil"/></CButton>
 					</CCol>
 					<CCol xs="1" sm="1" md="1">
-						<CButton block variant="ghost" color="danger"><CIcon name="cil-trash"/></CButton>
+						<CButton block variant="ghost" color="danger"><CIcon name="cil-swap-horizontal"/></CButton>
 					</CCol>
 				</CRow>
 			</CListGroupItem>
@@ -66,13 +66,13 @@ const ModifyCard = (props) => {
 				  <CListGroup id="list-tab" role="tablist">
 	  				{titles}
 				  </CListGroup>
-                  <CButton block variant="ghost" color="secondary"><CIcon name="cil-library-add"/></CButton>
+                  <CButton block variant="ghost" color="secondary"><CIcon name="cil-library-add" size="xl"/></CButton>
 				</CCol>
 				<CCol xs="8">
 				  <CTabContent>
 	  				{contents}
 				  </CTabContent>
-                  <CButton block variant="ghost" color="secondary"><CIcon name="cil-user-plus"/></CButton>
+                  <CButton block variant="ghost" color="secondary"><CIcon name="cil-user-plus" size="xl"/></CButton>
 				</CCol>
 			  </CRow>
 			</CCardBody>
@@ -91,9 +91,6 @@ const ModifyResident = () => {
 				    <CRow className="align-items-center">							
 					    <CCol xs="5" sm="9" md="9" lg="10">	
 				            住戶名冊修改
-                        </CCol>
-					    <CCol xs="1" sm="1" md="1">
-                            <CButton block variant="ghost" color="secondary"><CIcon name="cil-pencil"/>Edit</CButton>
                         </CCol>
 					    <CCol xs="1" sm="1" md="1">
                             <CButton block variant="ghost" color="secondary"><CIcon name="cil-save"/>Save</CButton>
