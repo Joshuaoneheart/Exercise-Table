@@ -88,7 +88,17 @@ const ModifyResident = () => {
 	  {d => {return d.isLoading? loading: (<CCol>
 			  <CCard>
 				<CCardHeader>
-				  住戶名冊修改
+				    <CRow className="align-items-center">							
+					    <CCol xs="5" sm="9" md="9" lg="10">	
+				            住戶名冊修改
+                        </CCol>
+					    <CCol xs="1" sm="1" md="1">
+                            <CButton block variant="ghost" color="secondary"><CIcon name="cil-pencil"/>Edit</CButton>
+                        </CCol>
+					    <CCol xs="1" sm="1" md="1">
+                            <CButton block variant="ghost" color="secondary"><CIcon name="cil-save"/>Save</CButton>
+                        </CCol>
+                    </CRow>
 				</CCardHeader>
 	  			<ModifyCard data={d} />
 			  </CCard>
