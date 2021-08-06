@@ -1,13 +1,23 @@
 import React, { useState } from 'react'
 import {
   CButton,
+  CCol,
   CCard,
   CCardBody,
   CCardHeader,
-  CCol,
+  CForm,
+  CFormGroup,
+  CInput,
+  CLabel,
   CListGroup,
   CListGroupItem,
+  CModal,
+  CModalBody,
+  CModalFooter,
+  CModalHeader,
+  CModalTitle,
   CRow,
+  CSelect,
   CTabContent,
   CTabPane
 } from '@coreui/react'
@@ -21,12 +31,12 @@ const loading = (
 const ModifyCard = (props) => {
   const [data, setData] = useState(props.data);
   const [activeTab, setActiveTab] = useState(0)
+  const [modal, setModal] = useState(null);
   var titles = [];
   var contents = [];
   for(var i = 0;i < data.ids.length;i++){
 	titles.push(<CListGroupItem key={i} onClick={function(i){setActiveTab(i)}.bind(null, i)} action active={activeTab === i}>{data.ids[i]}</CListGroupItem>)
 	var tmp_content = [];
-	console.log(data.value[i]);
 	for(var j = 0;j < data.value[i]["problem"].length;j++){
 		tmp_content.push(
 			<CListGroupItem key={j}>
@@ -35,7 +45,7 @@ const ModifyCard = (props) => {
 						{data.value[i]["problem"][j]["title"]}
 					</CCol>
 					<CCol xs="1" sm="1" md="1">
-						<CButton block variant="ghost" color="secondary"><CIcon name="cil-pencil"/></CButton>
+						<CButton block variant="ghost" color="secondary" onClick={function(i, j){setModal([i, j]);}.bind(null, i, j)}><CIcon name="cil-pencil"/></CButton>
 					</CCol>
 					<CCol xs="1" sm="1" md="1">
 						<CButton block variant="ghost" color="danger"><CIcon name="cil-trash"/></CButton>
@@ -64,12 +74,93 @@ const ModifyCard = (props) => {
 				  </CTabContent>
 				</CCol>
 			  </CRow>
+	  		  <ModifyModal data={data} setData={setData} show={modal} setModal={setModal}/>
 			</CCardBody>
   )
 }
 
-const ModifyForm = () => {
+const ModifyModal = (props) => {
+	var data = null;
+	if(props.show != null) data = props.data.value[props.show[0]]["problem"][props.show[1]]; 
+	var form = React.createRef();
+	
+	var writeData = () => {
+		var tmp = {};
+		tmp["title"] = form.current.elements.title.value;
+		tmp["type"] = form.current.elements.type.value;
+		tmp["score"] = form.current.elements.score.value;
+		tmp["選項"] = form.current.elements.option.value;
+		if(tmp["type"] === "Grid") tmp["子選項"] = form.current.elements.suboption.value;
+		data = props.data;
+		data.value[props.show[0]]["problem"][props.show[1]] = tmp;
+		props.setData(data);
+		props.setModal(null);
+	}
+	return (
+		<CModal show={props.show !== null} onClose={() => {props.setModal(null)}}>
+			<CModalHeader closeButton>
+				<CModalTitle>修改問題</CModalTitle>
+			</CModalHeader>
+			<CModalBody>
+				{(data !== null) &&
+				(<CForm innerRef={form} action="" method="post" encType="multipart/form-data" className="form-horizontal">
+					<CFormGroup row>
+						<CCol md="3">
+							<CLabel>標題</CLabel>
+						</CCol>
+						<CCol xs="12" md="9">
+							<CInput name="title" defaultValue={data["title"]}/>
+						</CCol>
+					</CFormGroup>
+					<CFormGroup row>
+						<CCol md="3">
+							<CLabel>類型</CLabel>
+						</CCol>
+						<CCol xs="12" md="9">
+							<CSelect name="type" defaultValue={data["type"]}>
+								<option value="MultiChoice">單選題</option>
+								<option value="MultiAnswer">多選題</option>
+								<option value="Grid">單選網格題</option>
+							</CSelect>
+						</CCol>
+					</CFormGroup>
+					<CFormGroup row>
+						<CCol md="3">
+							<CLabel>分數</CLabel>
+						</CCol>
+						<CCol xs="12" md="9">
+							<CInput name="score" defaultValue={data["score"]}/>
+						</CCol>
+					</CFormGroup>
+					<CFormGroup row>
+						<CCol md="3">
+							<CLabel>選項</CLabel>
+						</CCol>
+						<CCol xs="12" md="9">
+							<CInput name="option" defaultValue={data["選項"]}/>
+						</CCol>
+					</CFormGroup>
+					{(data["type"] === "Grid") &&(
+					<CFormGroup row>
+						<CCol md="3">
+							<CLabel>子選項</CLabel>
+						</CCol>
+						<CCol xs="12" md="9">
+							<CInput name="suboption" defaultValue={data["子選項"]}/>
+						</CCol>
+					</CFormGroup>)}
+				</CForm>)
+				}
+			</CModalBody>
+			<CModalFooter>
+				<CButton color="primary" onClick={writeData}>儲存修改</CButton>{' '}
+				<CButton color="secondary" onClick={() => props.setModal(null)}>取消</CButton>
+			</CModalFooter>
+		</CModal>
+	);
+}
 
+const ModifyForm = () => {
   return (
     <>
       <CRow>
@@ -79,7 +170,7 @@ const ModifyForm = () => {
 				<CCardHeader>
 				  表單修改
 				</CCardHeader>
-	  			<ModifyCard data={d} />
+	  			<ModifyCard data={d}/>
 			  </CCard>
 			</CCol>);}}
 	    </FirestoreCollection>
