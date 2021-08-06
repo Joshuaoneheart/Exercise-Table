@@ -82,6 +82,7 @@ const ModifyCard = (props) => {
 const ModifyModal = (props) => {
 	var data = null;
 	if(props.show != null) data = props.data.value[props.show[0]]["problem"][props.show[1]]; 
+	const [isGrid, setGrid] = useState((data === null)? false : (data["type"] === "Grid"));
 	var form = React.createRef();
 	
 	var writeData = () => {
@@ -96,6 +97,7 @@ const ModifyModal = (props) => {
 		props.setData(data);
 		props.setModal(null);
 	}
+
 	return (
 		<CModal show={props.show !== null} onClose={() => {props.setModal(null)}}>
 			<CModalHeader closeButton>
@@ -117,7 +119,7 @@ const ModifyModal = (props) => {
 							<CLabel>類型</CLabel>
 						</CCol>
 						<CCol xs="12" md="9">
-							<CSelect name="type" defaultValue={data["type"]}>
+							<CSelect onChange={function(isGrid, setGrid, event){if((event.target.value === "Grid") ^ isGrid) setGrid(event.target.value === "Grid")}.bind(null, isGrid, setGrid)} name="type" defaultValue={data["type"]}>
 								<option value="MultiChoice">單選題</option>
 								<option value="MultiAnswer">多選題</option>
 								<option value="Grid">單選網格題</option>
@@ -140,7 +142,7 @@ const ModifyModal = (props) => {
 							<CInput name="option" defaultValue={data["選項"]}/>
 						</CCol>
 					</CFormGroup>
-					{(data["type"] === "Grid") &&(
+					{(isGrid) &&(
 					<CFormGroup row>
 						<CCol md="3">
 							<CLabel>子選項</CLabel>
