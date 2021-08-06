@@ -44,10 +44,10 @@ const ModifyCard = (props) => {
 						{data.value[i]["member"][j]}
 					</CCol>
 					<CCol xs="1" sm="1" md="1">
-						<CButton block variant="ghost" color="dark"><CIcon name="cil-pencil"/></CButton>
+						<CButton block variant="ghost" color="dark"><CIcon name="cil-swap-horizontal"/></CButton>
 					</CCol>
 					<CCol xs="1" sm="1" md="1">
-						<CButton block variant="ghost" color="danger"><CIcon name="cil-swap-horizontal"/></CButton>
+						<CButton block variant="ghost" color="danger"><CIcon name="cil-trash"/></CButton>
 					</CCol>
 				</CRow>
 			</CListGroupItem>
@@ -93,7 +93,7 @@ const ModifyResident = () => {
 				            住戶名冊修改
                         </CCol>
 					    <CCol xs="1" sm="1" md="1">
-                            <CButton block variant="ghost" color="dark"><CIcon name="cil-save"/>Save</CButton>
+                            <CButton block variant="ghost" color="dark"><CIcon name="cil-save"/> Save</CButton>
                         </CCol>
                     </CRow>
 				</CCardHeader>
