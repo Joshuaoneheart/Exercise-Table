@@ -5,6 +5,8 @@ import {
   CCardBody,
   CCardHeader,
   CCol,
+  CForm,
+  CInput,
   CListGroup,
   CListGroupItem,
   CRow,
@@ -34,7 +36,7 @@ const ModifyCard = (props) => {
 						   {data.value[i]["member"][j]}
 						 </CCol>
 						 <CCol xs="1" sm="1" md="1">
-							 <CButton block variant="ghost" color="secondary"><CIcon name="cil-trash"/></CButton>
+							 <CButton block variant="ghost" color="dark"><CIcon name="cil-trash"/></CButton>
 						 </CCol>
 					 </CRow>
 				</CListGroupItem>
@@ -73,7 +75,19 @@ const ModifyGroup = () => {
 	  {d => {return d.isLoading? loading: (<CCol>
 			  <CCard>
 				<CCardHeader>
-				  活力組管理
+				    <CRow className="align-items-center">							
+					    <CCol xs="5" sm="9" md="9" lg="10">	
+                          活力組管理
+                        </CCol>
+                        <CForm inline>
+                          <CInput
+                            className="mr-sm-2"
+                            placeholder="Search"
+                            size="sm"
+                          />
+                          <CButton color="dark" type="submit" size="sm" ><CIcon name="cil-search" size="sm"/></CButton>
+                        </CForm>
+                    </CRow>
 				</CCardHeader>
 	  			<ModifyCard data={d} />
 			  </CCard>
