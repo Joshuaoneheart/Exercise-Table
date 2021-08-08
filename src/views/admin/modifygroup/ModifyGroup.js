@@ -90,14 +90,6 @@ const ModifyGroup = () => {
 					    <CCol xs="5" sm="9" md="9" lg="10">	
                           活力組管理
                         </CCol>
-                        <CForm inline>
-                          <CInput
-                            className="mr-sm-2"
-                            placeholder="Search"
-                            size="sm"
-                          />
-                          <CButton color="dark" type="submit" size="sm" ><CIcon name="cil-search" size="sm"/></CButton>
-                        </CForm>
                     </CRow>
 				</CCardHeader>
 	  			<ModifyCard data={d} />

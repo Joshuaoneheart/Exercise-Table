@@ -19,7 +19,7 @@ const _nav =  [
   {
     _tag: 'CSidebarNavItem',
     name: '個人',
-    to: '/theme/colors',
+    to: '/members',
     icon: 'cil-user',
   },
   {
