@@ -19,9 +19,9 @@ import {
 } from '@coreui/react'
 import {
   // CChart,
-  // CChartBar,
+  CChartBar,
   // CChartHorizontalBar,
-  // CChartLine,
+  CChartLine,
   // CChartDoughnut,
   CChartRadar,
   // CChartPie,
@@ -39,8 +39,8 @@ const loading = (
 // 1. Set a function that takes input from firebase and renders the charts accordingly
 
 // FIXME:
-// 1. Write a proper function to handle the rendering part
-const RenderBarRadar = () => {
+// Please do not forget to modify me for your own purposes
+const RenderRadarChart = () => {
     // This servers purely as an example
     const radar = {
     labels: ['Eating', 'Drinking', 'Sleeping', 'Designing', 'Coding', 'Cycling', 'Running'],
@@ -79,6 +79,9 @@ const RenderBarRadar = () => {
       </CRow> 
     )
 }
+
+// FIXME:
+// Please do not forget to modify me for your own purposes
 const RenderPolarArea = () => {
  const polar = {
     datasets: [
@@ -117,18 +120,98 @@ const RenderPolarArea = () => {
           <hr />
         </CCol>
       </CRow> 
-
     )
 }
 
+// FIXME:
+// Same as before
+const RenderBarChart = () => {
+  const bar = {
+    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+    datasets: [
+      {
+        label: 'My First dataset',
+        backgroundColor: 'rgba(255,99,132,0.2)',
+        borderColor: 'rgba(255,99,132,1)',
+        borderWidth: 1,
+        hoverBackgroundColor: 'rgba(255,99,132,0.4)',
+        hoverBorderColor: 'rgba(255,99,132,1)',
+        data: [65, 59, 80, 81, 56, 55, 40],
+      },
+    ],
+  };
+    return (
+     <CRow className="col-md-6">
+        <CCol>
+          <h4>Bar</h4>
+          <div className="chart-wrapper">
+            <CChartBar datasets={bar.datasets} labels={bar.labels}/>
+          </div>
+          <hr />
+        </CCol>
+      </CRow> 
+    )
+}
+
+// FIXME:
+// Saaaaaaaaaaaameeeeeeeeeeeeeee
+const RenderLineChart = () => {
+     const line = {
+    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+    datasets: [
+      {
+        label: 'My First dataset',
+        fill: false,
+        lineTension: 0.1,
+        backgroundColor: 'rgba(75,192,192,0.4)',
+        borderColor: 'rgba(75,192,192,1)',
+        borderCapStyle: 'butt',
+        borderDash: [],
+        borderDashOffset: 0.0,
+        borderJoinStyle: 'miter',
+        pointBorderColor: 'rgba(75,192,192,1)',
+        pointBackgroundColor: '#fff',
+        pointBorderWidth: 1,
+        pointHoverRadius: 5,
+        pointHoverBackgroundColor: 'rgba(75,192,192,1)',
+        pointHoverBorderColor: 'rgba(220,220,220,1)',
+        pointHoverBorderWidth: 2,
+        pointRadius: 1,
+        pointHitRadius: 10,
+        data: [65, 59, 80, 81, 56, 55, 40],
+      },
+    ],
+  };
+    return (
+     <CRow className="col-md-6">
+        <CCol>
+          <h4>Line</h4>
+          <div className="chart-wrapper">
+            <CChartLine datasets={line.datasets} labels={line.labels}/>
+          </div>
+          <hr />
+        </CCol>
+      </CRow> 
+    ) 
+}
+
+// FIXME:
+// May need to add the necessary hooks
 const ModifyCard = () => {
     return (
         <CCardBody>
-            Hello
+          <CRow>
+            <RenderRadarChart />
+            <RenderPolarArea />
+            <RenderBarChart />
+            <RenderLineChart />
+          </CRow>
         </CCardBody>
     )
 }
-
+// FIXME:
+// Need to add hooks for each dropdown item
+// Also needed for search
 const Members = () => {
   return (
     <>
@@ -157,8 +240,7 @@ const Members = () => {
             </CForm>
           </CRow>
         </CCardHeader>
-        <RenderBarRadar />
-        <RenderPolarArea />
+        <ModifyCard />
       </CCard>
     </>
   )  
