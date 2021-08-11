@@ -5,6 +5,7 @@ const ModifyResident = React.lazy(() => import("./views/admin/modifyresident/Mod
 const ModifyGroup = React.lazy(() => import("./views/admin/modifygroup/ModifyGroup"))
 const ModifyForm = React.lazy(() => import("./views/admin/modifyform/ModifyForm"))
 const Members = React.lazy(() => import("./views/admin/members/Members"))
+const Form = React.lazy(() => import("./views/admin/form/Form"))
 const Toaster = React.lazy(() => import('./views/notifications/toaster/Toaster'));
 
 const Breadcrumbs = React.lazy(() => import('./views/base/breadcrumbs/Breadcrumbs'));
@@ -84,6 +85,7 @@ const routes = [
   { path: '/modifygroup', exact: true, name: 'Modify Groups', component: ModifyGroup },
   { path: '/modifyform', exact: true, name: 'Modify Form', component: ModifyForm },
   { path: '/members', exact: true, name: 'Members', component: Members },
+  { path: '/form', exact: true, name: 'Form', component: Form },
 
 ];
 

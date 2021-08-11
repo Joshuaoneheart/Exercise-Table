@@ -9,12 +9,8 @@ import { FirestoreProvider } from "@react-firebase/firestore"
 import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore"
+import { loading } from 'src/reusable'
 
-const loading = (
-  <div className="pt-3 text-center">
-    <div className="sk-spinner sk-spinner-pulse"></div>
-  </div>
-)
 var config = {
 	    apiKey: "AIzaSyBRYT6ipwBqNlt8xqkU2NfPV5XpU0PXxsE",
 	    authDomain: "exercising-table-data.firebaseapp.com",

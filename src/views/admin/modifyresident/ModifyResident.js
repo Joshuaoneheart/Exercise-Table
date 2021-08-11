@@ -108,11 +108,11 @@ const ModifyResident = () => {
                 <CCard>
                   <CCardHeader>
                     <CRow className="align-items-center">
-                      <CCol xs="5" sm="9" md="9" lg="10">
+                      <CCol xs="5" sm="9" md="10" lg="11">
                         住戶名冊修改
                       </CCol>
                       <CCol xs="1" sm="1" md="1">
-                        <CButton block variant="ghost" color="dark">
+                        <CButton variant="ghost" color="dark">
                           <CIcon name="cil-save" /> Save
                         </CButton>
                       </CCol>

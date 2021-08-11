@@ -53,7 +53,7 @@ const _nav =  [
   {
     _tag: 'CSidebarNavItem',
     name: '表單預覽',
-    to: '/charts',
+    to: '/form',
     icon: 'cil-spreadsheet'
   },
   {

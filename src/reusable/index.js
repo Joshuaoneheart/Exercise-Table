@@ -1,5 +1,7 @@
 import DocsLink from './DocsLink'
+import loading from './loading'
 
 export {
-  DocsLink
+  DocsLink,
+  loading
 }
