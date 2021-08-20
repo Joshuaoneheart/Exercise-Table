@@ -142,7 +142,7 @@ const ModifyModal = (props) => {
             encType="multipart/form-data"
             className="form-horizontal"
           >
-            <CFormGroup row>
+            <CFormGroup row inline>
               <CCol md="3">
                 <CLabel>標題</CLabel>
               </CCol>
@@ -150,7 +150,7 @@ const ModifyModal = (props) => {
                 <CInput name="title" defaultValue={data["title"]} />
               </CCol>
             </CFormGroup>
-            <CFormGroup row>
+            <CFormGroup row inline>
               <CCol md="3">
                 <CLabel>類型</CLabel>
               </CCol>
@@ -169,7 +169,7 @@ const ModifyModal = (props) => {
                 </CSelect>
               </CCol>
             </CFormGroup>
-            <CFormGroup row>
+            <CFormGroup row inline>
               <CCol md="3">
                 <CLabel>分數</CLabel>
               </CCol>
@@ -177,7 +177,7 @@ const ModifyModal = (props) => {
                 <CInput name="score" defaultValue={data["score"]} />
               </CCol>
             </CFormGroup>
-            <CFormGroup row>
+            <CFormGroup row inline>
               <CCol md="3">
                 <CLabel>選項</CLabel>
               </CCol>
@@ -186,7 +186,7 @@ const ModifyModal = (props) => {
               </CCol>
             </CFormGroup>
             {isGrid && (
-              <CFormGroup row>
+              <CFormGroup row inline>
                 <CCol md="3">
                   <CLabel>子選項</CLabel>
                 </CCol>
