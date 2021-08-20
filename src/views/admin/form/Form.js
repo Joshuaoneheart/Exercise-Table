@@ -1,9 +1,6 @@
 import React, { useState } from 'react'
 import {
   CCol,
-  CNav,
-  CNavItem,
-  CNavLink,
   CRow,
   CTabContent,
   CTabPane,
@@ -16,8 +13,6 @@ import {
   CDropdownToggle,
   CForm,
   CFormGroup,
-  CInput,
-  CInputGroup,
   CInputRadio,
   CInputCheckbox,
   CLabel,

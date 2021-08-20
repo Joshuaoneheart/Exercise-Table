@@ -1,10 +1,16 @@
 import React, { useState } from "react";
 import {
   CButton,
+  CButtonToolbar,
   CCard,
   CCardBody,
+  CCardFooter,
   CCardHeader,
   CCol,
+  CDropdown,
+  CDropdownItem,
+  CDropdownMenu,
+  CDropdownToggle,
   CForm,
   CInput,
   CListGroup,
@@ -27,36 +33,25 @@ const ModifyCard = (props) => {
   var contents = [];
   for (var i = 0; i < data.ids.length; i++) {
     titles.push(
-      <CListGroupItem
+      <CDropdownItem
         key={i}
         onClick={function (i) {
           setActiveTab(i);
         }.bind(null, i)}
-        action
-        active={activeTab === i}
       >
-        <CRow className="align-items-center">
-          <CCol xs="5" sm="9" md="9" lg="10">
             {data.ids[i]}
-          </CCol>
-          <CCol xs="1" sm="1" md="1">
-            <CButton block variant="ghost" color="danger">
-              <CIcon name="cil-trash" />
-            </CButton>
-          </CCol>
-        </CRow>
-      </CListGroupItem>
+      </CDropdownItem>
     );
     var tmp_content = [];
     for (var j = 0; j < data.value[i]["member"].length; j++) {
       tmp_content.push(
-        <CListGroupItem key={j}>
+        <CListGroupItem accent="secondary" color="secondary" key={j}>
           <CRow className="align-items-center">
-            <CCol xs="5" sm="9" md="9" lg="10">
+            <CCol xs="5" sm="9" md="9" lg="10" style={{color:"#000000"}}>
               {data.value[i]["member"][j]}
             </CCol>
-            <CCol xs="1" sm="1" md="1">
-              <CButton block variant="ghost" color="dark">
+            <CCol align="end">
+              <CButton variant="ghost" color="dark">
                 <CIcon name="cil-swap-horizontal" />
               </CButton>
             </CCol>
@@ -66,26 +61,46 @@ const ModifyCard = (props) => {
     }
     contents.push(
       <CTabPane key={i} active={activeTab === i}>
-        {tmp_content}
+		<CListGroup accent>
+        	{tmp_content}
+		</CListGroup>
       </CTabPane>
     );
   }
   return (
+<CCard>
+  <CCardHeader>
+	<CRow className="align-items-center">
+	  <CCol xs="4" sm="9" md="9" lg="9">
+		活力組管理
+	  </CCol>
+	  <CCol>
+	  	<CButtonToolbar justify="end">
+	  		<CDropdown>
+	  			<CDropdownToggle color="info" style={{color: "#FFFFFF"}}>{data.ids[activeTab]}</CDropdownToggle>
+	  			<CDropdownMenu style={{overflow:"auto", maxHeight: "270px"}}>{titles}</CDropdownMenu>
+	  		</CDropdown>
+	  		<CButton variant="ghost" color="dark">
+	  			<CIcon alt="新增組別" name="cil-library-add"/>
+	  		</CButton>
+	  		<CButton variant="ghost" color="danger">
+	  			<CIcon alt="刪除組別" name="cil-trash"/>
+	  		</CButton>
+	  	</CButtonToolbar>
+	  </CCol>
+	</CRow>
+  </CCardHeader>
     <CCardBody>
       <CRow>
-        <CCol xs="4">
-          <CListGroup id="list-tab" role="tablist">
-            {titles}
-          </CListGroup>
-          <CButton block variant="ghost" color="dark">
-            <CIcon name="cil-library-add" size="xl" />
-          </CButton>
-        </CCol>
-        <CCol xs="8">
+        <CCol>
           <CTabContent>{contents}</CTabContent>
         </CCol>
       </CRow>
     </CCardBody>
+	<CCardFooter>
+		<CButton variant="ghost" color="primary">儲存變更</CButton>
+	</CCardFooter>
+</CCard>
   );
 };
 
@@ -99,16 +114,7 @@ const ModifyGroup = () => {
               loading
             ) : (
               <CCol>
-                <CCard>
-                  <CCardHeader>
-                    <CRow className="align-items-center">
-                      <CCol xs="5" sm="9" md="9" lg="10">
-                        活力組管理
-                      </CCol>
-                    </CRow>
-                  </CCardHeader>
                   <ModifyCard data={d} />
-                </CCard>
               </CCol>
             );
           }}
