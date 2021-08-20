@@ -10,6 +10,10 @@ import {
   CCard,
   CCardBody,
   CCardFooter,
+  CDropdown,
+  CDropdownItem,
+  CDropdownMenu,
+  CDropdownToggle,
   CForm,
   CFormGroup,
   CInput,
@@ -23,7 +27,6 @@ import {
 import CIcon from '@coreui/icons-react'
 import { loading } from 'src/reusable'
 import { FirestoreCollection } from '@react-firebase/firestore'
-
 const Problem = (props) => {
 	var frame = [];
 	console.log(props.data);
@@ -94,13 +97,11 @@ const Problem = (props) => {
 
 const DataTabs = (props) => {
 	var data = props.data;
+	const [section, setSection] = useState(0);
 	var tabs = [];
 	var tabpanes = [];
 	for(var i = 0;i < data.ids.length;i++){
-		tabs.push(
-			<CNavItem key={i}>
-				<CNavLink>{data.ids[i]}</CNavLink>
-			</CNavItem>);
+		tabs.push(<CDropdownItem key={i} onClick={function(i){setSection(i);}.bind(null, i)}>{data.ids[i]}</CDropdownItem>)
 		var tabContents = [];
 		for(var j = 0;j < data.value[i]["problem"].length;j++){
 			var problem = data.value[i]["problem"][j];
@@ -112,15 +113,34 @@ const DataTabs = (props) => {
 			</CTabPane>)
 	}
 	return (
-		<CTabs>
-		  <CNav variant="tabs">
-			{tabs}
-		  </CNav>
-		  <CTabContent>
-			{tabpanes}
-		  </CTabContent>
-		</CTabs>
-
+		<CCard>
+		  <CCardHeader>
+		  <CRow className="align-items-center">
+			  <CCol style={{fontSize:"30px"}}>表單</CCol>
+			  <CCol align="end">
+				  <CDropdown>
+					<CDropdownToggle color="info">
+						{data.ids[section]}
+					</CDropdownToggle>
+					<CDropdownMenu>
+						{tabs}
+					</CDropdownMenu>
+				  </CDropdown>
+			  </CCol>
+		  </CRow>
+		  </CCardHeader>
+		  <CCardBody>
+			<CForm>
+				<CTabs activeTab={section}>
+				  <CTabContent>
+					{tabpanes}
+				  </CTabContent>
+				</CTabs>
+			</CForm>
+		  </CCardBody>
+		  <CCardFooter>
+		  </CCardFooter>
+		</CCard>
 	);
 }
 
@@ -131,18 +151,7 @@ const Form = () => {
 	  <FirestoreCollection path="/form/">
 	  	{(d) => { return d.isLoading? loading: (
 		  <CCol>
-			<CCard>
-			  <CCardHeader>
-				表單
-			  </CCardHeader>
-			  <CCardBody>
-				<CForm>
-					<DataTabs data={d}/>
-				</CForm>
-			  </CCardBody>
-			  <CCardFooter>
-			  </CCardFooter>
-			</CCard>
+			<DataTabs data={d}/>
 		  </CCol>)}}
 	  </FirestoreCollection>
     </CRow>
