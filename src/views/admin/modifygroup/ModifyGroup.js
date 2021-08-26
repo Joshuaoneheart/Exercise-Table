@@ -15,7 +15,13 @@ import {
   CInput,
   CListGroup,
   CListGroupItem,
+  CModal,
+  CModalBody,
+  CModalFooter,
+  CModalHeader,
+  CModalTitle,
   CRow,
+  CSelect,
   CTabContent,
   CTabPane,
 } from "@coreui/react";
