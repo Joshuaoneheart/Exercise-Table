@@ -61,7 +61,7 @@ const TheHeader = (props) => {
           <CHeaderNavLink to="/users">Users</CHeaderNavLink>
         </CHeaderNavItem>
         <CHeaderNavItem className="px-3">
-          <CHeaderNavLink to="/settings">Settings</CHeaderNavLink>
+          <CHeaderNavLink>Settings</CHeaderNavLink>
         </CHeaderNavItem>
       </CHeaderNav>
 
@@ -88,7 +88,7 @@ const TheHeader = (props) => {
             >
               <CIcon name="cil-graph" alt="Dashboard" />&nbsp;Dashboard
             </CLink>
-            <CLink className="c-subheader-nav-link" to="/settings">
+            <CLink className="c-subheader-nav-link" href="#">
               <CIcon name="cil-settings" alt="Settings" />&nbsp;Settings
             </CLink>
           </div>

@@ -215,7 +215,7 @@ const Members = () => {
       <CCard>
         <CCardHeader>
           <CRow className="align-items-center">
-            <CCol xs="5" sm="9" md="9" lg="10">
+            <CCol>
               <CDropdown>
                 <CDropdownToggle caret color="info">
                   <CIcon name="cil-user" /> User
