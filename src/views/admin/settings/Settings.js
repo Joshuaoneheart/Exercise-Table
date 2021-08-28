@@ -18,12 +18,11 @@ const ModifyCard = () => {
     <CCardBody>
       <CRow className="align-items-center">
         <CButton
-          variant="ghost"
-          color={SystemState ? "primary" : "danger"}
+          color={SystemState ? "success" : "danger"}
           onClick={() => flipState()}
         >
           <CIcon name={SystemState ? "cil-media-stop" : "cil-media-play"} />
-          {SystemState ? "On" : "Off"}
+          {SystemState ? "開啓" : "關閉"}
         </CButton>
       </CRow>
     </CCardBody>

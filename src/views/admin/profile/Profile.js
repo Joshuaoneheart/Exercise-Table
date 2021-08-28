@@ -6,14 +6,13 @@ import {
   CCardHeader,
   CCol,
   CRow,
-  CToggler,
 } from "@coreui/react";
 
 const ModifyCard = () => {
   return (
     <CCardBody>
       <CRow>
-        <CToggler></CToggler>
+      我其實不知道要放啥呢？
       </CRow>
     </CCardBody>
   );
