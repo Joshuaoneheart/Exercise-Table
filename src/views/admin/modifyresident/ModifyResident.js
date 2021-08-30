@@ -67,7 +67,7 @@ const ModifyCard = (props) => {
             <CCol>
 		  	  <CButtonToolbar justify="end">
 				  <CButton variant="ghost" color="dark">
-					<CIcon name="cil-swap-horizontal" onClick={function(i, j){setTransferModal([i, j]).bind(null, i, j)}}/>
+					<CIcon name="cil-swap-horizontal" onClick={function(i, j){setTransferModal([i, j])}.bind(null, i, j)}/>
 				  </CButton>
 				  <CButton variant="ghost" color="danger" onClick={function(i, j){setDeleteModal({"title": "住戶", "type": "resident","name": data.value[i]["member"][j], "index": [i, j]})}.bind(null, i, j)}>
 					<CIcon name="cil-trash" />
@@ -152,6 +152,8 @@ const ModifyCard = (props) => {
 	  		{({ addMutationToBatch, commit }) => {
 				return (
 					<CButton variant="ghost" color="primary" onClick={() =>{
+						var check = window.confirm("確定儲存修改嗎？");
+						if(!check) return;
 						var pathPrefix = "/residences/";
 						for(var idx in data.ids){
 							var path = pathPrefix + data.ids[idx] + "/";
@@ -161,7 +163,8 @@ const ModifyCard = (props) => {
 								type: "set"
 							});
 						}
-						for(var idx in group.ids){
+						pathPrefix = "/groups/";
+						for(idx in group.ids){
 							var path = pathPrefix + group.ids[idx] + "/";
 							addMutationToBatch({
 								path,
@@ -169,7 +172,7 @@ const ModifyCard = (props) => {
 								type: "set"
 							});
 						}
-						commit().then(() => {alert("儲存完成")});
+						commit().then(() => {alert("儲存完成")}).catch((error) => {console.log(error)});
 					}}>
 					儲存變更
 					</CButton>
@@ -337,18 +340,23 @@ const DeleteModal = (props) => {
 };
 
 const TransferModal = (props) => {
-  var data = null;
+  var data = props.data;
   if(props.show == null) return null;
   var form = React.createRef();
   var writeData = () => {
     var tmp = form.current.elements.residence.value;
     data = props.data;
-    data.value[props.show[0]]["problem"][props.show[1]] = tmp;
+   	data.value[data.ids.indexOf(tmp)]["member"].push(data.value[props.show[0]]["member"][props.show[1]]);
+	data.value[props.show[0]]["member"].splice(props.show[1], 1);
     props.setData(data);
     props.setModal(null);
   };
-  var residences_option = data.ids;
-  residences_option.splice(props.show.index, 1);
+  var residences_option = []
+  for(let i in data.ids){
+	if(i !== props.show[1])
+	residences_option.push(<option value={data.ids[i]}>{data.ids[i]}</option>);
+  }
+  console.log(data)
   
 
   return (
