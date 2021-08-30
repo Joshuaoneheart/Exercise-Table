@@ -12,7 +12,9 @@ import {
   CDropdownMenu,
   CDropdownToggle,
   CForm,
+  CFormGroup,
   CInput,
+  CLabel,
   CListGroup,
   CListGroupItem,
   CModal,
@@ -34,7 +36,11 @@ const loading = (
 );
 const ModifyCard = (props) => {
   const [data, setData] = useState(props.data);
-  const [activeTab, setActiveTab] = useState(0);
+  var [activeTab, setActiveTab] = useState(0);
+  const [transferModal, setTransferModal] = useState(null);
+  const [deleteModal, setDeleteModal] = useState(null);
+  const [addModal, setAddModal] = useState(null);
+  if(activeTab >= data.ids.length) activeTab = (data.ids.length >= 0)? data.ids.length:0;
   var titles = [];
   var contents = [];
   for (var i = 0; i < data.ids.length; i++) {
@@ -57,7 +63,7 @@ const ModifyCard = (props) => {
               {data.value[i]["member"][j]}
             </CCol>
             <CCol align="end">
-              <CButton variant="ghost" color="dark">
+              <CButton variant="ghost" color="dark" onClick={function(i, j){setTransferModal([i, j])}.bind(null, i, j)}>
                 <CIcon name="cil-swap-horizontal" />
               </CButton>
             </CCol>
@@ -86,10 +92,10 @@ const ModifyCard = (props) => {
 	  			<CDropdownToggle color="info" style={{color: "#FFFFFF"}}>{data.ids[activeTab]}</CDropdownToggle>
 	  			<CDropdownMenu style={{overflow:"auto", maxHeight: "270px"}}>{titles}</CDropdownMenu>
 	  		</CDropdown>
-	  		<CButton variant="ghost" color="dark">
+	  		<CButton variant="ghost" color="dark" onClick={()=>{setAddModal(true)}}>
 	  			<CIcon alt="新增組別" name="cil-library-add"/>
 	  		</CButton>
-	  		<CButton variant="ghost" color="danger">
+	  		<CButton variant="ghost" color="danger" onClick={()=>{setDeleteModal(activeTab)}}>
 	  			<CIcon alt="刪除組別" name="cil-trash"/>
 	  		</CButton>
 	  	</CButtonToolbar>
@@ -107,6 +113,163 @@ const ModifyCard = (props) => {
 		<CButton variant="ghost" color="primary">儲存變更</CButton>
 	</CCardFooter>
 </CCard>
+  );
+};
+
+const AddModal = (props) => {
+  if(props.show == null){
+	  return null;
+  }
+  var form = React.createRef();
+  var writeData = () => {
+	var data = props.data;
+	data.value.push({"member": []});
+	data.ids.push(form.current.elements.name.value);
+	props.setData(data);
+	props.setModal(null);
+  };
+  return (
+    <CModal
+      show={props.show !== null}
+      onClose={() => {
+        props.setModal(null);
+      }}
+    >
+      <CModalHeader closeButton>
+        <CModalTitle>新增{props.show.title}</CModalTitle>
+      </CModalHeader>
+      <CModalBody>
+          <CForm
+            innerRef={form}
+            action=""
+            method="post"
+            encType="multipart/form-data"
+            className="form-horizontal"
+          >
+              <CFormGroup row inline>
+                <CCol md="3">
+                  <CLabel>活力組名稱</CLabel>
+                </CCol>
+                <CCol xs="12" md="9">
+                  <CInput name="name" required/>
+                </CCol>
+              </CFormGroup>
+          </CForm>
+      </CModalBody>
+      <CModalFooter>
+        <CButton color="primary" onClick={writeData}>
+          新增
+        </CButton>{" "}
+        <CButton color="secondary" onClick={() => {props.setModal(null);}}>
+          取消
+        </CButton>
+      </CModalFooter>
+    </CModal>
+  );
+};
+
+const DeleteModal = (props) => {
+  if(props.show === null) return null;
+  var deleteData = () => {
+	  var data = props.data;
+	  if(data.value[props.show.index[0]].length !== 0){
+		  alert("活力組內尚有住戶，請將所有住戶刪除後再刪除活力組");
+		  return;
+	  }
+	  data.value.splice(props.show, 1);
+	  data.ids.splice(props.show, 1);
+	  props.setData(data);
+	  props.setModal(null);
+  }
+  return (
+    <CModal
+      show={props.show !== null}
+      onClose={() => {
+        props.setModal(null);
+      }}
+	  color="danger"
+    >
+      <CModalHeader closeButton>
+        <CModalTitle>刪除活力組</CModalTitle>
+      </CModalHeader>
+      <CModalBody>
+        確認刪除活力組 {props.data.ids[props.show]} 嗎？
+      </CModalBody>
+      <CModalFooter>
+        <CButton color="primary" onClick={deleteData}>
+          確認
+        </CButton>{" "}
+        <CButton color="secondary" onClick={() => props.setModal(null)}>
+          取消
+        </CButton>
+      </CModalFooter>
+    </CModal>
+  );
+};
+
+const TransferModal = (props) => {
+  var data = props.data;
+  if(props.show == null) return null;
+  var form = React.createRef();
+  var writeData = () => {
+    var tmp = form.current.elements.group.value;
+    data = props.data;
+   	data.value[data.ids.indexOf(tmp)]["member"].push(data.value[props.show[0]]["member"][props.show[1]]);
+	data.value[props.show[0]]["member"].splice(props.show[1], 1);
+    props.setData(data);
+    props.setModal(null);
+  };
+  var groups_option = []
+  for(let i in data.ids){
+	if(i !== props.show)
+	groups_option.push(<option value={data.ids[i]}>{data.ids[i]}</option>);
+  }
+  console.log(data)
+  
+
+  return (
+    <CModal
+      show={props.show !== null}
+      onClose={() => {
+        props.setModal(null);
+      }}
+    >
+      <CModalHeader closeButton>
+        <CModalTitle>修改問題</CModalTitle>
+      </CModalHeader>
+      <CModalBody>
+        {data !== null && (
+          <CForm
+            innerRef={form}
+            action=""
+            method="post"
+            encType="multipart/form-data"
+            className="form-horizontal"
+          >
+            <CFormGroup row inline>
+              <CCol md="3">
+                <CLabel>移動至</CLabel>
+              </CCol>
+              <CCol xs="12" md="9">
+                <CSelect
+                  name="group"
+                >
+					{groups_option}
+                </CSelect>
+              </CCol>
+            </CFormGroup>
+          </CForm>
+        )}
+      </CModalBody>
+      <CModalFooter>
+        <CButton color="primary" onClick={writeData}>
+          儲存修改
+        </CButton>{" "}
+        <CButton color="secondary" onClick={() => props.setModal(null)}>
+          取消
+        </CButton>
+      </CModalFooter>
+    </CModal>
   );
 };
 
