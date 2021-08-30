@@ -40,6 +40,7 @@ const ModifyCard = (props) => {
   const [transferModal, setTransferModal] = useState(null);
   const [deleteModal, setDeleteModal] = useState(null);
   const [addModal, setAddModal] = useState(null);
+  console.log(data)
   if(activeTab >= data.ids.length) activeTab = (data.ids.length >= 0)? data.ids.length:0;
   var titles = [];
   var contents = [];
@@ -108,9 +109,49 @@ const ModifyCard = (props) => {
           <CTabContent>{contents}</CTabContent>
         </CCol>
       </CRow>
+      <TransferModal
+        data={data}
+        setData={setData}
+        show={transferModal}
+        setModal={setTransferModal}
+      />
+	  <DeleteModal
+	    data={data}
+	  	setData={setData}
+	  	show={deleteModal}
+	  	setModal={setDeleteModal}
+	  />
+	  <AddModal
+		data={data}
+	  	setData={setData}
+	  	show={addModal}
+	  	setModal={setAddModal}
+	  />
     </CCardBody>
 	<CCardFooter>
-		<CButton variant="ghost" color="primary">儲存變更</CButton>
+	  	<FirestoreBatchedWrite>
+	  		{({ addMutationToBatch, commit }) => {
+				return (
+					<CButton variant="ghost" color="primary" onClick={() =>{
+						var check = window.confirm("確定儲存修改嗎？");
+						if(!check) return;
+						var pathPrefix = "/groups/";
+						for(idx in data.ids){
+							var path = pathPrefix + data.ids[idx] + "/";
+							addMutationToBatch({
+								path,
+								"value": data.value[idx],
+								type: "set"
+							});
+						}
+						commit().then(() => {alert("儲存完成")}).catch((error) => {console.log(error)});
+					}}>
+					儲存變更
+					</CButton>
+				)
+				}
+			}
+	  	</FirestoreBatchedWrite>
 	</CCardFooter>
 </CCard>
   );
@@ -172,8 +213,9 @@ const DeleteModal = (props) => {
   if(props.show === null) return null;
   var deleteData = () => {
 	  var data = props.data;
-	  if(data.value[props.show.index[0]].length !== 0){
+	  if(data.value[props.show].length !== 0){
 		  alert("活力組內尚有住戶，請將所有住戶刪除後再刪除活力組");
+	  	  props.setModal(null);
 		  return;
 	  }
 	  data.value.splice(props.show, 1);

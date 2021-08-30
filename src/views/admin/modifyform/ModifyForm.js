@@ -139,7 +139,29 @@ const ModifyCard = (props) => {
   <CCardFooter>
 	<CButtonToolbar>
 		<CButton variant="ghost" color="dark" onClick={function(activeTab){setAddModal({"type": "problem", "title": "問題", "index": activeTab});}.bind(null, activeTab)}>新增問題</CButton>
-		<CButton variant="ghost" color="primary">儲存變更</CButton>
+	  	<FirestoreBatchedWrite>
+	  		{({ addMutationToBatch, commit }) => {
+				return (
+					<CButton variant="ghost" color="primary" onClick={() =>{
+						var check = window.confirm("確定儲存修改嗎？");
+						if(!check) return;
+						var pathPrefix = "/form/";
+						for(idx in data.ids){
+							var path = pathPrefix + data.ids[idx] + "/";
+							addMutationToBatch({
+								path,
+								"value": data.value[idx],
+								type: "set"
+							});
+						}
+						commit().then(() => {alert("儲存完成")}).catch((error) => {console.log(error)});
+					}}>
+					儲存變更
+					</CButton>
+				)
+				}
+			}
+	  	</FirestoreBatchedWrite>
 	</CButtonToolbar>
   </CCardFooter>
 </CCard>
