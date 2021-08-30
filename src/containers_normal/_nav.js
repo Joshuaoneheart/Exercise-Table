@@ -30,29 +30,11 @@ const _nav =  [
   },
   {
     _tag: 'CSidebarNavTitle',
-    _children: ['管理功能']
+    _children: ['表單']
   },
   {
     _tag: 'CSidebarNavItem',
-    name: '住戶管理',
-    to: '/modifyresident',
-    icon: 'cil-house'
-  },
-  {
-    _tag: 'CSidebarNavItem',
-    name: '活力組管理',
-    to: '/modifygroup',
-    icon: 'cil-group'
-  },
-  {
-    _tag: 'CSidebarNavItem',
-    name: '修改表單',
-    to: '/modifyform',
-    icon: 'cil-pencil'
-  },
-  {
-    _tag: 'CSidebarNavItem',
-    name: '表單預覽',
+    name: '表單填寫',
     to: '/form',
     icon: 'cil-spreadsheet'
   },

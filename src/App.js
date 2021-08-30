@@ -24,6 +24,7 @@ var config = {
 
 // Containers
 const TheLayout = React.lazy(() => import("./containers/TheLayout"));
+const TheUserLayout = React.lazy(() => import("./containers_normal/TheLayout"))
 
 // Pages
 const Login = React.lazy(() => import("./views/pages/login/Login"));
@@ -66,6 +67,8 @@ class App extends Component {
                         if (user !== null) console.log(user.uid);
                         if (isSignedIn && user.email === "admin@hall19.com")
                           return <TheLayout firebase={firebase} />;
+                        else if (isSignedIn && user.email === "test@hall19.com")
+                          return <TheUserLayout firebase={firebase} />
                         else return <Login firebase={firebase} />;
                       }}
                     </FirebaseAuthConsumer>

@@ -2,7 +2,7 @@ import React from "react";
 
 //Members
 const Members = React.lazy(() => import("./views/member/members/Members"));
-// const Profile = React.lazy(() => import("./views/admin/profile/Profile"));
+const Profile = React.lazy(() => import("./views/admin/profile/Profile"));
 // const Settings = React.lazy(() => import("./views/admin/settings/Settings"));
 const Form = React.lazy(() => import("./views/member/form/Form"));
 const BibleGroup = React.lazy(() => import("./views/member/biblegroup/BibleGroup"));

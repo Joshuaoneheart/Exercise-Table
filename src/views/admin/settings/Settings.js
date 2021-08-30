@@ -36,7 +36,7 @@ const Settings = () => {
     <>
       <CCard>
         <CCardHeader>
-          <CRow className="align-items-center">接受表單回音</CRow>
+          <CRow className="align-items-center">接受表單回應</CRow>
         </CCardHeader>
         <ModifyCard />
       </CCard>
