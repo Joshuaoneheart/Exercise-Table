@@ -147,8 +147,7 @@ const ModifyCard = (props) => {
 	  <CButtonToolbar>
         <CButton variant="ghost" color="dark" onClick={() => setAddModal({"type": "resident", "index": activeTab})}>
 	  	新增住戶
-        </CButton>
-	  	<FirestoreBatchedWrite>
+        </CButton> <FirestoreBatchedWrite>
 	  		{({ addMutationToBatch, commit }) => {
 				return (
 					<CButton variant="ghost" color="primary" onClick={() =>{

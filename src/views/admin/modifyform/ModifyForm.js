@@ -29,7 +29,7 @@ import {
 } from "@coreui/react";
 import CIcon from "@coreui/icons-react";
 import { loading } from 'src/reusable'
-import { FirestoreCollection } from "@react-firebase/firestore";
+import { FirestoreCollection, FirestoreBatchedWrite } from "@react-firebase/firestore";
 const ModifyCard = (props) => {
   const [data, setData] = useState(props.data);
   var [activeTab, setActiveTab] = useState(0);
@@ -146,9 +146,8 @@ const ModifyCard = (props) => {
 						var check = window.confirm("確定儲存修改嗎？");
 						if(!check) return;
 						var pathPrefix = "/form/";
-						for(idx in data.ids){
-							var path = pathPrefix + data.ids[idx] + "/";
-							addMutationToBatch({
+						for(var idx in data.ids){
+							var path = pathPrefix + data.ids[idx] + "/"; addMutationToBatch({
 								path,
 								"value": data.value[idx],
 								type: "set"

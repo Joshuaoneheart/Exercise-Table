@@ -28,7 +28,7 @@ import {
   CTabPane,
 } from "@coreui/react";
 import CIcon from "@coreui/icons-react";
-import { FirestoreCollection } from "@react-firebase/firestore";
+import { FirestoreCollection, FirestoreBatchedWrite } from "@react-firebase/firestore";
 const loading = (
   <div className="pt-3 text-center">
     <div className="sk-spinner sk-spinner-pulse"></div>
@@ -136,7 +136,7 @@ const ModifyCard = (props) => {
 						var check = window.confirm("確定儲存修改嗎？");
 						if(!check) return;
 						var pathPrefix = "/groups/";
-						for(idx in data.ids){
+						for(var idx in data.ids){
 							var path = pathPrefix + data.ids[idx] + "/";
 							addMutationToBatch({
 								path,
