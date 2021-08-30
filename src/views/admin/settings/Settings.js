@@ -4,12 +4,13 @@ import {
   CCard,
   CCardBody,
   CCardHeader,
-  CCol,
+  // CCol,
   CRow,
-  CToggler,
+  // CToggler,
 } from "@coreui/react";
 
 import CIcon from "@coreui/icons-react";
+
 const ModifyCard = () => {
   const [SystemState, setSystemState] = useState(false);
   const flipState = () => setSystemState(!SystemState);
@@ -21,7 +22,8 @@ const ModifyCard = () => {
           color={SystemState ? "success" : "danger"}
           onClick={() => flipState()}
         >
-          <CIcon name={SystemState ? "cil-media-stop" : "cil-media-play"} />
+            { /* <CIcon name={SystemState ? "cil-media-stop" : "cil-media-play"} />
+                */ }
           {SystemState ? "開啓" : "關閉"}
         </CButton>
       </CRow>
