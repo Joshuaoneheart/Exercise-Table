@@ -1,7 +1,8 @@
-import React from "react";
+import React, {useContext} from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
   CCreateElement,
+  CImg,
   CSidebar,
   CSidebarBrand,
   CSidebarNav,
@@ -12,31 +13,29 @@ import {
   CSidebarNavItem,
 } from "@coreui/react";
 
-import CIcon from "@coreui/icons-react";
+import { AccountContext } from "../App.js";
 
 // sidebar nav config
-import navigation from "./_nav";
+import admin_navigation from "./_nav";
+import member_navigation from "./_nav_member"
 
 const TheSidebar = () => {
   const dispatch = useDispatch();
   const show = useSelector((state) => state.sidebarShow);
-
+  var account = useContext(AccountContext);
+  if(typeof(account) == "undefined") return null;
+  var navigation;
+  if(account.role == "Admin") navigation = admin_navigation;
+  else navigation = member_navigation;
+  console.log(account);
   return (
     <CSidebar
       show={show}
       onShowChange={(val) => dispatch({ type: "set", sidebarShow: val })}
     >
-      <CSidebarBrand className="d-md-down-none" to="/">
-        <CIcon
-          className="c-sidebar-brand-full"
-          name="logo-negative"
-          height={35}
-        />
-        <CIcon
-          className="c-sidebar-brand-minimized"
-          name="sygnet"
-          height={35}
-        />
+      <CSidebarBrand className="d-md-down-none" to="/" style={{textDecoration:"none"}}>
+	  	<CImg src={"./favicon.ico"} style={{width:"32px", marginRight:"15px"}}/>
+	  	<span style={{fontSize:"23px", fontFamily:"sans-serif"}}>Exercise Table</span>
       </CSidebarBrand>
       <CSidebarNav>
         <CCreateElement

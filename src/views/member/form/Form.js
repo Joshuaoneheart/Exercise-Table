@@ -17,7 +17,8 @@ import {
   CInputCheckbox,
   CLabel,
   CTabs,
-  CCardHeader
+  CCardHeader,
+  CButton
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import { loading } from 'src/reusable'
@@ -27,7 +28,6 @@ const Problem = (props) => {
 	var option_style={color: "#000000", fontSize: "20px"};
 	var title_style={color: "#636f83"};
 	var button_style={height: "20px", width: "20px"};
-	console.log(props.data);
 	switch(props.data.type){
 		case "Grid":
 			var option_row = [];
@@ -136,8 +136,9 @@ const DataTabs = (props) => {
 				</CTabs>
 			</CForm>
 		  </CCardBody>
-		{props.submitable && <CCardFooter>
-		  </CCardFooter>}
+		  <CCardFooter>
+			<CButton variant="ghost" color="dark">提交表單</CButton>
+		  </CCardFooter>
 		</CCard>
 	);
 }

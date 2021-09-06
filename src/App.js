@@ -1,15 +1,16 @@
-import React, { Component } from "react";
+import React, { Component, createContext } from "react";
 import { HashRouter, Route, Switch } from "react-router-dom";
 import "./scss/style.scss";
 import {
   FirebaseAuthProvider,
   FirebaseAuthConsumer,
 } from "@react-firebase/auth";
-import { FirestoreProvider } from "@react-firebase/firestore";
+import { FirestoreProvider, FirestoreDocument } from "@react-firebase/firestore";
 import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
 import { loading } from "src/reusable";
+const AccountContext = createContext({});
 
 var config = {
   apiKey: "AIzaSyBRYT6ipwBqNlt8xqkU2NfPV5XpU0PXxsE",
@@ -24,7 +25,6 @@ var config = {
 
 // Containers
 const TheLayout = React.lazy(() => import("./containers/TheLayout"));
-const TheUserLayout = React.lazy(() => import("./containers_normal/TheLayout"))
 
 // Pages
 const Login = React.lazy(() => import("./views/pages/login/Login"));
@@ -65,10 +65,19 @@ class App extends Component {
                     <FirebaseAuthConsumer>
                       {({ isSignedIn, user, providerId }) => {
                         if (user !== null) console.log(user.uid);
-                        if (isSignedIn && user.email === "admin@hall19.com")
-                          return <TheLayout firebase={firebase} />;
-                        else if (isSignedIn && user.email === "test@hall19.com")
-                          return <TheUserLayout firebase={firebase} />
+                        if (isSignedIn)
+                          return (
+							  <FirestoreDocument path={"/accounts/" + user.uid}>
+							  {(d) => {
+								  if(!d.isLoading)
+								  return( 
+									  <AccountContext.Provider value={d.value}>
+									  	<TheLayout firebase={firebase} />
+									  </AccountContext.Provider>
+								  );
+								  else return loading;
+							  }}
+						  	  </FirestoreDocument>);
                         else return <Login firebase={firebase} />;
                       }}
                     </FirebaseAuthConsumer>
@@ -84,3 +93,4 @@ class App extends Component {
 }
 
 export default App;
+export { AccountContext };
