@@ -4,6 +4,10 @@ import {
   CCard,
   CCardBody,
   CCardHeader,
+  CDropdown,
+  CDropdownItem,
+  CDropdownMenu,
+  CDropdownToggle,
   // CCol,
   CRow,
   // CToggler,
@@ -22,11 +26,20 @@ const ModifyCard = () => {
           color={SystemState ? "success" : "danger"}
           onClick={() => flipState()}
         >
-            { /* <CIcon name={SystemState ? "cil-media-stop" : "cil-media-play"} />
-                */ }
+          {/* <CIcon name={SystemState ? "cil-media-stop" : "cil-media-play"} />
+           */}
           {SystemState ? "開啓" : "關閉"}
         </CButton>
       </CRow>
+      <CDropdown>
+        <CDropdownToggle caret color="info">
+          <CIcon name="cil-cloud-download" /> 下載數據
+        </CDropdownToggle>
+        <CDropdownMenu>
+          <CDropdownItem> 上周 </CDropdownItem>
+          <CDropdownItem> 9/10-17 </CDropdownItem>
+        </CDropdownMenu>
+      </CDropdown>
     </CCardBody>
   );
 };

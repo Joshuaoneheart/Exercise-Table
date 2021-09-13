@@ -13,7 +13,7 @@ import { AccountContext } from "../App";
 
 const TheHeaderDropdown = (props) => {
   var account = useContext(AccountContext);
-  if (typeof account == "undefined") return null;
+  if (typeof account == "undefined" || account == null) return null;
   return (
     <CDropdown inNav className="c-header-nav-items mx-2" direction="down">
       <CDropdownToggle className="c-header-nav-link" caret={false}>

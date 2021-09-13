@@ -15,7 +15,7 @@ const loading = (
 
 const TheContent = () => {
   var account = useContext(AccountContext);
-  if(typeof(account) == "undefined") return null;
+  if(typeof(account) == "undefined" || account == null ) return null;
   var routes;
   if(account.role == "Admin") routes = admin_routes;
   else routes = member_routes;
