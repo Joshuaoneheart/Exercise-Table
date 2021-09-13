@@ -66,7 +66,7 @@ const TheHeaderDropdown = (props) => {
             Profile
           </CLink>
         </CDropdownItem>
-        {account.role == "Admin" && (
+        { account.role == "Admin" && (
           <>
             <CDropdownItem>
               <CLink classname="c-subheader-nav-link" to="/settings">

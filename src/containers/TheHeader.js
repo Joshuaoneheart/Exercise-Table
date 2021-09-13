@@ -90,7 +90,7 @@ const TheHeader = (props) => {
           routes={routes}
         />
         <div className="d-md-down-none mfe-2 c-subheader-nav">
-          {account.role == "Admin" && (
+          { account.role == "Admin" && (
             <>
               <CLink className="c-subheader-nav-link" to="/settings">
                 <CIcon name="cil-speech" alt="Settings" />
