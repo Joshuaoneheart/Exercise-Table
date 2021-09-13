@@ -8,9 +8,7 @@ import {
   CDropdownItem,
   CDropdownMenu,
   CDropdownToggle,
-  // CCol,
   CRow,
-  // CToggler,
 } from "@coreui/react";
 
 import CIcon from "@coreui/icons-react";
@@ -26,20 +24,22 @@ const ModifyCard = () => {
           color={SystemState ? "success" : "danger"}
           onClick={() => flipState()}
         >
-          {/* <CIcon name={SystemState ? "cil-media-stop" : "cil-media-play"} />
-           */}
           {SystemState ? "開啓" : "關閉"}
         </CButton>
       </CRow>
-      <CDropdown>
-        <CDropdownToggle caret color="info">
-          <CIcon name="cil-cloud-download" /> 下載數據
-        </CDropdownToggle>
-        <CDropdownMenu>
-          <CDropdownItem> 上周 </CDropdownItem>
-          <CDropdownItem> 9/10-17 </CDropdownItem>
-        </CDropdownMenu>
-      </CDropdown>
+      <CRow className="align-items-center">
+        <CCol>
+          <CDropdown>
+            <CDropdownToggle caret color="info">
+              <CIcon name="cil-cloud-download" /> 下載數據
+            </CDropdownToggle>
+            <CDropdownMenu>
+              <CDropdownItem> 上周 </CDropdownItem>
+              <CDropdownItem> 9/10-17 </CDropdownItem>
+            </CDropdownMenu>
+          </CDropdown>
+        </CCol>
+      </CRow>
     </CCardBody>
   );
 };
