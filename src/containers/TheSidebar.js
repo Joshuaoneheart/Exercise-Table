@@ -19,11 +19,15 @@ import { AccountContext } from "../App.js";
 import admin_navigation from "./_nav";
 import member_navigation from "./_nav_member";
 
+var account_num = 0;
+
 const TheSidebar = () => {
   const dispatch = useDispatch();
   const show = useSelector((state) => state.sidebarShow);
   var account = useContext(AccountContext);
-  if(account == null) alert("連線錯誤");
+  if(account == null) account_num++;
+  console.log(account, account_num);
+  if(account == null && account_num >= 3) alert("連線錯誤");
   if(typeof(account) == "undefined" || account == null) return null;
   var navigation;
   if(account.role == "Admin") navigation = admin_navigation;

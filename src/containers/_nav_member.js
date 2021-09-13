@@ -29,6 +29,12 @@ const _nav =  [
     icon: 'cil-spreadsheet'
   },
   {
+    _tag: 'CSidebarNavItem',
+    name: '牧養對象邀約',
+    to: '/GFform',
+    icon: 'cil-happy'
+  },
+  {
     _tag: 'CSidebarNavDivider'
   },
   {

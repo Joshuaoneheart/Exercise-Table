@@ -78,9 +78,11 @@ const TheHeader = (props) => {
       </CHeaderNav>
 
       <CHeaderNav className="px-3">
+	  	{account.role == "Admin" && (<>
         <TheHeaderDropdownNotif />
         <TheHeaderDropdownTasks />
         <TheHeaderDropdownMssg />
+			</>)}
         <TheHeaderDropdown {...props} />
       </CHeaderNav>
 

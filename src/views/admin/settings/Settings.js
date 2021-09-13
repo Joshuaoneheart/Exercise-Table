@@ -4,6 +4,7 @@ import {
   CCard,
   CCardBody,
   CCardHeader,
+  CCol,
   CDropdown,
   CDropdownItem,
   CDropdownMenu,
@@ -19,27 +20,16 @@ const ModifyCard = () => {
 
   return (
     <CCardBody>
-      <CRow className="align-items-center">
-        <CButton
-          color={SystemState ? "success" : "danger"}
-          onClick={() => flipState()}
-        >
-          {SystemState ? "開啓" : "關閉"}
-        </CButton>
-      </CRow>
-      <CRow className="align-items-center">
-        <CCol>
-          <CDropdown>
-            <CDropdownToggle caret color="info">
-              <CIcon name="cil-cloud-download" /> 下載數據
-            </CDropdownToggle>
-            <CDropdownMenu>
-              <CDropdownItem> 上周 </CDropdownItem>
-              <CDropdownItem> 9/10-17 </CDropdownItem>
-            </CDropdownMenu>
-          </CDropdown>
-        </CCol>
-      </CRow>
+      <CCol>
+        <CRow className="align-items-center">
+          <CButton
+            color={SystemState ? "success" : "danger"}
+            onClick={() => flipState()}
+          >
+            {SystemState ? "開啓" : "關閉"}
+          </CButton>
+        </CRow>
+      </CCol>
     </CCardBody>
   );
 };
@@ -49,9 +39,33 @@ const Settings = () => {
     <>
       <CCard>
         <CCardHeader>
-          <CRow className="align-items-center">接受表單回應</CRow>
+          <CCol>
+            <CRow className="align-items-center">接受表單回應</CRow>
+          </CCol>
         </CCardHeader>
         <ModifyCard />
+      </CCard>
+      <CCard>
+        <CCardHeader>
+          <CCol>
+            <CRow className="align-items-center">接受表單回應</CRow>
+          </CCol>
+        </CCardHeader>
+        <CCardBody>
+          <CCol>
+            <CRow className="align-items-center">
+              <CDropdown>
+                <CDropdownToggle caret color="info">
+                  <CIcon name="cil-cloud-download" /> 下載數據
+                </CDropdownToggle>
+                <CDropdownMenu>
+                  <CDropdownItem> 上周 </CDropdownItem>
+                  <CDropdownItem> 9/10-17 </CDropdownItem>
+                </CDropdownMenu>
+              </CDropdown>
+            </CRow>
+          </CCol>
+        </CCardBody>
       </CCard>
     </>
   );

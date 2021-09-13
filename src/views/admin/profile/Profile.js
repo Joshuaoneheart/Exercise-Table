@@ -23,7 +23,7 @@ const Profile = () => {
     <>
       <CCard>
         <CCardHeader>
-          <CRow className="align-items-center">個人資料</CRow>
+          <CRow className="align-items-center"><CCol>個人資料</CCol></CRow>
         </CCardHeader>
         <ModifyCard />
       </CCard>

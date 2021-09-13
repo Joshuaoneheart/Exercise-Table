@@ -96,6 +96,7 @@ const Problem = (props) => {
 const DataTabs = (props) => {
 	var data = props.data;
 	const [section, setSection] = useState(0);
+	if(data == null) return null;
 	var tabs = [];
 	var tabpanes = [];
 	for(var i = 0;i < data.ids.length;i++){
