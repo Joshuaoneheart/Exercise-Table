@@ -1,4 +1,4 @@
-import React from "react";
+import { React, useContext } from "react";
 import {
   CBadge,
   CDropdown,
@@ -9,8 +9,11 @@ import {
   CLink,
 } from "@coreui/react";
 import CIcon from "@coreui/icons-react";
+import { AccountContext } from "../App";
 
 const TheHeaderDropdown = (props) => {
+  var account = useContext(AccountContext);
+  if (typeof account == "undefined") return null;
   return (
     <CDropdown inNav className="c-header-nav-items mx-2" direction="down">
       <CDropdownToggle className="c-header-nav-link" caret={false}>
@@ -63,12 +66,16 @@ const TheHeaderDropdown = (props) => {
             Profile
           </CLink>
         </CDropdownItem>
-        <CDropdownItem>
-          <CLink classname="c-subheader-nav-link" to="/settings">
-            <CIcon name="cil-settings" className="mfe-2" />
-            Settings
-          </CLink>
-        </CDropdownItem>
+        {account.role == "Admin" && (
+          <>
+            <CDropdownItem>
+              <CLink classname="c-subheader-nav-link" to="/settings">
+                <CIcon name="cil-settings" className="mfe-2" />
+                Settings
+              </CLink>
+            </CDropdownItem>
+          </>
+        )}
         <CDropdownItem>
           <CIcon name="cil-credit-card" className="mfe-2" />
           Payments

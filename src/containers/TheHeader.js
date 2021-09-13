@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
   CHeader,
@@ -16,6 +16,8 @@ import CIcon from "@coreui/icons-react";
 // routes config
 import routes from "../routes";
 
+import { AccountContext } from "../App.js";
+
 import {
   TheHeaderDropdown,
   TheHeaderDropdownMssg,
@@ -26,6 +28,8 @@ import {
 const TheHeader = (props) => {
   const dispatch = useDispatch();
   const sidebarShow = useSelector((state) => state.sidebarShow);
+  var account = useContext(AccountContext);
+  if (typeof account == "undefined" || account == null) return null;
 
   const toggleSidebar = () => {
     const val = [true, "responsive"].includes(sidebarShow)
@@ -58,15 +62,19 @@ const TheHeader = (props) => {
       </CHeaderBrand>
 
       <CHeaderNav className="d-md-down-none mr-auto">
+        {account.role == "Admin" && (
+          <>
         <CHeaderNavItem className="px-3">
           <CHeaderNavLink to="/dashboard">Dashboard</CHeaderNavLink>
         </CHeaderNavItem>
-        <CHeaderNavItem className="px-3">
-          <CHeaderNavLink to="/users">Users</CHeaderNavLink>
-        </CHeaderNavItem>
-        <CHeaderNavItem className="px-3">
-          <CHeaderNavLink to="/settings">Settings</CHeaderNavLink>
-        </CHeaderNavItem>
+            <CHeaderNavItem className="px-3">
+              <CHeaderNavLink to="/users">Users</CHeaderNavLink>
+            </CHeaderNavItem>
+            <CHeaderNavItem className="px-3">
+              <CHeaderNavLink to="/settings">Settings</CHeaderNavLink>
+            </CHeaderNavItem>
+          </>
+        )}
       </CHeaderNav>
 
       <CHeaderNav className="px-3">
@@ -82,17 +90,25 @@ const TheHeader = (props) => {
           routes={routes}
         />
         <div className="d-md-down-none mfe-2 c-subheader-nav">
-          <CLink className="c-subheader-nav-link" to="/settings">
-            <CIcon name="cil-speech" alt="Settings" />
-          </CLink>
-          <CLink className="c-subheader-nav-link" aria-current="page" to="/">
-            <CIcon name="cil-graph" alt="Dashboard" />
-            &nbsp;Dashboard
-          </CLink>
-          <CLink className="c-subheader-nav-link" to="/settings">
-            <CIcon name="cil-settings" alt="Settings" />
-            &nbsp;Settings
-          </CLink>
+          {account.role == "Admin" && (
+            <>
+              <CLink className="c-subheader-nav-link" to="/settings">
+                <CIcon name="cil-speech" alt="Settings" />
+              </CLink>
+              <CLink
+                className="c-subheader-nav-link"
+                aria-current="page"
+                to="/"
+              >
+                <CIcon name="cil-graph" alt="Dashboard" />
+                &nbsp;Dashboard
+              </CLink>
+              <CLink className="c-subheader-nav-link" to="/settings">
+                <CIcon name="cil-settings" alt="Settings" />
+                &nbsp;Settings
+              </CLink>
+            </>
+          )}
         </div>
       </CSubheader>
     </CHeader>

@@ -17,13 +17,14 @@ import { AccountContext } from "../App.js";
 
 // sidebar nav config
 import admin_navigation from "./_nav";
-import member_navigation from "./_nav_member"
+import member_navigation from "./_nav_member";
 
 const TheSidebar = () => {
   const dispatch = useDispatch();
   const show = useSelector((state) => state.sidebarShow);
   var account = useContext(AccountContext);
-  if(typeof(account) == "undefined") return null;
+  if(account == null) alert("連線錯誤");
+  if(typeof(account) == "undefined" || account == null) return null;
   var navigation;
   if(account.role == "Admin") navigation = admin_navigation;
   else navigation = member_navigation;
