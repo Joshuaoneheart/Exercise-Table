@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   CButton,
   CCol,
@@ -18,6 +18,9 @@ import {
   CModalTitle,
 } from "@coreui/react";
 import Select from "react-select";
+import { loading } from "src/reusable";
+import { AccountContext, GetWeeklyBase } from "src/App";
+import { FirestoreDocument, FirestoreCollection, FirestoreBatchedWrite } from "@react-firebase/firestore";
 
 const AddModal = (props) => {
   if (props.show == null) {
@@ -86,63 +89,65 @@ const AddModal = (props) => {
   );
 };
 
-const demo_GFs = [{ name: "GospelFriend1", note: "台北人 台大 資工系" }];
-
-const GFForm = () => {
+const GFForm_Content = (props) => {
   const titles = ["家聚會", "小排", "主日聚會"];
+  var account = props.account;
   let default_selected = [];
-  for (var i in titles) default_selected.push([]);
+  for (var i in titles){
+	  var d = props.default_data;
+	  if(d != null && typeof(d) != "undefined" && typeof(d.value) != "undefined")
+	  	default_selected.push(new Set(d.value[titles[i]]));
+	  else default_selected.push(new Set())
+  }
   var [selected, set_selected] = useState(default_selected);
+  console.log(selected)
   const [addModal, setAddModal] = useState(null);
-  const [GFs, setGFs] = useState(demo_GFs);
+  const [GFs, setGFs] = useState(props.data.value);
+  console.log(props.default_data)
   var inputs = [];
-  console.log(selected);
-  for (i in titles) {
+  for (var i = 0;i < titles.length;i++) {
     var selected_options = [];
     var GF_options = [];
-    for (var j in GFs) {
-      if (selected[i].includes(parseInt(j))) {
+    for (var j = 0;j < GFs.length;j++) {
+      if (selected[i].has(GFs[j].id)) {
         GF_options.push({
-          value: GFs[j].name,
+          value: GFs[j].id,
           label: (
             <span style={{ whiteSpace: "pre" }}>
               <b>{GFs[j].name}</b>
             </span>
-          ),
-          id: j,
+          )
         });
         selected_options.push({
-          value: GFs[j].name,
+          value: GFs[j].id,
           label: (
             <span style={{ whiteSpace: "pre" }}>
               <b>{GFs[j].name}</b>
             </span>
-          ),
-          id: j,
+          )
         });
       } else
         GF_options.push({
-          value: GFs[j].name,
+          value: GFs[j].id,
           label: (
             <span style={{ whiteSpace: "pre" }}>
               <b>{GFs[j].name}</b> <span>{"      " + GFs[j].note}</span>
-            </span>
-          ),
-          id: j,
+            </span>)
         });
-    }
+	}
     inputs.push(
       <CFormGroup>
         <CLabel>{titles[i]}</CLabel>
         <Select
           value={selected_options}
+		  defaultValue={selected_options}
           isMulti
           autoFocus
           options={GF_options}
           onChange={function (set_selected, selected, i, value) {
-            var tmp = [];
+            var tmp = new Set();
             for (let v of value) {
-              tmp.push(parseInt(v.id));
+              tmp.add(v.value);
             }
             selected[i] = tmp;
             set_selected(Array.from(selected));
@@ -152,8 +157,6 @@ const GFForm = () => {
     );
   }
   return (
-    <CRow>
-      <CCol>
         <CCard>
           <CCardHeader>
             <CRow className="align-items-center">
@@ -161,7 +164,12 @@ const GFForm = () => {
             </CRow>
           </CCardHeader>
           <CCardBody>
-            <CForm>{inputs}</CForm>
+            <CForm 
+			  action=""
+			  method="post"
+			  encType="multipart/form-data"
+			  className="form-horizontal">{inputs}</CForm>
+
             <AddModal
               data={GFs}
               setData={setGFs}
@@ -179,14 +187,65 @@ const GFForm = () => {
             >
               新增牧養對象
             </CButton>
-            <CButton variant="ghost" color="dark">
-              提交表單
-            </CButton>
+	  		<FirestoreBatchedWrite>
+	  		{({ addMutationToBatch, commit }) => {
+				return (
+				<CButton variant="ghost" color="dark" onClick={() =>{
+					for(var i = 0;i < GFs.length;i++){
+						if(!("id" in GFs[i]))
+							addMutationToBatch({
+								path: "/GF",
+								value: GFs[i],
+								type: "add"
+							})
+					}
+					var v = {};
+					for(var i = 0;i < selected.length;i++){
+						if(selected[i]) v[titles[i]] = Array.from(selected[i]);
+					}
+					addMutationToBatch({
+						path: "/accounts/" + account.id + "/GF/" + GetWeeklyBase(),
+						value: v,
+						type: "set"
+					});
+					commit().then(() => {alert("儲存完成")}).catch((error) => {console.log(error)});
+				}}>
+				  提交表單
+				</CButton>)
+				}
+			}
+	  		</FirestoreBatchedWrite>
           </CCardFooter>
         </CCard>
-      </CCol>
-    </CRow>
   );
 };
+
+const GFForm = () => {
+    const account = useContext(AccountContext);
+	return (
+    <CRow>
+      <CCol>
+		<FirestoreDocument path={"/accounts/" + account.id + "/GF/" + GetWeeklyBase()}>
+			{(default_data) => {
+			 if(default_data.isLoading) return loading;
+			 return (<FirestoreCollection path="/GF/">
+				{(d) => {
+					if(d.isLoading) return loading;
+					if(d != null && typeof(d) != "undefined" && typeof(d.value) != "undefined"){
+						for(var i = 0;i < d.value.length;i++){
+							d.value[i]["id"] = d.ids[i];
+						}
+						return <GFForm_Content default_data={default_data} data={d} account={account}/>
+					}
+					else return null;
+				}
+				}
+			</FirestoreCollection>)
+			}}
+		</FirestoreDocument>
+      </CCol>
+    </CRow>
+	)
+}
 
 export default GFForm;

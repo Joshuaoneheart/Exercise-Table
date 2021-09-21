@@ -28,12 +28,8 @@ import {
   CTabPane,
 } from "@coreui/react";
 import CIcon from "@coreui/icons-react";
+import { loading } from "src/reusable";
 import { FirestoreCollection, FirestoreBatchedWrite } from "@react-firebase/firestore";
-const loading = (
-  <div className="pt-3 text-center">
-    <div className="sk-spinner sk-spinner-pulse"></div>
-  </div>
-);
 const ModifyCard = (props) => {
   const [data, setData] = useState(props.data);
   const [group, setGroup] = useState(props.group);

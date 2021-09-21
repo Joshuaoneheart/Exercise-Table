@@ -11,6 +11,11 @@ import "firebase/auth";
 import "firebase/firestore";
 import { loading } from "src/reusable";
 const AccountContext = createContext({});
+const BaseDate = new Date(2021, 8, 19, 24).getTime();
+const GetWeeklyBase = () => {
+	var now = new Date().getTime();
+	return Math.floor((now - BaseDate) / 86400000);
+}
 
 var config = {
   apiKey: "AIzaSyBRYT6ipwBqNlt8xqkU2NfPV5XpU0PXxsE",
@@ -69,13 +74,17 @@ class App extends Component {
                           return (
 							  <FirestoreDocument path={"/accounts/" + user.uid}>
 							  {(d) => {
-								  if(!d.isLoading)
-								  return( 
-									  <AccountContext.Provider value={d.value}>
-									  	<TheLayout firebase={firebase} />
-									  </AccountContext.Provider>
-								  );
-								  else return loading;
+								  console.log(d)
+								  if(d.isLoading) return loading;
+								  if(typeof(d) != "undefined" && typeof(d.value) != "undefined" && d != null){
+									  d.value.id = user.uid;
+									  return( 
+										  <AccountContext.Provider value={d.value}>
+											<TheLayout firebase={firebase} />
+										  </AccountContext.Provider>
+									  );
+								  }
+								  else return null;
 							  }}
 						  	  </FirestoreDocument>);
                         else return <Login firebase={firebase} />;
@@ -93,4 +102,4 @@ class App extends Component {
 }
 
 export default App;
-export { AccountContext };
+export { AccountContext, BaseDate, GetWeeklyBase };

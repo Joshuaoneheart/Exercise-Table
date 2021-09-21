@@ -64,9 +64,9 @@ const TheHeader = (props) => {
       <CHeaderNav className="d-md-down-none mr-auto">
         {account.role == "Admin" && (
           <>
-        <CHeaderNavItem className="px-3">
-          <CHeaderNavLink to="/dashboard">Dashboard</CHeaderNavLink>
-        </CHeaderNavItem>
+            <CHeaderNavItem className="px-3">
+              <CHeaderNavLink to="/dashboard">Dashboard</CHeaderNavLink>
+            </CHeaderNavItem>
             <CHeaderNavItem className="px-3">
               <CHeaderNavLink to="/users">Users</CHeaderNavLink>
             </CHeaderNavItem>
@@ -78,11 +78,13 @@ const TheHeader = (props) => {
       </CHeaderNav>
 
       <CHeaderNav className="px-3">
-	  	{account.role == "Admin" && (<>
-        <TheHeaderDropdownNotif />
-        <TheHeaderDropdownTasks />
-        <TheHeaderDropdownMssg />
-			</>)}
+        {account.role == "Admin" && (
+          <>
+            <TheHeaderDropdownNotif />
+            <TheHeaderDropdownTasks />
+            <TheHeaderDropdownMssg />
+          </>
+        )}
         <TheHeaderDropdown {...props} />
       </CHeaderNav>
 
@@ -92,7 +94,7 @@ const TheHeader = (props) => {
           routes={routes}
         />
         <div className="d-md-down-none mfe-2 c-subheader-nav">
-          { account.role == "Admin" && (
+          {account.role == "Admin" && (
             <>
               <CLink className="c-subheader-nav-link" to="/settings">
                 <CIcon name="cil-speech" alt="Settings" />
