@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   CButton,
   CCol,
@@ -93,11 +93,11 @@ const AddModal = (props) => {
   );
 };
 
-const GFForm_Content = (props) => {
+const GFFormContent = (props) => {
   const titles = ["家聚會", "小排", "主日聚會"];
   var account = props.account;
   let default_selected = [];
-  for (var i in titles) {
+  for (let i in titles) {
     var d = props.default_data;
     if (d != null && typeof d != "undefined" && typeof d.value != "undefined")
       default_selected.push(new Set(d.value[titles[i]]));
@@ -109,7 +109,7 @@ const GFForm_Content = (props) => {
   const [GFs, setGFs] = useState(props.data.value);
   console.log(props.default_data);
   var inputs = [];
-  for (var i = 0; i < titles.length; i++) {
+  for (let i = 0; i < titles.length; i++) {
     var selected_options = [];
     var GF_options = [];
     for (var j = 0; j < GFs.length; j++) {
@@ -202,7 +202,7 @@ const GFForm_Content = (props) => {
                 variant="ghost"
                 color="dark"
                 onClick={() => {
-                  for (var i = 0; i < GFs.length; i++) {
+                  for (let i = 0; i < GFs.length; i++) {
                     if (!("id" in GFs[i]))
                       addMutationToBatch({
                         path: "/GF",
@@ -211,7 +211,7 @@ const GFForm_Content = (props) => {
                       });
                   }
                   var v = {};
-                  for (var i = 0; i < selected.length; i++) {
+                  for (let i = 0; i < selected.length; i++) {
                     if (selected[i]) v[titles[i]] = Array.from(selected[i]);
                   }
                   addMutationToBatch({
@@ -261,7 +261,7 @@ const GFForm = () => {
                       d.value[i]["id"] = d.ids[i];
                     }
                     return (
-                      <GFForm_Content
+                      <GFFormContent
                         default_data={default_data}
                         data={d}
                         account={account}
