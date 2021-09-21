@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   CCol,
   CRow,
@@ -23,8 +23,13 @@ import {
 import CIcon from "@coreui/icons-react";
 import { loading } from "src/reusable";
 import { AccountContext, GetWeeklyBase } from "src/App.js";
-import { FirestoreCollection, FirestoreBatchedWrite } from "@react-firebase/firestore";
+import {
+  FirestoreDocument,
+  FirestoreCollection,
+  FirestoreBatchedWrite,
+} from "@react-firebase/firestore";
 const Problem = (props) => {
+  console.log(props.default_data)
   var frame = [];
   var option_style = { color: "#000000", fontSize: "20px" };
   var title_style = { color: "#636f83" };
@@ -60,6 +65,7 @@ const Problem = (props) => {
                 name={props.data.id + "-" + suboption}
                 value={option}
                 style={Object.assign({}, button_style, { marginLeft: "2px" })}
+			  	defaultChecked={(typeof(props.default_data) !== "undefined" && suboption in props.default_data && props.default_data["suboption"].ans === option)}
               />
             </CCol>
           );
@@ -82,6 +88,7 @@ const Problem = (props) => {
               name={props.data.id}
               value={option}
               style={button_style}
+			  defaultChecked={(typeof(props.default_data) !== "undefined" && props.default_data.ans === option)}
             />
             <CLabel
               variant="checkbox"
@@ -102,6 +109,7 @@ const Problem = (props) => {
               name={props.data.id}
               value={option}
               style={button_style}
+			  defaultChecked={(typeof(props.default_data) !== "undefined" && option in props.default_data.ans)}
             />
             <CLabel
               variant="checkbox"
@@ -127,8 +135,8 @@ const Problem = (props) => {
 
 const DataTabs = (props) => {
   var data = props.data;
+  var account = props.account;
   const [section, setSection] = useState(0);
-  const account = useContext(AccountContext);
   var form = React.createRef();
   var tabs = [];
   var tabpanes = [];
@@ -146,7 +154,9 @@ const DataTabs = (props) => {
     var tabContents = [];
     for (var j = 0; j < data.value[i].length; j++) {
       var problem = data.value[i][j];
-      tabContents.push(<Problem name={data.value[i].id} data={problem} key={j} />);
+      tabContents.push(
+        <Problem name={data.value[i].id} data={problem} key={j} default_data={props.default_data.value[problem.id]} />
+      );
     }
     tabpanes.push(<CTabPane key={i}>{tabContents}</CTabPane>);
   }
@@ -173,84 +183,124 @@ const DataTabs = (props) => {
         </CForm>
       </CCardBody>
       <CCardFooter>
-	  	<FirestoreBatchedWrite>
-	  	  {({addMutationToBatch, commit }) =>{
-			return (
-				<CButton variant="ghost" color="dark" onClick={() => {
-					var v = {};
-					for(var i = 0;i < props.metadata.value.length;i++){
-						var problem = props.metadata.value[i];
-						switch(problem.type){
-							case "Grid":
-								var suboptions = problem["子選項"].split(";");
-								for(var j = 0;j < suboptions.length;j++){
-									var ans = form.current.elements[problem.id + "-" + suboptions[i]].value;
-									if(ans){
-										if(!(problem.id in v)) v[problem.id] = {};
-										v[problem.id][suboptions[j]] = {"ans": ans, "score": problem.score.split(";")[problem["選項"].split(";").indexOf(ans)]}
-									}
-								}
-							break;
-							case "MultiChoice":
-								var ans = form.current.elements[props.metadata.ids[i]].value;
- 								if(ans) v[problem.id] = {"ans": ans, "score": problem.score.split(";")[problem["選項"].split(";").indexOf(ans)]}
-							break;
-							case "MultiAnswer":
-								var nodeList = form.current.elements[props.metadata.ids[i]];
-								for(var j = 0;j < nodeList.length;j++){
-									if(nodeList[j].checked){
-										if(!(props.metadata.ids[i] in v)) v[props.metadata.ids[i]] = [];
-										v[props.metadata.ids[i]].push(nodeList[j].value);
-									}
-								}
-							break;
-							default:
-							break;
-						}
-					}
-					console.log(v);
-					addMutationToBatch({
-						path: "/accounts/" + account.id + "/data/" + GetWeeklyBase(),
-						value: v,
-						type: "set"
-					});
-					commit().then(() => {alert("儲存完成")}).catch((error) => {console.log(error)});
-				}}>
-				  提交表單
-				</CButton>
-			)
-		  }}
-	 	</FirestoreBatchedWrite>
+        <FirestoreBatchedWrite>
+          {({ addMutationToBatch, commit }) => {
+            return (
+              <CButton
+                variant="ghost"
+                color="dark"
+                onClick={() => {
+                  var v = {};
+                  for (var i = 0; i < props.metadata.value.length; i++) {
+                    var problem = props.metadata.value[i];
+                    switch (problem.type) {
+                      case "Grid":
+                        var suboptions = problem["子選項"].split(";");
+                        for (var j = 0; j < suboptions.length; j++) {
+                          var ans =
+                            form.current.elements[
+                              problem.id + "-" + suboptions[i]
+                            ].value;
+                          if (ans) {
+                            if (!(problem.id in v)) v[problem.id] = {};
+                            v[problem.id][suboptions[j]] = {
+                              ans: ans,
+                              score:
+                                problem.score.split(";")[
+                                  problem["選項"].split(";").indexOf(ans)
+                                ],
+                            };
+                          }
+                        }
+                        break;
+                      case "MultiChoice":
+                        var ans =
+                          form.current.elements[props.metadata.ids[i]].value;
+                        if (ans)
+                          v[problem.id] = {
+                            ans: ans,
+                            score:
+                              problem.score.split(";")[
+                                problem["選項"].split(";").indexOf(ans)
+                              ],
+                          };
+                        break;
+                      case "MultiAnswer":
+                        var nodeList =
+                          form.current.elements[props.metadata.ids[i]];
+                        for (var j = 0; j < nodeList.length; j++) {
+                          if (nodeList[j].checked) {
+                            if (!(props.metadata.ids[i] in v))
+                              v[props.metadata.ids[i]] = {"ans": [], "score": 0};
+                            v[props.metadata.ids[i]].ans.push(nodeList[j].value);
+                            v[props.metadata.ids[i]].score += parseInt(props.metadata.score);
+                          }
+                        }
+                        break;
+                      default:
+                        break;
+                    }
+                  }
+                  console.log(v);
+                  addMutationToBatch({
+                    path:
+                      "/accounts/" + account.id + "/data/" + GetWeeklyBase(),
+                    value: v,
+                    type: "set",
+                  });
+                  commit()
+                    .then(() => {
+                      alert("儲存完成");
+                    })
+                    .catch((error) => {
+                      console.log(error);
+                    });
+                }}
+              >
+                提交表單
+              </CButton>
+            );
+          }}
+        </FirestoreBatchedWrite>
       </CCardFooter>
     </CCard>
   );
 };
 
 const Form = () => {
+  const account = useContext(AccountContext);
   return (
     <CRow>
-      <FirestoreCollection path="/form/">
-        {(d) => {
-          if(d.isLoading) return loading;
-		  if(typeof(d) != "undefined" && typeof(d.value) != "undefined" && d != null){
-			var data = {value:[], ids:[]};
-			for(var i = 0;i < d.value.length;i++){
-				d.value[i].id = d.ids[i];
-				if(!(data.ids.includes(d.value[i].section))){
+	  <FirestoreDocument path={"/accounts/" + account.id + "/data/" + GetWeeklyBase()} >
+	  {(default_data) => {
+		  if(default_data.isLoading) return loading;
+		  return (<FirestoreCollection path="/form/">
+			{(d) => {
+			  if (d.isLoading) return loading;
+			  if (
+				typeof d != "undefined" &&
+				typeof d.value != "undefined" &&
+				d != null
+			  ) {
+				var data = { value: [], ids: [] };
+				for (var i = 0; i < d.value.length; i++) {
+				  d.value[i].id = d.ids[i];
+				  if (!data.ids.includes(d.value[i].section)) {
 					data.ids.push(d.value[i].section);
 					data.value.push([]);
+				  }
+				  data.value[data.ids.indexOf(d.value[i].section)].push(d.value[i]);
 				}
-				data.value[data.ids.indexOf(d.value[i].section)].push(d.value[i]);
-			}
-			return (
-            <CCol>
-              <DataTabs data={data} metadata={d}/>
-            </CCol>
-          );
-		  }
-		  else return null;
-        }}
-      </FirestoreCollection>
+				return (
+				  <CCol>
+					<DataTabs data={data} metadata={d} account={account} default_data={default_data}/>
+				  </CCol>
+				);
+			  } else return null;
+			}}
+		  </FirestoreCollection>)
+	  }}
+	  </FirestoreDocument>
     </CRow>
   );
 };
