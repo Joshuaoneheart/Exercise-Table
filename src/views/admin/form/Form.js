@@ -144,7 +144,9 @@ const DataTabs = (props) => {
     var tabContents = [];
     for (var j = 0; j < data.value[i].length; j++) {
       var problem = data.value[i][j];
-      tabContents.push(<Problem name={data.value[i].id} data={problem} key={j} />);
+      tabContents.push(
+        <Problem name={data.value[i].id} data={problem} key={j} />
+      );
     }
     tabpanes.push(<CTabPane key={i}>{tabContents}</CTabPane>);
   }
@@ -179,24 +181,27 @@ const Form = () => {
     <CRow>
       <FirestoreCollection path="/form/">
         {(d) => {
-          if(d.isLoading) return loading;
-		  if(typeof(d) != "undefined" && typeof(d.value) != "undefined" && d != null){
-			var data = {value:[], ids:[]};
-			for(var i = 0;i < d.value.length;i++){
-				d.value[i].id = d.ids[i];
-				if(!(data.ids.includes(d.value[i].section))){
-					data.ids.push(d.value[i].section);
-					data.value.push([]);
-				}
-				data.value[data.ids.indexOf(d.value[i].section)].push(d.value[i]);
-			}
-			return (
-            <CCol>
-              <DataTabs data={data} metadata={d}/>
-            </CCol>
-          );
-		  }
-		  else return null;
+          if (d.isLoading) return loading;
+          if (
+            typeof d != "undefined" &&
+            typeof d.value != "undefined" &&
+            d != null
+          ) {
+            var data = { value: [], ids: [] };
+            for (var i = 0; i < d.value.length; i++) {
+              d.value[i].id = d.ids[i];
+              if (!data.ids.includes(d.value[i].section)) {
+                data.ids.push(d.value[i].section);
+                data.value.push([]);
+              }
+              data.value[data.ids.indexOf(d.value[i].section)].push(d.value[i]);
+            }
+            return (
+              <CCol>
+                <DataTabs data={data} metadata={d} />
+              </CCol>
+            );
+          } else return null;
         }}
       </FirestoreCollection>
     </CRow>
