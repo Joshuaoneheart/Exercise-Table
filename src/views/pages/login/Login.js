@@ -75,16 +75,12 @@ const Login = (props) => {
                       </CButton>
                     </CCol>
                     <CCol>
-			<CLink to="/register">
-                      <CButton color="primary">
-                        Register
-                      </CButton>
-		      </CLink>
+                      <CLink to="/register">
+                        <CButton color="primary">Register</CButton>
+                      </CLink>
                     </CCol>
                     <CCol className="text-right">
-                      <CButton color="link">
-                        Forgot password?
-                      </CButton>
+                      <CButton color="link">Forgot password?</CButton>
                     </CCol>
                   </CRow>
                 </CForm>
