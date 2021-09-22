@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import {
   CButton,
   CCard,
@@ -15,9 +15,29 @@ import {
   CRow,
 } from "@coreui/react";
 import CIcon from "@coreui/icons-react";
+import { FirebaseAuthConsumer } from "@react-firebase/auth";
+import { FirestoreBatchedWrite } from "@react-firebase/firestore"
 
 const Register = (props) => {
   var register_form = React.useRef();
+  var [uid, setUid] = useState("");
+  if(props.isSignedIn){
+	  uid = props.user.uid;
+		var date = new Date();
+  	props.firebase.firestore().collection('accounts').doc(uid).set(
+	  {
+		  displayName: register_form.current.elements.username.value,
+									email: register_form.current.elements.email.value,
+									registered: date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + date.getDate(),
+									role: "Member",
+									status: "Pending"
+								}).then(() => {
+							  alert("成功創建帳戶");
+							props.firebase.auth().signOut().then(() => {
+							 window.location.href = window.location.href.replace("register", "login");
+							}).catch((error) => alert(error.message));
+								}).catch((error) => {alert(error.message)})
+  }
   return (
     <div className="c-app c-default-layout flex-row align-items-center">
       <CContainer>
@@ -40,6 +60,11 @@ const Register = (props) => {
                       placeholder="Username(請使用本名)"
                       autoComplete="username"
 	  				  required
+	  				  onChange={(event) => {
+						  if(event.target.value){
+							  event.target.classList.remove("is-invalid");
+					  	  }
+					  }}
                     />
                     <CInvalidFeedback>Username cannot be empty.</CInvalidFeedback>
                   </CInputGroup>
@@ -53,6 +78,11 @@ const Register = (props) => {
                       placeholder="Email"
                       autoComplete="email"
 	  				  required
+	  				  onChange={(event) => {
+						  if(event.target.value){
+							  event.target.classList.remove("is-invalid");
+					  	  }
+					  }}
                     />
                     <CInvalidFeedback>Email cannot be empty.</CInvalidFeedback>
                   </CInputGroup>
@@ -68,6 +98,11 @@ const Register = (props) => {
                       placeholder="Password"
                       autoComplete="new-password"
 	  				  required
+	  				  onChange={(event) => {
+						  if(event.target.value){
+							  event.target.classList.remove("is-invalid");
+					  	  }
+					  }}
                     />
                     <CInvalidFeedback>Password cannot be empty.</CInvalidFeedback>
                   </CInputGroup>
@@ -94,13 +129,27 @@ const Register = (props) => {
                   <CRow>
                     <CCol>
                       <CButton color="success" onClick={() => {
-						  if(register_form.current.elements.password.value === register_form.current.elements.repeat_password.value){
-							  props.firebase.auth().createUserWithEmailAndPassword(register_form.current.email, register_form.current.password).then((userCredential) => {
-								  // ToDo: add username to accounts
-							  });
-						  }
-						  else{
+						  let pass_flag = true;
+						  if(register_form.current.elements.password.value !== register_form.current.elements.repeat_password.value){
 							  register_form.current.elements.repeat_password.classList.add("is-invalid");
+							  pass_flag = false;
+						  }
+						  if (!register_form.current.elements.password.value) {
+							  register_form.current.elements.password.classList.add("is-invalid");
+							  pass_flag = false;
+						  }
+						  if (!register_form.current.elements.email.value) {
+							  register_form.current.elements.email.classList.add("is-invalid");
+							  pass_flag = false;
+						  }
+						  if (!register_form.current.elements.username.value) {
+							  register_form.current.elements.username.classList.add("is-invalid");
+							  pass_flag = false;
+						  }
+						  if(pass_flag) {
+							  props.firebase.auth().createUserWithEmailAndPassword(register_form.current.elements.email.value, register_form.current.elements.password.value).then((user_data) => {setUid(user_data.user.uid);}).catch((error) => {
+								  alert(error.message)
+							  });
 						  }
 					  }}>Create Account</CButton>
                     </CCol>

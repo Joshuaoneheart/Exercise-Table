@@ -7,7 +7,7 @@ import {
 } from "@react-firebase/auth";
 import {
   FirestoreProvider,
-  FirestoreDocument,
+  FirestoreDocument
 } from "@react-firebase/firestore";
 import firebase from "firebase/app";
 import "firebase/auth";
@@ -46,35 +46,11 @@ class App extends Component {
       <HashRouter>
         <React.Suspense fallback={loading}>
           <FirebaseAuthProvider {...config} firebase={firebase}>
-            <Switch>
-              <Route
-                exact
-                path="/register"
-                name="Register Page"
-                render={(props) => <Register firebase={firebase} {...props} />}
-              />
-              <Route
-                exact
-                path="/404"
-                name="Page 404"
-                render={(props) => <Page404 {...props} />}
-              />
-              <Route
-                exact
-                path="/500"
-                name="Page 500"
-                render={(props) => <Page500 {...props} />}
-              />
-              <Route
-                path="/"
-                name="Home"
-                render={(props) => (
-                  <FirestoreProvider {...config} firebase={firebase}>
                     <FirebaseAuthConsumer>
                       {({ isSignedIn, user, providerId }) => {
-                        if (user !== null) console.log(user.uid);
                         if (isSignedIn)
                           return (
+                  <FirestoreProvider {...config} firebase={firebase}>
                             <FirestoreDocument path={"/accounts/" + user.uid}>
                               {(d) => {
                                 if (d.isLoading) return loading;
@@ -92,14 +68,40 @@ class App extends Component {
                                 } else return null;
                               }}
                             </FirestoreDocument>
+                  </FirestoreProvider>
                           );
-                        else return <Login firebase={firebase} />;
+            return (<Switch>
+              <Route
+                exact
+                path="/register"
+                name="Register Page"
+                render={(props) => { 
+						return <Register firebase={firebase} user={user} isSignedIn={isSignedIn} {...props} />
+				}
+				}
+				/>
+              <Route
+                exact
+                path="/404"
+                name="Page 404"
+                render={(props) => <Page404 {...props} />}
+              />
+              <Route
+                exact
+                path="/500"
+                name="Page 500"
+                render={(props) => <Page500 {...props} />}
+              />
+              <Route
+                path="/"
+                name="Home"
+                render={(props) => {
+                         return <Login firebase={firebase} />;
+				}}
+              />
+            </Switch>)
                       }}
                     </FirebaseAuthConsumer>
-                  </FirestoreProvider>
-                )}
-              />
-            </Switch>
           </FirebaseAuthProvider>
         </React.Suspense>
       </HashRouter>
