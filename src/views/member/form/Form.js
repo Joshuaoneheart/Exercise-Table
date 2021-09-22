@@ -130,8 +130,8 @@ const Problem = (props) => {
         );
       }
       break;
-	default:
-	break;
+    default:
+      break;
   }
   return (
     <>

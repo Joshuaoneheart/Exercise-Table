@@ -18,7 +18,6 @@ import CIcon from "@coreui/icons-react";
 const Login = (props) => {
   var username = React.createRef();
   var password = React.createRef();
-  console.log(username);
   return (
     <div className="c-app c-default-layout flex-row align-items-center">
       <CContainer>

@@ -51,7 +51,7 @@ class App extends Component {
                 exact
                 path="/register"
                 name="Register Page"
-                render={(props) => <Register {...props} />}
+                render={(props) => <Register firebase={firebase} {...props} />}
               />
               <Route
                 exact
@@ -77,7 +77,6 @@ class App extends Component {
                           return (
                             <FirestoreDocument path={"/accounts/" + user.uid}>
                               {(d) => {
-                                console.log(d);
                                 if (d.isLoading) return loading;
                                 if (
                                   typeof d != "undefined" &&
