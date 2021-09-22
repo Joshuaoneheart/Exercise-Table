@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import {
   CButton,
   CCard,
@@ -15,28 +15,37 @@ import {
   CRow,
 } from "@coreui/react";
 import CIcon from "@coreui/icons-react";
-import { FirebaseAuthConsumer } from "@react-firebase/auth";
-import { FirestoreBatchedWrite } from "@react-firebase/firestore"
 
 const Register = (props) => {
   var register_form = React.useRef();
   var [uid, setUid] = useState("");
-  if(props.isSignedIn){
-	  uid = props.user.uid;
-		var date = new Date();
-  	props.firebase.firestore().collection('accounts').doc(uid).set(
-	  {
-		  displayName: register_form.current.elements.username.value,
-									email: register_form.current.elements.email.value,
-									registered: date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + date.getDate(),
-									role: "Member",
-									status: "Pending"
-								}).then(() => {
-							  alert("成功創建帳戶");
-							props.firebase.auth().signOut().then(() => {
-							 window.location.href = window.location.href.replace("register", "login");
-							}).catch((error) => alert(error.message));
-								}).catch((error) => {alert(error.message)})
+  if (uid) {
+    var date = new Date();
+    props.firebase
+      .firestore()
+      .collection("accounts")
+      .doc(uid)
+      .set({
+        displayName: register_form.current.elements.username.value,
+        email: register_form.current.elements.email.value,
+        registered:
+          date.getFullYear() +
+          "/" +
+          (date.getMonth() + 1) +
+          "/" +
+          date.getDate(),
+        role: "Member",
+        status: "Pending",
+      })
+      .then(() => {
+        props.firebase
+          .auth()
+          .signOut()
+          .catch((error) => alert(error.message));
+      })
+      .catch((error) => {
+        alert(error.message);
+      });
   }
   return (
     <div className="c-app c-default-layout flex-row align-items-center">
@@ -55,34 +64,36 @@ const Register = (props) => {
                       </CInputGroupText>
                     </CInputGroupPrepend>
                     <CInput
-	  			      name="username"
+                      name="username"
                       type="text"
                       placeholder="Username(請使用本名)"
                       autoComplete="username"
-	  				  required
-	  				  onChange={(event) => {
-						  if(event.target.value){
-							  event.target.classList.remove("is-invalid");
-					  	  }
-					  }}
+                      required
+                      onChange={(event) => {
+                        if (event.target.value) {
+                          event.target.classList.remove("is-invalid");
+                        }
+                      }}
                     />
-                    <CInvalidFeedback>Username cannot be empty.</CInvalidFeedback>
+                    <CInvalidFeedback>
+                      Username cannot be empty.
+                    </CInvalidFeedback>
                   </CInputGroup>
                   <CInputGroup className="mb-3">
                     <CInputGroupPrepend>
                       <CInputGroupText>@</CInputGroupText>
                     </CInputGroupPrepend>
                     <CInput
-	  				  name="email"
+                      name="email"
                       type="text"
                       placeholder="Email"
                       autoComplete="email"
-	  				  required
-	  				  onChange={(event) => {
-						  if(event.target.value){
-							  event.target.classList.remove("is-invalid");
-					  	  }
-					  }}
+                      required
+                      onChange={(event) => {
+                        if (event.target.value) {
+                          event.target.classList.remove("is-invalid");
+                        }
+                      }}
                     />
                     <CInvalidFeedback>Email cannot be empty.</CInvalidFeedback>
                   </CInputGroup>
@@ -93,18 +104,20 @@ const Register = (props) => {
                       </CInputGroupText>
                     </CInputGroupPrepend>
                     <CInput
-	  				  name="password"
+                      name="password"
                       type="password"
                       placeholder="Password"
                       autoComplete="new-password"
-	  				  required
-	  				  onChange={(event) => {
-						  if(event.target.value){
-							  event.target.classList.remove("is-invalid");
-					  	  }
-					  }}
+                      required
+                      onChange={(event) => {
+                        if (event.target.value) {
+                          event.target.classList.remove("is-invalid");
+                        }
+                      }}
                     />
-                    <CInvalidFeedback>Password cannot be empty.</CInvalidFeedback>
+                    <CInvalidFeedback>
+                      Password cannot be empty.
+                    </CInvalidFeedback>
                   </CInputGroup>
                   <CInputGroup className="mb-4">
                     <CInputGroupPrepend>
@@ -113,45 +126,76 @@ const Register = (props) => {
                       </CInputGroupText>
                     </CInputGroupPrepend>
                     <CInput
-	  				  name="repeat_password"
+                      name="repeat_password"
                       type="password"
                       placeholder="Repeat password"
                       autoComplete="new-password"
-	  				  onChange={(event) => {
-						  if(register_form.current.elements.password.value === event.target.value){
-							  event.target.classList.remove("is-invalid");
-					  	  }
-					  }}
-	  				  required
+                      onChange={(event) => {
+                        if (
+                          register_form.current.elements.password.value ===
+                          event.target.value
+                        ) {
+                          event.target.classList.remove("is-invalid");
+                        }
+                      }}
+                      required
                     />
-                  <CInvalidFeedback>Please enter the same password as above.</CInvalidFeedback>
+                    <CInvalidFeedback>
+                      Please enter the same password as above.
+                    </CInvalidFeedback>
                   </CInputGroup>
                   <CRow>
                     <CCol>
-                      <CButton color="success" onClick={() => {
-						  let pass_flag = true;
-						  if(register_form.current.elements.password.value !== register_form.current.elements.repeat_password.value){
-							  register_form.current.elements.repeat_password.classList.add("is-invalid");
-							  pass_flag = false;
-						  }
-						  if (!register_form.current.elements.password.value) {
-							  register_form.current.elements.password.classList.add("is-invalid");
-							  pass_flag = false;
-						  }
-						  if (!register_form.current.elements.email.value) {
-							  register_form.current.elements.email.classList.add("is-invalid");
-							  pass_flag = false;
-						  }
-						  if (!register_form.current.elements.username.value) {
-							  register_form.current.elements.username.classList.add("is-invalid");
-							  pass_flag = false;
-						  }
-						  if(pass_flag) {
-							  props.firebase.auth().createUserWithEmailAndPassword(register_form.current.elements.email.value, register_form.current.elements.password.value).then((user_data) => {setUid(user_data.user.uid);}).catch((error) => {
-								  alert(error.message)
-							  });
-						  }
-					  }}>Create Account</CButton>
+                      <CButton
+                        color="success"
+                        onClick={() => {
+                          let pass_flag = true;
+                          if (
+                            register_form.current.elements.password.value !==
+                            register_form.current.elements.repeat_password.value
+                          ) {
+                            register_form.current.elements.repeat_password.classList.add(
+                              "is-invalid"
+                            );
+                            pass_flag = false;
+                          }
+                          if (!register_form.current.elements.password.value) {
+                            register_form.current.elements.password.classList.add(
+                              "is-invalid"
+                            );
+                            pass_flag = false;
+                          }
+                          if (!register_form.current.elements.email.value) {
+                            register_form.current.elements.email.classList.add(
+                              "is-invalid"
+                            );
+                            pass_flag = false;
+                          }
+                          if (!register_form.current.elements.username.value) {
+                            register_form.current.elements.username.classList.add(
+                              "is-invalid"
+                            );
+                            pass_flag = false;
+                          }
+                          if (pass_flag) {
+                            props.firebase
+                              .auth()
+                              .createUserWithEmailAndPassword(
+                                register_form.current.elements.email.value,
+                                register_form.current.elements.password.value
+                              )
+                              .then((user_data) => {
+        						alert("成功創建帳戶");
+                                setUid(user_data.user.uid);
+                              })
+                              .catch((error) => {
+                                alert(error.message);
+                              });
+                          }
+                        }}
+                      >
+                        Create Account
+                      </CButton>
                     </CCol>
                     <CCol className="text-right">
                       <CLink to="/login">
