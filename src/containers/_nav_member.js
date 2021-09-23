@@ -1,6 +1,3 @@
-import React from "react";
-import CIcon from "@coreui/icons-react";
-
 const _nav = [
   {
     _tag: "CSidebarNavTitle",
@@ -15,7 +12,7 @@ const _nav = [
   {
     _tag: "CSidebarNavItem",
     name: "活力組",
-    to: "/theme/typography",
+    to: "/biblegroup",
     icon: "cil-bar-chart",
   },
   {

@@ -28,7 +28,6 @@ import {
   FirestoreBatchedWrite,
 } from "@react-firebase/firestore";
 const Problem = (props) => {
-  console.log(props.default_data);
   var frame = [];
   var option_style = { color: "#000000", fontSize: "20px" };
   var title_style = { color: "#636f83" };
@@ -38,21 +37,27 @@ const Problem = (props) => {
       var option_row = [];
       var row = [];
       option_row.push(<CCol></CCol>);
-      for (let option of props.data["選項"].split(";")) {
+	  let options = props.data["選項"].split(";");
+      for (let i = 0;i < options.length;i++) {
+		let option = options[i];
         option_row.push(
           <CCol
+			key={i}
             style={Object.assign({}, option_style, { textAlign: "center" })}
           >
             {option}
           </CCol>
         );
       }
-      for (var suboption of props.data["子選項"].split(";")) {
+	  let suboptions = props.data["子選項"].split(";");
+      for (let j = 0;j < suboptions.length;j++) {
+		let suboption = suboptions[j];
         var subframe = [];
         subframe.push(<CCol style={option_style}>{suboption}</CCol>);
         for (var option of props.data["選項"].split(";")) {
           subframe.push(
             <CCol
+			  key={j}
               style={{
                 display: "flex",
                 alignItems: "center",
@@ -83,9 +88,11 @@ const Problem = (props) => {
       );
       break;
     case "MultiChoice":
-      for (let option of props.data["選項"].split(";")) {
+	   options = props.data["選項"].split(";");
+      for (let i = 0;i < options.length;i++) {
+		let option = options[i];
         frame.push(
-          <CFormGroup variant="checkbox">
+          <CFormGroup variant="checkbox" key={i}>
             <CInputRadio
               className="form-check-input"
               name={props.data.id}
@@ -107,9 +114,11 @@ const Problem = (props) => {
       }
       break;
     case "MultiAnswer":
-      for (let option of props.data["子選項"].split(";")) {
+	  options = props.data["子選項"].split(";");
+      for (let i = 0;i < options.length;i++) {
+		let option = options[i];
         frame.push(
-          <CFormGroup variant="checkbox">
+          <CFormGroup variant="checkbox" key={i}>
             <CInputCheckbox
               className="form-check-input"
               name={props.data.id}
@@ -170,7 +179,7 @@ const DataTabs = (props) => {
           name={data.value[i].id}
           data={problem}
           key={j}
-          default_data={props.default_data.value[problem.id]}
+          default_data={props.default_data? undefined:props.default_data.value[problem.id]}
         />
       );
     }
@@ -272,7 +281,7 @@ const DataTabs = (props) => {
                       alert("儲存完成");
                     })
                     .catch((error) => {
-                      console.log(error);
+                      alert(error.message);
                     });
                 }}
               >

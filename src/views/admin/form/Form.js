@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import {
   CCol,
   CRow,
@@ -6,7 +6,7 @@ import {
   CTabPane,
   CCard,
   CCardBody,
-  CCardFooter,
+  CCardHeader,
   CDropdown,
   CDropdownItem,
   CDropdownMenu,
@@ -16,11 +16,8 @@ import {
   CInputRadio,
   CInputCheckbox,
   CLabel,
-  CTabs,
-  CCardHeader,
-  CButton,
+  CTabs
 } from "@coreui/react";
-import CIcon from "@coreui/icons-react";
 import { loading } from "src/reusable";
 import { FirestoreCollection } from "@react-firebase/firestore";
 const Problem = (props) => {
@@ -33,7 +30,7 @@ const Problem = (props) => {
       var option_row = [];
       var row = [];
       option_row.push(<CCol></CCol>);
-      for (var option of props.data["選項"].split(";")) {
+      for (let option of props.data["選項"].split(";")) {
         option_row.push(
           <CCol
             style={Object.assign({}, option_style, { textAlign: "center" })}
@@ -45,7 +42,7 @@ const Problem = (props) => {
       for (var suboption of props.data["子選項"].split(";")) {
         var subframe = [];
         subframe.push(<CCol style={option_style}>{suboption}</CCol>);
-        for (var option of props.data["選項"].split(";")) {
+        for (let option of props.data["選項"].split(";")) {
           subframe.push(
             <CCol
               style={{
@@ -73,7 +70,7 @@ const Problem = (props) => {
       );
       break;
     case "MultiChoice":
-      for (var option of props.data["選項"].split(";")) {
+      for (let option of props.data["選項"].split(";")) {
         frame.push(
           <CFormGroup variant="checkbox">
             <CInputRadio
@@ -112,6 +109,8 @@ const Problem = (props) => {
         );
       }
       break;
+	default:
+		  break;
   }
   return (
     <>

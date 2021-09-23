@@ -29,7 +29,7 @@ const TheHeader = (props) => {
   const dispatch = useDispatch();
   const sidebarShow = useSelector((state) => state.sidebarShow);
   var account = useContext(AccountContext);
-  if (typeof account == "undefined" || account == null) return null;
+  if(!account) return null;
 
   const toggleSidebar = () => {
     const val = [true, "responsive"].includes(sidebarShow)
@@ -62,7 +62,7 @@ const TheHeader = (props) => {
       </CHeaderBrand>
 
       <CHeaderNav className="d-md-down-none mr-auto">
-        {account.role == "Admin" && (
+        {account.role === "Admin" && (
           <>
             <CHeaderNavItem className="px-3">
               <CHeaderNavLink to="/dashboard">Dashboard</CHeaderNavLink>
@@ -78,7 +78,7 @@ const TheHeader = (props) => {
       </CHeaderNav>
 
       <CHeaderNav className="px-3">
-        {account.role == "Admin" && (
+        {account.role === "Admin" && (
           <>
             <TheHeaderDropdownNotif />
             <TheHeaderDropdownTasks />
@@ -94,7 +94,7 @@ const TheHeader = (props) => {
           routes={routes}
         />
         <div className="d-md-down-none mfe-2 c-subheader-nav">
-          {account.role == "Admin" && (
+          {account.role === "Admin" && (
             <>
               <CLink className="c-subheader-nav-link" to="/settings">
                 <CIcon name="cil-speech" alt="Settings" />

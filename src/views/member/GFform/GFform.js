@@ -99,15 +99,13 @@ const GFFormContent = (props) => {
   let default_selected = [];
   for (let i in titles) {
     var d = props.default_data;
-    if (d != null && typeof d != "undefined" && typeof d.value != "undefined")
+    if (d && d.value)
       default_selected.push(new Set(d.value[titles[i]]));
     else default_selected.push(new Set());
   }
   var [selected, set_selected] = useState(default_selected);
-  console.log(selected);
   const [addModal, setAddModal] = useState(null);
   const [GFs, setGFs] = useState(props.data.value);
-  console.log(props.default_data);
   var inputs = [];
   for (let i = 0; i < titles.length; i++) {
     var selected_options = [];
@@ -141,7 +139,7 @@ const GFFormContent = (props) => {
         });
     }
     inputs.push(
-      <CFormGroup>
+      <CFormGroup key={i}>
         <CLabel>{titles[i]}</CLabel>
         <Select
           value={selected_options}
@@ -224,7 +222,7 @@ const GFFormContent = (props) => {
                       alert("儲存完成");
                     })
                     .catch((error) => {
-                      console.log(error);
+                      alert(error.message);
                     });
                 }}
               >

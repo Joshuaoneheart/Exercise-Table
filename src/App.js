@@ -7,7 +7,7 @@ import {
 } from "@react-firebase/auth";
 import {
   FirestoreProvider,
-  FirestoreDocument
+  FirestoreDocument,
 } from "@react-firebase/firestore";
 import firebase from "firebase/app";
 import "firebase/auth";
@@ -30,7 +30,7 @@ var config = {
   appId: "1:820908125256:web:dbd81b7b5fcadf7c743c7d",
   measurementId: "G-TJ2TJXC3N7",
 };
-
+firebase.initializeApp(config)
 // Containers
 const TheLayout = React.lazy(() => import("./containers/TheLayout"));
 
@@ -46,40 +46,15 @@ class App extends Component {
       <HashRouter>
         <React.Suspense fallback={loading}>
           <FirebaseAuthProvider {...config} firebase={firebase}>
-                    <FirebaseAuthConsumer>
-                      {({ isSignedIn, user, providerId }) => {
-                        if (isSignedIn)
-                          return (
-                  <FirestoreProvider {...config} firebase={firebase}>
-                            <FirestoreDocument path={"/accounts/" + user.uid}>
-                              {(d) => {
-                                if (d.isLoading) return loading;
-                                if (
-                                  typeof d != "undefined" &&
-                                  typeof d.value != "undefined" &&
-                                  d != null
-                                ) {
-                                  d.value.id = user.uid;
-                                  return (
-                                    <AccountContext.Provider value={d.value}>
-                                      <TheLayout firebase={firebase} />
-                                    </AccountContext.Provider>
-                                  );
-                                } else return null;
-                              }}
-                            </FirestoreDocument>
-                  </FirestoreProvider>
-                          );
-            return (<Switch>
+            <Switch>
               <Route
                 exact
                 path="/register"
                 name="Register Page"
-                render={(props) => { 
-						return <Register firebase={firebase} user={user} isSignedIn={isSignedIn} {...props} />
-				}
-				}
-				/>
+                render={(props) => {
+                  return <Register firebase={firebase} {...props} />;
+                }}
+              />
               <Route
                 exact
                 path="/404"
@@ -95,13 +70,35 @@ class App extends Component {
               <Route
                 path="/"
                 name="Home"
-                render={(props) => {
-                         return <Login firebase={firebase} />;
-				}}
-              />
-            </Switch>)
+                render={(props) => (
+                  <FirestoreProvider {...config} firebase={firebase}>
+                    <FirebaseAuthConsumer>
+                      {({ isSignedIn, user, providerId }) => {
+                        if (isSignedIn)
+                          return (
+                            <FirestoreDocument path={"/accounts/" + user.uid}>
+                              {(d) => {
+                                if (d.isLoading) return loading;
+                                if (
+                                  d && d.value
+                                ) {
+                                  d.value.id = user.uid;
+                                  return (
+                                    <AccountContext.Provider value={d.value}>
+                                      <TheLayout firebase={firebase} />
+                                    </AccountContext.Provider>
+                                  );
+                                } else return null;
+                              }}
+                            </FirestoreDocument>
+                          );
+                        return <Login firebase={firebase} />;
                       }}
                     </FirebaseAuthConsumer>
+                  </FirestoreProvider>
+                )}
+              />
+            </Switch>
           </FirebaseAuthProvider>
         </React.Suspense>
       </HashRouter>
@@ -110,4 +107,4 @@ class App extends Component {
 }
 
 export default App;
-export { AccountContext, BaseDate, GetWeeklyBase };
+export { AccountContext, BaseDate, GetWeeklyBase, firebase };

@@ -1,6 +1,5 @@
 import { React, useContext } from "react";
 import {
-  CBadge,
   CDropdown,
   CDropdownItem,
   CDropdownMenu,
@@ -13,7 +12,7 @@ import { AccountContext } from "../App";
 
 const TheHeaderDropdown = (props) => {
   var account = useContext(AccountContext);
-  if (typeof account == "undefined" || account == null) return null;
+  if (!account) return null;
   return (
     <CDropdown inNav className="c-header-nav-items mx-2" direction="down">
       <CDropdownToggle className="c-header-nav-link" caret={false}>
@@ -29,19 +28,15 @@ const TheHeaderDropdown = (props) => {
         <CDropdownItem header tag="div" color="light" className="text-center">
           <strong>Account</strong>
         </CDropdownItem>
-        <CDropdownItem>
-          <CLink classname="c-subheader-nav-link" to="/profile">
+        <CDropdownItem className="c-subheader-nav-link" tag={CLink} to="/profile">
             <CIcon name="cil-user" className="mfe-2" />
             Profile
-          </CLink>
         </CDropdownItem>
-        {account.role == "Admin" && (
+        {account.role === "Admin" && (
           <>
-            <CDropdownItem>
-              <CLink classname="c-subheader-nav-link" to="/settings">
+            <CDropdownItem tag={CLink} className="c-subheader-nav-link" to="/settings">
                 <CIcon name="cil-settings" className="mfe-2" />
                 Settings
-              </CLink>
             </CDropdownItem>
           </>
         )}

@@ -1,17 +1,42 @@
-import React from "react";
+import React, {useContext} from "react";
 import {
-  CButton,
   CCard,
   CCardBody,
   CCardHeader,
   CCol,
   CRow,
 } from "@coreui/react";
+import { AccountContext } from "src/App";
 
 const ModifyCard = () => {
+  var account = useContext(AccountContext);
+  if(!account) return null;
   return (
     <CCardBody>
-      <CRow>我其實不知道要放啥呢？</CRow>
+      <CRow>
+	  <CCol style={{fontSize: "18px"}}>
+	  <h3>{account.displayName}</h3>
+	  <hr />
+	  <div width="20%">
+	  <CRow >
+	  <CCol lg="3"><b>Email</b></CCol> 
+	  <CCol>{account.email}</CCol>
+	  </CRow>
+	  <CRow>
+	  <CCol lg="3"><b>Role</b></CCol> 
+	  <CCol>{account.role}</CCol>
+	  </CRow>
+	  <CRow>
+	  <CCol lg="3"><b>Status</b></CCol>
+	  <CCol>{account.status}</CCol>
+	  </CRow>
+	  <CRow>
+	  <CCol lg="3"><b>Registered</b></CCol>
+	  <CCol>{account.registered}</CCol>
+	  </CRow>
+	  </div>
+	  </CCol>
+	  </CRow>
     </CCardBody>
   );
 };

@@ -26,13 +26,11 @@ const TheSidebar = () => {
   const show = useSelector((state) => state.sidebarShow);
   var account = useContext(AccountContext);
   if (account == null) account_num++;
-  console.log(account, account_num);
   if (account == null && account_num >= 3) alert("連線錯誤");
-  if (typeof account == "undefined" || account == null) return null;
+  if (!account) return null;
   var navigation;
-  if (account.role == "Admin") navigation = admin_navigation;
+  if (account.role === "Admin") navigation = admin_navigation;
   else navigation = member_navigation;
-  console.log(account);
   return (
     <CSidebar
       show={show}
@@ -51,7 +49,15 @@ const TheSidebar = () => {
           Exercise Table
         </span>
       </CSidebarBrand>
-      <CSidebarNav>
+      <CSidebarNav onClick={(event) => {
+		  const not_implemented = ["members", "biblegroup"]
+		  for(let n of not_implemented)
+		    if(event.target.href.includes(n)){
+				alert("此功能尚未開放");
+				break;
+			}
+	  }}
+			  >
         <CCreateElement
           items={navigation}
           components={{
