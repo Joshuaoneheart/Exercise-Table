@@ -28,15 +28,23 @@ const TheHeaderDropdown = (props) => {
         <CDropdownItem header tag="div" color="light" className="text-center">
           <strong>Account</strong>
         </CDropdownItem>
-        <CDropdownItem className="c-subheader-nav-link" tag={CLink} to="/profile">
-            <CIcon name="cil-user" className="mfe-2" />
-            Profile
+        <CDropdownItem
+          className="c-subheader-nav-link"
+          tag={CLink}
+          to="/profile"
+        >
+          <CIcon name="cil-user" className="mfe-2" />
+          Profile
         </CDropdownItem>
         {account.role === "Admin" && (
           <>
-            <CDropdownItem tag={CLink} className="c-subheader-nav-link" to="/settings">
-                <CIcon name="cil-settings" className="mfe-2" />
-                Settings
+            <CDropdownItem
+              tag={CLink}
+              className="c-subheader-nav-link"
+              to="/settings"
+            >
+              <CIcon name="cil-settings" className="mfe-2" />
+              Settings
             </CDropdownItem>
           </>
         )}

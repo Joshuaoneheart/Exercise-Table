@@ -18,7 +18,7 @@ const routes = [
     path: "/biblegroup",
     exact: true,
     name: "BibleGroup",
-    component: null
+    component: null,
   },
   { path: "/members", exact: true, name: "Members", component: null },
 ];

@@ -49,15 +49,16 @@ const TheSidebar = () => {
           Exercise Table
         </span>
       </CSidebarBrand>
-      <CSidebarNav onClick={(event) => {
-		  const not_implemented = ["members", "biblegroup"]
-		  for(let n of not_implemented)
-		    if(event.target.href.includes(n)){
-				alert("此功能尚未開放");
-				break;
-			}
-	  }}
-			  >
+      <CSidebarNav
+        onClick={(event) => {
+          const not_implemented = ["members", "biblegroup"];
+          for (let n of not_implemented)
+            if (event.target.href.includes(n)) {
+              alert("此功能尚未開放");
+              break;
+            }
+        }}
+      >
         <CCreateElement
           items={navigation}
           components={{

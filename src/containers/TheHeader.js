@@ -29,7 +29,7 @@ const TheHeader = (props) => {
   const dispatch = useDispatch();
   const sidebarShow = useSelector((state) => state.sidebarShow);
   var account = useContext(AccountContext);
-  if(!account) return null;
+  if (!account) return null;
 
   const toggleSidebar = () => {
     const val = [true, "responsive"].includes(sidebarShow)

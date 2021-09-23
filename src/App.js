@@ -1,4 +1,4 @@
-import React, { Component, createContext } from "react";
+import React, { Component, createContext, useState } from "react";
 import { HashRouter, Route, Switch } from "react-router-dom";
 import "./scss/style.scss";
 import {
@@ -30,7 +30,7 @@ var config = {
   appId: "1:820908125256:web:dbd81b7b5fcadf7c743c7d",
   measurementId: "G-TJ2TJXC3N7",
 };
-firebase.initializeApp(config)
+firebase.initializeApp(config);
 // Containers
 const TheLayout = React.lazy(() => import("./containers/TheLayout"));
 
@@ -39,6 +39,20 @@ const Login = React.lazy(() => import("./views/pages/login/Login"));
 const Register = React.lazy(() => import("./views/pages/register/Register"));
 const Page404 = React.lazy(() => import("./views/pages/page404/Page404"));
 const Page500 = React.lazy(() => import("./views/pages/page500/Page500"));
+
+const SignedIn = (props) => {
+						  var [account, setAccount] = useState(null);
+						  if(!account && props.user)
+						  firebase.firestore().collection("accounts").doc(props.user.uid).get().then((d) => setAccount(d.data()))
+							if (account) {
+							  account.id = props.user.uid;
+							  return (
+								<AccountContext.Provider value={account}>
+								  <TheLayout firebase={firebase} />
+								</AccountContext.Provider>
+							  );
+							} else return loading;
+}
 
 class App extends Component {
   render() {
@@ -74,25 +88,10 @@ class App extends Component {
                   <FirestoreProvider {...config} firebase={firebase}>
                     <FirebaseAuthConsumer>
                       {({ isSignedIn, user, providerId }) => {
-                        if (isSignedIn)
-                          return (
-                            <FirestoreDocument path={"/accounts/" + user.uid}>
-                              {(d) => {
-                                if (d.isLoading) return loading;
-                                if (
-                                  d && d.value
-                                ) {
-                                  d.value.id = user.uid;
-                                  return (
-                                    <AccountContext.Provider value={d.value}>
-                                      <TheLayout firebase={firebase} />
-                                    </AccountContext.Provider>
-                                  );
-                                } else return null;
-                              }}
-                            </FirestoreDocument>
-                          );
-                        return <Login firebase={firebase} />;
+                        if (isSignedIn){
+							return <SignedIn user={user}/>;
+						}
+                        else return <Login firebase={firebase} />;
                       }}
                     </FirebaseAuthConsumer>
                   </FirestoreProvider>

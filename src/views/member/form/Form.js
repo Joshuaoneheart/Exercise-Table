@@ -309,9 +309,7 @@ const Form = () => {
               {(d) => {
                 if (d.isLoading) return loading;
                 if (
-                  typeof d != "undefined" &&
-                  typeof d.value != "undefined" &&
-                  d != null
+					d && d.value
                 ) {
                   var data = { value: [], ids: [] };
                   for (var i = 0; i < d.value.length; i++) {

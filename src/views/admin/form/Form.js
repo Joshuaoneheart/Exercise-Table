@@ -16,7 +16,7 @@ import {
   CInputRadio,
   CInputCheckbox,
   CLabel,
-  CTabs
+  CTabs,
 } from "@coreui/react";
 import { loading } from "src/reusable";
 import { FirestoreCollection } from "@react-firebase/firestore";
@@ -109,8 +109,8 @@ const Problem = (props) => {
         );
       }
       break;
-	default:
-		  break;
+    default:
+      break;
   }
   return (
     <>

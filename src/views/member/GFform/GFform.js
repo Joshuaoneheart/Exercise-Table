@@ -99,8 +99,7 @@ const GFFormContent = (props) => {
   let default_selected = [];
   for (let i in titles) {
     var d = props.default_data;
-    if (d && d.value)
-      default_selected.push(new Set(d.value[titles[i]]));
+    if (d && d.value) default_selected.push(new Set(d.value[titles[i]]));
     else default_selected.push(new Set());
   }
   var [selected, set_selected] = useState(default_selected);
