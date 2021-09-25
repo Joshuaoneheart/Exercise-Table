@@ -41,18 +41,23 @@ const Page404 = React.lazy(() => import("./views/pages/page404/Page404"));
 const Page500 = React.lazy(() => import("./views/pages/page500/Page500"));
 
 const SignedIn = (props) => {
-						  var [account, setAccount] = useState(null);
-						  if(!account && props.user)
-						  firebase.firestore().collection("accounts").doc(props.user.uid).get().then((d) => setAccount(d.data()))
-							if (account) {
-							  account.id = props.user.uid;
-							  return (
-								<AccountContext.Provider value={account}>
-								  <TheLayout firebase={firebase} />
-								</AccountContext.Provider>
-							  );
-							} else return loading;
-}
+  var [account, setAccount] = useState(null);
+  if (!account && props.user)
+    firebase
+      .firestore()
+      .collection("accounts")
+      .doc(props.user.uid)
+      .get()
+      .then((d) => setAccount(d.data()));
+  if (account) {
+    account.id = props.user.uid;
+    return (
+      <AccountContext.Provider value={account}>
+        <TheLayout firebase={firebase} />
+      </AccountContext.Provider>
+    );
+  } else return loading;
+};
 
 class App extends Component {
   render() {
@@ -88,10 +93,9 @@ class App extends Component {
                   <FirestoreProvider {...config} firebase={firebase}>
                     <FirebaseAuthConsumer>
                       {({ isSignedIn, user, providerId }) => {
-                        if (isSignedIn){
-							return <SignedIn user={user}/>;
-						}
-                        else return <Login firebase={firebase} />;
+                        if (isSignedIn) {
+                          return <SignedIn user={user} />;
+                        } else return <Login firebase={firebase} />;
                       }}
                     </FirebaseAuthConsumer>
                   </FirestoreProvider>

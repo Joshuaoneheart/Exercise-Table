@@ -15,6 +15,7 @@ import CIcon from "@coreui/icons-react";
 
 // routes config
 import routes from "../routes";
+import Brand from "src/reusable/brand"
 
 import { AccountContext } from "../App.js";
 
@@ -58,7 +59,7 @@ const TheHeader = (props) => {
         onClick={toggleSidebar}
       />
       <CHeaderBrand className="mx-auto d-lg-none" to="/">
-        <CIcon name="logo" height="48" alt="Logo" />
+	  	<Brand />
       </CHeaderBrand>
 
       <CHeaderNav className="d-md-down-none mr-auto">

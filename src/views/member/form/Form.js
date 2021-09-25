@@ -32,6 +32,7 @@ const Problem = (props) => {
   var option_style = { color: "#000000", fontSize: "20px" };
   var title_style = { color: "#636f83" };
   var button_style = { height: "20px", width: "20px" };
+  console.log(props.default_data)
   switch (props.data.type) {
     case "Grid":
       var option_row = [];
@@ -70,7 +71,7 @@ const Problem = (props) => {
                 value={option}
                 style={Object.assign({}, button_style, { marginLeft: "2px" })}
                 defaultChecked={
-                  typeof props.default_data !== "undefined" &&
+                  props.default_data &&
                   suboption in props.default_data &&
                   props.default_data["suboption"].ans === option
                 }
@@ -99,7 +100,7 @@ const Problem = (props) => {
               value={option}
               style={button_style}
               defaultChecked={
-                typeof props.default_data !== "undefined" &&
+                props.default_data &&
                 props.default_data.ans === option
               }
             />
@@ -125,7 +126,7 @@ const Problem = (props) => {
               value={option}
               style={button_style}
               defaultChecked={
-                typeof props.default_data !== "undefined" &&
+                typeof props.default_data &&
                 option in props.default_data.ans
               }
             />
@@ -179,7 +180,7 @@ const DataTabs = (props) => {
           name={data.value[i].id}
           data={problem}
           key={j}
-          default_data={props.default_data? undefined:props.default_data.value[problem.id]}
+          default_data={props.default_data? props.default_data.value[problem.id]:undefined}
         />
       );
     }

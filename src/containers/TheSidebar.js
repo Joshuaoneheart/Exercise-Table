@@ -14,6 +14,7 @@ import {
 } from "@coreui/react";
 
 import { AccountContext } from "../App.js";
+import Brand from "src/reusable/brand"
 
 // sidebar nav config
 import admin_navigation from "./_nav";
@@ -41,13 +42,7 @@ const TheSidebar = () => {
         to="/"
         style={{ textDecoration: "none" }}
       >
-        <CImg
-          src={"./favicon.ico"}
-          style={{ width: "32px", marginRight: "15px" }}
-        />
-        <span style={{ fontSize: "23px", fontFamily: "sans-serif" }}>
-          Exercise Table
-        </span>
+	  	<Brand />
       </CSidebarBrand>
       <CSidebarNav
         onClick={(event) => {

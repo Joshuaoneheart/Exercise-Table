@@ -20,6 +20,8 @@ import {
 import Select from "react-select";
 import { loading } from "src/reusable";
 import { AccountContext, GetWeeklyBase } from "src/App";
+import { firebase } from "src/App";
+import "firebase/firestore"
 import {
   FirestoreDocument,
   FirestoreCollection,
@@ -201,11 +203,7 @@ const GFFormContent = (props) => {
                 onClick={() => {
                   for (let i = 0; i < GFs.length; i++) {
                     if (!("id" in GFs[i]))
-                      addMutationToBatch({
-                        path: "/GF",
-                        value: GFs[i],
-                        type: "add",
-                      });
+                      firebase.firestore().collection("GF").add(GFs[i]).then((d) => console.log(d.id));
                   }
                   var v = {};
                   for (let i = 0; i < selected.length; i++) {
