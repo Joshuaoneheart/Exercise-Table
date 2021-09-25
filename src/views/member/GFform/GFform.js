@@ -21,11 +21,10 @@ import Select from "react-select";
 import { loading } from "src/reusable";
 import { AccountContext, GetWeeklyBase } from "src/App";
 import { firebase } from "src/App";
-import "firebase/firestore"
+import "firebase/firestore";
 import {
   FirestoreDocument,
   FirestoreCollection,
-  FirestoreBatchedWrite,
 } from "@react-firebase/firestore";
 
 const AddModal = (props) => {
@@ -38,6 +37,7 @@ const AddModal = (props) => {
     var tmp = {};
     tmp["name"] = form.current.elements.name.value;
     tmp["note"] = form.current.elements.note.value;
+    tmp["id"] = { name: tmp["name"], note: tmp["note"] };
     data.push(tmp);
     props.setData(data);
     props.setModal(null);
@@ -111,8 +111,10 @@ const GFFormContent = (props) => {
   for (let i = 0; i < titles.length; i++) {
     var selected_options = [];
     var GF_options = [];
+	console.log(GFs)
     for (var j = 0; j < GFs.length; j++) {
-      if (selected[i].has(GFs[j].id)) {
+      if(!GFs[j]) continue;
+	  else if (selected[i].has(GFs[j].id)) {
         GF_options.push({
           value: GFs[j].id,
           label: (
@@ -194,40 +196,121 @@ const GFFormContent = (props) => {
         >
           新增牧養對象
         </CButton>
-        <FirestoreBatchedWrite>
-          {({ addMutationToBatch, commit }) => {
-            return (
-              <CButton
-                variant="ghost"
-                color="dark"
-                onClick={() => {
-                  for (let i = 0; i < GFs.length; i++) {
-                    if (!("id" in GFs[i]))
-                      firebase.firestore().collection("GF").add(GFs[i]).then((d) => console.log(d.id));
-                  }
-                  var v = {};
-                  for (let i = 0; i < selected.length; i++) {
-                    if (selected[i]) v[titles[i]] = Array.from(selected[i]);
-                  }
-                  addMutationToBatch({
-                    path: "/accounts/" + account.id + "/GF/" + GetWeeklyBase(),
-                    value: v,
-                    type: "set",
+        <CButton
+          variant="ghost"
+          color="dark"
+          onClick={() => {
+            var saveChange = function (
+              account_id,
+              firestore,
+              selected,
+              selected_set,
+			  GFs,
+              titles,
+              i,
+              j,
+              data
+            ) {
+              if (selected.length <= i) {
+                let v = {};
+                for (let k = 0; k < selected.length; k++) {
+                  v[titles[k]] = selected[k];
+                }
+                firestore
+                  .collection("accounts")
+                  .doc(account_id)
+                  .collection("GF")
+                  .doc(GetWeeklyBase().toString())
+                  .set(v)
+                  .then(() => {
+                    alert("儲存完成");
+					for(let k = 0;k < GFs.length;k++){
+						if(GFs[k] && GFs[k].id && GFs[k].id.constructor !== String) delete GFs[k];
+					}
+                  })
+                  .catch((error) => {
+                    alert(error.message);
                   });
-                  commit()
-                    .then(() => {
-                      alert("儲存完成");
-                    })
-                    .catch((error) => {
-                      alert(error.message);
-                    });
-                }}
-              >
-                提交表單
-              </CButton>
+              } else if (selected[i].length <= j) {
+                saveChange(
+                  account_id,
+                  firestore,
+                  selected,
+                  selected_set,
+			  GFs,
+                  titles,
+                  i + 1,
+                  0,
+                  null
+                );
+              } else if (data) {
+                selected[i][j] = data;
+                selected_set[i].add(data);
+				GFs[GFs.length - 1].id = data;
+                saveChange(
+                  account_id,
+                  firestore,
+                  selected,
+                  selected_set,
+			  GFs,
+                  titles,
+                  i,
+                  j + 1,
+                  null
+                );
+              } else if (selected[i][j].constructor !== String) {
+                selected_set[i].delete(selected[i][j]);
+				GFs.push(selected[i][j])
+                firebase
+                  .firestore()
+                  .collection("GF")
+                  .add(selected[i][j])
+                  .then((d) =>
+                    saveChange(
+                      account_id,
+                      firestore,
+                      selected,
+                      selected_set,
+			  GFs,
+                      titles,
+                      i,
+                      j,
+                      d.id
+                    )
+                  )
+                  .catch((error) => alert(error.message));
+              } else {
+                saveChange(
+                  account_id,
+                  firestore,
+                  selected,
+                  selected_set,
+			  GFs,
+                  titles,
+                  i,
+                  j + 1,
+                  null
+                );
+              }
+            };
+            var s = [];
+            for (let i = 0; i < selected.length; i++) {
+              s.push(Array.from(selected[i]));
+            }
+            saveChange(
+              account.id,
+              firebase.firestore(),
+              s,
+              selected,
+			  GFs,
+              titles,
+              0,
+              0
             );
           }}
-        </FirestoreBatchedWrite>
+        >
+          提交表單
+        </CButton>
       </CCardFooter>
     </CCard>
   );

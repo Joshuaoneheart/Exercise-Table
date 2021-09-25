@@ -14,7 +14,7 @@ import {
 } from "@coreui/react";
 
 import { AccountContext } from "../App.js";
-import Brand from "src/reusable/brand"
+import Brand from "src/reusable/brand";
 
 // sidebar nav config
 import admin_navigation from "./_nav";
@@ -42,7 +42,7 @@ const TheSidebar = () => {
         to="/"
         style={{ textDecoration: "none" }}
       >
-	  	<Brand />
+        <Brand />
       </CSidebarBrand>
       <CSidebarNav
         onClick={(event) => {

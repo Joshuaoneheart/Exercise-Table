@@ -32,33 +32,33 @@ const Problem = (props) => {
   var option_style = { color: "#000000", fontSize: "20px" };
   var title_style = { color: "#636f83" };
   var button_style = { height: "20px", width: "20px" };
-  console.log(props.default_data)
+  console.log(props.default_data);
   switch (props.data.type) {
     case "Grid":
       var option_row = [];
       var row = [];
       option_row.push(<CCol></CCol>);
-	  let options = props.data["選項"].split(";");
-      for (let i = 0;i < options.length;i++) {
-		let option = options[i];
+      let options = props.data["選項"].split(";");
+      for (let i = 0; i < options.length; i++) {
+        let option = options[i];
         option_row.push(
           <CCol
-			key={i}
+            key={i}
             style={Object.assign({}, option_style, { textAlign: "center" })}
           >
             {option}
           </CCol>
         );
       }
-	  let suboptions = props.data["子選項"].split(";");
-      for (let j = 0;j < suboptions.length;j++) {
-		let suboption = suboptions[j];
+      let suboptions = props.data["子選項"].split(";");
+      for (let j = 0; j < suboptions.length; j++) {
+        let suboption = suboptions[j];
         var subframe = [];
         subframe.push(<CCol style={option_style}>{suboption}</CCol>);
         for (var option of props.data["選項"].split(";")) {
           subframe.push(
             <CCol
-			  key={j}
+              key={j}
               style={{
                 display: "flex",
                 alignItems: "center",
@@ -89,9 +89,9 @@ const Problem = (props) => {
       );
       break;
     case "MultiChoice":
-	   options = props.data["選項"].split(";");
-      for (let i = 0;i < options.length;i++) {
-		let option = options[i];
+      options = props.data["選項"].split(";");
+      for (let i = 0; i < options.length; i++) {
+        let option = options[i];
         frame.push(
           <CFormGroup variant="checkbox" key={i}>
             <CInputRadio
@@ -100,8 +100,7 @@ const Problem = (props) => {
               value={option}
               style={button_style}
               defaultChecked={
-                props.default_data &&
-                props.default_data.ans === option
+                props.default_data && props.default_data.ans === option
               }
             />
             <CLabel
@@ -115,9 +114,9 @@ const Problem = (props) => {
       }
       break;
     case "MultiAnswer":
-	  options = props.data["子選項"].split(";");
-      for (let i = 0;i < options.length;i++) {
-		let option = options[i];
+      options = props.data["子選項"].split(";");
+      for (let i = 0; i < options.length; i++) {
+        let option = options[i];
         frame.push(
           <CFormGroup variant="checkbox" key={i}>
             <CInputCheckbox
@@ -126,8 +125,7 @@ const Problem = (props) => {
               value={option}
               style={button_style}
               defaultChecked={
-                typeof props.default_data &&
-                option in props.default_data.ans
+                typeof props.default_data && option in props.default_data.ans
               }
             />
             <CLabel
@@ -180,7 +178,11 @@ const DataTabs = (props) => {
           name={data.value[i].id}
           data={problem}
           key={j}
-          default_data={props.default_data? props.default_data.value[problem.id]:undefined}
+          default_data={
+            props.default_data && props.default_data.value
+              ? props.default_data.value[problem.id]
+              : undefined
+          }
         />
       );
     }
@@ -309,9 +311,7 @@ const Form = () => {
             <FirestoreCollection path="/form/">
               {(d) => {
                 if (d.isLoading) return loading;
-                if (
-					d && d.value
-                ) {
+                if (d && d.value) {
                   var data = { value: [], ids: [] };
                   for (var i = 0; i < d.value.length; i++) {
                     d.value[i].id = d.ids[i];

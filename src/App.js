@@ -17,7 +17,7 @@ const AccountContext = createContext({});
 const BaseDate = new Date(2021, 8, 19, 24).getTime();
 const GetWeeklyBase = () => {
   var now = new Date().getTime();
-  return Math.floor((now - BaseDate) / 86400000);
+  return Math.floor((now - BaseDate) / 7 / 86400000);
 };
 
 var config = {
