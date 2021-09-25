@@ -28,10 +28,10 @@ import {
 } from "@react-firebase/firestore";
 
 const AddModal = (props) => {
+  var form = React.useRef();
   if (props.show == null) {
     return null;
   }
-  var form = React.createRef();
   var writeData = () => {
     var data = props.data;
     var tmp = {};
@@ -111,10 +111,9 @@ const GFFormContent = (props) => {
   for (let i = 0; i < titles.length; i++) {
     var selected_options = [];
     var GF_options = [];
-	console.log(GFs)
     for (var j = 0; j < GFs.length; j++) {
-      if(!GFs[j]) continue;
-	  else if (selected[i].has(GFs[j].id)) {
+      if (!GFs[j]) continue;
+      else if (selected[i].has(GFs[j].id)) {
         GF_options.push({
           value: GFs[j].id,
           label: (
@@ -205,7 +204,7 @@ const GFFormContent = (props) => {
               firestore,
               selected,
               selected_set,
-			  GFs,
+              GFs,
               titles,
               i,
               j,
@@ -224,9 +223,14 @@ const GFFormContent = (props) => {
                   .set(v)
                   .then(() => {
                     alert("儲存完成");
-					for(let k = 0;k < GFs.length;k++){
-						if(GFs[k] && GFs[k].id && GFs[k].id.constructor !== String) delete GFs[k];
-					}
+                    for (let k = 0; k < GFs.length; k++) {
+                      if (
+                        GFs[k] &&
+                        GFs[k].id &&
+                        GFs[k].id.constructor !== String
+                      )
+                        delete GFs[k];
+                    }
                   })
                   .catch((error) => {
                     alert(error.message);
@@ -237,7 +241,7 @@ const GFFormContent = (props) => {
                   firestore,
                   selected,
                   selected_set,
-			  GFs,
+                  GFs,
                   titles,
                   i + 1,
                   0,
@@ -246,13 +250,13 @@ const GFFormContent = (props) => {
               } else if (data) {
                 selected[i][j] = data;
                 selected_set[i].add(data);
-				GFs[GFs.length - 1].id = data;
+                GFs[GFs.length - 1].id = data;
                 saveChange(
                   account_id,
                   firestore,
                   selected,
                   selected_set,
-			  GFs,
+                  GFs,
                   titles,
                   i,
                   j + 1,
@@ -260,7 +264,7 @@ const GFFormContent = (props) => {
                 );
               } else if (selected[i][j].constructor !== String) {
                 selected_set[i].delete(selected[i][j]);
-				GFs.push(selected[i][j])
+                GFs.push(selected[i][j]);
                 firebase
                   .firestore()
                   .collection("GF")
@@ -271,7 +275,7 @@ const GFFormContent = (props) => {
                       firestore,
                       selected,
                       selected_set,
-			  GFs,
+                      GFs,
                       titles,
                       i,
                       j,
@@ -285,7 +289,7 @@ const GFFormContent = (props) => {
                   firestore,
                   selected,
                   selected_set,
-			  GFs,
+                  GFs,
                   titles,
                   i,
                   j + 1,
@@ -302,7 +306,7 @@ const GFFormContent = (props) => {
               firebase.firestore(),
               s,
               selected,
-			  GFs,
+              GFs,
               titles,
               0,
               0

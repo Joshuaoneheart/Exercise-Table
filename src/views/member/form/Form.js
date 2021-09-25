@@ -156,7 +156,7 @@ const DataTabs = (props) => {
   var data = props.data;
   var account = props.account;
   const [section, setSection] = useState(0);
-  var form = React.createRef();
+  var form = React.useRef();
   var tabs = [];
   var tabpanes = [];
   for (var i = 0; i < data.ids.length; i++) {
@@ -217,7 +217,13 @@ const DataTabs = (props) => {
               <CButton
                 variant="ghost"
                 color="dark"
-                onClick={() => {
+                onClick={(event) => {
+				  event.target.disabled = true;
+				  if(!form.current){
+					  alert("請稍後再試");
+				  	  event.target.disabled = false;
+					  return;
+				  }
                   var v = {};
                   for (let i = 0; i < props.metadata.value.length; i++) {
                     var problem = props.metadata.value[i];
@@ -282,9 +288,11 @@ const DataTabs = (props) => {
                   commit()
                     .then(() => {
                       alert("儲存完成");
+					  event.target.disabled = false;
                     })
                     .catch((error) => {
                       alert(error.message);
+					  event.target.disabled = false;
                     });
                 }}
               >

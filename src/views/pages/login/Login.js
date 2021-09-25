@@ -16,8 +16,8 @@ import {
 import CIcon from "@coreui/icons-react";
 
 const Login = (props) => {
-  var username = React.createRef();
-  var password = React.createRef();
+  var username = React.useRef();
+  var password = React.useRef();
   return (
     <div className="c-app c-default-layout flex-row align-items-center">
       <CContainer>
@@ -30,15 +30,13 @@ const Login = (props) => {
                   <p className="text-muted">Sign In to your account</p>
                   <CInputGroup className="mb-3">
                     <CInputGroupPrepend>
-                      <CInputGroupText>
-                        <CIcon name="cil-user" />
-                      </CInputGroupText>
+	  				  <CInputGroupText>@</CInputGroupText>
                     </CInputGroupPrepend>
                     <CInput
                       innerRef={username}
                       type="text"
-                      placeholder="Username"
-                      autoComplete="username"
+                      placeholder="Email"
+                      autoComplete="email"
                     />
                   </CInputGroup>
                   <CInputGroup className="mb-4">
