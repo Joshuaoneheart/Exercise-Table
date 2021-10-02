@@ -201,7 +201,6 @@ const GFFormContent = (props) => {
           onClick={() => {
             var saveChange = function (
               account_id,
-              firestore,
               selected,
               selected_set,
               GFs,
@@ -215,7 +214,7 @@ const GFFormContent = (props) => {
                 for (let k = 0; k < selected.length; k++) {
                   v[titles[k]] = selected[k];
                 }
-                firestore
+                firebase.firestore()
                   .collection("accounts")
                   .doc(account_id)
                   .collection("GF")
@@ -238,7 +237,6 @@ const GFFormContent = (props) => {
               } else if (selected[i].length <= j) {
                 saveChange(
                   account_id,
-                  firestore,
                   selected,
                   selected_set,
                   GFs,
@@ -253,7 +251,6 @@ const GFFormContent = (props) => {
                 GFs[GFs.length - 1].id = data;
                 saveChange(
                   account_id,
-                  firestore,
                   selected,
                   selected_set,
                   GFs,
@@ -272,7 +269,6 @@ const GFFormContent = (props) => {
                   .then((d) =>
                     saveChange(
                       account_id,
-                      firestore,
                       selected,
                       selected_set,
                       GFs,
@@ -286,7 +282,6 @@ const GFFormContent = (props) => {
               } else {
                 saveChange(
                   account_id,
-                  firestore,
                   selected,
                   selected_set,
                   GFs,
@@ -303,7 +298,6 @@ const GFFormContent = (props) => {
             }
             saveChange(
               account.id,
-              firebase.firestore(),
               s,
               selected,
               GFs,

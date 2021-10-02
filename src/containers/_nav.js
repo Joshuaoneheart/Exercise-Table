@@ -25,7 +25,7 @@ const _nav = [
   {
     _tag: "CSidebarNavItem",
     name: "活力組",
-    to: "/theme/typography",
+    to: "/biblegroup",
     icon: "cil-bar-chart",
   },
   {

@@ -14,11 +14,18 @@ import "firebase/auth";
 import "firebase/firestore";
 import { loading } from "src/reusable";
 const AccountContext = createContext({});
+// 2021/9/19(Sunday) 24:00
 const BaseDate = new Date(2021, 8, 19, 24).getTime();
 const GetWeeklyBase = () => {
   var now = new Date().getTime();
   return Math.floor((now - BaseDate) / 7 / 86400000);
 };
+
+const WeeklyBase2String = (base) => {
+	var end = new Date((base + 1) * 7 * 86400000 + BaseDate);
+	var start = new Date(base * 7 * 86400000 + BaseDate + 1);
+	return `${start.getMonth() + 1}/${start.getDate()}-${end.getMonth() + 1}/${end.getDate()}`
+}
 
 var config = {
   apiKey: "AIzaSyBRYT6ipwBqNlt8xqkU2NfPV5XpU0PXxsE",
@@ -110,4 +117,4 @@ class App extends Component {
 }
 
 export default App;
-export { AccountContext, BaseDate, GetWeeklyBase, firebase };
+export { AccountContext, BaseDate, GetWeeklyBase, firebase, WeeklyBase2String };

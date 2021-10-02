@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   CCol,
   CRow,
@@ -6,7 +6,7 @@ import {
   CTabPane,
   CCard,
   CCardBody,
-  CCardHeader,
+  CCardFooter,
   CDropdown,
   CDropdownItem,
   CDropdownMenu,
@@ -17,9 +17,15 @@ import {
   CInputCheckbox,
   CLabel,
   CTabs,
+  CCardHeader,
 } from "@coreui/react";
 import { loading } from "src/reusable";
-import { FirestoreCollection } from "@react-firebase/firestore";
+import { AccountContext, GetWeeklyBase } from "src/App.js";
+import {
+  FirestoreDocument,
+  FirestoreCollection,
+  FirestoreBatchedWrite,
+} from "@react-firebase/firestore";
 const Problem = (props) => {
   var frame = [];
   var option_style = { color: "#000000", fontSize: "20px" };
@@ -30,21 +36,27 @@ const Problem = (props) => {
       var option_row = [];
       var row = [];
       option_row.push(<CCol></CCol>);
-      for (let option of props.data["選項"].split(";")) {
+      let options = props.data["選項"].split(";");
+      for (let i = 0; i < options.length; i++) {
+        let option = options[i];
         option_row.push(
           <CCol
+            key={i}
             style={Object.assign({}, option_style, { textAlign: "center" })}
           >
             {option}
           </CCol>
         );
       }
-      for (var suboption of props.data["子選項"].split(";")) {
+      let suboptions = props.data["子選項"].split(";");
+      for (let j = 0; j < suboptions.length; j++) {
+        let suboption = suboptions[j];
         var subframe = [];
         subframe.push(<CCol style={option_style}>{suboption}</CCol>);
-        for (let option of props.data["選項"].split(";")) {
+        for (var option of props.data["選項"].split(";")) {
           subframe.push(
             <CCol
+              key={j}
               style={{
                 display: "flex",
                 alignItems: "center",
@@ -53,7 +65,7 @@ const Problem = (props) => {
             >
               <CInputRadio
                 className="form-check-input"
-                name={suboption}
+                name={props.data.id + "-" + suboption}
                 value={option}
                 style={Object.assign({}, button_style, { marginLeft: "2px" })}
               />
@@ -70,12 +82,14 @@ const Problem = (props) => {
       );
       break;
     case "MultiChoice":
-      for (let option of props.data["選項"].split(";")) {
+      options = props.data["選項"].split(";");
+      for (let i = 0; i < options.length; i++) {
+        let option = options[i];
         frame.push(
-          <CFormGroup variant="checkbox">
+          <CFormGroup variant="checkbox" key={i}>
             <CInputRadio
               className="form-check-input"
-              name={props.data.title}
+              name={props.data.id}
               value={option}
               style={button_style}
             />
@@ -90,12 +104,14 @@ const Problem = (props) => {
       }
       break;
     case "MultiAnswer":
-      for (var option of props.data["子選項"].split(";")) {
+      options = props.data["子選項"].split(";");
+      for (let i = 0; i < options.length; i++) {
+        let option = options[i];
         frame.push(
-          <CFormGroup variant="checkbox">
+          <CFormGroup variant="checkbox" key={i}>
             <CInputCheckbox
               className="form-check-input"
-              name={props.data.title}
+              name={props.data.id}
               value={option}
               style={button_style}
             />
@@ -126,7 +142,7 @@ const Problem = (props) => {
 const DataTabs = (props) => {
   var data = props.data;
   const [section, setSection] = useState(0);
-  var form = React.createRef();
+  var form = React.useRef();
   var tabs = [];
   var tabpanes = [];
   for (var i = 0; i < data.ids.length; i++) {
@@ -144,7 +160,11 @@ const DataTabs = (props) => {
     for (var j = 0; j < data.value[i].length; j++) {
       var problem = data.value[i][j];
       tabContents.push(
-        <Problem name={data.value[i].id} data={problem} key={j} />
+        <Problem
+          name={data.value[i].id}
+          data={problem}
+          key={j}
+        />
       );
     }
     tabpanes.push(<CTabPane key={i}>{tabContents}</CTabPane>);
@@ -178,31 +198,32 @@ const DataTabs = (props) => {
 const Form = () => {
   return (
     <CRow>
-      <FirestoreCollection path="/form/">
-        {(d) => {
-          if (d.isLoading) return loading;
-          if (
-            typeof d != "undefined" &&
-            typeof d.value != "undefined" &&
-            d != null
-          ) {
-            var data = { value: [], ids: [] };
-            for (var i = 0; i < d.value.length; i++) {
-              d.value[i].id = d.ids[i];
-              if (!data.ids.includes(d.value[i].section)) {
-                data.ids.push(d.value[i].section);
-                data.value.push([]);
-              }
-              data.value[data.ids.indexOf(d.value[i].section)].push(d.value[i]);
-            }
-            return (
-              <CCol>
-                <DataTabs data={data} metadata={d} />
-              </CCol>
-            );
-          } else return null;
-        }}
-      </FirestoreCollection>
+            <FirestoreCollection path="/form/">
+              {(d) => {
+                if (d.isLoading) return loading;
+                if (d && d.value) {
+                  var data = { value: [], ids: [] };
+                  for (var i = 0; i < d.value.length; i++) {
+                    d.value[i].id = d.ids[i];
+                    if (!data.ids.includes(d.value[i].section)) {
+                      data.ids.push(d.value[i].section);
+                      data.value.push([]);
+                    }
+                    data.value[data.ids.indexOf(d.value[i].section)].push(
+                      d.value[i]
+                    );
+                  }
+                  return (
+                    <CCol>
+                      <DataTabs
+                        data={data}
+                        metadata={d}
+                      />
+                    </CCol>
+                  );
+                } else return null;
+              }}
+            </FirestoreCollection>
     </CRow>
   );
 };

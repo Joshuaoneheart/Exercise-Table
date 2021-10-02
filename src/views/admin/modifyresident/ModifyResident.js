@@ -35,16 +35,85 @@ import {
 } from "@react-firebase/firestore";
 const ModifyCard = (props) => {
   const [data, setData] = useState(props.data);
-  const [group, setGroup] = useState(props.group);
   var [activeTab, setActiveTab] = useState(0);
   const [transferModal, setTransferModal] = useState(null);
   const [deleteModal, setDeleteModal] = useState(null);
   const [addModal, setAddModal] = useState(null);
-  if (activeTab >= data.ids.length)
-    activeTab = data.ids.length > 0 ? data.ids.length - 1 : 0;
   var titles = [];
+  var [residences, setResidences] = useState([]);
+  var residence_contents = [];
+  for (let i = 0; i < residences.length; i++) {
+    residence_contents.push([]);
+  }
+  if (activeTab >= residences.length)
+    activeTab = Math.max(residences.length - 1, 0);
   var contents = [];
+  var add_modal_options = [];
   for (var i = 0; i < data.ids.length; i++) {
+    if (data.value[i].role !== "Member") continue;
+    if (!data.value[i].residence) {
+      add_modal_options.push(
+        <option value={i} key={i}>
+          {data.value[i].displayName}
+        </option>
+      );
+      continue;
+    }
+    if (!residences.includes(data.value[i].residence)) {
+      residences.push(data.value[i].residence);
+      residence_contents.push([]);
+    }
+    residence_contents[residences.indexOf(data.value[i].residence)].push(
+      //ToDo: Change ascent to danger when the name has not been bind
+      <CListGroupItem
+        key={
+          residence_contents[residences.indexOf(data.value[i].residence)].length
+        }
+        accent="secondary"
+        color="secondary"
+      >
+        <CRow className="align-items-center">
+          <CCol xs="4" sm="9" md="9" lg="9" style={{ color: "#000000" }}>
+            {data.value[i].displayName}
+          </CCol>
+          <CCol>
+            <CButtonToolbar justify="end">
+              <CButton variant="ghost" color="dark">
+                <CIcon
+                  name="cil-swap-horizontal"
+                  onClick={function (i, activeTab) {
+                    setTransferModal({ resident: i, residence: activeTab });
+                  }.bind(null, i, activeTab)}
+                />
+              </CButton>
+              <CButton
+                variant="ghost"
+                color="danger"
+                onClick={function (i) {
+                  setDeleteModal({
+                    title: "住戶",
+                    type: "resident",
+                    name: data.value[i].displayName,
+                    index: i,
+                  });
+                }.bind(null, i)}
+              >
+                <CIcon name="cil-trash" />
+              </CButton>
+            </CButtonToolbar>
+          </CCol>
+        </CRow>
+      </CListGroupItem>
+    );
+  }
+  for (let i = 0; i < residences.length; i++) {
+    contents.push(
+      <CTabPane key={i} active={activeTab === i}>
+        <CListGroup accent>{residence_contents[i]}</CListGroup>
+      </CTabPane>
+    );
+  }
+  for (let i = 0; i < residences.length; i++) {
     titles.push(
       <CDropdownItem
         key={i}
@@ -52,52 +121,8 @@ const ModifyCard = (props) => {
           setActiveTab(i);
         }.bind(null, i)}
       >
-        {data.ids[i]}
+        {residences[i]}
       </CDropdownItem>
-    );
-    var tmp_content = [];
-    for (var j = 0; j < data.value[i]["member"].length; j++) {
-      tmp_content.push(
-        //ToDo: Change ascent to danger when the name has not been bind
-        <CListGroupItem key={j} accent="secondary" color="secondary">
-          <CRow className="align-items-center">
-            <CCol xs="4" sm="9" md="9" lg="9" style={{ color: "#000000" }}>
-              {data.value[i]["member"][j]}
-            </CCol>
-            <CCol>
-              <CButtonToolbar justify="end">
-                <CButton variant="ghost" color="dark">
-                  <CIcon
-                    name="cil-swap-horizontal"
-                    onClick={function (i, j) {
-                      setTransferModal([i, j]);
-                    }.bind(null, i, j)}
-                  />
-                </CButton>
-                <CButton
-                  variant="ghost"
-                  color="danger"
-                  onClick={function (i, j) {
-                    setDeleteModal({
-                      title: "住戶",
-                      type: "resident",
-                      name: data.value[i]["member"][j],
-                      index: [i, j],
-                    });
-                  }.bind(null, i, j)}
-                >
-                  <CIcon name="cil-trash" />
-                </CButton>
-              </CButtonToolbar>
-            </CCol>
-          </CRow>
-        </CListGroupItem>
-      );
-    }
-    contents.push(
-      <CTabPane key={i} active={activeTab === i}>
-        <CListGroup accent>{tmp_content}</CListGroup>
-      </CTabPane>
     );
   }
   return (
@@ -111,7 +136,7 @@ const ModifyCard = (props) => {
             <CButtonToolbar justify="end">
               <CDropdown>
                 <CDropdownToggle color="info" style={{ color: "#FFFFFF" }}>
-                  {data.ids[activeTab]}
+                  {residences.length ? residences[activeTab] : null}
                 </CDropdownToggle>
                 <CDropdownMenu style={{ overflow: "auto", maxHeight: "270px" }}>
                   {titles}
@@ -133,8 +158,8 @@ const ModifyCard = (props) => {
                   setDeleteModal({
                     type: "residence",
                     title: "住處",
-                    name: data.ids[activeTab],
-                    index: [activeTab],
+                    name: residences[activeTab],
+                    index: activeTab,
                   })
                 }
               >
@@ -155,20 +180,23 @@ const ModifyCard = (props) => {
           setData={setData}
           show={transferModal}
           setModal={setTransferModal}
+          residences={residences}
         />
         <DeleteModal
           data={data}
           setData={setData}
-          group={group}
-          setGroup={setGroup}
           show={deleteModal}
           setModal={setDeleteModal}
+          residences={residences}
+          setResidences={setResidences}
+          residence_contents={residence_contents}
         />
         <AddModal
+          options={add_modal_options}
           data={data}
-          group={props.group}
           setData={setData}
-          setGroup={setGroup}
+          residences={residences}
+          setResidences={setResidences}
           show={addModal}
           setModal={setAddModal}
         />
@@ -194,30 +222,24 @@ const ModifyCard = (props) => {
                     onClick={() => {
                       var check = window.confirm("確定儲存修改嗎？");
                       if (!check) return;
-                      var pathPrefix = "/residences/";
+                      var pathPrefix = "/accounts/";
                       for (var idx in data.ids) {
-                        var path = pathPrefix + data.ids[idx] + "/";
-                        addMutationToBatch({
-                          path,
-                          value: data.value[idx],
-                          type: "set",
-                        });
-                      }
-                      pathPrefix = "/groups/";
-                      for (idx in group.ids) {
-                        var path = pathPrefix + group.ids[idx] + "/";
-                        addMutationToBatch({
-                          path,
-                          value: group.value[idx],
-                          type: "set",
-                        });
+                        var path = pathPrefix + data.ids[idx];
+                        if (data.value[idx].isChanged){
+                          var tmp = {"residence": data.value[idx].residence};
+                          addMutationToBatch({
+                            path,
+                            value: tmp,
+                            type: "update",
+                          });
+                        }
                       }
                       commit()
                         .then(() => {
                           alert("儲存完成");
                         })
                         .catch((error) => {
-                          console.log(error);
+                          alert(error);
                         });
                     }}
                   >
@@ -234,10 +256,8 @@ const ModifyCard = (props) => {
 };
 
 const AddModal = (props) => {
-  if (props.show == null) {
-    return null;
-  }
-  var form = React.createRef();
+  var form = React.useRef();
+  if (props.show == null) return null;
   var writeData = () => {
     var data = props.data;
     var group = props.group;
@@ -245,28 +265,23 @@ const AddModal = (props) => {
       case "resident":
         var data = props.data;
         var tmp = {};
-        tmp["name"] = form.current.elements.name.value;
-        tmp["group"] = form.current.elements.group.value;
-        tmp["residence"] = data.ids[props.show.index];
-        data.value[props.show.index]["member"].push(tmp["name"]);
-        group.value[group.ids.indexOf(tmp["group"])]["member"].push(
-          tmp["name"]
-        );
+        data.value[form.current.elements.name.value].residence =
+          props.residences[form.current.elements.residence.value];
+        data.value[form.current.elements.name.value].isChanged = true;
+        props.setData(data);
         break;
       case "residence":
-        data.value.push({ member: [] });
-        data.ids.push(form.current.elements.name.value);
+        props.residences.push(form.current.elements.name.value);
+        props.setResidences(props.residences);
         break;
     }
-    props.setData(data);
-    props.setGroup(group);
     props.setModal(null);
   };
   var options = [];
-  for (var i in props.group.ids) {
+  for (var i in props.residences) {
     options.push(
-      <option value={props.group.ids[i]} key={i}>
-        {props.group.ids[i]}
+      <option value={i} key={i}>
+        {props.residences[i]}
       </option>
     );
   }
@@ -295,15 +310,15 @@ const AddModal = (props) => {
                   <CLabel>姓名</CLabel>
                 </CCol>
                 <CCol xs="12" md="9">
-                  <CInput name="name" required />
+                  <CSelect name="name">{props.options}</CSelect>
                 </CCol>
               </CFormGroup>
               <CFormGroup row inline>
                 <CCol md="3">
-                  <CLabel>活力組</CLabel>
+                  <CLabel>住處</CLabel>
                 </CCol>
                 <CCol xs="12" md="9">
-                  <CSelect name="group">{options}</CSelect>
+                  <CSelect name="residence">{options}</CSelect>
                 </CCol>
               </CFormGroup>
             </>
@@ -341,38 +356,21 @@ const DeleteModal = (props) => {
   if (props.show === null) return null;
   var deleteData = () => {
     var data = props.data;
-    var group = props.group;
     switch (props.show.type) {
       case "resident":
-        if (!("delete_resident" in data)) data["delete_resident"] = [];
-        data["delete_resident"].push(
-          data.value[props.show.index[0]]["member"][props.show.index[1]]
-        );
-        for (var i in group.ids) {
-          var tmp = group.value[i]["member"].indexOf(
-            data.value[props.show.index[0]]["member"][props.show.index[1]]
-          );
-          if (tmp !== -1) {
-            group.value[i]["member"].splice(tmp, 1);
-            break;
-          }
-        }
-        data.value[props.show.index[0]]["member"].splice(
-          props.show.index[1],
-          1
-        );
+        delete data.value[props.show.index].residence;
+        data.value[props.show.index].isChanged = true;
+        props.setData(data);
         break;
       case "residence":
-        if (data.value[props.show.index[0]].length !== 0) {
+        if (props.residence_contents[props.show.index].length !== 0) {
           alert("住處內尚有住戶，請將所有住戶刪除後再刪除住處");
           break;
         }
-        data.value.splice(props.show.index[0], 1);
-        data.ids.splice(props.show.index[0], 1);
+        props.residences.splice(props.show.index, 1);
+        props.setResidences(props.residences);
         break;
     }
-    props.setData(data);
-    props.setGroup(group);
     props.setModal(null);
   };
   return (
@@ -403,26 +401,24 @@ const DeleteModal = (props) => {
 
 const TransferModal = (props) => {
   var data = props.data;
+  var form = React.useRef();
   if (props.show == null) return null;
-  var form = React.createRef();
   var writeData = () => {
-    var tmp = form.current.elements.residence.value;
-    data = props.data;
-    data.value[data.ids.indexOf(tmp)]["member"].push(
-      data.value[props.show[0]]["member"][props.show[1]]
-    );
-    data.value[props.show[0]]["member"].splice(props.show[1], 1);
-    props.setData(data);
+    props.data.value[props.show.resident].residence =
+      props.residences[form.current.elements.residence.value];
+    props.data.value[props.show.resident].isChanged = true;
+    props.setData(props.data);
     props.setModal(null);
   };
   var residences_option = [];
-  for (let i in data.ids) {
-    if (i !== props.show[1])
+  for (let i = 0; i < props.residences.length; i++) {
+    if (i !== props.show.residence)
       residences_option.push(
-        <option value={data.ids[i]}>{data.ids[i]}</option>
+        <option value={i} key={i}>
+          {props.residences[i]}
+        </option>
       );
   }
-  console.log(data);
 
   return (
     <CModal
@@ -470,21 +466,13 @@ const ModifyResident = () => {
   return (
     <>
       <CRow>
-        <FirestoreCollection path="/residences/">
+        <FirestoreCollection path="/accounts/">
           {(d) => {
-            return d.isLoading ? (
+            return !(d && d.value) ? (
               loading
             ) : (
               <CCol>
-                <FirestoreCollection path="/groups/">
-                  {(g) => {
-                    return g.isLoading ? (
-                      loading
-                    ) : (
-                      <ModifyCard data={d} group={g} />
-                    );
-                  }}
-                </FirestoreCollection>
+                <ModifyCard data={d} />
               </CCol>
             );
           }}

@@ -218,12 +218,12 @@ const DataTabs = (props) => {
                 variant="ghost"
                 color="dark"
                 onClick={(event) => {
-				  event.target.disabled = true;
-				  if(!form.current){
-					  alert("請稍後再試");
-				  	  event.target.disabled = false;
-					  return;
-				  }
+                  event.target.disabled = true;
+                  if (!form.current) {
+                    alert("請稍後再試");
+                    event.target.disabled = false;
+                    return;
+                  }
                   var v = {};
                   for (let i = 0; i < props.metadata.value.length; i++) {
                     var problem = props.metadata.value[i];
@@ -288,11 +288,11 @@ const DataTabs = (props) => {
                   commit()
                     .then(() => {
                       alert("儲存完成");
-					  event.target.disabled = false;
+                      event.target.disabled = false;
                     })
                     .catch((error) => {
                       alert(error.message);
-					  event.target.disabled = false;
+                      event.target.disabled = false;
                     });
                 }}
               >

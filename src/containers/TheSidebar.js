@@ -46,8 +46,8 @@ const TheSidebar = () => {
       </CSidebarBrand>
       <CSidebarNav
         onClick={(event) => {
-		  if(!event.target) return;
-		  if(!event.target.href) return;
+          if (!event.target) return;
+          if (!event.target.href) return;
           const not_implemented = ["members", "biblegroup"];
           for (let n of not_implemented)
             if (event.target.href.includes(n)) {

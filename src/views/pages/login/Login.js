@@ -30,7 +30,7 @@ const Login = (props) => {
                   <p className="text-muted">Sign In to your account</p>
                   <CInputGroup className="mb-3">
                     <CInputGroupPrepend>
-	  				  <CInputGroupText>@</CInputGroupText>
+                      <CInputGroupText>@</CInputGroupText>
                     </CInputGroupPrepend>
                     <CInput
                       innerRef={username}
