@@ -177,7 +177,7 @@ const DownloadCard = () => {
                             tmp_data[k].ans === "有" &&
                             problem_list.indexOf(k) > 0
                           )
-                            tmp_list[problem_list.indexOf(k)] = "O";
+                            tmp_list[problem_list.indexOf(k) + 1] = "O";
                         }
                         sheets[person.residence].push(tmp_list);
                       }
@@ -230,7 +230,7 @@ const DownloadCard = () => {
     <CCard>
       <CCardHeader>
         <CCol>
-          <CRow className="align-items-center">接受表單回應</CRow>
+          <CRow className="align-items-center">操練表數據下載</CRow>
         </CCol>
       </CCardHeader>
       <CCardBody>
