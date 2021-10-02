@@ -175,7 +175,7 @@ const DownloadCard = () => {
                         for (let k in tmp_data) {
                           if (
                             tmp_data[k].ans === "有" &&
-                            problem_list.indexOf(k) > 0
+                            problem_list.indexOf(k) >= 0
                           )
                             tmp_list[problem_list.indexOf(k) + 1] = "O";
                         }
