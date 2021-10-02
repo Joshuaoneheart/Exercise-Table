@@ -8,9 +8,7 @@ import {
   FirebaseAuthProvider,
   FirebaseAuthConsumer,
 } from "@react-firebase/auth";
-import {
-  FirestoreProvider
-} from "@react-firebase/firestore";
+import { FirestoreProvider } from "@react-firebase/firestore";
 import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
@@ -28,8 +26,8 @@ const GetWeeklyBase = () => {
 };
 
 const WeeklyBase2String = (base) => {
-  var end = new Date((base + 1) * 7 * 86400000 + BaseDate);
-  var start = new Date(base * 7 * 86400000 + BaseDate + 1);
+  var end = new Date((base + 1) * 7 * 86400000 + BaseDate - 1);
+  var start = new Date(base * 7 * 86400000 + BaseDate);
   return `${start.getMonth() + 1}/${start.getDate()}-${
     end.getMonth() + 1
   }/${end.getDate()}`;

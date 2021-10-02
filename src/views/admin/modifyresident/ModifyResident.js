@@ -271,7 +271,7 @@ const AddModal = (props) => {
       case "residence":
         props.residences.push(form.current.elements.name.value);
         props.setResidences(props.residences);
-        break;  
+        break;
       default:
         break;
     }

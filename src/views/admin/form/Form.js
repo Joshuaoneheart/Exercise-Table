@@ -19,9 +19,7 @@ import {
   CCardHeader,
 } from "@coreui/react";
 import { loading } from "src/reusable";
-import {
-  FirestoreCollection
-} from "@react-firebase/firestore";
+import { FirestoreCollection } from "@react-firebase/firestore";
 const Problem = (props) => {
   var frame = [];
   var option_style = { color: "#000000", fontSize: "20px" };
