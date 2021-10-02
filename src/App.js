@@ -1,6 +1,9 @@
 import React, { Component, createContext, useState } from "react";
 import { HashRouter, Route, Switch } from "react-router-dom";
+import { createHashHistory } from 'history';
+
 import "./scss/style.scss";
+
 import {
   FirebaseAuthProvider,
   FirebaseAuthConsumer,
@@ -12,7 +15,11 @@ import {
 import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
+
 import { loading } from "src/reusable";
+
+const history = createHashHistory()
+
 const AccountContext = createContext({});
 // 2021/9/19(Sunday) 24:00
 const BaseDate = new Date(2021, 8, 19, 24).getTime();
@@ -22,10 +29,12 @@ const GetWeeklyBase = () => {
 };
 
 const WeeklyBase2String = (base) => {
-	var end = new Date((base + 1) * 7 * 86400000 + BaseDate);
-	var start = new Date(base * 7 * 86400000 + BaseDate + 1);
-	return `${start.getMonth() + 1}/${start.getDate()}-${end.getMonth() + 1}/${end.getDate()}`
-}
+  var end = new Date((base + 1) * 7 * 86400000 + BaseDate);
+  var start = new Date(base * 7 * 86400000 + BaseDate + 1);
+  return `${start.getMonth() + 1}/${start.getDate()}-${
+    end.getMonth() + 1
+  }/${end.getDate()}`;
+};
 
 var config = {
   apiKey: "AIzaSyBRYT6ipwBqNlt8xqkU2NfPV5XpU0PXxsE",
@@ -69,7 +78,7 @@ const SignedIn = (props) => {
 class App extends Component {
   render() {
     return (
-      <HashRouter>
+      <HashRouter history={history}>
         <React.Suspense fallback={loading}>
           <FirebaseAuthProvider {...config} firebase={firebase}>
             <Switch>
@@ -117,4 +126,4 @@ class App extends Component {
 }
 
 export default App;
-export { AccountContext, BaseDate, GetWeeklyBase, firebase, WeeklyBase2String };
+export { AccountContext, BaseDate, firebase, GetWeeklyBase, history, WeeklyBase2String };

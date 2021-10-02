@@ -13,7 +13,7 @@ import {
   CSidebarNavItem,
 } from "@coreui/react";
 
-import { AccountContext } from "../App.js";
+import { AccountContext, history } from "../App.js";
 import Brand from "src/reusable/brand";
 
 // sidebar nav config
@@ -48,10 +48,11 @@ const TheSidebar = () => {
         onClick={(event) => {
           if (!event.target) return;
           if (!event.target.href) return;
-          const not_implemented = ["members", "biblegroup"];
+          const not_implemented = ["members", "biblegroup", "modifygroup", "modifyform"];
           for (let n of not_implemented)
             if (event.target.href.includes(n)) {
               alert("此功能尚未開放");
+			  history.push("/");
               break;
             }
         }}

@@ -32,7 +32,6 @@ const Problem = (props) => {
   var option_style = { color: "#000000", fontSize: "20px" };
   var title_style = { color: "#636f83" };
   var button_style = { height: "20px", width: "20px" };
-  console.log(props.default_data);
   switch (props.data.type) {
     case "Grid":
       var option_row = [];

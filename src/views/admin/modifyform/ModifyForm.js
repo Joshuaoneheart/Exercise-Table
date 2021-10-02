@@ -37,6 +37,7 @@ import { WeeklyBase2String } from "src/App";
 const ModifyCard = (props) => {
   const [data, setData] = useState(props.data);
   var [activeTab, setActiveTab] = useState(0);
+  const [sections, setSections] = useState([]);
   const [modifyModal, setModifyModal] = useState(null);
   const [deleteModal, setDeleteModal] = useState(null);
   const [addModal, setAddModal] = useState(null);
@@ -201,7 +202,7 @@ const ModifyCard = (props) => {
                         alert("儲存完成");
                       })
                       .catch((error) => {
-                        console.log(error);
+                        alert(error);
                       });
                   }}
                 >
@@ -512,20 +513,9 @@ const ModifyForm = () => {
         <FirestoreCollection path="/form/">
           {(d) => {
             if (d && d.value) {
-              var data = { value: [], ids: [] };
-              for (let i = 0; i < d.value.length; i++) {
-                let index = data.ids.indexOf(d.value[i].section);
-                if (index === -1) {
-                  index = data.ids.length;
-                  data.ids.push(d.value[i].section);
-                  data.value.push([]);
-                }
-                d.value[i].ids = d.ids[i];
-                data.value[index].push(d.value[i]);
-              }
               return (
                 <CCol>
-                  <ModifyCard data={data} />
+                  <ModifyCard data={d} />
                 </CCol>
               );
             } else return loading;

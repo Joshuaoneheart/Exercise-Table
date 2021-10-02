@@ -78,12 +78,12 @@ const ModifyCard = (props) => {
           </CCol>
           <CCol>
             <CButtonToolbar justify="end">
-              <CButton variant="ghost" color="dark">
+              <CButton variant="ghost" color="dark"
+              onClick={function (i, activeTab) {
+                setTransferModal({ resident: i, residence: activeTab });
+              }.bind(null, i, activeTab)}>
                 <CIcon
                   name="cil-swap-horizontal"
-                  onClick={function (i, activeTab) {
-                    setTransferModal({ resident: i, residence: activeTab });
-                  }.bind(null, i, activeTab)}
                 />
               </CButton>
               <CButton
@@ -225,8 +225,8 @@ const ModifyCard = (props) => {
                       var pathPrefix = "/accounts/";
                       for (var idx in data.ids) {
                         var path = pathPrefix + data.ids[idx];
-                        if (data.value[idx].isChanged){
-                          var tmp = {"residence": data.value[idx].residence};
+                        if (data.value[idx].isChanged) {
+                          var tmp = { residence: data.value[idx].residence };
                           addMutationToBatch({
                             path,
                             value: tmp,

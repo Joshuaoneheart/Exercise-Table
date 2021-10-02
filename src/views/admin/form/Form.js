@@ -160,11 +160,7 @@ const DataTabs = (props) => {
     for (var j = 0; j < data.value[i].length; j++) {
       var problem = data.value[i][j];
       tabContents.push(
-        <Problem
-          name={data.value[i].id}
-          data={problem}
-          key={j}
-        />
+        <Problem name={data.value[i].id} data={problem} key={j} />
       );
     }
     tabpanes.push(<CTabPane key={i}>{tabContents}</CTabPane>);
@@ -198,32 +194,27 @@ const DataTabs = (props) => {
 const Form = () => {
   return (
     <CRow>
-            <FirestoreCollection path="/form/">
-              {(d) => {
-                if (d.isLoading) return loading;
-                if (d && d.value) {
-                  var data = { value: [], ids: [] };
-                  for (var i = 0; i < d.value.length; i++) {
-                    d.value[i].id = d.ids[i];
-                    if (!data.ids.includes(d.value[i].section)) {
-                      data.ids.push(d.value[i].section);
-                      data.value.push([]);
-                    }
-                    data.value[data.ids.indexOf(d.value[i].section)].push(
-                      d.value[i]
-                    );
-                  }
-                  return (
-                    <CCol>
-                      <DataTabs
-                        data={data}
-                        metadata={d}
-                      />
-                    </CCol>
-                  );
-                } else return null;
-              }}
-            </FirestoreCollection>
+      <FirestoreCollection path="/form/">
+        {(d) => {
+          if (d.isLoading) return loading;
+          if (d && d.value) {
+            var data = { value: [], ids: [] };
+            for (var i = 0; i < d.value.length; i++) {
+              d.value[i].id = d.ids[i];
+              if (!data.ids.includes(d.value[i].section)) {
+                data.ids.push(d.value[i].section);
+                data.value.push([]);
+              }
+              data.value[data.ids.indexOf(d.value[i].section)].push(d.value[i]);
+            }
+            return (
+              <CCol>
+                <DataTabs data={data} metadata={d} />
+              </CCol>
+            );
+          } else return null;
+        }}
+      </FirestoreCollection>
     </CRow>
   );
 };

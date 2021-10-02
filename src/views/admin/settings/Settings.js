@@ -168,11 +168,17 @@ const DownloadCard = () => {
                               problem_list.map((x) => problem_map[x])
                             ),
                           ];
-                        let tmp_list = new Array(sheets[person.residence][0].length);
-						tmp_list[0] = person.displayName;
-						for(let k in tmp_data){
-							if(tmp_data[k].ans === "有" && problem_list.indexOf(k) > 0) tmp_list[problem_list.indexOf(k)] = "O"
-						}
+                        let tmp_list = new Array(
+                          sheets[person.residence][0].length
+                        );
+                        tmp_list[0] = person.displayName;
+                        for (let k in tmp_data) {
+                          if (
+                            tmp_data[k].ans === "有" &&
+                            problem_list.indexOf(k) > 0
+                          )
+                            tmp_list[problem_list.indexOf(k)] = "O";
+                        }
                         sheets[person.residence].push(tmp_list);
                       }
                     }

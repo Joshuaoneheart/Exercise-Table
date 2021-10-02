@@ -214,7 +214,8 @@ const GFFormContent = (props) => {
                 for (let k = 0; k < selected.length; k++) {
                   v[titles[k]] = selected[k];
                 }
-                firebase.firestore()
+                firebase
+                  .firestore()
                   .collection("accounts")
                   .doc(account_id)
                   .collection("GF")
@@ -296,15 +297,7 @@ const GFFormContent = (props) => {
             for (let i = 0; i < selected.length; i++) {
               s.push(Array.from(selected[i]));
             }
-            saveChange(
-              account.id,
-              s,
-              selected,
-              GFs,
-              titles,
-              0,
-              0
-            );
+            saveChange(account.id, s, selected, GFs, titles, 0, 0);
           }}
         >
           提交表單
