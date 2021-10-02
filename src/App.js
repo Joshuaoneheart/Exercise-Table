@@ -1,6 +1,6 @@
 import React, { Component, createContext, useState } from "react";
 import { HashRouter, Route, Switch } from "react-router-dom";
-import { createHashHistory } from 'history';
+import { createHashHistory } from "history";
 
 import "./scss/style.scss";
 
@@ -9,8 +9,7 @@ import {
   FirebaseAuthConsumer,
 } from "@react-firebase/auth";
 import {
-  FirestoreProvider,
-  FirestoreDocument,
+  FirestoreProvider
 } from "@react-firebase/firestore";
 import firebase from "firebase/app";
 import "firebase/auth";
@@ -18,7 +17,7 @@ import "firebase/firestore";
 
 import { loading } from "src/reusable";
 
-const history = createHashHistory()
+const history = createHashHistory();
 
 const AccountContext = createContext({});
 // 2021/9/19(Sunday) 24:00
@@ -126,4 +125,11 @@ class App extends Component {
 }
 
 export default App;
-export { AccountContext, BaseDate, firebase, GetWeeklyBase, history, WeeklyBase2String };
+export {
+  AccountContext,
+  BaseDate,
+  firebase,
+  GetWeeklyBase,
+  history,
+  WeeklyBase2String,
+};

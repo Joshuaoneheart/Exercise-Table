@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import {
   CCol,
   CRow,
@@ -6,7 +6,6 @@ import {
   CTabPane,
   CCard,
   CCardBody,
-  CCardFooter,
   CDropdown,
   CDropdownItem,
   CDropdownMenu,
@@ -20,11 +19,8 @@ import {
   CCardHeader,
 } from "@coreui/react";
 import { loading } from "src/reusable";
-import { AccountContext, GetWeeklyBase } from "src/App.js";
 import {
-  FirestoreDocument,
-  FirestoreCollection,
-  FirestoreBatchedWrite,
+  FirestoreCollection
 } from "@react-firebase/firestore";
 const Problem = (props) => {
   var frame = [];

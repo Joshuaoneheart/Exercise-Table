@@ -82,7 +82,7 @@ const DownloadCard = () => {
   const this_week = GetWeeklyBase();
   var download_list = [];
   for (let i = this_week; i >= 0 && this_week - i < max_d_week_num; i--) {
-    let title = i == this_week ? "本週" : WeeklyBase2String(i);
+    let title = i === this_week ? "本週" : WeeklyBase2String(i);
     download_list.push(
       <CDropdownItem
         key={i}
@@ -200,7 +200,7 @@ const DownloadCard = () => {
                           tmp[0] = GF_meta[i].data().name;
                           for (let p of GF_map[GF_querys[i]]) {
                             let idx = sheets["牧養對象"][0].indexOf(p);
-                            if (idx == -1) {
+                            if (idx === -1) {
                               sheets["牧養對象"][0].push(p);
                               tmp.push("O");
                             } else tmp[idx] = "O";

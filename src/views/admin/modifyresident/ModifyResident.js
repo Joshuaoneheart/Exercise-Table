@@ -78,13 +78,14 @@ const ModifyCard = (props) => {
           </CCol>
           <CCol>
             <CButtonToolbar justify="end">
-              <CButton variant="ghost" color="dark"
-              onClick={function (i, activeTab) {
-                setTransferModal({ resident: i, residence: activeTab });
-              }.bind(null, i, activeTab)}>
-                <CIcon
-                  name="cil-swap-horizontal"
-                />
+              <CButton
+                variant="ghost"
+                color="dark"
+                onClick={function (i, activeTab) {
+                  setTransferModal({ resident: i, residence: activeTab });
+                }.bind(null, i, activeTab)}
+              >
+                <CIcon name="cil-swap-horizontal" />
               </CButton>
               <CButton
                 variant="ghost"
@@ -259,12 +260,9 @@ const AddModal = (props) => {
   var form = React.useRef();
   if (props.show == null) return null;
   var writeData = () => {
-    var data = props.data;
-    var group = props.group;
     switch (props.show.type) {
       case "resident":
         var data = props.data;
-        var tmp = {};
         data.value[form.current.elements.name.value].residence =
           props.residences[form.current.elements.residence.value];
         data.value[form.current.elements.name.value].isChanged = true;
@@ -273,6 +271,8 @@ const AddModal = (props) => {
       case "residence":
         props.residences.push(form.current.elements.name.value);
         props.setResidences(props.residences);
+        break;  
+      default:
         break;
     }
     props.setModal(null);
@@ -369,6 +369,8 @@ const DeleteModal = (props) => {
         }
         props.residences.splice(props.show.index, 1);
         props.setResidences(props.residences);
+        break;
+      default:
         break;
     }
     props.setModal(null);
