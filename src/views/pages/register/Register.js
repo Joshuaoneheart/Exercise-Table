@@ -166,6 +166,10 @@ const Register = (props) => {
                               pass_flag = false;
                             }
                             if (pass_flag) {
+							  if(!register_form.current.elements.email.value.test(/@ntu\.edu\.tw$/)||!register_form.current.elements.email.value.test(/@mail\.ntust\.edu\.tw/)){
+									alert("請使用台大或台科大的學校信箱進行註冊");
+								  return;
+							  }
                               event.target.disabled = true;
                               setCreate(true);
                               props.firebase

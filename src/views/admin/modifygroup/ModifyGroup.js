@@ -45,8 +45,7 @@ const ModifyCard = (props) => {
   for (let i = 0; i < groups.length; i++) {
     group_contents.push([]);
   }
-  if (activeTab >= groups.length)
-    activeTab = Math.max(groups.length - 1, 0);
+  if (activeTab >= groups.length) activeTab = Math.max(groups.length - 1, 0);
   var contents = [];
   var add_modal_options = [];
   for (var i = 0; i < data.ids.length; i++) {
@@ -66,9 +65,7 @@ const ModifyCard = (props) => {
     group_contents[groups.indexOf(data.value[i].group)].push(
       //ToDo: Change ascent to danger when the name has not been bind
       <CListGroupItem
-        key={
-          group_contents[groups.indexOf(data.value[i].group)].length
-        }
+        key={group_contents[groups.indexOf(data.value[i].group)].length}
         accent="secondary"
         color="secondary"
       >
@@ -144,9 +141,7 @@ const ModifyCard = (props) => {
               <CButton
                 variant="ghost"
                 color="dark"
-                onClick={() =>
-                  setAddModal({ type: "group", title: "活力組" })
-                }
+                onClick={() => setAddModal({ type: "group", title: "活力組" })}
               >
                 <CIcon alt="新增活力組" name="cil-library-add" />
               </CButton>
