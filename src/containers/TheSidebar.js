@@ -50,7 +50,6 @@ const TheSidebar = () => {
           const not_implemented = [
             "members",
             "biblegroup",
-            "modifygroup",
             "modifyform",
           ];
           for (let n of not_implemented)

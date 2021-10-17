@@ -37,7 +37,6 @@ const AddModal = (props) => {
     var tmp = {};
     tmp["name"] = form.current.elements.name.value;
     tmp["note"] = form.current.elements.note.value;
-    tmp["id"] = { name: tmp["name"], note: tmp["note"] };
     data.push(tmp);
     props.setData(data);
     props.setModal(null);
@@ -98,24 +97,31 @@ const AddModal = (props) => {
 const GFFormContent = (props) => {
   const titles = ["家聚會", "小排", "主日聚會"];
   var account = props.account;
+  const [GFs, setGFs] = useState(props.data.value);
+  const [addModal, setAddModal] = useState(null);
   let default_selected = [];
+  function findID(id) {
+    for (let i = 0; i < GFs.length; i++) {
+      if (id === GFs[i].id) return i;
+    }
+    return -1;
+  }
   for (let i in titles) {
     var d = props.default_data;
-    if (d && d.value) default_selected.push(new Set(d.value[titles[i]]));
+    if (d && d.value)
+      default_selected.push(new Set(d.value[titles[i]].map(findID)));
     else default_selected.push(new Set());
   }
   var [selected, set_selected] = useState(default_selected);
-  const [addModal, setAddModal] = useState(null);
-  const [GFs, setGFs] = useState(props.data.value);
   var inputs = [];
   for (let i = 0; i < titles.length; i++) {
     var selected_options = [];
     var GF_options = [];
     for (var j = 0; j < GFs.length; j++) {
       if (!GFs[j]) continue;
-      else if (selected[i].has(GFs[j].id)) {
+      else if (selected[i].has(j)) {
         GF_options.push({
-          value: GFs[j].id,
+          value: j,
           label: (
             <span style={{ whiteSpace: "pre" }}>
               <b>{GFs[j].name}</b>
@@ -123,7 +129,7 @@ const GFFormContent = (props) => {
           ),
         });
         selected_options.push({
-          value: GFs[j].id,
+          value: j,
           label: (
             <span style={{ whiteSpace: "pre" }}>
               <b>{GFs[j].name}</b>
@@ -132,7 +138,7 @@ const GFFormContent = (props) => {
         });
       } else
         GF_options.push({
-          value: GFs[j].id,
+          value: j,
           label: (
             <span style={{ whiteSpace: "pre" }}>
               <b>{GFs[j].name}</b> <span>{"      " + GFs[j].note}</span>
@@ -149,6 +155,7 @@ const GFFormContent = (props) => {
           isMulti
           autoFocus
           options={GF_options}
+          defaultMenuIsOpen={false}
           onChange={function (set_selected, selected, i, value) {
             var tmp = new Set();
             for (let v of value) {
@@ -212,7 +219,7 @@ const GFFormContent = (props) => {
               if (selected.length <= i) {
                 let v = {};
                 for (let k = 0; k < selected.length; k++) {
-                  v[titles[k]] = selected[k];
+                  v[titles[k]] = selected[k].map((x) => GFs[x].id);
                 }
                 firebase
                   .firestore()
@@ -223,14 +230,6 @@ const GFFormContent = (props) => {
                   .set(v)
                   .then(() => {
                     alert("儲存完成");
-                    for (let k = 0; k < GFs.length; k++) {
-                      if (
-                        GFs[k] &&
-                        GFs[k].id &&
-                        GFs[k].id.constructor !== String
-                      )
-                        delete GFs[k];
-                    }
                   })
                   .catch((error) => {
                     alert(error.message);
@@ -247,9 +246,7 @@ const GFFormContent = (props) => {
                   null
                 );
               } else if (data) {
-                selected[i][j] = data;
-                selected_set[i].add(data);
-                GFs[GFs.length - 1].id = data;
+                GFs[selected[i][j]].id = data;
                 saveChange(
                   account_id,
                   selected,
@@ -260,13 +257,11 @@ const GFFormContent = (props) => {
                   j + 1,
                   null
                 );
-              } else if (selected[i][j].constructor !== String) {
-                selected_set[i].delete(selected[i][j]);
-                GFs.push(selected[i][j]);
+              } else if (!("id" in GFs[selected[i][j]])) {
                 firebase
                   .firestore()
                   .collection("GF")
-                  .add(selected[i][j])
+                  .add(GFs[selected[i][j]])
                   .then((d) =>
                     saveChange(
                       account_id,
@@ -321,11 +316,7 @@ const GFForm = () => {
               <FirestoreCollection path="/GF/">
                 {(d) => {
                   if (d.isLoading) return loading;
-                  if (
-                    d != null &&
-                    typeof d != "undefined" &&
-                    typeof d.value != "undefined"
-                  ) {
+                  if (d && d.value) {
                     for (var i = 0; i < d.value.length; i++) {
                       d.value[i]["id"] = d.ids[i];
                     }

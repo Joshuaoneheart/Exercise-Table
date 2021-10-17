@@ -28,26 +28,91 @@ import {
   CTabPane,
 } from "@coreui/react";
 import CIcon from "@coreui/icons-react";
+import { loading } from "src/reusable";
 import {
   FirestoreCollection,
   FirestoreBatchedWrite,
 } from "@react-firebase/firestore";
-const loading = (
-  <div className="pt-3 text-center">
-    <div className="sk-spinner sk-spinner-pulse"></div>
-  </div>
-);
 const ModifyCard = (props) => {
   const [data, setData] = useState(props.data);
   var [activeTab, setActiveTab] = useState(0);
   const [transferModal, setTransferModal] = useState(null);
   const [deleteModal, setDeleteModal] = useState(null);
   const [addModal, setAddModal] = useState(null);
-  if (activeTab >= data.ids.length)
-    activeTab = data.ids.length >= 0 ? data.ids.length : 0;
   var titles = [];
+  var [groups, setGroups] = useState([]);
+  var group_contents = [];
+  for (let i = 0; i < groups.length; i++) {
+    group_contents.push([]);
+  }
+  if (activeTab >= groups.length)
+    activeTab = Math.max(groups.length - 1, 0);
   var contents = [];
+  var add_modal_options = [];
   for (var i = 0; i < data.ids.length; i++) {
+    if (data.value[i].role !== "Member") continue;
+    if (!data.value[i].group) {
+      add_modal_options.push(
+        <option value={i} key={i}>
+          {data.value[i].displayName}
+        </option>
+      );
+      continue;
+    }
+    if (!groups.includes(data.value[i].group)) {
+      groups.push(data.value[i].group);
+      group_contents.push([]);
+    }
+    group_contents[groups.indexOf(data.value[i].group)].push(
+      //ToDo: Change ascent to danger when the name has not been bind
+      <CListGroupItem
+        key={
+          group_contents[groups.indexOf(data.value[i].group)].length
+        }
+        accent="secondary"
+        color="secondary"
+      >
+        <CRow className="align-items-center">
+          <CCol xs="4" sm="9" md="9" lg="9" style={{ color: "#000000" }}>
+            {data.value[i].displayName}
+          </CCol>
+          <CCol>
+            <CButtonToolbar justify="end">
+              <CButton
+                variant="ghost"
+                color="dark"
+                onClick={function (i, activeTab) {
+                  setTransferModal({ resident: i, group: activeTab });
+                }.bind(null, i, activeTab)}
+              >
+                <CIcon name="cil-swap-horizontal" />
+              </CButton>
+              <CButton
+                variant="ghost"
+                color="danger"
+                onClick={function (i) {
+                  setDeleteModal({
+                    title: "住戶",
+                    type: "resident",
+                    name: data.value[i].displayName,
+                    index: i,
+                  });
+                }.bind(null, i)}
+              >
+                <CIcon name="cil-trash" />
+              </CButton>
+            </CButtonToolbar>
+          </CCol>
+        </CRow>
+      </CListGroupItem>
+    );
+  }
+  for (let i = 0; i < groups.length; i++) {
+    contents.push(
+      <CTabPane key={i} active={activeTab === i}>
+        <CListGroup accent>{group_contents[i]}</CListGroup>
+      </CTabPane>
+    );
     titles.push(
       <CDropdownItem
         key={i}
@@ -55,50 +120,22 @@ const ModifyCard = (props) => {
           setActiveTab(i);
         }.bind(null, i)}
       >
-        {data.ids[i]}
+        {groups[i]}
       </CDropdownItem>
-    );
-    var tmp_content = [];
-    for (var j = 0; j < data.value[i]["member"].length; j++) {
-      tmp_content.push(
-        <CListGroupItem accent="secondary" color="secondary" key={j}>
-          <CRow className="align-items-center">
-            <CCol xs="5" sm="9" md="9" lg="10" style={{ color: "#000000" }}>
-              {data.value[i]["member"][j]}
-            </CCol>
-            <CCol align="end">
-              <CButton
-                variant="ghost"
-                color="dark"
-                onClick={function (i, j) {
-                  setTransferModal([i, j]);
-                }.bind(null, i, j)}
-              >
-                <CIcon name="cil-swap-horizontal" />
-              </CButton>
-            </CCol>
-          </CRow>
-        </CListGroupItem>
-      );
-    }
-    contents.push(
-      <CTabPane key={i} active={activeTab === i}>
-        <CListGroup accent>{tmp_content}</CListGroup>
-      </CTabPane>
     );
   }
   return (
     <CCard>
       <CCardHeader>
         <CRow className="align-items-center">
-          <CCol xs="4" sm="9" md="9" lg="9">
-            活力組管理
+          <CCol xs="5" md="7" lg="7" xl="8">
+            住戶活力組管理
           </CCol>
           <CCol>
             <CButtonToolbar justify="end">
               <CDropdown>
                 <CDropdownToggle color="info" style={{ color: "#FFFFFF" }}>
-                  {data.ids[activeTab]}
+                  {groups.length ? groups[activeTab] : null}
                 </CDropdownToggle>
                 <CDropdownMenu style={{ overflow: "auto", maxHeight: "270px" }}>
                   {titles}
@@ -107,20 +144,25 @@ const ModifyCard = (props) => {
               <CButton
                 variant="ghost"
                 color="dark"
-                onClick={() => {
-                  setAddModal(true);
-                }}
+                onClick={() =>
+                  setAddModal({ type: "group", title: "活力組" })
+                }
               >
-                <CIcon alt="新增組別" name="cil-library-add" />
+                <CIcon alt="新增活力組" name="cil-library-add" />
               </CButton>
               <CButton
                 variant="ghost"
                 color="danger"
-                onClick={() => {
-                  setDeleteModal(activeTab);
-                }}
+                onClick={() =>
+                  setDeleteModal({
+                    type: "group",
+                    title: "活力組",
+                    name: groups[activeTab],
+                    index: activeTab,
+                  })
+                }
               >
-                <CIcon alt="刪除組別" name="cil-trash" />
+                <CIcon alt="刪除活力組" name="cil-trash" />
               </CButton>
             </CButtonToolbar>
           </CCol>
@@ -137,70 +179,110 @@ const ModifyCard = (props) => {
           setData={setData}
           show={transferModal}
           setModal={setTransferModal}
+          groups={groups}
         />
         <DeleteModal
           data={data}
           setData={setData}
           show={deleteModal}
           setModal={setDeleteModal}
+          groups={groups}
+          setGroups={setGroups}
+          group_contents={group_contents}
         />
         <AddModal
+          options={add_modal_options}
           data={data}
           setData={setData}
+          groups={groups}
+          setGroups={setGroups}
           show={addModal}
           setModal={setAddModal}
         />
       </CCardBody>
       <CCardFooter>
-        <FirestoreBatchedWrite>
-          {({ addMutationToBatch, commit }) => {
-            return (
-              <CButton
-                variant="ghost"
-                color="primary"
-                onClick={() => {
-                  var check = window.confirm("確定儲存修改嗎？");
-                  if (!check) return;
-                  var pathPrefix = "/groups/";
-                  for (var idx in data.ids) {
-                    var path = pathPrefix + data.ids[idx] + "/";
-                    addMutationToBatch({
-                      path,
-                      value: data.value[idx],
-                      type: "set",
-                    });
-                  }
-                  commit()
-                    .then(() => {
-                      alert("儲存完成");
-                    })
-                    .catch((error) => {
-                      alert(error);
-                    });
-                }}
-              >
-                儲存變更
-              </CButton>
-            );
-          }}
-        </FirestoreBatchedWrite>
+        <CCol align="end">
+          <CButtonToolbar>
+            <CButton
+              variant="ghost"
+              color="dark"
+              onClick={() =>
+                setAddModal({ type: "resident", index: activeTab })
+              }
+            >
+              新增住戶
+            </CButton>{" "}
+            <FirestoreBatchedWrite>
+              {({ addMutationToBatch, commit }) => {
+                return (
+                  <CButton
+                    variant="ghost"
+                    color="primary"
+                    onClick={() => {
+                      var check = window.confirm("確定儲存修改嗎？");
+                      if (!check) return;
+                      var pathPrefix = "/accounts/";
+                      for (var idx in data.ids) {
+                        var path = pathPrefix + data.ids[idx];
+                        if (data.value[idx].isChanged) {
+                          var tmp = { group: data.value[idx].group };
+                          addMutationToBatch({
+                            path,
+                            value: tmp,
+                            type: "update",
+                          });
+                        }
+                      }
+                      commit()
+                        .then(() => {
+                          alert("儲存完成");
+                        })
+                        .catch((error) => {
+                          alert(error);
+                        });
+                    }}
+                  >
+                    儲存變更
+                  </CButton>
+                );
+              }}
+            </FirestoreBatchedWrite>
+          </CButtonToolbar>
+        </CCol>
       </CCardFooter>
     </CCard>
   );
 };
 
 const AddModal = (props) => {
-  if (props.show == null) {
-    return null;
-  }
-  var form = React.createRef();
+  var form = React.useRef();
+  if (props.show == null) return null;
   var writeData = () => {
-    var data = props.data;
-    data.value.push({ member: [] });
-    data.ids.push(form.current.elements.name.value);
-    props.setData(data);
+    switch (props.show.type) {
+      case "resident":
+        var data = props.data;
+        data.value[form.current.elements.name.value].group =
+          props.groups[form.current.elements.group.value];
+        data.value[form.current.elements.name.value].isChanged = true;
+        props.setData(data);
+        break;
+      case "group":
+        props.groups.push(form.current.elements.name.value);
+        props.setGroups(props.groups);
+        break;
+      default:
+        break;
+    }
     props.setModal(null);
   };
+  var options = [];
+  for (var i in props.groups) {
+    options.push(
+      <option value={i} key={i}>
+        {props.groups[i]}
+      </option>
+    );
+  }
   return (
     <CModal
       show={props.show !== null}
@@ -219,14 +301,36 @@ const AddModal = (props) => {
           encType="multipart/form-data"
           className="form-horizontal"
         >
-          <CFormGroup row inline>
-            <CCol md="3">
-              <CLabel>活力組名稱</CLabel>
-            </CCol>
-            <CCol xs="12" md="9">
-              <CInput name="name" required />
-            </CCol>
-          </CFormGroup>
+          {props.show.type === "resident" && (
+            <>
+              <CFormGroup row inline>
+                <CCol md="3">
+                  <CLabel>姓名</CLabel>
+                </CCol>
+                <CCol xs="12" md="9">
+                  <CSelect name="name">{props.options}</CSelect>
+                </CCol>
+              </CFormGroup>
+              <CFormGroup row inline>
+                <CCol md="3">
+                  <CLabel>活力組</CLabel>
+                </CCol>
+                <CCol xs="12" md="9">
+                  <CSelect name="group">{options}</CSelect>
+                </CCol>
+              </CFormGroup>
+            </>
+          )}
+          {props.show.type === "group" && (
+            <CFormGroup row inline>
+              <CCol md="3">
+                <CLabel>活力組名稱</CLabel>
+              </CCol>
+              <CCol xs="12" md="9">
+                <CInput name="name" required />
+              </CCol>
+            </CFormGroup>
+          )}
         </CForm>
       </CModalBody>
       <CModalFooter>
@@ -250,14 +354,23 @@ const DeleteModal = (props) => {
   if (props.show === null) return null;
   var deleteData = () => {
     var data = props.data;
-    if (data.value[props.show].length !== 0) {
-      alert("活力組內尚有住戶，請將所有住戶刪除後再刪除活力組");
-      props.setModal(null);
-      return;
+    switch (props.show.type) {
+      case "resident":
+        delete data.value[props.show.index].group;
+        data.value[props.show.index].isChanged = true;
+        props.setData(data);
+        break;
+      case "group":
+        if (props.group_contents[props.show.index].length !== 0) {
+          alert("活力組內尚有住戶，請將所有住戶刪除後再刪除活力組");
+          break;
+        }
+        props.groups.splice(props.show.index, 1);
+        props.setGroups(props.groups);
+        break;
+      default:
+        break;
     }
-    data.value.splice(props.show, 1);
-    data.ids.splice(props.show, 1);
-    props.setData(data);
     props.setModal(null);
   };
   return (
@@ -269,9 +382,11 @@ const DeleteModal = (props) => {
       color="danger"
     >
       <CModalHeader closeButton>
-        <CModalTitle>刪除活力組</CModalTitle>
+        <CModalTitle>刪除{props.show.title}</CModalTitle>
       </CModalHeader>
-      <CModalBody>確認刪除活力組 {props.data.ids[props.show]} 嗎？</CModalBody>
+      <CModalBody>
+        確認刪除{props.show.title} {props.show.name} 嗎？
+      </CModalBody>
       <CModalFooter>
         <CButton color="primary" onClick={deleteData}>
           確認
@@ -286,22 +401,23 @@ const DeleteModal = (props) => {
 
 const TransferModal = (props) => {
   var data = props.data;
+  var form = React.useRef();
   if (props.show == null) return null;
-  var form = React.createRef();
   var writeData = () => {
-    var tmp = form.current.elements.group.value;
-    data = props.data;
-    data.value[data.ids.indexOf(tmp)]["member"].push(
-      data.value[props.show[0]]["member"][props.show[1]]
-    );
-    data.value[props.show[0]]["member"].splice(props.show[1], 1);
-    props.setData(data);
+    props.data.value[props.show.resident].group =
+      props.groups[form.current.elements.group.value];
+    props.data.value[props.show.resident].isChanged = true;
+    props.setData(props.data);
     props.setModal(null);
   };
   var groups_option = [];
-  for (let i in data.ids) {
-    if (i !== props.show)
-      groups_option.push(<option value={data.ids[i]}>{data.ids[i]}</option>);
+  for (let i = 0; i < props.groups.length; i++) {
+    if (i !== props.show.group)
+      groups_option.push(
+        <option value={i} key={i}>
+          {props.groups[i]}
+        </option>
+      );
   }
 
   return (
@@ -350,9 +466,9 @@ const ModifyGroup = () => {
   return (
     <>
       <CRow>
-        <FirestoreCollection path="/groups/">
+        <FirestoreCollection path="/accounts/">
           {(d) => {
-            return d.isLoading ? (
+            return !(d && d.value) ? (
               loading
             ) : (
               <CCol>

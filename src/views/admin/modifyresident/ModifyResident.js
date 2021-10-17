@@ -113,8 +113,6 @@ const ModifyCard = (props) => {
         <CListGroup accent>{residence_contents[i]}</CListGroup>
       </CTabPane>
     );
-  }
-  for (let i = 0; i < residences.length; i++) {
     titles.push(
       <CDropdownItem
         key={i}
