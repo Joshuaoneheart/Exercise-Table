@@ -1,11 +1,11 @@
-import React, { Suspense, useContext } from "react";
+import { Suspense, useContext, memo } from "react";
 import { Redirect, Route, Switch } from "react-router-dom";
 import { CContainer, CFade } from "@coreui/react";
 
-import { AccountContext } from "../App.js";
+import { AccountContext } from "src/hooks/context";
 // routes config
-import admin_routes from "../routes";
-import member_routes from "../member_routes";
+import admin_routes from "../routes/routes";
+import member_routes from "../routes/member_routes";
 
 const loading = (
   <div className="pt-3 text-center">
@@ -49,4 +49,4 @@ const TheContent = () => {
   );
 };
 
-export default React.memo(TheContent);
+export default memo(TheContent);

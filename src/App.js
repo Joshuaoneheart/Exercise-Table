@@ -1,24 +1,19 @@
 import { useState, lazy, Suspense } from "react";
 import { HashRouter, Route, Switch } from "react-router-dom";
-import { createHashHistory } from "history";
-
 import "./scss/style.scss";
 
+import { history } from "src/utils/history";
 import {
   FirebaseAuthProvider,
   FirebaseAuthConsumer,
 } from "@react-firebase/auth";
 import { FirestoreProvider } from "@react-firebase/firestore";
-import "firebase/auth";
-import "firebase/firestore";
 import { config, firebase } from "src/db/firebase";
 import { AccountContext } from "./hooks/context";
-import { loading } from "src/components";
-
-const history = createHashHistory();
+import { loading } from "src/Components";
 
 // Containers
-const TheLayout = lazy(() => import("./containers/TheLayout"));
+const TheLayout = lazy(() => import("./Containers/TheLayout"));
 
 // Pages
 const Login = lazy(() => import("./views/pages/login/Login"));
@@ -94,4 +89,3 @@ const App = () => {
 };
 
 export default App;
-export { AccountContext, history };

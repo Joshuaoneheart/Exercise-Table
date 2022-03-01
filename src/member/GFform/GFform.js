@@ -18,11 +18,11 @@ import {
   CModalTitle,
 } from "@coreui/react";
 import Select from "react-select";
-import { loading } from "src/components";
-import { AccountContext } from "src/App";
+import { loading } from "src/Components";
+import { AccountContext } from "src/hooks/context";
 import { GetWeeklyBase } from "src/utils/date";
+import { AddGF } from "src/db/GF";
 import { firebase } from "src/db/firebase";
-import "firebase/firestore";
 import {
   FirestoreDocument,
   FirestoreCollection,
@@ -33,7 +33,7 @@ const AddModal = (props) => {
   if (props.show == null) {
     return null;
   }
-  var writeData = () => {
+  var writeData = async () => {
     var data = props.data;
     var tmp = {};
     tmp["name"] = form.current.elements.name.value;

@@ -1,22 +1,15 @@
-import React, { useState } from 'react'
-import {
-  CCard,
-  CCardBody,
-  CCardHeader,
-  CPagination
-} from '@coreui/react'
-import { DocsLink } from 'src/components'
-
+import { CCard, CCardBody, CCardHeader, CPagination } from "@coreui/react";
+import { DocsLink } from "src/Components";
 
 const Paginations = () => {
-  const [currentPage, setCurrentPage] = useState(2)
+  const [currentPage, setCurrentPage] = useState(2);
 
   return (
     <>
       <CCard>
         <CCardHeader>
           Pagination
-          <DocsLink name="CPagination"/>
+          <DocsLink name="CPagination" />
         </CCardHeader>
         <CCardBody>
           <h6>Default</h6>
@@ -87,7 +80,7 @@ const Paginations = () => {
         </CCardBody>
       </CCard>
     </>
-  )
-}
+  );
+};
 
-export default Paginations
+export default Paginations;

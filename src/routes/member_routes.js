@@ -1,11 +1,11 @@
 import { lazy } from "react";
 
 //Members
-const Members = lazy(() => import("./member/Members/Members"));
-const Profile = lazy(() => import("./member/Profile/Profile"));
-const Form = lazy(() => import("./member/Form/Form"));
-const GFForm = lazy(() => import("./member/GFform/GFform"));
-const BibleGroup = lazy(() => import("./member/Biblegroup/BibleGroup"));
+const Members = lazy(() => import("../Member/Members/Members"));
+const Profile = lazy(() => import("../Member/Profile/Profile"));
+const Form = lazy(() => import("../Member/Form/Form"));
+const GFForm = lazy(() => import("../Member/GFform/GFform"));
+const BibleGroup = lazy(() => import("../Member/Biblegroup/BibleGroup"));
 
 const routes = [
   { path: "/", exact: true, name: "Home" },

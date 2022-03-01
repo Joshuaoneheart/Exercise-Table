@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import {
   CCol,
   CRow,
@@ -20,8 +20,8 @@ import {
   CCardHeader,
   CButton,
 } from "@coreui/react";
-import { loading } from "src/components";
-import { AccountContext } from "src/App.js";
+import { loading } from "src/Components";
+import { AccountContext } from "src/hooks/context";
 import { GetWeeklyBase } from "src/utils/date";
 import {
   FirestoreDocument,
@@ -156,7 +156,7 @@ const DataTabs = (props) => {
   var data = props.data;
   var account = props.account;
   const [section, setSection] = useState(0);
-  var form = React.useRef();
+  var form = useRef();
   var tabs = [];
   var tabpanes = [];
   for (var i = 0; i < data.ids.length; i++) {

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useRef, useState } from "react";
 import {
   CButton,
   CButtonToolbar,
@@ -28,7 +28,7 @@ import {
   CTabPane,
 } from "@coreui/react";
 import CIcon from "@coreui/icons-react";
-import { loading } from "src/components";
+import { loading } from "src/Components";
 import {
   FirestoreCollection,
   FirestoreBatchedWrite,
@@ -218,7 +218,7 @@ const ModifyCard = (props) => {
 
 const AddModal = (props) => {
   var [type, setType] = useState("MultiChoice");
-  var form = React.useRef();
+  var form = useRef();
   if (props.show == null) {
     return null;
   }
@@ -398,7 +398,7 @@ const DeleteModal = (props) => {
 
 const ModifyModal = (props) => {
   var data = null;
-  var form = React.useRef();
+  var form = useRef();
   if (props.show != null) data = props.data.value[props.show[0]][props.show[1]];
   let [type, setType] = useState("");
   var writeData = () => {

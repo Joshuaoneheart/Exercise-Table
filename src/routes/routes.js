@@ -2,20 +2,16 @@ import React from "react";
 
 //Admin
 const ModifyResident = React.lazy(() =>
-  import("./admin/ModifyResident/ModifyResident")
+  import("../Admin/ModifyResident/ModifyResident")
 );
-const ModifyGroup = React.lazy(() =>
-  import("./admin/ModifyGroup/ModifyGroup")
-);
-const ModifyForm = React.lazy(() =>
-  import("./admin/ModifyForm/ModifyForm")
-);
-const Members = React.lazy(() => import("./admin/Members/Members"));
-const Profile = React.lazy(() => import("./admin/Profile/Profile"));
-const Settings = React.lazy(() => import("./admin/Settings/Settings"));
-const Form = React.lazy(() => import("./admin/Form/Form"));
-const Dashboard = React.lazy(() => import("./views/dashboard/Dashboard"));
-const Users = React.lazy(() => import("./views/users/Users"));
+const ModifyGroup = React.lazy(() => import("../Admin/ModifyGroup/ModifyGroup"));
+const ModifyForm = React.lazy(() => import("../Admin/ModifyForm/ModifyForm"));
+const Members = React.lazy(() => import("../Admin/Members/Members"));
+const Profile = React.lazy(() => import("../Admin/Profile/Profile"));
+const Settings = React.lazy(() => import("../Admin/Settings/Settings"));
+const Form = React.lazy(() => import("../Admin/Form/Form"));
+const Dashboard = React.lazy(() => import("../views/dashboard/Dashboard"));
+const Users = React.lazy(() => import("../views/users/Users"));
 
 const routes = [
   { path: "/", exact: true, name: "Home" },

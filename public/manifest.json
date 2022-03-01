@@ -3,9 +3,9 @@
   "name": "Exercise Table for church 19",
   "icons": [
     {
-      "src": "./assets/img/favicon.png",
+      "src": "./favicon.ico",
       "sizes": "100x100",
-      "type": "image/png"
+      "type": "image/ico"
     }
   ],
   "start_url": ".",

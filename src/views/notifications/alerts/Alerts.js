@@ -1,4 +1,4 @@
-import React from 'react'
+import { useState } from "react";
 import {
   CAlert,
   CButton,
@@ -8,12 +8,12 @@ import {
   CCol,
   CLink,
   CProgress,
-  CRow
-} from '@coreui/react'
-import { DocsLink } from 'src/components'
+  CRow,
+} from "@coreui/react";
+import { DocsLink } from "src/Components";
 
 const Alerts = () => {
-  const [visible, setVisible] = React.useState(10)
+  const [visible, setVisible] = useState(10);
 
   return (
     <>
@@ -22,7 +22,7 @@ const Alerts = () => {
           <CCard>
             <CCardHeader>
               Alerts
-              <DocsLink name="CAlert"/>
+              <DocsLink name="CAlert" />
             </CCardHeader>
             <CCardBody>
               <CAlert color="primary">
@@ -40,15 +40,11 @@ const Alerts = () => {
               <CAlert color="warning">
                 This is a warning alert — check it out!
               </CAlert>
-              <CAlert color="info">
-                This is a info alert — check it out!
-              </CAlert>
+              <CAlert color="info">This is a info alert — check it out!</CAlert>
               <CAlert color="light">
                 This is a light alert — check it out!
               </CAlert>
-              <CAlert color="dark">
-                This is a dark alert — check it out!
-              </CAlert>
+              <CAlert color="dark">This is a dark alert — check it out!</CAlert>
             </CCardBody>
           </CCard>
         </CCol>
@@ -56,56 +52,59 @@ const Alerts = () => {
           <CCard>
             <CCardHeader>
               Alerts
-              <small> use <code>.alert-link</code> to provide links</small>
+              <small>
+                {" "}
+                use <code>.alert-link</code> to provide links
+              </small>
             </CCardHeader>
             <CCardBody>
               <CAlert color="primary">
                 {/*eslint-disable-next-line*/}
                 This is a primary alert with&nbsp;
-                <CLink className="alert-link">an example link</CLink>.
-                Give it a click if you like.
+                <CLink className="alert-link">an example link</CLink>. Give it a
+                click if you like.
               </CAlert>
               <CAlert color="secondary">
                 {/*eslint-disable-next-line*/}
                 This is a secondary alert with&nbsp;
-                <CLink className="alert-link">an example link</CLink>.
-                Give it a click if you like.
+                <CLink className="alert-link">an example link</CLink>. Give it a
+                click if you like.
               </CAlert>
               <CAlert color="success">
                 {/*eslint-disable-next-line*/}
                 This is a success alert with&nbsp;
-                <CLink className="alert-link">an example link</CLink>.
-                Give it a click if you like.
+                <CLink className="alert-link">an example link</CLink>. Give it a
+                click if you like.
               </CAlert>
               <CAlert color="danger">
                 {/*eslint-disable-next-line*/}
                 This is a danger alert with&nbsp;
-                <CLink className="alert-link">an example link</CLink>.
-                Give it a click if you like.
+                <CLink className="alert-link">an example link</CLink>. Give it a
+                click if you like.
               </CAlert>
               <CAlert color="warning">
                 {/*eslint-disable-next-line*/}
                 This is a warning alert with&nbsp;
-                <CLink className="alert-link">an example link</CLink>.
-                Give it a click if you like.
+                <CLink className="alert-link">an example link</CLink>. Give it a
+                click if you like.
               </CAlert>
               <CAlert color="info">
                 {/*eslint-disable-next-line*/}
                 This is a info alert with&nbsp;
-                <CLink className="alert-link">an example link</CLink>.
-                Give it a click if you like.
+                <CLink className="alert-link">an example link</CLink>. Give it a
+                click if you like.
               </CAlert>
               <CAlert color="light">
                 {/*eslint-disable-next-line*/}
                 This is a light alert with&nbsp;
-                <CLink className="alert-link">an example link</CLink>.
-                Give it a click if you like.
+                <CLink className="alert-link">an example link</CLink>. Give it a
+                click if you like.
               </CAlert>
               <CAlert color="dark">
                 {/*eslint-disable-next-line*/}
                 This is a dark alert with&nbsp;
-                <CLink className="alert-link">an example link</CLink>.
-                Give it a click if you like.
+                <CLink className="alert-link">an example link</CLink>. Give it a
+                click if you like.
               </CAlert>
             </CCardBody>
           </CCard>
@@ -122,13 +121,15 @@ const Alerts = () => {
               <CAlert color="success">
                 <h4 className="alert-heading">Well done!</h4>
                 <p>
-                  Aww yeah, you successfully read this important alert message. This example text is going
-                  to run a bit longer so that you can see how spacing within an alert works with this kind
-                  of content.
+                  Aww yeah, you successfully read this important alert message.
+                  This example text is going to run a bit longer so that you can
+                  see how spacing within an alert works with this kind of
+                  content.
                 </p>
                 <hr />
                 <p className="mb-0">
-                  Whenever you need to, be sure to use margin utilities to keep things nice and tidy.
+                  Whenever you need to, be sure to use margin utilities to keep
+                  things nice and tidy.
                 </p>
               </CAlert>
             </CCardBody>
@@ -141,10 +142,7 @@ const Alerts = () => {
               <small> dismissing</small>
             </CCardHeader>
             <CCardBody>
-              <CAlert
-                color="info"
-                closeButton
-              >
+              <CAlert color="info" closeButton>
                 I am an dismissible alert!
               </CAlert>
               <CAlert
@@ -171,7 +169,7 @@ const Alerts = () => {
         </CCol>
       </CRow>
     </>
-  )
-}
+  );
+};
 
-export default Alerts
+export default Alerts;

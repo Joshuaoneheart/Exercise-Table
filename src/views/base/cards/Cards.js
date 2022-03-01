@@ -13,7 +13,7 @@ import {
   CLink,
 } from "@coreui/react";
 import CIcon from "@coreui/icons-react";
-import { DocsLink } from "src/components";
+import { DocsLink } from "src/Components";
 
 const Cards = () => {
   const [collapsed, setCollapsed] = useState(true);

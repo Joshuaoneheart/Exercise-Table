@@ -1,4 +1,4 @@
-import { React, useContext } from "react";
+import { useContext } from "react";
 import {
   CDropdown,
   CDropdownItem,
@@ -8,7 +8,7 @@ import {
   CLink,
 } from "@coreui/react";
 import CIcon from "@coreui/icons-react";
-import { AccountContext } from "../App";
+import { AccountContext } from "src/hooks/context";
 
 const TheHeaderDropdown = (props) => {
   var account = useContext(AccountContext);

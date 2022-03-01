@@ -1,4 +1,3 @@
-import React from 'react'
 import {
   CButton,
   CDropdown,
@@ -16,9 +15,9 @@ import {
   CInputGroupPrepend,
   CInputGroupText,
   CRow,
-  CCallout
-} from '@coreui/react'
-import { DocsLink } from 'src/components'
+  CCallout,
+} from "@coreui/react";
+import { DocsLink } from "src/Components";
 
 const ButtonGroups = () => {
   return (
@@ -27,19 +26,17 @@ const ButtonGroups = () => {
         <CCard>
           <CCardHeader>
             Callout
-            <DocsLink name="CCallout"/>
+            <DocsLink name="CCallout" />
           </CCardHeader>
           <CCardBody>
-            <CCallout color="primary">
-              Callout
-            </CCallout>
+            <CCallout color="primary">Callout</CCallout>
           </CCardBody>
         </CCard>
 
         <CCard>
           <CCardHeader>
             Button Group
-            <DocsLink name="-Button/#CButtonGroup"/>
+            <DocsLink name="-Button/#CButtonGroup" />
           </CCardHeader>
           <CCardBody>
             <CButtonGroup>
@@ -116,10 +113,8 @@ const ButtonGroups = () => {
             </CButtonGroup>
           </CCardBody>
         </CCard>
-
       </CCol>
       <CCol md={6}>
-
         <CCard>
           <CCardHeader>
             Button Group
@@ -131,13 +126,15 @@ const ButtonGroups = () => {
               <CButton color="secondary">Middle</CButton>
               <CButton color="secondary">Right</CButton>
             </CButtonGroup>
-            <br /><br />
+            <br />
+            <br />
             <CButtonGroup>
               <CButton color="secondary">Left</CButton>
               <CButton color="secondary">Middle</CButton>
               <CButton color="secondary">Right</CButton>
             </CButtonGroup>
-            <br /><br />
+            <br />
+            <br />
             <CButtonGroup size="sm">
               <CButton color="secondary">Left</CButton>
               <CButton color="secondary">Middle</CButton>
@@ -191,7 +188,7 @@ const ButtonGroups = () => {
         </CCard>
       </CCol>
     </CRow>
-  )
-}
+  );
+};
 
-export default ButtonGroups
+export default ButtonGroups;

@@ -28,7 +28,7 @@ import {
   CTabPane,
 } from "@coreui/react";
 import CIcon from "@coreui/icons-react";
-import { loading } from "src/components";
+import { loading } from "src/Components";
 import {
   FirestoreCollection,
   FirestoreBatchedWrite,

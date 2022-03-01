@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
   CBadge,
   CCard,
@@ -11,7 +10,7 @@ import {
   CTabContent,
   CTabPane,
 } from "@coreui/react";
-import { DocsLink } from "src/components";
+import { DocsLink } from "src/Components";
 
 const ListGroups = () => {
   const [activeTab, setActiveTab] = useState(1);

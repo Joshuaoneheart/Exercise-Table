@@ -12,8 +12,9 @@ import {
   CSidebarNavItem,
 } from "@coreui/react";
 
-import { AccountContext, history } from "../App.js";
-import Brand from "src/components/brand";
+import { AccountContext } from "src/hooks/context";
+import { history } from "src/utils/history";
+import Brand from "src/Components/brand";
 
 // sidebar nav config
 import admin_navigation from "./_nav";

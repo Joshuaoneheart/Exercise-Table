@@ -1,12 +1,11 @@
-import React from 'react'
 import {
   CCard,
   CCardBody,
   CCardHeader,
   CProgress,
-  CProgressBar
-} from '@coreui/react'
-import { DocsLink } from 'src/components'
+  CProgressBar,
+} from "@coreui/react";
+import { DocsLink } from "src/Components";
 
 const ProgressBar = () => {
   return (
@@ -14,7 +13,7 @@ const ProgressBar = () => {
       <CCard>
         <CCardHeader>
           Progress
-          <DocsLink name="CProgressBar"/>
+          <DocsLink name="CProgressBar" />
         </CCardHeader>
         <CCardBody>
           <CProgress className="mb-3" />
@@ -30,9 +29,14 @@ const ProgressBar = () => {
           <small> labels</small>
         </CCardHeader>
         <CCardBody>
-          <CProgress value={25.3746472} showPercentage precision={2} className="mb-3"/>
-          <CProgress value={50.45} showValue className="mb-3"/>
-          <CProgress value={15} max={20} showPercentage className="mb-3"/>
+          <CProgress
+            value={25.3746472}
+            showPercentage
+            precision={2}
+            className="mb-3"
+          />
+          <CProgress value={50.45} showValue className="mb-3" />
+          <CProgress value={15} max={20} showPercentage className="mb-3" />
         </CCardBody>
       </CCard>
       <CCard>
@@ -41,8 +45,8 @@ const ProgressBar = () => {
           <small> heights</small>
         </CCardHeader>
         <CCardBody>
-          <CProgress value={25} className="mb-3" style={{height: "3px"}}/>
-          <CProgress value={25} className="mb-3" style={{height: "30px"}}/>
+          <CProgress value={25} className="mb-3" style={{ height: "3px" }} />
+          <CProgress value={25} className="mb-3" style={{ height: "30px" }} />
         </CCardBody>
       </CCard>
       <CCard>
@@ -64,9 +68,9 @@ const ProgressBar = () => {
         </CCardHeader>
         <CCardBody>
           <CProgress size="xs">
-            <CProgressBar value={10}/>
-            <CProgressBar color="success" value={30}/>
-            <CProgressBar color="danger" value={20}/>
+            <CProgressBar value={10} />
+            <CProgressBar color="success" value={30} />
+            <CProgressBar color="danger" value={20} />
           </CProgress>
         </CCardBody>
       </CCard>
@@ -93,7 +97,7 @@ const ProgressBar = () => {
         </CCardBody>
       </CCard>
     </>
-  )
-}
+  );
+};
 
-export default ProgressBar
+export default ProgressBar;
