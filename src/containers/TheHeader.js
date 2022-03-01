@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import { useContext } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
   CHeader,
@@ -15,7 +15,7 @@ import CIcon from "@coreui/icons-react";
 
 // routes config
 import routes from "../routes";
-import Brand from "src/reusable/brand";
+import Brand from "src/components/brand";
 
 import { AccountContext } from "../App.js";
 

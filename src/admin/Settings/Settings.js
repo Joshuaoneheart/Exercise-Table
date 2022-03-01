@@ -14,7 +14,8 @@ import {
 
 import CIcon from "@coreui/icons-react";
 import "firebase/firestore";
-import { firebase, GetWeeklyBase, WeeklyBase2String } from "src/App";
+import { firebase } from "src/db/firebase";
+import { GetWeeklyBase, WeeklyBase2String } from "src/utils/date";
 import FileSaver from "file-saver";
 import XLSX from "xlsx";
 

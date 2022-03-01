@@ -1,4 +1,3 @@
-import React, { useState } from 'react'
 import {
   CButton,
   CCard,
@@ -10,7 +9,7 @@ import {
   CFade,
   CRow 
 } from '@coreui/react';
-import { DocsLink } from 'src/reusable'
+import { DocsLink } from 'src/components'
 
 const Collapses = () => {
 

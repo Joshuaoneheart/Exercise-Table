@@ -28,12 +28,11 @@ import {
   CTabPane,
 } from "@coreui/react";
 import CIcon from "@coreui/icons-react";
-import { loading } from "src/reusable";
+import { loading } from "src/components";
 import {
   FirestoreCollection,
   FirestoreBatchedWrite,
 } from "@react-firebase/firestore";
-import { WeeklyBase2String } from "src/App";
 const ModifyCard = (props) => {
   const [data, setData] = useState(props.data);
   var [activeTab, setActiveTab] = useState(0);

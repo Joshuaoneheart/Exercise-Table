@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState, useRef } from "react";
 import {
   CButton,
   CButtonToolbar,
@@ -28,7 +28,7 @@ import {
   CTabPane,
 } from "@coreui/react";
 import CIcon from "@coreui/icons-react";
-import { loading } from "src/reusable";
+import { loading } from "src/components";
 import {
   FirestoreCollection,
   FirestoreBatchedWrite,
@@ -255,7 +255,7 @@ const ModifyCard = (props) => {
 };
 
 const AddModal = (props) => {
-  var form = React.useRef();
+  var form = useRef();
   if (props.show == null) return null;
   var writeData = () => {
     switch (props.show.type) {
@@ -401,7 +401,7 @@ const DeleteModal = (props) => {
 
 const TransferModal = (props) => {
   var data = props.data;
-  var form = React.useRef();
+  var form = useRef();
   if (props.show == null) return null;
   var writeData = () => {
     props.data.value[props.show.resident].residence =

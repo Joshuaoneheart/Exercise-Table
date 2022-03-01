@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import {
   CButton,
   CCard,
@@ -30,11 +29,6 @@ import {
 import CIcon from "@coreui/icons-react";
 // import { FirestoreCollection } from "@react-firebase/firestore";
 
-const loading = (
-  <div className="pt-3 text-center">
-    <div className="sk-spinner sk-spinner-pulse"></div>
-  </div>
-);
 // TODO:
 // 1. Set a function that takes input from firebase and renders the charts accordingly
 

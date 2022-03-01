@@ -167,9 +167,12 @@ const Register = (props) => {
                             }
                             if (pass_flag) {
                               if (
-                                  !(/@ntu\.edu\.tw$/.test(register_form.current.elements.email.value)
+                                !/@ntu\.edu\.tw$/.test(
+                                  register_form.current.elements.email.value
                                 ) &&
-                                  !(/@mail\.ntust\.edu\.tw/.test(register_form.current.elements.email.value))
+                                !/@mail\.ntust\.edu\.tw/.test(
+                                  register_form.current.elements.email.value
+                                )
                               ) {
                                 alert("請使用台大或台科大的學校信箱進行註冊");
                                 return;

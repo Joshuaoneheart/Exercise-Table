@@ -1,4 +1,3 @@
-import React from 'react'
 import {
   CButton,
   CCard,
@@ -11,7 +10,7 @@ import {
   CEmbed,
   CEmbedItem
 } from '@coreui/react'
-import { DocsLink } from 'src/reusable'
+import { DocsLink } from 'src/components'
 
 const Jumbotrons = () => {
 

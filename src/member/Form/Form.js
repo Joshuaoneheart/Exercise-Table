@@ -20,8 +20,9 @@ import {
   CCardHeader,
   CButton,
 } from "@coreui/react";
-import { loading } from "src/reusable";
-import { AccountContext, GetWeeklyBase } from "src/App.js";
+import { loading } from "src/components";
+import { AccountContext } from "src/App.js";
+import { GetWeeklyBase } from "src/utils/date";
 import {
   FirestoreDocument,
   FirestoreCollection,

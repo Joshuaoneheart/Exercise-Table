@@ -10,7 +10,7 @@ import {
   CProgress,
   CRow
 } from '@coreui/react'
-import { DocsLink } from 'src/reusable'
+import { DocsLink } from 'src/components'
 
 const Alerts = () => {
   const [visible, setVisible] = React.useState(10)

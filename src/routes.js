@@ -2,18 +2,18 @@ import React from "react";
 
 //Admin
 const ModifyResident = React.lazy(() =>
-  import("./views/admin/modifyresident/ModifyResident")
+  import("./admin/ModifyResident/ModifyResident")
 );
 const ModifyGroup = React.lazy(() =>
-  import("./views/admin/modifygroup/ModifyGroup")
+  import("./admin/ModifyGroup/ModifyGroup")
 );
 const ModifyForm = React.lazy(() =>
-  import("./views/admin/modifyform/ModifyForm")
+  import("./admin/ModifyForm/ModifyForm")
 );
-const Members = React.lazy(() => import("./views/admin/members/Members"));
-const Profile = React.lazy(() => import("./views/admin/profile/Profile"));
-const Settings = React.lazy(() => import("./views/admin/settings/Settings"));
-const Form = React.lazy(() => import("./views/admin/form/Form"));
+const Members = React.lazy(() => import("./admin/Members/Members"));
+const Profile = React.lazy(() => import("./admin/Profile/Profile"));
+const Settings = React.lazy(() => import("./admin/Settings/Settings"));
+const Form = React.lazy(() => import("./admin/Form/Form"));
 const Dashboard = React.lazy(() => import("./views/dashboard/Dashboard"));
 const Users = React.lazy(() => import("./views/users/Users"));
 

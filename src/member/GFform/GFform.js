@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useRef } from "react";
 import {
   CButton,
   CCol,
@@ -18,9 +18,10 @@ import {
   CModalTitle,
 } from "@coreui/react";
 import Select from "react-select";
-import { loading } from "src/reusable";
-import { AccountContext, GetWeeklyBase } from "src/App";
-import { firebase } from "src/App";
+import { loading } from "src/components";
+import { AccountContext } from "src/App";
+import { GetWeeklyBase } from "src/utils/date";
+import { firebase } from "src/db/firebase";
 import "firebase/firestore";
 import {
   FirestoreDocument,
@@ -28,7 +29,7 @@ import {
 } from "@react-firebase/firestore";
 
 const AddModal = (props) => {
-  var form = React.useRef();
+  var form = useRef();
   if (props.show == null) {
     return null;
   }

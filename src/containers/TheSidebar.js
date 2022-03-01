@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import { useContext, memo } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
   CCreateElement,
@@ -13,7 +13,7 @@ import {
 } from "@coreui/react";
 
 import { AccountContext, history } from "../App.js";
-import Brand from "src/reusable/brand";
+import Brand from "src/components/brand";
 
 // sidebar nav config
 import admin_navigation from "./_nav";
@@ -71,4 +71,4 @@ const TheSidebar = () => {
   );
 };
 
-export default React.memo(TheSidebar);
+export default memo(TheSidebar);

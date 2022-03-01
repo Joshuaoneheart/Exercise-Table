@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState, useRef } from "react";
 import {
   CCol,
   CRow,
@@ -18,7 +18,7 @@ import {
   CTabs,
   CCardHeader,
 } from "@coreui/react";
-import { loading } from "src/reusable";
+import { loading } from "src/components";
 import { FirestoreCollection } from "@react-firebase/firestore";
 const Problem = (props) => {
   var frame = [];
@@ -136,7 +136,7 @@ const Problem = (props) => {
 const DataTabs = (props) => {
   var data = props.data;
   const [section, setSection] = useState(0);
-  var form = React.useRef();
+  var form = useRef();
   var tabs = [];
   var tabpanes = [];
   for (var i = 0; i < data.ids.length; i++) {

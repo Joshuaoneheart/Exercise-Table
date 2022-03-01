@@ -18,6 +18,14 @@ import CIcon from "@coreui/icons-react";
 const Login = (props) => {
   var username = React.useRef();
   var password = React.useRef();
+  let login = () =>
+    props.firebase
+      .auth()
+      .signInWithEmailAndPassword(
+        username.current.value,
+        password.current.value
+      )
+      .catch((error) => window.alert("Error : " + error.message));
   return (
     <div className="c-app c-default-layout flex-row align-items-center">
       <CContainer>
@@ -50,24 +58,16 @@ const Login = (props) => {
                       type="password"
                       placeholder="Password"
                       autoComplete="current-password"
+                      onKeyUp={(event) => {
+                        if (event.keyCode === 13) {
+                          login();
+                        }
+                      }}
                     />
                   </CInputGroup>
                   <CRow>
                     <CCol>
-                      <CButton
-                        color="primary"
-                        onClick={() =>
-                          props.firebase
-                            .auth()
-                            .signInWithEmailAndPassword(
-                              username.current.value,
-                              password.current.value
-                            )
-                            .catch((error) =>
-                              window.alert("Error : " + error.message)
-                            )
-                        }
-                      >
+                      <CButton color="primary" onClick={login}>
                         Login
                       </CButton>
                     </CCol>
