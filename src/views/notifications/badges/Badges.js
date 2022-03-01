@@ -9,7 +9,7 @@ import {
   CCol,
   CRow
 } from '@coreui/react'
-import { DocsLink } from 'src/reusable'
+import { DocsLink } from 'src/components'
 
 const Badges = () => {
   return (

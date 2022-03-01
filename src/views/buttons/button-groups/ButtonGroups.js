@@ -18,7 +18,7 @@ import {
   CRow,
   CCallout
 } from '@coreui/react'
-import { DocsLink } from 'src/reusable'
+import { DocsLink } from 'src/components'
 
 const ButtonGroups = () => {
   return (

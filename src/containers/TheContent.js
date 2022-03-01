@@ -5,7 +5,7 @@ import { CContainer, CFade } from "@coreui/react";
 import { AccountContext } from "../App.js";
 // routes config
 import admin_routes from "../routes";
-import member_routes from "../member_routes"
+import member_routes from "../member_routes";
 
 const loading = (
   <div className="pt-3 text-center">
@@ -15,9 +15,9 @@ const loading = (
 
 const TheContent = () => {
   var account = useContext(AccountContext);
-  if(typeof(account) == "undefined") return null;
+  if (!account) return null;
   var routes;
-  if(account.role == "Admin") routes = admin_routes;
+  if (account.role === "Admin") routes = admin_routes;
   else routes = member_routes;
   return (
     <main className="c-main">
@@ -41,7 +41,7 @@ const TheContent = () => {
                 )
               );
             })}
-            <Redirect from="/" to="/dashboard" />
+            <Redirect from="/" to="/form" />
           </Switch>
         </Suspense>
       </CContainer>

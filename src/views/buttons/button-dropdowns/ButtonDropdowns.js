@@ -18,7 +18,7 @@ import {
   CInput,
   CInputCheckbox
 } from '@coreui/react'
-import { DocsLink } from 'src/reusable'
+import { DocsLink } from 'src/components'
 
 const ButtonDropdowns = () => {
   return (

@@ -8,7 +8,7 @@ import {
   CCardBody
 } from '@coreui/react'
 import { rgbToHex } from '@coreui/utils'
-import { DocsLink } from 'src/reusable'
+import { DocsLink } from 'src/components'
 
 
 const ThemeView = () => {
