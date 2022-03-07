@@ -1,6 +1,6 @@
 import { useState, lazy, Suspense } from "react";
 import { HashRouter, Route, Switch } from "react-router-dom";
-import "./scss/style.scss";
+import "scss/style.scss";
 
 import { history } from "utils/history";
 import {
@@ -9,17 +9,17 @@ import {
 } from "@react-firebase/auth";
 import { FirestoreProvider } from "@react-firebase/firestore";
 import { config, firebase } from "db/firebase";
-import { AccountContext } from "./hooks/context";
-import { loading } from "./Components";
+import { AccountContext } from "hooks/context";
+import { loading } from "Components";
 
 // Containers
-const TheLayout = lazy(() => import("./Containers/TheLayout"));
+const TheLayout = lazy(() => import("Containers/TheLayout"));
 
 // Pages
-const Login = lazy(() => import("./views/pages/login/Login"));
-const Register = lazy(() => import("./views/pages/register/Register"));
-const Page404 = lazy(() => import("./views/pages/page404/Page404"));
-const Page500 = lazy(() => import("./views/pages/page500/Page500"));
+const Login = lazy(() => import("views/pages/login/Login"));
+const Register = lazy(() => import("views/pages/register/Register"));
+const Page404 = lazy(() => import("views/pages/page404/Page404"));
+const Page500 = lazy(() => import("views/pages/page500/Page500"));
 
 const SignedIn = (props) => {
   var [account, setAccount] = useState(null);
