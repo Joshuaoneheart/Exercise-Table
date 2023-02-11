@@ -1,11 +1,10 @@
-import { CCol, CRow } from "@coreui/react";
+import { CCol } from "@coreui/react";
 import { FirestoreCollection } from "@react-firebase/firestore";
 import DataTabs from "./DataTab";
 import loading from "./loading";
 
-const Form = () => {
+const Form = ({ is_footer, default_data, account }) => {
   return (
-    <CRow>
       <FirestoreCollection path="/form/">
         {/* 
             receiving form data from Firebase
@@ -23,6 +22,7 @@ const Form = () => {
           if (d && d.value) {
             var data = { value: [], sections: [] };
             for (var i = 0; i < d.value.length; i++) {
+              // assign unique id to problem
               d.value[i].id = d.ids[i];
               if (!data.sections.includes(d.value[i].section)) {
                 data.sections.push(d.value[i].section);
@@ -34,13 +34,18 @@ const Form = () => {
             }
             return (
               <CCol>
-                <DataTabs data={data} metadata={d} />
+                <DataTabs
+                  data={data}
+                  metadata={d}
+                  is_footer={is_footer}
+                  default_data={default_data}
+                  account={account}
+                />
               </CCol>
             );
           } else return null;
         }}
       </FirestoreCollection>
-    </CRow>
   );
 };
 

@@ -7,17 +7,18 @@ import {
     CRow
 } from "@coreui/react";
 
-const Problem = (props) => {
+const Problem = ({ data, default_data }) => {
   var frame = [];
   var option_style = { color: "#000000", fontSize: "20px" };
   var title_style = { color: "#636f83" };
   var button_style = { height: "20px", width: "20px" };
-  switch (props.data.type) {
+  console.log(default_data)
+  switch (data.type) {
     case "Grid":
       var option_row = [];
       var row = [];
       option_row.push(<CCol></CCol>);
-      let options = props.data["選項"].split(";");
+      let options = data["選項"].split(";");
       for (let i = 0; i < options.length; i++) {
         let option = options[i];
         option_row.push(
@@ -29,12 +30,12 @@ const Problem = (props) => {
           </CCol>
         );
       }
-      let suboptions = props.data["子選項"].split(";");
+      let suboptions = data["子選項"].split(";");
       for (let j = 0; j < suboptions.length; j++) {
         let suboption = suboptions[j];
         var subframe = [];
         subframe.push(<CCol style={option_style}>{suboption}</CCol>);
-        for (var option of props.data["選項"].split(";")) {
+        for (var option of data["選項"].split(";")) {
           subframe.push(
             <CCol
               key={j}
@@ -46,9 +47,14 @@ const Problem = (props) => {
             >
               <CInputRadio
                 className="form-check-input"
-                name={props.data.id + "-" + suboption}
+                name={data.id + "-" + suboption}
                 value={option}
                 style={Object.assign({}, button_style, { marginLeft: "2px" })}
+                defaultChecked={
+                  default_data &&
+                  suboption in default_data &&
+                  default_data["suboption"].ans === option
+                }
               />
             </CCol>
           );
@@ -63,16 +69,17 @@ const Problem = (props) => {
       );
       break;
     case "MultiChoice":
-      options = props.data["選項"].split(";");
+      options = data["選項"].split(";");
       for (let i = 0; i < options.length; i++) {
         let option = options[i];
         frame.push(
           <CFormGroup variant="checkbox" key={i}>
             <CInputRadio
               className="form-check-input"
-              name={props.data.id}
+              name={data.id}
               value={option}
               style={button_style}
+              defaultChecked={default_data && default_data.ans === option}
             />
             <CLabel
               variant="checkbox"
@@ -85,16 +92,17 @@ const Problem = (props) => {
       }
       break;
     case "MultiAnswer":
-      options = props.data["子選項"].split(";");
+      options = data["子選項"].split(";");
       for (let i = 0; i < options.length; i++) {
         let option = options[i];
         frame.push(
           <CFormGroup variant="checkbox" key={i}>
             <CInputCheckbox
               className="form-check-input"
-              name={props.data.id}
+              name={data.id}
               value={option}
               style={button_style}
+              defaultChecked={typeof default_data && option in default_data.ans}
             />
             <CLabel
               variant="checkbox"
@@ -112,7 +120,7 @@ const Problem = (props) => {
   return (
     <>
       <CFormGroup style={{ marginBottom: "25px" }}>
-        <h4 style={title_style}>{props.data.title}</h4>
+        <h4 style={title_style}>{data.title}</h4>
         <hr />
         <CCol>{frame}</CCol>
       </CFormGroup>

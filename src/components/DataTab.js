@@ -14,9 +14,10 @@ import {
     CTabs
 } from "@coreui/react";
 import { useRef, useState } from "react";
+import FormFooter from "./FormFooter";
 import Problem from "./Problem";
-const DataTabs = (props) => {
-  var data = props.data;
+
+const DataTabs = ({ data, is_footer, account, metadata, default_data }) => {
   const [section, setSection] = useState(0);
   var form = useRef();
   var tabs = [];
@@ -36,7 +37,16 @@ const DataTabs = (props) => {
     for (var j = 0; j < data.value[i].length; j++) {
       var problem = data.value[i][j];
       tabContents.push(
-        <Problem name={data.value[i].id} data={problem} key={j} />
+        <Problem
+          name={data.value[i].id}
+          data={problem}
+          default_data={
+            default_data && default_data.value
+              ? default_data.value[problem.id]
+              : undefined
+          }
+          key={j}
+        />
       );
     }
     tabpanes.push(<CTabPane key={i}>{tabContents}</CTabPane>);
@@ -63,6 +73,9 @@ const DataTabs = (props) => {
           </CTabs>
         </CForm>
       </CCardBody>
+      {is_footer && (
+        <FormFooter form={form} account={account} metadata={metadata} />
+      )}
     </CCard>
   );
 };
