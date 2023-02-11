@@ -9,7 +9,7 @@ const ModifyForm = React.lazy(() => import("../Containers/Admin/ModifyForm/Modif
 const Members = React.lazy(() => import("../Containers/Admin/Members/Members"));
 const Profile = React.lazy(() => import("../Containers/Admin/Profile/Profile"));
 const Settings = React.lazy(() => import("../Containers/Admin/Settings/Settings"));
-const Form = React.lazy(() => import("../Containers/Admin/Form/Form"));
+const Form = React.lazy(() => import("../Containers/Admin/ReviewForm/ReviewForm"));
 const Dashboard = React.lazy(() => import("../views/dashboard/Dashboard"));
 const Users = React.lazy(() => import("../views/users/Users"));
 

@@ -3,7 +3,7 @@ import { lazy } from "react";
 //Members
 const Members = lazy(() => import("../Containers/Member/Members/Members"));
 const Profile = lazy(() => import("../Containers/Member/Profile/Profile"));
-const Form = lazy(() => import("../Containers/Member/Form/Form"));
+const Form = lazy(() => import("../Containers/Member/SubmitForm/SubmitForm"));
 const GFForm = lazy(() => import("../Containers/Member/GFform/GFform"));
 const BibleGroup = lazy(() => import("../Containers/Member/Biblegroup/BibleGroup"));
 
