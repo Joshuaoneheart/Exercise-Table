@@ -9,7 +9,7 @@ import {
   CLink,
 } from "@coreui/react";
 import { DocsLink } from "src/Components";
-
+src/Components
 const Popovers = () => {
   const placements = [
     "top-start",
