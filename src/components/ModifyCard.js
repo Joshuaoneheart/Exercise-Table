@@ -1,25 +1,25 @@
 import CIcon from "@coreui/icons-react";
 import {
-    CButton,
-    CButtonToolbar,
-    CCard,
-    CCardBody,
-    CCardFooter,
-    CCardHeader,
-    CCol,
-    CDropdown,
-    CDropdownItem,
-    CDropdownMenu,
-    CDropdownToggle,
-    CListGroup,
-    CRow,
-    CTabContent,
-    CTabPane
+  CButton,
+  CButtonToolbar,
+  CCard,
+  CCardBody,
+  CCardFooter,
+  CCardHeader,
+  CCol,
+  CDropdown,
+  CDropdownItem,
+  CDropdownMenu,
+  CDropdownToggle,
+  CListGroup,
+  CRow,
+  CTabContent,
+  CTabPane
 } from "@coreui/react";
 import { FirestoreBatchedWrite } from "@react-firebase/firestore";
 import { useState } from "react";
-import { AddModal, DeleteModal, TransferModal } from "./ModifyGroupModal";
 import ModifyListGroupItem from "./ModifyListGroupItem";
+import { AddModal, DeleteModal, TransferModal } from "./ModifyModal";
 
 const ModifyCard = ({ default_data }) => {
   const [data, setData] = useState(default_data);
@@ -101,7 +101,9 @@ const ModifyCard = ({ default_data }) => {
               <CButton
                 variant="ghost"
                 color="dark"
-                onClick={() => setAddModal({ type: "group", title: "活力組" })}
+                onClick={() =>
+                  setAddModal({ type: "group", page: "group", title: "活力組" })
+                }
               >
                 <CIcon alt="新增活力組" name="cil-library-add" />
               </CButton>
@@ -162,7 +164,12 @@ const ModifyCard = ({ default_data }) => {
               variant="ghost"
               color="dark"
               onClick={() =>
-                setAddModal({ type: "resident", index: activeTab })
+                setAddModal({
+                  type: "resident",
+                  page: "group",
+                  index: activeTab,
+                  title: "住戶",
+                })
               }
             >
               新增住戶

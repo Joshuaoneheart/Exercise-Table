@@ -1,17 +1,27 @@
 import {
-    CButton, CCol, CForm,
-    CFormGroup,
-    CInput,
-    CLabel,
-    CModal,
-    CModalBody,
-    CModalFooter,
-    CModalHeader,
-    CModalTitle,
-    CSelect
+  CButton,
+  CCol,
+  CForm,
+  CFormGroup,
+  CInput,
+  CLabel,
+  CModal,
+  CModalBody,
+  CModalFooter,
+  CModalHeader,
+  CModalTitle,
+  CSelect
 } from "@coreui/react";
 import { useRef } from "react";
 
+/* format of show
+  {
+    title: title of the modal,
+    page: group or residence,
+    type: resident or group,
+    index: index of group while resident type
+  }
+*/
 const AddModal = ({
   show,
   data,
@@ -28,8 +38,8 @@ const AddModal = ({
       case "resident":
         // add a new resident
         var new_data = data;
-        new_data.value[form.current.elements.name.value].group =
-          groups[form.current.elements.group.value];
+        new_data.value[form.current.elements.name.value][show.page] =
+          groups[show.index];
         new_data.value[form.current.elements.name.value].isChanged = true;
         setData(new_data);
         break;
@@ -43,14 +53,7 @@ const AddModal = ({
     }
     setModal(null);
   };
-  var options = [];
-  for (var i in groups) {
-    options.push(
-      <option value={i} key={i}>
-        {groups[i]}
-      </option>
-    );
-  }
+  console.log(show);
   return (
     <CModal
       show={show !== null}
@@ -79,20 +82,12 @@ const AddModal = ({
                   <CSelect name="name">{names}</CSelect>
                 </CCol>
               </CFormGroup>
-              <CFormGroup row inline>
-                <CCol md="3">
-                  <CLabel>活力組</CLabel>
-                </CCol>
-                <CCol xs="12" md="9">
-                  <CSelect name="group">{options}</CSelect>
-                </CCol>
-              </CFormGroup>
             </>
           )}
           {show.type === "group" && (
             <CFormGroup row inline>
               <CCol md="3">
-                <CLabel>活力組名稱</CLabel>
+                <CLabel>{show.page == "group" ? "活力組" : "住處"}名稱</CLabel>
               </CCol>
               <CCol xs="12" md="9">
                 <CInput name="name" required />
@@ -118,7 +113,23 @@ const AddModal = ({
   );
 };
 
-const DeleteModal = ({show, data, group_members, groups, setModal, setData, setGroups}) => {
+/* format of show
+  {
+    title: title of the modal,
+    type: resident or group,
+    name: identity,
+    index: index in data(for resident type) or groups(for group type)
+  }
+*/
+const DeleteModal = ({
+  show,
+  data,
+  group_members,
+  groups,
+  setModal,
+  setData,
+  setGroups,
+}) => {
   if (show === null) return null;
   var deleteData = () => {
     switch (show.type) {
@@ -129,7 +140,10 @@ const DeleteModal = ({show, data, group_members, groups, setModal, setData, setG
         break;
       case "group":
         if (group_members[show.index].length !== 0) {
-          alert("活力組內尚有住戶，請將所有住戶刪除後再刪除活力組");
+          if (show.page == "group")
+            alert("活力組內尚有住戶，請將所有住戶刪除後再刪除活力組");
+          if (show.page == "residence")
+            alert("住處內尚有住戶，請將所有住戶刪除後再刪除住處");
           break;
         }
         groups.splice(show.index, 1);
@@ -166,36 +180,34 @@ const DeleteModal = ({show, data, group_members, groups, setModal, setData, setG
   );
 };
 
-const TransferModal = (props) => {
-  var data = props.data;
+const TransferModal = ({ show, data, groups, setModal, setData }) => {
   var form = useRef();
-  if (props.show == null) return null;
+  if (show == null) return null;
   var writeData = () => {
-    props.data.value[props.show.resident].group =
-      props.groups[form.current.elements.group.value];
-    props.data.value[props.show.resident].isChanged = true;
-    props.setData(props.data);
-    props.setModal(null);
+    data.value[show.index].group = groups[form.current.elements.group.value];
+    data.value[show.index].isChanged = true;
+    setData(data);
+    setModal(null);
   };
   var groups_option = [];
-  for (let i = 0; i < props.groups.length; i++) {
-    if (i !== props.show.group)
+  for (let i = 0; i < groups.length; i++) {
+    if (i !== show.group)
       groups_option.push(
         <option value={i} key={i}>
-          {props.groups[i]}
+          {groups[i]}
         </option>
       );
   }
 
   return (
     <CModal
-      show={props.show !== null}
+      show={show !== null}
       onClose={() => {
-        props.setModal(null);
+        setModal(null);
       }}
     >
       <CModalHeader closeButton>
-        <CModalTitle>修改問題</CModalTitle>
+        <CModalTitle>修改住處</CModalTitle>
       </CModalHeader>
       <CModalBody>
         {data !== null && (
@@ -221,7 +233,7 @@ const TransferModal = (props) => {
         <CButton color="primary" onClick={writeData}>
           儲存修改
         </CButton>{" "}
-        <CButton color="secondary" onClick={() => props.setModal(null)}>
+        <CButton color="secondary" onClick={() => setModal(null)}>
           取消
         </CButton>
       </CModalFooter>

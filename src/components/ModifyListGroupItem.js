@@ -1,10 +1,10 @@
 import CIcon from "@coreui/icons-react";
 import {
-    CButton,
-    CButtonToolbar,
-    CCol,
-    CListGroupItem,
-    CRow
+  CButton,
+  CButtonToolbar,
+  CCol,
+  CListGroupItem,
+  CRow
 } from "@coreui/react";
 const ModifyListGroupItem = ({
   key,
@@ -12,7 +12,7 @@ const ModifyListGroupItem = ({
   index,
   setTransferModal,
   setDeleteModal,
-  activeTab
+  activeTab,
 }) => {
   //ToDo: Change ascent to danger when the name has not been bind
   return (
@@ -27,7 +27,7 @@ const ModifyListGroupItem = ({
               variant="ghost"
               color="dark"
               onClick={() => {
-                setTransferModal({ resident: index, group: activeTab });
+                setTransferModal({ index, group: activeTab });
               }}
             >
               <CIcon name="cil-swap-horizontal" />

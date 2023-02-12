@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import CIcon from "@coreui/icons-react";
 import {
   CButton,
   CButtonToolbar,
@@ -10,29 +10,18 @@ import {
   CDropdown,
   CDropdownItem,
   CDropdownMenu,
-  CDropdownToggle,
-  CForm,
-  CFormGroup,
-  CInput,
-  CLabel,
-  CListGroup,
-  CListGroupItem,
-  CModal,
-  CModalBody,
-  CModalFooter,
-  CModalHeader,
-  CModalTitle,
-  CRow,
-  CSelect,
-  CTabContent,
-  CTabPane,
+  CDropdownToggle, CListGroup,
+  CListGroupItem, CRow, CTabContent,
+  CTabPane
 } from "@coreui/react";
-import CIcon from "@coreui/icons-react";
-import { loading } from "Components";
 import {
-  FirestoreCollection,
   FirestoreBatchedWrite,
+  FirestoreCollection
 } from "@react-firebase/firestore";
+import { loading } from "Components";
+import { AddModal, DeleteModal, TransferModal } from "Components/ModifyModal";
+import { useState } from "react";
+
 const ModifyCard = (props) => {
   const [data, setData] = useState(props.data);
   var [activeTab, setActiveTab] = useState(0);
@@ -82,7 +71,7 @@ const ModifyCard = (props) => {
                 variant="ghost"
                 color="dark"
                 onClick={function (i, activeTab) {
-                  setTransferModal({ resident: i, residence: activeTab });
+                  setTransferModal({ index: i, group: activeTab });
                 }.bind(null, i, activeTab)}
               >
                 <CIcon name="cil-swap-horizontal" />
@@ -145,7 +134,12 @@ const ModifyCard = (props) => {
                 variant="ghost"
                 color="dark"
                 onClick={() =>
-                  setAddModal({ type: "residence", title: "住處" })
+                  setAddModal({
+                    type: "group",
+                    page: "residence",
+                    index: activeTab,
+                    title: "住處",
+                  })
                 }
               >
                 <CIcon alt="新增住處" name="cil-library-add" />
@@ -155,8 +149,9 @@ const ModifyCard = (props) => {
                 color="danger"
                 onClick={() =>
                   setDeleteModal({
-                    type: "residence",
+                    type: "group",
                     title: "住處",
+                    page: "residence",
                     name: residences[activeTab],
                     index: activeTab,
                   })
@@ -179,23 +174,23 @@ const ModifyCard = (props) => {
           setData={setData}
           show={transferModal}
           setModal={setTransferModal}
-          residences={residences}
+          groups={residences}
         />
         <DeleteModal
           data={data}
           setData={setData}
           show={deleteModal}
           setModal={setDeleteModal}
-          residences={residences}
-          setResidences={setResidences}
-          residence_contents={residence_contents}
+          groups={residences}
+          group_members={residence_contents}
+          setGroups={setResidences}
         />
         <AddModal
-          options={add_modal_options}
+          names={add_modal_options}
           data={data}
           setData={setData}
-          residences={residences}
-          setResidences={setResidences}
+          groups={residences}
+          setGroups={setResidences}
           show={addModal}
           setModal={setAddModal}
         />
@@ -207,7 +202,11 @@ const ModifyCard = (props) => {
               variant="ghost"
               color="dark"
               onClick={() =>
-                setAddModal({ type: "resident", index: activeTab })
+                setAddModal({
+                  type: "resident",
+                  index: activeTab,
+                  page: "residence",
+                })
               }
             >
               新增住戶
@@ -254,215 +253,7 @@ const ModifyCard = (props) => {
   );
 };
 
-const AddModal = (props) => {
-  var form = useRef();
-  if (props.show == null) return null;
-  var writeData = () => {
-    switch (props.show.type) {
-      case "resident":
-        var data = props.data;
-        data.value[form.current.elements.name.value].residence =
-          props.residences[form.current.elements.residence.value];
-        data.value[form.current.elements.name.value].isChanged = true;
-        props.setData(data);
-        break;
-      case "residence":
-        props.residences.push(form.current.elements.name.value);
-        props.setResidences(props.residences);
-        break;
-      default:
-        break;
-    }
-    props.setModal(null);
-  };
-  var options = [];
-  for (var i in props.residences) {
-    options.push(
-      <option value={i} key={i}>
-        {props.residences[i]}
-      </option>
-    );
-  }
-  return (
-    <CModal
-      show={props.show !== null}
-      onClose={() => {
-        props.setModal(null);
-      }}
-    >
-      <CModalHeader closeButton>
-        <CModalTitle>新增{props.show.title}</CModalTitle>
-      </CModalHeader>
-      <CModalBody>
-        <CForm
-          innerRef={form}
-          action=""
-          method="post"
-          encType="multipart/form-data"
-          className="form-horizontal"
-        >
-          {props.show.type === "resident" && (
-            <>
-              <CFormGroup row inline>
-                <CCol md="3">
-                  <CLabel>姓名</CLabel>
-                </CCol>
-                <CCol xs="12" md="9">
-                  <CSelect name="name">{props.options}</CSelect>
-                </CCol>
-              </CFormGroup>
-              <CFormGroup row inline>
-                <CCol md="3">
-                  <CLabel>住處</CLabel>
-                </CCol>
-                <CCol xs="12" md="9">
-                  <CSelect name="residence">{options}</CSelect>
-                </CCol>
-              </CFormGroup>
-            </>
-          )}
-          {props.show.type === "residence" && (
-            <CFormGroup row inline>
-              <CCol md="3">
-                <CLabel>住處名稱</CLabel>
-              </CCol>
-              <CCol xs="12" md="9">
-                <CInput name="name" required />
-              </CCol>
-            </CFormGroup>
-          )}
-        </CForm>
-      </CModalBody>
-      <CModalFooter>
-        <CButton color="primary" onClick={writeData}>
-          新增
-        </CButton>{" "}
-        <CButton
-          color="secondary"
-          onClick={() => {
-            props.setModal(null);
-          }}
-        >
-          取消
-        </CButton>
-      </CModalFooter>
-    </CModal>
-  );
-};
-
-const DeleteModal = (props) => {
-  if (props.show === null) return null;
-  var deleteData = () => {
-    var data = props.data;
-    switch (props.show.type) {
-      case "resident":
-        delete data.value[props.show.index].residence;
-        data.value[props.show.index].isChanged = true;
-        props.setData(data);
-        break;
-      case "residence":
-        if (props.residence_contents[props.show.index].length !== 0) {
-          alert("住處內尚有住戶，請將所有住戶刪除後再刪除住處");
-          break;
-        }
-        props.residences.splice(props.show.index, 1);
-        props.setResidences(props.residences);
-        break;
-      default:
-        break;
-    }
-    props.setModal(null);
-  };
-  return (
-    <CModal
-      show={props.show !== null}
-      onClose={() => {
-        props.setModal(null);
-      }}
-      color="danger"
-    >
-      <CModalHeader closeButton>
-        <CModalTitle>刪除{props.show.title}</CModalTitle>
-      </CModalHeader>
-      <CModalBody>
-        確認刪除{props.show.title} {props.show.name} 嗎？
-      </CModalBody>
-      <CModalFooter>
-        <CButton color="primary" onClick={deleteData}>
-          確認
-        </CButton>{" "}
-        <CButton color="secondary" onClick={() => props.setModal(null)}>
-          取消
-        </CButton>
-      </CModalFooter>
-    </CModal>
-  );
-};
-
-const TransferModal = (props) => {
-  var data = props.data;
-  var form = useRef();
-  if (props.show == null) return null;
-  var writeData = () => {
-    props.data.value[props.show.resident].residence =
-      props.residences[form.current.elements.residence.value];
-    props.data.value[props.show.resident].isChanged = true;
-    props.setData(props.data);
-    props.setModal(null);
-  };
-  var residences_option = [];
-  for (let i = 0; i < props.residences.length; i++) {
-    if (i !== props.show.residence)
-      residences_option.push(
-        <option value={i} key={i}>
-          {props.residences[i]}
-        </option>
-      );
-  }
-
-  return (
-    <CModal
-      show={props.show !== null}
-      onClose={() => {
-        props.setModal(null);
-      }}
-    >
-      <CModalHeader closeButton>
-        <CModalTitle>修改問題</CModalTitle>
-      </CModalHeader>
-      <CModalBody>
-        {data !== null && (
-          <CForm
-            innerRef={form}
-            action=""
-            method="post"
-            encType="multipart/form-data"
-            className="form-horizontal"
-          >
-            <CFormGroup row inline>
-              <CCol md="3">
-                <CLabel>移動至</CLabel>
-              </CCol>
-              <CCol xs="12" md="9">
-                <CSelect name="residence">{residences_option}</CSelect>
-              </CCol>
-            </CFormGroup>
-          </CForm>
-        )}
-      </CModalBody>
-      <CModalFooter>
-        <CButton color="primary" onClick={writeData}>
-          儲存修改
-        </CButton>{" "}
-        <CButton color="secondary" onClick={() => props.setModal(null)}>
-          取消
-        </CButton>
-      </CModalFooter>
-    </CModal>
-  );
-};
-
-const ModifyResident = () => {
+const ModifyResidence = () => {
   return (
     <>
       <CRow>
@@ -482,4 +273,4 @@ const ModifyResident = () => {
   );
 };
 
-export default ModifyResident;
+export default ModifyResidence;

@@ -2,7 +2,7 @@ import React from "react";
 
 //Admin
 const ModifyResident = React.lazy(() =>
-  import("../Containers/Admin/ModifyResident/ModifyResident")
+  import("../Containers/Admin/ModifyResidence/ModifyResidence")
 );
 const ModifyGroup = React.lazy(() => import("../Containers/Admin/ModifyGroup/ModifyGroup"));
 const ModifyForm = React.lazy(() => import("../Containers/Admin/ModifyForm/ModifyForm"));

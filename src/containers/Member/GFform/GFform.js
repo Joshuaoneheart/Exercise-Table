@@ -24,6 +24,7 @@ const GFForm = () => {
                 {(d) => {
                   if (d.isLoading) return loading;
                   if (d && d.value) {
+                    // add "id" to data
                     for (var i = 0; i < d.value.length; i++) {
                       d.value[i]["id"] = d.ids[i];
                     }
