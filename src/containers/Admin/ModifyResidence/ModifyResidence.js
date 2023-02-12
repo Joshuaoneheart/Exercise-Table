@@ -10,8 +10,7 @@ import {
   CDropdown,
   CDropdownItem,
   CDropdownMenu,
-  CDropdownToggle, CListGroup,
-  CListGroupItem, CRow, CTabContent,
+  CDropdownToggle, CListGroup, CRow, CTabContent,
   CTabPane
 } from "@coreui/react";
 import {
@@ -19,6 +18,7 @@ import {
   FirestoreCollection
 } from "@react-firebase/firestore";
 import { loading } from "Components";
+import ModifyListGroupItem from "Components/ModifyListGroupItem";
 import { AddModal, DeleteModal, TransferModal } from "Components/ModifyModal";
 import { useState } from "react";
 
@@ -30,9 +30,9 @@ const ModifyCard = (props) => {
   const [addModal, setAddModal] = useState(null);
   var titles = [];
   var [residences, setResidences] = useState([]);
-  var residence_contents = [];
+  var residence_members = [];
   for (let i = 0; i < residences.length; i++) {
-    residence_contents.push([]);
+    residence_members.push([]);
   }
   if (activeTab >= residences.length)
     activeTab = Math.max(residences.length - 1, 0);
@@ -50,56 +50,24 @@ const ModifyCard = (props) => {
     }
     if (!residences.includes(data.value[i].residence)) {
       residences.push(data.value[i].residence);
-      residence_contents.push([]);
+      residence_members.push([]);
     }
-    residence_contents[residences.indexOf(data.value[i].residence)].push(
+    residence_members[residences.indexOf(data.value[i].residence)].push(
       //ToDo: Change ascent to danger when the name has not been bind
-      <CListGroupItem
-        key={
-          residence_contents[residences.indexOf(data.value[i].residence)].length
-        }
-        accent="secondary"
-        color="secondary"
-      >
-        <CRow className="align-items-center">
-          <CCol xs="4" sm="9" md="9" lg="9" style={{ color: "#000000" }}>
-            {data.value[i].displayName}
-          </CCol>
-          <CCol>
-            <CButtonToolbar justify="end">
-              <CButton
-                variant="ghost"
-                color="dark"
-                onClick={function (i, activeTab) {
-                  setTransferModal({ index: i, group: activeTab });
-                }.bind(null, i, activeTab)}
-              >
-                <CIcon name="cil-swap-horizontal" />
-              </CButton>
-              <CButton
-                variant="ghost"
-                color="danger"
-                onClick={function (i) {
-                  setDeleteModal({
-                    title: "住戶",
-                    type: "resident",
-                    name: data.value[i].displayName,
-                    index: i,
-                  });
-                }.bind(null, i)}
-              >
-                <CIcon name="cil-trash" />
-              </CButton>
-            </CButtonToolbar>
-          </CCol>
-        </CRow>
-      </CListGroupItem>
+      <ModifyListGroupItem
+        index={i}
+        key={residence_members[residences.indexOf(data.value[i].residence)].length}
+        name={data.value[i].displayName}
+        setTransferModal={setTransferModal}
+        setDeleteModal={setDeleteModal}
+        activeTab={activeTab}
+      />
     );
   }
   for (let i = 0; i < residences.length; i++) {
     contents.push(
       <CTabPane key={i} active={activeTab === i}>
-        <CListGroup accent>{residence_contents[i]}</CListGroup>
+        <CListGroup accent>{residence_members[i]}</CListGroup>
       </CTabPane>
     );
     titles.push(
@@ -182,7 +150,7 @@ const ModifyCard = (props) => {
           show={deleteModal}
           setModal={setDeleteModal}
           groups={residences}
-          group_members={residence_contents}
+          group_members={residence_members}
           setGroups={setResidences}
         />
         <AddModal
