@@ -18,7 +18,7 @@ const ModifyGroup = () => {
               loading
             ) : (
               <CCol>
-                <ModifyCard default_data={d} />
+                <ModifyCard default_data={d} page={"group"} title={"住戶活力組管理"}/>
               </CCol>
             );
           }}

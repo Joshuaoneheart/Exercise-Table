@@ -20,8 +20,11 @@ import { FirestoreBatchedWrite } from "@react-firebase/firestore";
 import { useState } from "react";
 import ModifyListGroupItem from "./ModifyListGroupItem";
 import { AddModal, DeleteModal, TransferModal } from "./ModifyModal";
-
-const ModifyCard = ({ default_data }) => {
+/*
+format of page
+string(group or residence)
+*/
+const ModifyCard = ({ default_data, page, title }) => {
   const [data, setData] = useState(default_data);
   var [activeTab, setActiveTab] = useState(0);
   const [transferModal, setTransferModal] = useState(null);
@@ -30,16 +33,16 @@ const ModifyCard = ({ default_data }) => {
   var titles = [];
   var [groups, setGroups] = useState([]);
   var group_members = [];
-  for (let i = 0; i < groups.length; i++) {
-    group_members.push([]);
-  }
+  for (let i = 0; i < groups.length; i++) group_members.push([]);
+
   if (activeTab >= groups.length) activeTab = Math.max(groups.length - 1, 0);
   var contents = [];
   var add_modal_options = [];
+  var group_name = page === "group" ? "活力組" : "住處";
   for (var i = 0; i < data.ids.length; i++) {
     // remove Admin resident
     if (data.value[i].role !== "Member") continue;
-    if (!data.value[i].group) {
+    if (!data.value[i][page]) {
       // add a resident into addmodal options if he is not in any group
       add_modal_options.push(
         <option value={i} key={i}>
@@ -49,14 +52,14 @@ const ModifyCard = ({ default_data }) => {
       continue;
     }
     // maintain list of groups
-    if (!groups.includes(data.value[i].group)) {
-      groups.push(data.value[i].group);
+    if (!groups.includes(data.value[i][page])) {
+      groups.push(data.value[i][page]);
       group_members.push([]);
     }
-    group_members[groups.indexOf(data.value[i].group)].push(
+    group_members[groups.indexOf(data.value[i][page])].push(
       <ModifyListGroupItem
         index={i}
-        key={group_members[groups.indexOf(data.value[i].group)].length}
+        key={group_members[groups.indexOf(data.value[i][page])].length}
         name={data.value[i].displayName}
         setTransferModal={setTransferModal}
         setDeleteModal={setDeleteModal}
@@ -86,7 +89,7 @@ const ModifyCard = ({ default_data }) => {
       <CCardHeader>
         <CRow className="align-items-center">
           <CCol xs="5" md="7" lg="7" xl="8">
-            住戶活力組管理
+            {title}
           </CCol>
           <CCol>
             <CButtonToolbar justify="end">
@@ -102,10 +105,14 @@ const ModifyCard = ({ default_data }) => {
                 variant="ghost"
                 color="dark"
                 onClick={() =>
-                  setAddModal({ type: "group", page: "group", title: "活力組" })
+                  setAddModal({
+                    type: "group",
+                    page: "group",
+                    title: group_name,
+                  })
                 }
               >
-                <CIcon alt="新增活力組" name="cil-library-add" />
+                <CIcon alt={"新增" + group_name} name="cil-library-add" />
               </CButton>
               <CButton
                 variant="ghost"
@@ -113,13 +120,13 @@ const ModifyCard = ({ default_data }) => {
                 onClick={() =>
                   setDeleteModal({
                     type: "group",
-                    title: "活力組",
+                    title: group_name,
                     name: groups[activeTab],
                     index: activeTab,
                   })
                 }
               >
-                <CIcon alt="刪除活力組" name="cil-trash" />
+                <CIcon alt={"刪除" + group_name} name="cil-trash" />
               </CButton>
             </CButtonToolbar>
           </CCol>
@@ -134,6 +141,7 @@ const ModifyCard = ({ default_data }) => {
         <TransferModal
           data={data}
           setData={setData}
+          page={page}
           show={transferModal}
           setModal={setTransferModal}
           groups={groups}
@@ -141,6 +149,7 @@ const ModifyCard = ({ default_data }) => {
         <DeleteModal
           data={data}
           setData={setData}
+          page={page}
           show={deleteModal}
           setModal={setDeleteModal}
           groups={groups}
@@ -150,6 +159,7 @@ const ModifyCard = ({ default_data }) => {
         <AddModal
           names={add_modal_options}
           data={data}
+          page={page}
           setData={setData}
           groups={groups}
           setGroups={setGroups}
@@ -166,7 +176,7 @@ const ModifyCard = ({ default_data }) => {
               onClick={() =>
                 setAddModal({
                   type: "resident",
-                  page: "group",
+                  page,
                   index: activeTab,
                   title: "住戶",
                 })
@@ -187,7 +197,8 @@ const ModifyCard = ({ default_data }) => {
                       for (var idx in data.ids) {
                         var path = pathPrefix + data.ids[idx];
                         if (data.value[idx].isChanged) {
-                          var tmp = { group: data.value[idx].group };
+                          var tmp = {};
+                          tmp[page] = data.value[idx][page];
                           addMutationToBatch({
                             path,
                             value: tmp,

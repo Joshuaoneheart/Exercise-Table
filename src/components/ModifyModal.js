@@ -17,13 +17,15 @@ import { useRef } from "react";
 /* format of show
   {
     title: title of the modal,
-    page: group or residence,
     type: resident or group,
     index: index of group while resident type
   }
+  format of page
+  string(group or residence)
 */
 const AddModal = ({
   show,
+  page,
   data,
   groups,
   names,
@@ -38,7 +40,7 @@ const AddModal = ({
       case "resident":
         // add a new resident
         var new_data = data;
-        new_data.value[form.current.elements.name.value][show.page] =
+        new_data.value[form.current.elements.name.value][page] =
           groups[show.index];
         new_data.value[form.current.elements.name.value].isChanged = true;
         setData(new_data);
@@ -53,7 +55,6 @@ const AddModal = ({
     }
     setModal(null);
   };
-  console.log(show);
   return (
     <CModal
       show={show !== null}
@@ -87,7 +88,7 @@ const AddModal = ({
           {show.type === "group" && (
             <CFormGroup row inline>
               <CCol md="3">
-                <CLabel>{show.page == "group" ? "活力組" : "住處"}名稱</CLabel>
+                <CLabel>{page === "group" ? "活力組" : "住處"}名稱</CLabel>
               </CCol>
               <CCol xs="12" md="9">
                 <CInput name="name" required />
@@ -120,9 +121,12 @@ const AddModal = ({
     name: identity,
     index: index in data(for resident type) or groups(for group type)
   }
+  format of page
+  string(group or residence)
 */
 const DeleteModal = ({
   show,
+  page,
   data,
   group_members,
   groups,
@@ -134,15 +138,15 @@ const DeleteModal = ({
   var deleteData = () => {
     switch (show.type) {
       case "resident":
-        delete data.value[show.index].group;
+        delete data.value[show.index][page];
         data.value[show.index].isChanged = true;
         setData(data);
         break;
       case "group":
         if (group_members[show.index].length !== 0) {
-          if (show.page == "group")
+          if (page === "group")
             alert("活力組內尚有住戶，請將所有住戶刪除後再刪除活力組");
-          if (show.page == "residence")
+          if (page === "residence")
             alert("住處內尚有住戶，請將所有住戶刪除後再刪除住處");
           break;
         }
@@ -180,11 +184,11 @@ const DeleteModal = ({
   );
 };
 
-const TransferModal = ({ show, data, groups, setModal, setData }) => {
+const TransferModal = ({ show,page, data, groups, setModal, setData }) => {
   var form = useRef();
   if (show == null) return null;
   var writeData = () => {
-    data.value[show.index].group = groups[form.current.elements.group.value];
+    data.value[show.index][page] = groups[form.current.elements.group.value];
     data.value[show.index].isChanged = true;
     setData(data);
     setModal(null);
