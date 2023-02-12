@@ -1,10 +1,10 @@
 import {
-    CCol,
-    CFormGroup,
-    CInputCheckbox,
-    CInputRadio,
-    CLabel,
-    CRow
+  CCol,
+  CFormGroup,
+  CInputCheckbox,
+  CInputRadio,
+  CLabel,
+  CRow
 } from "@coreui/react";
 
 const Problem = ({ data, default_data }) => {
@@ -12,7 +12,6 @@ const Problem = ({ data, default_data }) => {
   var option_style = { color: "#000000", fontSize: "20px" };
   var title_style = { color: "#636f83" };
   var button_style = { height: "20px", width: "20px" };
-  console.log(default_data)
   switch (data.type) {
     case "Grid":
       var option_row = [];
@@ -102,7 +101,7 @@ const Problem = ({ data, default_data }) => {
               name={data.id}
               value={option}
               style={button_style}
-              defaultChecked={typeof default_data && option in default_data.ans}
+              defaultChecked={default_data && option in default_data.ans}
             />
             <CLabel
               variant="checkbox"

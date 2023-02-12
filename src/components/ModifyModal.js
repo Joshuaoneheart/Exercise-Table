@@ -117,7 +117,7 @@ const AddModal = ({
 /* format of show
   {
     title: title of the modal,
-    type: resident or group,
+    type: resident/group,
     name: identity,
     index: index in data(for resident type) or groups(for group type)
   }

@@ -1,50 +1,105 @@
-import { useRef, useState } from "react";
+import CIcon from "@coreui/icons-react";
 import {
   CButton,
   CButtonToolbar,
-  CCol,
   CCard,
   CCardBody,
   CCardFooter,
   CCardHeader,
+  CCol,
   CDropdown,
   CDropdownItem,
   CDropdownMenu,
   CDropdownToggle,
-  CForm,
-  CFormGroup,
-  CInput,
-  CLabel,
   CListGroup,
   CListGroupItem,
-  CModal,
-  CModalBody,
-  CModalFooter,
-  CModalHeader,
-  CModalTitle,
-  CRow,
-  CSelect,
-  CTabContent,
-  CTabPane,
+  CRow, CTabContent,
+  CTabPane
 } from "@coreui/react";
-import CIcon from "@coreui/icons-react";
-import { loading } from "Components";
 import {
-  FirestoreCollection,
   FirestoreBatchedWrite,
+  FirestoreCollection
 } from "@react-firebase/firestore";
-const ModifyCard = (props) => {
-  const [data, setData] = useState(props.data);
+import { loading } from "Components";
+import { AddModal, DeleteModal, ModifyModal } from "Components/ModifyFormModal";
+import { firebase } from "db/firebase";
+import { useState } from "react";
+
+const ModifyListGroupItem = ({
+  index,
+  name,
+  setModifyModal,
+  setDeleteModal,
+}) => {
+  return (
+    <CListGroupItem accent="secondary" color="secondary" key={index}>
+      <CRow className="align-items-center">
+        <CCol xs="5" sm="9" md="9" lg="10" style={{ color: "#000000" }}>
+          {name}
+        </CCol>
+        <CCol>
+          <CButtonToolbar justify="end">
+            <CButton
+              variant="ghost"
+              color="dark"
+              onClick={() => {
+                setModifyModal(index);
+              }}
+            >
+              <CIcon name="cil-pencil" />
+            </CButton>
+            <CButton
+              variant="ghost"
+              color="danger"
+              onClick={() => {
+                setDeleteModal({
+                  type: "problem",
+                  title: "問題",
+                  index,
+                  name,
+                });
+              }}
+            >
+              <CIcon name="cil-trash" />
+            </CButton>
+          </CButtonToolbar>
+        </CCol>
+      </CRow>
+    </CListGroupItem>
+  );
+};
+const ModifyCard = ({ default_data }) => {
+  const [data, setData] = useState(default_data);
   var [activeTab, setActiveTab] = useState(0);
-  const [sections, setSections] = useState([]);
   const [modifyModal, setModifyModal] = useState(null);
   const [deleteModal, setDeleteModal] = useState(null);
   const [addModal, setAddModal] = useState(null);
-  if (data.ids.length <= activeTab)
-    activeTab = data.ids.length > 0 ? data.ids.length - 1 : 0;
-  var titles = [];
+  var [sections, setSections] = useState([]);
+  if (sections.length <= activeTab)
+    activeTab = sections.length > 0 ? sections.length - 1 : 0;
   var contents = [];
-  for (var i = 0; i < data.ids.length; i++) {
+  var titles = [];
+  var section_members = [];
+  for (let i = 0; i < sections.length; i++) section_members.push([]);
+  for (var i = 0; i < data.value.length; i++) {
+    //assign id to data
+    if (data.value[i].id === "deleted") continue;
+    if (!sections.includes(data.value[i].section)) {
+      sections.push(data.value[i].section);
+      section_members.push([]);
+    }
+    section_members[sections.indexOf(data.value[i].section)].push(
+      <ModifyListGroupItem
+        name={data.value[i].title}
+        index={i}
+        setModifyModal={setModifyModal}
+        setDeleteModal={setDeleteModal}
+      />
+    );
+  }
+
+  // handle Dropdown list of sections
+  for (let i = 0; i < sections.length; i++) {
     titles.push(
       <CDropdownItem
         key={i}
@@ -52,51 +107,12 @@ const ModifyCard = (props) => {
           setActiveTab(i);
         }.bind(null, i)}
       >
-        {data.ids[i]}
+        {sections[i]}
       </CDropdownItem>
     );
-    var tmp_content = [];
-    for (var j = 0; j < data.value[i].length; j++) {
-      tmp_content.push(
-        <CListGroupItem accent="secondary" color="secondary" key={j}>
-          <CRow className="align-items-center">
-            <CCol xs="5" sm="9" md="9" lg="10" style={{ color: "#000000" }}>
-              {data.value[i][j]["title"]}
-            </CCol>
-            <CCol>
-              <CButtonToolbar justify="end">
-                <CButton
-                  variant="ghost"
-                  color="dark"
-                  onClick={function (i, j) {
-                    setModifyModal([i, j]);
-                  }.bind(null, i, j)}
-                >
-                  <CIcon name="cil-pencil" />
-                </CButton>
-                <CButton
-                  variant="ghost"
-                  color="danger"
-                  onClick={function (i, j) {
-                    setDeleteModal({
-                      type: "problem",
-                      title: "問題",
-                      index: [i, j],
-                      name: data.value[i][j].title,
-                    });
-                  }.bind(null, i, j)}
-                >
-                  <CIcon name="cil-trash" />
-                </CButton>
-              </CButtonToolbar>
-            </CCol>
-          </CRow>
-        </CListGroupItem>
-      );
-    }
     contents.push(
       <CTabPane key={i} active={activeTab === i}>
-        <CListGroup accent>{tmp_content}</CListGroup>
+        <CListGroup accent>{section_members[i]}</CListGroup>
       </CTabPane>
     );
   }
@@ -109,7 +125,7 @@ const ModifyCard = (props) => {
             <CButtonToolbar justify="end">
               <CDropdown>
                 <CDropdownToggle color="info" style={{ color: "#FFFFFF" }}>
-                  {data.ids[activeTab]}
+                  {sections[activeTab]}
                 </CDropdownToggle>
                 <CDropdownMenu style={{ overflow: "auto", maxHeight: "270px" }}>
                   {titles}
@@ -119,7 +135,7 @@ const ModifyCard = (props) => {
                 variant="ghost"
                 color="dark"
                 onClick={function () {
-                  setAddModal({ title: "區塊", type: "block" });
+                  setAddModal({ title: "區塊", type: "section" });
                 }}
               >
                 <CIcon alt="新增區塊" name="cil-library-add" />
@@ -127,14 +143,14 @@ const ModifyCard = (props) => {
               <CButton
                 variant="ghost"
                 color="danger"
-                onClick={function (activeTab) {
+                onClick={() => {
                   setDeleteModal({
-                    type: "block",
+                    type: "group",
                     title: "區塊",
-                    name: data.ids[activeTab],
-                    index: [activeTab],
+                    name: sections[activeTab],
+                    index: activeTab,
                   });
-                }.bind(null, activeTab)}
+                }}
               >
                 <CIcon alt="刪除區塊" name="cil-trash" />
               </CButton>
@@ -157,12 +173,18 @@ const ModifyCard = (props) => {
         <DeleteModal
           data={data}
           setData={setData}
+          groups={sections}
+          setGroups={setSections}
+          group_members={section_members}
+          page={"form"}
           show={deleteModal}
           setModal={setDeleteModal}
         />
         <AddModal
           data={data}
           setData={setData}
+          sections={sections}
+          setSections={setSections}
           show={addModal}
           setModal={setAddModal}
         />
@@ -184,17 +206,43 @@ const ModifyCard = (props) => {
                 <CButton
                   variant="ghost"
                   color="primary"
-                  onClick={() => {
+                  onClick={async () => {
                     var check = window.confirm("確定儲存修改嗎？");
                     if (!check) return;
                     var pathPrefix = "/form/";
-                    for (var idx in data.ids) {
-                      var path = pathPrefix + data.ids[idx] + "/";
-                      addMutationToBatch({
-                        path,
-                        value: data.value[idx],
-                        type: "set",
-                      });
+                    for (let i = 0; i < data.value.length; i++) {
+                      let problem = data.value[i];
+                      if (problem.id === "new") {
+                        try {
+                          await firebase
+                            .firestore()
+                            .collection("form")
+                            .add(problem)
+                            .then((d) => {
+                              data.value[i].id = d.id;
+                              setData(data);
+                            });
+                        } catch (error) {
+                          alert(error.message);
+                        }
+                      } else if (problem.id === "deleted") {
+                        try {
+                          await firebase
+                            .firestore()
+                            .collection("form")
+                            .doc(problem.old_id)
+                            .delete();
+                        } catch (error) {
+                          alert(error.message);
+                        }
+                      } else {
+                        var path = pathPrefix + problem.id + "/";
+                        addMutationToBatch({
+                          path,
+                          value: problem,
+                          type: "set",
+                        });
+                      }
                     }
                     commit()
                       .then(() => {
@@ -216,295 +264,6 @@ const ModifyCard = (props) => {
   );
 };
 
-const AddModal = (props) => {
-  var [type, setType] = useState("MultiChoice");
-  var form = useRef();
-  if (props.show == null) {
-    return null;
-  }
-  var writeData = () => {
-    var data = props.data;
-    switch (props.show.type) {
-      case "problem":
-        var tmp = {};
-        tmp["title"] = form.current.elements.title.value;
-        tmp["type"] = form.current.elements.type.value;
-        tmp["score"] = form.current.elements.score.value;
-        if (tmp["type"] !== "MultiAnswer")
-          tmp["選項"] = form.current.elements.option.value;
-        if (tmp["type"] !== "MultiChoice")
-          tmp["子選項"] = form.current.elements.suboption.value;
-        var data = props.data;
-        data.value[props.show.index].push(tmp);
-        break;
-      case "block":
-        data.value.push([]);
-        data.ids.push(form.current.elements.name.value);
-        break;
-    }
-    props.setData(data);
-    props.setModal(null);
-    setType("MultiChoice");
-  };
-  return (
-    <CModal
-      show={props.show !== null}
-      onClose={() => {
-        props.setModal(null);
-        setType("MultiChoice");
-      }}
-    >
-      <CModalHeader closeButton>
-        <CModalTitle>新增{props.show.title}</CModalTitle>
-      </CModalHeader>
-      <CModalBody>
-        <CForm
-          innerRef={form}
-          action=""
-          method="post"
-          encType="multipart/form-data"
-          className="form-horizontal"
-        >
-          {props.show.type === "problem" && (
-            <>
-              <CFormGroup row inline>
-                <CCol md="3">
-                  <CLabel>標題</CLabel>
-                </CCol>
-                <CCol xs="12" md="9">
-                  <CInput name="title" required />
-                </CCol>
-              </CFormGroup>
-              <CFormGroup row inline>
-                <CCol md="3">
-                  <CLabel>類型</CLabel>
-                </CCol>
-                <CCol xs="12" md="9">
-                  <CSelect
-                    onChange={function (type, setType, event) {
-                      if (type !== event.target.value)
-                        setType(event.target.value);
-                    }.bind(null, type, setType)}
-                    name="type"
-                    defaultValue="MultiChoice"
-                  >
-                    <option value="MultiChoice">單選題</option>
-                    <option value="MultiAnswer">多選題</option>
-                    <option value="Grid">單選網格題</option>
-                  </CSelect>
-                </CCol>
-              </CFormGroup>
-              <CFormGroup row inline>
-                <CCol md="3">
-                  <CLabel>分數</CLabel>
-                </CCol>
-                <CCol xs="12" md="9">
-                  <CInput name="score" required />
-                </CCol>
-              </CFormGroup>
-              {type !== "MultiAnswer" && (
-                <CFormGroup row inline>
-                  <CCol md="3">
-                    <CLabel>選項</CLabel>
-                  </CCol>
-                  <CCol xs="12" md="9">
-                    <CInput name="option" required />
-                  </CCol>
-                </CFormGroup>
-              )}
-              {type !== "MultiChoice" && (
-                <CFormGroup row inline>
-                  <CCol md="3">
-                    <CLabel>子選項</CLabel>
-                  </CCol>
-                  <CCol xs="12" md="9">
-                    <CInput name="suboption" required />
-                  </CCol>
-                </CFormGroup>
-              )}
-            </>
-          )}
-          {props.show.type === "block" && (
-            <CFormGroup row inline>
-              <CCol md="3">
-                <CLabel>區塊名稱</CLabel>
-              </CCol>
-              <CCol xs="12" md="9">
-                <CInput name="name" required />
-              </CCol>
-            </CFormGroup>
-          )}
-        </CForm>
-      </CModalBody>
-      <CModalFooter>
-        <CButton color="primary" onClick={writeData}>
-          新增
-        </CButton>{" "}
-        <CButton
-          color="secondary"
-          onClick={() => {
-            props.setModal(null);
-            setType("MultiChoice");
-          }}
-        >
-          取消
-        </CButton>
-      </CModalFooter>
-    </CModal>
-  );
-};
-
-const DeleteModal = (props) => {
-  if (props.show === null) return null;
-  var deleteData = () => {
-    var data = props.data;
-    switch (props.show.type) {
-      case "problem":
-        data.value[props.show.index[0]].splice(props.show.index[1], 1);
-        break;
-      case "block":
-        data.value.splice(props.show.index[0], 1);
-        data.ids.splice(props.show.index[0], 1);
-        break;
-    }
-    props.setData(data);
-    props.setModal(null);
-  };
-  return (
-    <CModal
-      show={props.show !== null}
-      onClose={() => {
-        props.setModal(null);
-      }}
-      color="danger"
-    >
-      <CModalHeader closeButton>
-        <CModalTitle>刪除{props.show.title}</CModalTitle>
-      </CModalHeader>
-      <CModalBody>
-        確認刪除{props.show.title} {props.show.name} 嗎？
-      </CModalBody>
-      <CModalFooter>
-        <CButton color="primary" onClick={deleteData}>
-          確認
-        </CButton>{" "}
-        <CButton color="secondary" onClick={() => props.setModal(null)}>
-          取消
-        </CButton>
-      </CModalFooter>
-    </CModal>
-  );
-};
-
-const ModifyModal = (props) => {
-  var data = null;
-  var form = useRef();
-  if (props.show != null) data = props.data.value[props.show[0]][props.show[1]];
-  let [type, setType] = useState("");
-  var writeData = () => {
-    var tmp = {};
-    tmp["title"] = form.current.elements.title.value;
-    tmp["type"] = form.current.elements.type.value;
-    tmp["score"] = form.current.elements.score.value;
-    if (tmp["type"] !== "MultiAnswer")
-      tmp["選項"] = form.current.elements.option.value;
-    if (tmp["type"] !== "MultiChoice")
-      tmp["子選項"] = form.current.elements.suboption.value;
-    data = props.data;
-    data.value[props.show[0]][props.show[1]] = tmp;
-    props.setData(data);
-    props.setModal(null);
-  };
-
-  return (
-    <CModal
-      show={props.show !== null}
-      onClose={() => {
-        props.setModal(null);
-      }}
-    >
-      <CModalHeader closeButton>
-        <CModalTitle>修改問題</CModalTitle>
-      </CModalHeader>
-      <CModalBody>
-        {data !== null && (
-          <CForm
-            innerRef={form}
-            action=""
-            method="post"
-            encType="multipart/form-data"
-            className="form-horizontal"
-          >
-            <CFormGroup row inline>
-              <CCol md="3">
-                <CLabel>標題</CLabel>
-              </CCol>
-              <CCol xs="12" md="9">
-                <CInput name="title" defaultValue={data["title"]} />
-              </CCol>
-            </CFormGroup>
-            <CFormGroup row inline>
-              <CCol md="3">
-                <CLabel>類型</CLabel>
-              </CCol>
-              <CCol xs="12" md="9">
-                <CSelect
-                  onChange={function (type, setType, event) {
-                    if (type !== event.target.value)
-                      setType(event.target.value);
-                  }.bind(null, type, setType)}
-                  name="type"
-                  defaultValue={data["type"]}
-                >
-                  <option value="MultiChoice">單選題</option>
-                  <option value="MultiAnswer">多選題</option>
-                  <option value="Grid">單選網格題</option>
-                </CSelect>
-              </CCol>
-            </CFormGroup>
-            <CFormGroup row inline>
-              <CCol md="3">
-                <CLabel>分數</CLabel>
-              </CCol>
-              <CCol xs="12" md="9">
-                <CInput name="score" defaultValue={data["score"]} />
-              </CCol>
-            </CFormGroup>
-            {type !== "MultiAnswer" && (
-              <CFormGroup row inline>
-                <CCol md="3">
-                  <CLabel>選項</CLabel>
-                </CCol>
-                <CCol xs="12" md="9">
-                  <CInput name="option" defaultValue={data["選項"]} />
-                </CCol>
-              </CFormGroup>
-            )}
-            {type !== "MultiChoice" && (
-              <CFormGroup row inline>
-                <CCol md="3">
-                  <CLabel>子選項</CLabel>
-                </CCol>
-                <CCol xs="12" md="9">
-                  <CInput name="suboption" defaultValue={data["子選項"]} />
-                </CCol>
-              </CFormGroup>
-            )}
-          </CForm>
-        )}
-      </CModalBody>
-      <CModalFooter>
-        <CButton color="primary" onClick={writeData}>
-          儲存修改
-        </CButton>{" "}
-        <CButton color="secondary" onClick={() => props.setModal(null)}>
-          取消
-        </CButton>
-      </CModalFooter>
-    </CModal>
-  );
-};
-
 const ModifyForm = () => {
   return (
     <>
@@ -512,9 +271,10 @@ const ModifyForm = () => {
         <FirestoreCollection path="/form/">
           {(d) => {
             if (d && d.value) {
+              for (let i = 0; i < d.ids.length; i++) d.value[i].id = d.ids[i];
               return (
                 <CCol>
-                  <ModifyCard data={d} />
+                  <ModifyCard default_data={d} />
                 </CCol>
               );
             } else return loading;
