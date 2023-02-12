@@ -1,20 +1,16 @@
-import { useContext, memo } from "react";
-import { useSelector, useDispatch } from "react-redux";
 import {
   CCreateElement,
   CSidebar,
-  CSidebarBrand,
-  CSidebarNav,
-  CSidebarNavDivider,
-  CSidebarNavTitle,
-  CSidebarMinimizer,
-  CSidebarNavDropdown,
-  CSidebarNavItem,
+  CSidebarBrand, CSidebarMinimizer, CSidebarNav,
+  CSidebarNavDivider, CSidebarNavDropdown,
+  CSidebarNavItem, CSidebarNavTitle
 } from "@coreui/react";
+import { memo, useContext } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
+import { Brand } from "Components";
 import { AccountContext } from "hooks/context";
 import { history } from "utils/history";
-import { Brand } from "Components";
 
 // sidebar nav config
 import admin_navigation from "./_nav";
@@ -48,7 +44,7 @@ const TheSidebar = () => {
         onClick={(event) => {
           if (!event.target) return;
           if (!event.target.href) return;
-          const not_implemented = ["members", "biblegroup", "modifyform"];
+          const not_implemented = ["members", "biblegroup"];
           for (let n of not_implemented)
             if (event.target.href.includes(n)) {
               alert("此功能尚未開放");
