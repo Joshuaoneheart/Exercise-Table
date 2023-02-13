@@ -1,4 +1,4 @@
-import React from "react";
+import CIcon from "@coreui/icons-react";
 import {
   CButton,
   CCard,
@@ -11,9 +11,9 @@ import {
   CInputGroupPrepend,
   CInputGroupText,
   CLink,
-  CRow,
+  CRow
 } from "@coreui/react";
-import CIcon from "@coreui/icons-react";
+import React from "react";
 
 const Login = (props) => {
   var username = React.useRef();
@@ -59,7 +59,7 @@ const Login = (props) => {
                       placeholder="Password"
                       autoComplete="current-password"
                       onKeyUp={(event) => {
-                        if (event.keyCode === 13) {
+                        if (event.key === "Enter") {
                           login();
                         }
                       }}
