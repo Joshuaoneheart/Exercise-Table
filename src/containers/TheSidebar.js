@@ -8,7 +8,7 @@ import {
 import { memo, useContext } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { Brand } from "Components";
+import { Brand } from "components";
 import { AccountContext } from "hooks/context";
 import { history } from "utils/history";
 

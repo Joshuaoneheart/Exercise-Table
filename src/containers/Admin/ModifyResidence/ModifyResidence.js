@@ -1,7 +1,7 @@
 import { CCol, CRow } from "@coreui/react";
 import { FirestoreCollection } from "@react-firebase/firestore";
-import { loading } from "Components";
-import ModifyCard from "Components/ModifyCard";
+import { loading } from "components";
+import ModifyCard from "components/ModifyCard";
 
 const ModifyResidence = () => {
   return (

@@ -3,8 +3,8 @@ import {
   FirestoreCollection,
   FirestoreDocument
 } from "@react-firebase/firestore";
-import { loading } from "Components";
-import GFFormContent from "Components/GFFormContent";
+import { loading } from "components";
+import GFFormContent from "components/GFFormContent";
 import { AccountContext } from "hooks/context";
 import { useContext } from "react";
 import { GetWeeklyBase } from "utils/date";

@@ -2,8 +2,8 @@ import { CRow } from "@coreui/react";
 import {
   FirestoreDocument
 } from "@react-firebase/firestore";
-import { loading } from "Components";
-import Form from "Components/Form";
+import { loading } from "components";
+import Form from "components/Form";
 import { AccountContext } from "hooks/context";
 import { useContext } from "react";
 import { GetWeeklyBase } from "utils/date";

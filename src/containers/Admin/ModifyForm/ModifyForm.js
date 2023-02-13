@@ -20,8 +20,8 @@ import {
   FirestoreBatchedWrite,
   FirestoreCollection
 } from "@react-firebase/firestore";
-import { loading } from "Components";
-import { AddModal, DeleteModal, ModifyModal } from "Components/ModifyFormModal";
+import { loading } from "components";
+import { AddModal, DeleteModal, ModifyModal } from "components/ModifyFormModal";
 import { firebase } from "db/firebase";
 import { useState } from "react";
 

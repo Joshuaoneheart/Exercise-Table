@@ -1,19 +1,18 @@
-import { useState, lazy, Suspense } from "react";
+import { lazy, Suspense, useState } from "react";
 import { HashRouter, Route, Switch } from "react-router-dom";
 import "scss/style.scss";
 
-import { history } from "utils/history";
 import {
-  FirebaseAuthProvider,
-  FirebaseAuthConsumer,
+  FirebaseAuthConsumer, FirebaseAuthProvider
 } from "@react-firebase/auth";
 import { FirestoreProvider } from "@react-firebase/firestore";
+import { loading } from "components";
 import { config, firebase } from "db/firebase";
 import { AccountContext } from "hooks/context";
-import { loading } from "Components";
+import { history } from "utils/history";
 
 // Containers
-const TheLayout = lazy(() => import("Containers/TheLayout"));
+const TheLayout = lazy(() => import("containers/TheLayout"));
 
 // Pages
 const Login = lazy(() => import("views/pages/login/Login"));

@@ -1,5 +1,5 @@
 import { CRow } from "@coreui/react";
-import Form from "Components/Form";
+import Form from "components/Form";
 
 const ReviewForm = () => {
   return (

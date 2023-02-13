@@ -1,28 +1,23 @@
-import { useContext } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import CIcon from "@coreui/icons-react";
 import {
-  CHeader,
-  CToggler,
-  CHeaderBrand,
+  CBreadcrumbRouter, CHeader, CHeaderBrand,
   CHeaderNav,
   CHeaderNavItem,
-  CHeaderNavLink,
-  CSubheader,
-  CBreadcrumbRouter,
-  CLink,
+  CHeaderNavLink, CLink, CSubheader, CToggler
 } from "@coreui/react";
-import CIcon from "@coreui/icons-react";
+import { useContext } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 // routes config
-import routes from "routes/routes";
-import { Brand } from "Components";
+import { Brand } from "components";
 import { AccountContext } from "hooks/context";
+import routes from "routes/routes";
 
 import {
   TheHeaderDropdown,
   TheHeaderDropdownMssg,
   TheHeaderDropdownNotif,
-  TheHeaderDropdownTasks,
+  TheHeaderDropdownTasks
 } from "./index";
 
 const TheHeader = (props) => {

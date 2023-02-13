@@ -34,7 +34,7 @@ const Problem = ({ data, default_data }) => {
         let suboption = suboptions[j];
         var subframe = [];
         subframe.push(<CCol style={option_style}>{suboption}</CCol>);
-        for (var option of data["選項"].split(";")) {
+        for (var option of options) {
           subframe.push(
             <CCol
               key={j}

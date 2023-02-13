@@ -1,6 +1,6 @@
-import ModifyResident from "./ModifyResident";
-import ModifyGroup from "./ModifyGroup";
-import ModifyForm from "./ModifyForm";
 import Members from "./Members";
+import ModifyForm from "./ModifyForm";
+import ModifyGroup from "./ModifyGroup";
+import ModifyResident from "./ModifyResidence";
 
 export { ModifyResident, ModifyGroup, ModifyForm, Members };
