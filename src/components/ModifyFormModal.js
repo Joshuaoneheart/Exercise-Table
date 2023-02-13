@@ -1,16 +1,16 @@
 import {
-    CButton,
-    CCol,
-    CForm,
-    CFormGroup,
-    CInput,
-    CLabel,
-    CModal,
-    CModalBody,
-    CModalFooter,
-    CModalHeader,
-    CModalTitle,
-    CSelect
+  CButton,
+  CCol,
+  CForm,
+  CFormGroup,
+  CInput,
+  CLabel,
+  CModal,
+  CModalBody,
+  CModalFooter,
+  CModalHeader,
+  CModalTitle,
+  CSelect
 } from "@coreui/react";
 import { useRef, useState } from "react";
 
@@ -34,7 +34,7 @@ const ProblemFormatChecking = (problem) => {
     case "MultiChoice":
     case "Grid":
       // 分數與選項數量需匹配（以分號隔開）
-      if (options.length != scores.length) {
+      if (options.length !== scores.length) {
         alert("分數與選項數量需相同");
         return false;
       }
@@ -289,8 +289,11 @@ const DeleteModal = ({
 
 const ModifyModal = ({ show, data, setData, setModal }) => {
   var form = useRef();
-  let [type, setType] = useState("MultiChoice");
+  // format of type: [type name, 0 indicates the first open of modal, 1 is otherwise]
+  let [type, setType] = useState(["MultiChoice", 0]);
   if (show === null) return null;
+  if(type[1] === 0) type = [data.value[show].type, 1];
+  console.log(type);
   var writeData = () => {
     var tmp = {};
     tmp["title"] = form.current.elements.title.value;
@@ -300,9 +303,12 @@ const ModifyModal = ({ show, data, setData, setModal }) => {
       tmp["選項"] = form.current.elements.option.value;
     if (tmp["type"] !== "MultiChoice")
       tmp["子選項"] = form.current.elements.suboption.value;
+    tmp["id"] = data.value[show].id;
+    tmp["section"] = data.value[show].section;
     if(!ProblemFormatChecking(tmp)) return;
     data.value[show] = tmp;
     setData(data);
+    setType(["MultiChoice", 0]);
     setModal(null);
   };
 
@@ -341,10 +347,10 @@ const ModifyModal = ({ show, data, setData, setModal }) => {
                 <CSelect
                   onChange={function (type, setType, event) {
                     if (type !== event.target.value)
-                      setType(event.target.value);
+                      setType([event.target.value, 1]);
                   }.bind(null, type, setType)}
                   name="type"
-                  defaultValue={data["type"]}
+                  defaultValue={data.value[show]["type"]}
                 >
                   <option value="MultiChoice">單選題</option>
                   <option value="MultiAnswer">多選題</option>
@@ -360,7 +366,7 @@ const ModifyModal = ({ show, data, setData, setModal }) => {
                 <CInput name="score" defaultValue={data.value[show]["score"]} />
               </CCol>
             </CFormGroup>
-            {type !== "MultiAnswer" && (
+            {type[0] !== "MultiAnswer" && (
               <CFormGroup row inline>
                 <CCol md="3">
                   <CLabel>選項</CLabel>
@@ -373,7 +379,7 @@ const ModifyModal = ({ show, data, setData, setModal }) => {
                 </CCol>
               </CFormGroup>
             )}
-            {type !== "MultiChoice" && (
+            {type[0] !== "MultiChoice" && (
               <CFormGroup row inline>
                 <CCol md="3">
                   <CLabel>子選項</CLabel>
