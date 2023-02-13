@@ -13,6 +13,64 @@ import {
     CSelect
 } from "@coreui/react";
 import { useRef, useState } from "react";
+
+const ProblemFormatChecking = (problem) => {
+
+  const is_numeric = (s) => {
+    return !isNaN(s - parseFloat(s));
+  };
+
+  const is_unique = (value, index, array) => {
+    return array.indexOf(value) === index;
+  };
+  let options = problem["選項"];
+  let scores = problem["score"];
+  let suboptions = problem["子選項"];
+  if(options) options = options.split(";");
+  if(scores) scores = scores.split(";");
+  if(suboptions) suboptions = suboptions.split(";");
+
+  switch (problem.type) {
+    case "MultiChoice":
+    case "Grid":
+      // 分數與選項數量需匹配（以分號隔開）
+      if (options.length != scores.length) {
+        alert("分數與選項數量需相同");
+        return false;
+      }
+
+      // 分數以分號區隔後須為數字
+      if (!scores.every(is_numeric)) {
+        alert("分數以分號區隔後須為數字");
+        return false;
+      }
+
+      // 子選項不可同名
+      if (suboptions) {
+        if (!suboptions.every(is_unique)) {
+          alert("子選項不可同名");
+          return false;
+        }
+      }
+
+      break;
+    case "MultiAnswer":
+      // 複選分數為單一數字
+      if (!is_numeric(problem["score"])) {
+        alert("分數須為單一數字");
+        return false;
+      }
+
+      // 子選項不可同名
+      if (!suboptions.every(is_unique)) {
+        alert("子選項不可同名");
+        return false;
+      }
+      break;
+  }
+  return true;
+};
+
 /*
 format of show
 {
@@ -41,6 +99,7 @@ const AddModal = ({ show, data, setData, sections, setSections, setModal }) => {
           tmp["子選項"] = form.current.elements.suboption.value;
         tmp["section"] = sections[show.index];
         tmp["id"] = "new";
+        if(!ProblemFormatChecking(tmp)) return;
         new_data.value.push(tmp);
         break;
       case "section":
@@ -241,6 +300,7 @@ const ModifyModal = ({ show, data, setData, setModal }) => {
       tmp["選項"] = form.current.elements.option.value;
     if (tmp["type"] !== "MultiChoice")
       tmp["子選項"] = form.current.elements.suboption.value;
+    if(!ProblemFormatChecking(tmp)) return;
     data.value[show] = tmp;
     setData(data);
     setModal(null);
