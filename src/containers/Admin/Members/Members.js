@@ -1,32 +1,27 @@
+import CIcon from "@coreui/icons-react";
 import {
   CButton,
   CCard,
   CCardBody,
   CCardHeader,
   CCol,
-  CDropdown,
-  CDropdownMenu,
-  CDropdownItem,
-  CDropdownToggle,
+  CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle,
   CForm,
   CInput,
   // CListGroup,
   // CListGroupItem,
-  CRow,
-  // CTabContent,
-  // CTabPane
+  CRow
 } from "@coreui/react";
 import {
   // CChart,
   CChartBar,
   // CChartHorizontalBar,
   CChartLine,
-  // CChartDoughnut,
-  CChartRadar,
   // CChartPie,
   CChartPolarArea,
+  // CChartDoughnut,
+  CChartRadar
 } from "@coreui/react-chartjs";
-import CIcon from "@coreui/icons-react";
 // import { FirestoreCollection } from "@react-firebase/firestore";
 
 // TODO:

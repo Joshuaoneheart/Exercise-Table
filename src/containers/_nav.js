@@ -1,4 +1,3 @@
-import React from "react";
 import CIcon from "@coreui/icons-react";
 
 const _nav = [
@@ -35,7 +34,7 @@ const _nav = [
   {
     _tag: "CSidebarNavItem",
     name: "住戶管理",
-    to: "/modifyresident",
+    to: "/modifyresidence",
     icon: "cil-house",
   },
   {

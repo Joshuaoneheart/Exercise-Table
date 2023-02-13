@@ -1,10 +1,12 @@
 import React from "react";
 
 //Admin
-const ModifyResident = React.lazy(() =>
+const ModifyResidence = React.lazy(() =>
   import("../containers/Admin/ModifyResidence/ModifyResidence")
 );
-const ModifyGroup = React.lazy(() => import("../containers/Admin/ModifyGroup/ModifyGroup"));
+const ModifyGroup = React.lazy(() =>
+   import("../containers/Admin/ModifyGroup/ModifyGroup")
+);
 const ModifyForm = React.lazy(() => import("../containers/Admin/ModifyForm/ModifyForm"));
 const Members = React.lazy(() => import("../containers/Admin/Members/Members"));
 const Profile = React.lazy(() => import("../containers/Admin/Profile/Profile"));
@@ -18,10 +20,10 @@ const routes = [
   { path: "/dashboard", name: "Dashboard", component: Dashboard },
   { path: "/users", exact: true, name: "Users", component: Users },
   {
-    path: "/modifyresident",
+    path: "/modifyresidence",
     exact: true,
-    name: "Modify Residents",
-    component: ModifyResident,
+    name: "Modify Residence",
+    component: ModifyResidence,
   },
   {
     path: "/modifygroup",
