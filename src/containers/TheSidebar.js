@@ -44,7 +44,7 @@ const TheSidebar = () => {
         onClick={(event) => {
           if (!event.target) return;
           if (!event.target.href) return;
-          const not_implemented = ["members", "biblegroup"];
+          const not_implemented = ["biblegroup"];
           for (let n of not_implemented)
             if (event.target.href.includes(n)) {
               alert("此功能尚未開放");

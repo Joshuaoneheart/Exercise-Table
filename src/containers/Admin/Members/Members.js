@@ -5,7 +5,10 @@ import {
   CCardBody,
   CCardHeader,
   CCol,
-  CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle,
+  CDropdown,
+  CDropdownItem,
+  CDropdownMenu,
+  CDropdownToggle,
   CForm,
   CInput,
   // CListGroup,
@@ -22,6 +25,10 @@ import {
   // CChartDoughnut,
   CChartRadar
 } from "@coreui/react-chartjs";
+import { FirestoreCollection } from "@react-firebase/firestore";
+import { loading } from "components";
+import { AccountContext } from "hooks/context";
+import { useContext } from "react";
 // import { FirestoreCollection } from "@react-firebase/firestore";
 
 // TODO:
@@ -180,54 +187,89 @@ const RenderLineChart = () => {
     </CRow>
   );
 };
+const AdminCardHeader = ({ is_admin }) => {
+  return (
+    <CCardHeader>
+      <CRow className="align-items-center">
+        {is_admin ? (
+          <CCol>
+            <CDropdown>
+              <CDropdownToggle caret color="info">
+                <CIcon name="cil-user" /> User
+              </CDropdownToggle>
+              <CDropdownMenu>
+                <CDropdownItem header> List of Users</CDropdownItem>
+                <CDropdownItem> Hey </CDropdownItem>
+                <CDropdownItem> Hello </CDropdownItem>
+              </CDropdownMenu>
+            </CDropdown>
+          </CCol>
+        ) : (
+          <CCol xs="5" md="7" lg="7" xl="8">
+            個人操練情況查詢
+          </CCol>
+        )}
+        <CForm inline style={{ visibility: is_admin ? "visible" : "hidden" }}>
+          <CInput className="mr-sm-2" placeholder="Search" size="sm" />
+          <CButton color="dark" type="submit" size="sm">
+            <CIcon name="cil-search" size="sm" />
+          </CButton>
+        </CForm>
+      </CRow>
+    </CCardHeader>
+  );
+};
 
 // FIXME:
 // May need to add the necessary hooks
-const ModifyCard = () => {
+const StatisticCard = ({ is_admin, account, accounts }) => {
   return (
-    <CCardBody>
-      <CRow>
-        <RenderRadarChart />
-        <RenderPolarArea />
-        <RenderBarChart />
-        <RenderLineChart />
-      </CRow>
-    </CCardBody>
+    <CCard>
+      <AdminCardHeader is_admin={is_admin} />
+      <CCardBody>
+        <CRow>
+          <RenderRadarChart />
+          <RenderPolarArea />
+          <RenderBarChart />
+          <RenderLineChart />
+        </CRow>
+      </CCardBody>
+    </CCard>
   );
 };
 // FIXME:
 // Need to add hooks for each dropdown item
 // Also needed for search
 const Members = () => {
-  return (
-    <>
-      <CCard>
-        <CCardHeader>
-          <CRow className="align-items-center">
-            <CCol>
-              <CDropdown>
-                <CDropdownToggle caret color="info">
-                  <CIcon name="cil-user" /> User
-                </CDropdownToggle>
-                <CDropdownMenu>
-                  <CDropdownItem header> List of Users</CDropdownItem>
-                  <CDropdownItem> Hey </CDropdownItem>
-                  <CDropdownItem> Hello </CDropdownItem>
-                </CDropdownMenu>
-              </CDropdown>
-            </CCol>
-            <CForm inline>
-              <CInput className="mr-sm-2" placeholder="Search" size="sm" />
-              <CButton color="dark" type="submit" size="sm">
-                <CIcon name="cil-search" size="sm" />
-              </CButton>
-            </CForm>
-          </CRow>
-        </CCardHeader>
-        <ModifyCard />
-      </CCard>
-    </>
-  );
+  const account = useContext(AccountContext);
+  if (account.role === "Admin") {
+    return (
+      <CRow>
+        <FirestoreCollection path="/accounts/">
+          {(d) => {
+            return !(d && d.value) ? (
+              loading
+            ) : (
+              <CCol>
+                <StatisticCard accounts={d} is_admin={true} />
+              </CCol>
+            );
+          }}
+        </FirestoreCollection>
+      </CRow>
+    );
+  } else {
+    return (
+      <CRow>
+        <FirestoreCollection path={"/accounts/" + account.id + "/data/"}>
+          {(default_data) => {
+            if (default_data.isLoading) return loading;
+            return <StatisticCard account={account} is_admin={false} />;
+          }}
+        </FirestoreCollection>
+      </CRow>
+    );
+  }
 };
 
 export default Members;

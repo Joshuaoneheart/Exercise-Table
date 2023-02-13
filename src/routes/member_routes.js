@@ -16,9 +16,9 @@ const routes = [
     path: "/biblegroup",
     exact: true,
     name: "BibleGroup",
-    component: null,
+    component: BibleGroup,
   },
-  { path: "/members", exact: true, name: "Members", component: null },
+  { path: "/members", exact: true, name: "Members", component: Members },
 ];
 
 export default routes;
