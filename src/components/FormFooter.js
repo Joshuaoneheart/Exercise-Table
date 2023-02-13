@@ -5,7 +5,6 @@ import { FirestoreBatchedWrite } from "@react-firebase/firestore";
 import { GetWeeklyBase } from "utils/date";
 
 const FormFooter = ({ form, account, metadata }) => {
-  console.log(account);
   return (
     <CCardFooter>
       <FirestoreBatchedWrite>
@@ -22,18 +21,20 @@ const FormFooter = ({ form, account, metadata }) => {
                   return;
                 }
                 var v = {};
+                var total_score = 0;
                 for (let i = 0; i < metadata.value.length; i++) {
                   var problem = metadata.value[i];
+                  console.log(problem, total_score);
                   switch (problem.type) {
                     case "Grid":
                       var suboptions = problem["子選項"].split(";");
+                      v[problem.id] = {};
                       for (let j = 0; j < suboptions.length; j++) {
                         let ans =
                           form.current.elements[
-                            problem.id + "-" + suboptions[i]
+                            problem.id + "-" + suboptions[j]
                           ].value;
                         if (ans) {
-                          if (!(problem.id in v)) v[problem.id] = {};
                           v[problem.id][suboptions[j]] = {
                             ans: ans,
                             score:
@@ -41,12 +42,17 @@ const FormFooter = ({ form, account, metadata }) => {
                                 problem["選項"].split(";").indexOf(ans)
                               ],
                           };
+                          total_score += parseInt(
+                            problem.score.split(";")[
+                              problem["選項"].split(";").indexOf(ans)
+                            ]
+                          );
                         }
                       }
                       break;
                     case "MultiChoice":
                       let ans = form.current.elements[metadata.ids[i]].value;
-                      if (ans)
+                      if (ans) {
                         v[problem.id] = {
                           ans: ans,
                           score:
@@ -54,6 +60,12 @@ const FormFooter = ({ form, account, metadata }) => {
                               problem["選項"].split(";").indexOf(ans)
                             ],
                         };
+                        total_score += parseInt(
+                          problem.score.split(";")[
+                            problem["選項"].split(";").indexOf(ans)
+                          ]
+                        );
+                      }
                       break;
                     case "MultiAnswer":
                       var nodeList = form.current.elements[metadata.ids[i]];
@@ -62,7 +74,8 @@ const FormFooter = ({ form, account, metadata }) => {
                           if (!(metadata.ids[i] in v))
                             v[metadata.ids[i]] = { ans: [], score: 0 };
                           v[metadata.ids[i]].ans.push(nodeList[j].value);
-                          v[metadata.ids[i]].score += parseInt(metadata.score);
+                          v[metadata.ids[i]].score += parseInt(problem.score);
+                          total_score += parseInt(problem.score);
                         }
                       }
                       break;
@@ -70,6 +83,7 @@ const FormFooter = ({ form, account, metadata }) => {
                       break;
                   }
                 }
+                v.scores = total_score;
                 addMutationToBatch({
                   path: "/accounts/" + account.id + "/data/" + GetWeeklyBase(),
                   value: v,

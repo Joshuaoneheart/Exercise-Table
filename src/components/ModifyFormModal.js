@@ -15,7 +15,6 @@ import {
 import { useRef, useState } from "react";
 
 const ProblemFormatChecking = (problem) => {
-
   const is_numeric = (s) => {
     return !isNaN(s - parseFloat(s));
   };
@@ -26,9 +25,9 @@ const ProblemFormatChecking = (problem) => {
   let options = problem["選項"];
   let scores = problem["score"];
   let suboptions = problem["子選項"];
-  if(options) options = options.split(";");
-  if(scores) scores = scores.split(";");
-  if(suboptions) suboptions = suboptions.split(";");
+  if (options) options = options.split(";");
+  if (scores) scores = scores.split(";");
+  if (suboptions) suboptions = suboptions.split(";");
 
   switch (problem.type) {
     case "MultiChoice":
@@ -67,6 +66,8 @@ const ProblemFormatChecking = (problem) => {
         return false;
       }
       break;
+    default:
+      break;
   }
   return true;
 };
@@ -99,7 +100,7 @@ const AddModal = ({ show, data, setData, sections, setSections, setModal }) => {
           tmp["子選項"] = form.current.elements.suboption.value;
         tmp["section"] = sections[show.index];
         tmp["id"] = "new";
-        if(!ProblemFormatChecking(tmp)) return;
+        if (!ProblemFormatChecking(tmp)) return;
         new_data.value.push(tmp);
         break;
       case "section":
@@ -292,7 +293,7 @@ const ModifyModal = ({ show, data, setData, setModal }) => {
   // format of type: [type name, 0 indicates the first open of modal, 1 is otherwise]
   let [type, setType] = useState(["MultiChoice", 0]);
   if (show === null) return null;
-  if(type[1] === 0) type = [data.value[show].type, 1];
+  if (type[1] === 0) type = [data.value[show].type, 1];
   console.log(type);
   var writeData = () => {
     var tmp = {};
@@ -305,7 +306,7 @@ const ModifyModal = ({ show, data, setData, setModal }) => {
       tmp["子選項"] = form.current.elements.suboption.value;
     tmp["id"] = data.value[show].id;
     tmp["section"] = data.value[show].section;
-    if(!ProblemFormatChecking(tmp)) return;
+    if (!ProblemFormatChecking(tmp)) return;
     data.value[show] = tmp;
     setData(data);
     setType(["MultiChoice", 0]);

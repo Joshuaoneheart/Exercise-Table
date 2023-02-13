@@ -52,7 +52,7 @@ const Problem = ({ data, default_data }) => {
                 defaultChecked={
                   default_data &&
                   suboption in default_data &&
-                  default_data["suboption"].ans === option
+                  default_data[suboption].ans === option
                 }
               />
             </CCol>
@@ -93,21 +93,21 @@ const Problem = ({ data, default_data }) => {
     case "MultiAnswer":
       options = data["子選項"].split(";");
       for (let i = 0; i < options.length; i++) {
-        let option = options[i];
+        console.log(default_data)
         frame.push(
           <CFormGroup variant="checkbox" key={i}>
             <CInputCheckbox
               className="form-check-input"
               name={data.id}
-              value={option}
+              value={options[i]}
               style={button_style}
-              defaultChecked={default_data && option in default_data.ans}
+              defaultChecked={default_data && default_data.ans.includes(options[i])}
             />
             <CLabel
               variant="checkbox"
               style={Object.assign({}, option_style, { marginLeft: "10px" })}
             >
-              {option}
+              {options[i]}
             </CLabel>
           </CFormGroup>
         );
