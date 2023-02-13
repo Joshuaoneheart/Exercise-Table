@@ -8,7 +8,7 @@ const ModifyGroup = React.lazy(() =>
    import("../containers/Admin/ModifyGroup/ModifyGroup")
 );
 const ModifyForm = React.lazy(() => import("../containers/Admin/ModifyForm/ModifyForm"));
-const Members = React.lazy(() => import("../containers/Admin/Members/Members"));
+const Members = React.lazy(() => import("../containers/Members"));
 const BibleGroup = React.lazy(() => import("../containers/Admin/BibleGroup/BibleGroup"));
 const Profile = React.lazy(() => import("../containers/Admin/Profile/Profile"));
 const Settings = React.lazy(() => import("../containers/Admin/Settings/Settings"));
