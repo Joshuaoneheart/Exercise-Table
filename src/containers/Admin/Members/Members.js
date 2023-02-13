@@ -28,7 +28,8 @@ import {
 import { FirestoreCollection } from "@react-firebase/firestore";
 import { loading } from "components";
 import { AccountContext } from "hooks/context";
-import { useContext } from "react";
+import { useContext, useState } from "react";
+import { WeeklyBase2String } from "utils/date";
 // import { FirestoreCollection } from "@react-firebase/firestore";
 
 // TODO:
@@ -148,12 +149,26 @@ const RenderBarChart = () => {
 
 // FIXME:
 // Saaaaaaaaaaaameeeeeeeeeeeeeee
-const RenderLineChart = () => {
+const RenderLineChart = ({data}) => {
+  let labels = [];
+  let chart_data = [];
+  let ids = data.ids.map((x) => parseInt(x));
+  let lower = Math.min(...ids);
+  let upper = Math.max(...ids);
+  console.log(lower, upper)
+  for(let i = lower;i <= upper;i++){
+    labels.push(WeeklyBase2String(i));
+    if(ids.includes(i)){
+      console.log(data.value[ids.indexOf(i)])
+      chart_data.push(data.value[ids.indexOf(i)].scores);
+    } else chart_data.push(null);
+  }
+  console.log(labels)
   const line = {
-    labels: ["January", "February", "March", "April", "May", "June", "July"],
+    labels,
     datasets: [
       {
-        label: "My First dataset",
+        label: "Total Score",
         fill: false,
         lineTension: 0.1,
         backgroundColor: "rgba(75,192,192,0.4)",
@@ -171,14 +186,16 @@ const RenderLineChart = () => {
         pointHoverBorderWidth: 2,
         pointRadius: 1,
         pointHitRadius: 10,
-        data: [65, 59, 80, 81, 56, 55, 40],
+        cubicInterpolationMode: "default",
+        data: chart_data,
+        spanGaps:true
       },
     ],
   };
   return (
     <CRow className="col-md-6">
       <CCol>
-        <h4>Line</h4>
+        <h4>Total Score Curve</h4>
         <div className="chart-wrapper">
           <CChartLine datasets={line.datasets} labels={line.labels} />
         </div>
@@ -187,7 +204,18 @@ const RenderLineChart = () => {
     </CRow>
   );
 };
-const AdminCardHeader = ({ is_admin }) => {
+const AdminCardHeader = ({
+  is_admin,
+  accounts,
+  activeAccount,
+  setActiveAccount,
+}) => {
+  let menu = [];
+  if (is_admin) {
+    for (let i = 0;i < accounts.length;i++) {
+      menu.push(<CDropdownItem onClick={() => setActiveAccount(accounts[i])}> {accounts[i].displayName} </CDropdownItem>);
+    }
+  }
   return (
     <CCardHeader>
       <CRow className="align-items-center">
@@ -195,12 +223,11 @@ const AdminCardHeader = ({ is_admin }) => {
           <CCol>
             <CDropdown>
               <CDropdownToggle caret color="info">
-                <CIcon name="cil-user" /> User
+                <CIcon name="cil-user" /> {activeAccount.displayName}
               </CDropdownToggle>
               <CDropdownMenu>
                 <CDropdownItem header> List of Users</CDropdownItem>
-                <CDropdownItem> Hey </CDropdownItem>
-                <CDropdownItem> Hello </CDropdownItem>
+                {menu}
               </CDropdownMenu>
             </CDropdown>
           </CCol>
@@ -223,18 +250,31 @@ const AdminCardHeader = ({ is_admin }) => {
 // FIXME:
 // May need to add the necessary hooks
 const StatisticCard = ({ is_admin, account, accounts }) => {
+  const [activeAccount, setActiveAccount] = useState(account);
   return (
-    <CCard>
-      <AdminCardHeader is_admin={is_admin} />
-      <CCardBody>
-        <CRow>
-          <RenderRadarChart />
-          <RenderPolarArea />
-          <RenderBarChart />
-          <RenderLineChart />
-        </CRow>
-      </CCardBody>
-    </CCard>
+    <FirestoreCollection path={"/accounts/" + activeAccount.id + "/data/"}>
+      {(data) => {
+        if (data.isLoading) return loading;
+        return (
+          <CCard>
+            <AdminCardHeader
+              is_admin={is_admin}
+              accounts={accounts}
+              activeAccount={activeAccount}
+              setActiveAccount={setActiveAccount}
+            />
+            <CCardBody>
+              <CRow>
+                <RenderRadarChart />
+                <RenderPolarArea />
+                <RenderBarChart />
+                <RenderLineChart data={data}/>
+              </CRow>
+            </CCardBody>
+          </CCard>
+        );
+      }}
+    </FirestoreCollection>
   );
 };
 // FIXME:
@@ -247,13 +287,18 @@ const Members = () => {
       <CRow>
         <FirestoreCollection path="/accounts/">
           {(d) => {
-            return !(d && d.value) ? (
-              loading
-            ) : (
-              <CCol>
-                <StatisticCard accounts={d} is_admin={true} />
-              </CCol>
-            );
+            if (d && d.value) {
+              for(let i = 0;i < d.value.length;i++) d.value[i].id = d.ids[i]
+              return (
+                <CCol>
+                  <StatisticCard
+                    account={d.value[0]}
+                    accounts={d.value}
+                    is_admin={true}
+                  />
+                </CCol>
+              );
+            } else return loading;
           }}
         </FirestoreCollection>
       </CRow>
@@ -261,12 +306,7 @@ const Members = () => {
   } else {
     return (
       <CRow>
-        <FirestoreCollection path={"/accounts/" + account.id + "/data/"}>
-          {(default_data) => {
-            if (default_data.isLoading) return loading;
-            return <StatisticCard account={account} is_admin={false} />;
-          }}
-        </FirestoreCollection>
+        <StatisticCard account={account} is_admin={false} />
       </CRow>
     );
   }
