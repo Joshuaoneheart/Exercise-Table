@@ -121,25 +121,48 @@ const RenderPolarArea = ({ title, labels, data }) => {
 
 // FIXME:
 // Same as before
-const RenderBarChart = () => {
+const RenderBarChart = ({ title, titles, labels, data }) => {
+  let colors = [
+    "rgba(255,99,132,1)",
+    "rgba(75,192,192,1)",
+    "rgba(255,206,86,1)",
+    "rgba(231,233,237,1)",
+    "rgba(54,162,235,1)",
+  ];
+  let a_colors = [
+    "rgba(255,99,132,0.4)",
+    "rgba(75,192,192,0.4)",
+    "rgba(255,206,86,0.4)",
+    "rgba(231,233,237,0.4)",
+    "rgba(54,162,235,0.4)",
+  ];
+  let aa_colors = [
+    "rgba(255,99,132,0.2)",
+    "rgba(75,192,192,0.2)",
+    "rgba(255,206,86,0.2)",
+    "rgba(231,233,237,0.2)",
+    "rgba(54,162,235,0.2)",
+  ];
+  let datasets = [];
+  for (let i = 0; i < data.length; i++) {
+    datasets.push({
+      label: titles[i],
+      backgroundColor: aa_colors[i],
+      borderColor: colors[i],
+      borderWidth: 1,
+      hoverBackgroundColor: a_colors[i],
+      hoverBorderColor: colors[i],
+      data: data[i],
+    });
+  }
   const bar = {
-    labels: ["January", "February", "March", "April", "May", "June", "July"],
-    datasets: [
-      {
-        label: "My First dataset",
-        backgroundColor: "rgba(255,99,132,0.2)",
-        borderColor: "rgba(255,99,132,1)",
-        borderWidth: 1,
-        hoverBackgroundColor: "rgba(255,99,132,0.4)",
-        hoverBorderColor: "rgba(255,99,132,1)",
-        data: [65, 59, 80, 81, 56, 55, 40],
-      },
-    ],
+    labels,
+    datasets,
   };
   return (
     <CRow className="col-md-6">
       <CCol>
-        <h4>Bar</h4>
+        <h4>{title}</h4>
         <div className="chart-wrapper">
           <CChartBar datasets={bar.datasets} labels={bar.labels} />
         </div>
@@ -205,7 +228,7 @@ const RenderLineChart = ({ data }) => {
 };
 
 const RenderPieChart = ({ title, labels, data }) => {
-  const bar = {
+  const pie = {
     labels,
     datasets: [
       {
@@ -242,12 +265,100 @@ const RenderPieChart = ({ title, labels, data }) => {
       <CCol>
         <h4>{title}</h4>
         <div className="chart-wrapper">
-          <CChartPie datasets={bar.datasets} labels={bar.labels} />
+          <CChartPie datasets={pie.datasets} labels={pie.labels} />
         </div>
         <hr />
       </CCol>
     </CRow>
   );
+};
+
+const ProblemChart = ({ problem, data }) => {
+  let options;
+  let suboptions;
+  if (problem.type === "MultiChoice") {
+    options = problem["選項"].split(";");
+    let polar_area = [];
+    for (let i = 0; i < options.length; i++) polar_area.push(0);
+    for (let i = 0; i < data.length; i++) {
+      if (data[i][problem.id] && options.indexOf(data[i][problem.id].ans) != -1)
+        polar_area[options.indexOf(data[i][problem.id].ans)]++;
+    }
+    return (
+      <RenderPieChart
+        title={problem.title}
+        labels={options}
+        data={polar_area}
+      />
+    );
+  } else if (problem.type === "MultiAnswer") return null;
+  else if (problem.type === "Grid") {
+    suboptions = problem["子選項"].split(";");
+    options = problem["選項"].split(";");
+    let bar_data = [];
+    for (let i = 0; i < suboptions.length; i++) {
+      bar_data.push([]);
+      for (let j = 0; j < options.length; j++) bar_data[i].push(0);
+      for (let j = 0; j < data.length; j++) {
+        console.log(suboptions[i]);
+        if (
+          data[j][problem.id] &&
+          data[j][problem.id][suboptions[i]] &&
+          options.indexOf(data[j][problem.id][suboptions[i]].ans) !== -1
+        )
+          bar_data[i][
+            options.indexOf(data[j][problem.id][suboptions[i]].ans)
+          ]++;
+      }
+    }
+    return (
+      <RenderBarChart
+        title={problem.title}
+        titles={options}
+        labels={suboptions}
+        data={bar_data}
+      />
+    );
+  }
+  return null;
+};
+
+const ProblemStatistic = ({ problems, groups, activeGroup }) => {
+  const [data, setData] = useState([]);
+  let charts = [];
+  const FetchData = useCallback(async () => {
+    let accounts = groups[activeGroup];
+    let tmpData = [];
+    let now = GetWeeklyBase();
+    for (let i = 0; i < accounts.length; i++) {
+      let user_data = {};
+      try {
+        let collection = await firebase
+          .firestore()
+          .collection("accounts")
+          .doc(accounts[i].id)
+          .collection("data")
+          .get();
+        collection.forEach((doc) => {
+          if (doc.exists && parseInt(doc.id) === now) {
+            user_data = doc.data();
+          }
+        });
+      } catch (e) {
+        console.log(e);
+      }
+      tmpData.push(user_data);
+    }
+    setData(tmpData);
+  }, [activeGroup]);
+  useEffect(() => {
+    FetchData();
+  }, [activeGroup]);
+  for (let i = 0; i < problems.ids.length; i++) {
+    problems.value[i].id = problems.ids[i];
+    charts.push(<ProblemChart problem={problems.value[i]} data={data} />);
+  }
+  return <CRow>{charts}</CRow>;
 };
 
 const AdminCardHeader = ({ is_admin, groups, activeGroup, setActiveGroup }) => {
@@ -291,66 +402,6 @@ const AdminCardHeader = ({ is_admin, groups, activeGroup, setActiveGroup }) => {
       </CRow>
     </CCardHeader>
   );
-};
-
-const ProblemChart = ({ problem, data }) => {
-  let options;
-  if (problem.type === "MultiChoice") {
-    options = problem["選項"].split(";");
-    let polar_area = [];
-    for (let i = 0; i < options.length; i++) polar_area.push(0);
-    for (let i = 0; i < data.length; i++) {
-      if (data[i][problem.id] && options.indexOf(data[i][problem.id].ans) != -1)
-        polar_area[options.indexOf(data[i][problem.id].ans)]++;
-    }
-    return (
-      <RenderPieChart
-        title={problem.title}
-        labels={options}
-        data={polar_area}
-      />
-    );
-  } else if (problem.type === "MultiAnswer") return null;
-  else if (problem.type === "Grid") return null;
-  return null;
-};
-
-const ProblemStatistic = ({ problems, groups, activeGroup }) => {
-  const [data, setData] = useState([]);
-  let charts = [];
-  const FetchData = useCallback(async () => {
-    let accounts = groups[activeGroup];
-    let tmpData = [];
-    let now = GetWeeklyBase();
-    for (let i = 0; i < accounts.length; i++) {
-      let user_data = {};
-      try {
-        let collection = await firebase
-          .firestore()
-          .collection("accounts")
-          .doc(accounts[i].id)
-          .collection("data")
-          .get();
-        collection.forEach((doc) => {
-          if (doc.exists && parseInt(doc.id) === now) {
-            user_data = doc.data();
-          }
-        });
-      } catch (e) {
-        console.log(e);
-      }
-      tmpData.push(user_data);
-    }
-    setData(tmpData);
-  }, [activeGroup]);
-  useEffect(() => {
-    FetchData();
-  }, [activeGroup]);
-  for (let i = 0; i < problems.ids.length; i++) {
-    problems.value[i].id = problems.ids[i];
-    charts.push(<ProblemChart problem={problems.value[i]} data={data} />);
-  }
-  return <CRow>{charts}</CRow>;
 };
 
 const GatherAccountsByGroup = (accounts) => {
