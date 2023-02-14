@@ -20,6 +20,7 @@ import {
   CChartBar,
   // CChartHorizontalBar,
   CChartLine,
+  CChartPie,
   // CChartPie,
   CChartPolarArea,
   // CChartDoughnut,
@@ -203,6 +204,52 @@ const RenderLineChart = ({ data }) => {
   );
 };
 
+const RenderPieChart = ({ title, labels, data }) => {
+  const bar = {
+    labels,
+    datasets: [
+      {
+        label: title,
+        backgroundColor: [
+          "#FF6384",
+          "#4BC0C0",
+          "#FFCE56",
+          "#E7E9ED",
+          "#36A2EB",
+        ],
+        borderColor: ["#FF6384", "#4BC0C0", "#FFCE56", "#E7E9ED", "#36A2EB"],
+        borderWidth: 1,
+        hoverBackgroundColor: [
+          "rgba(255,99,132,0.4)",
+          "rgba(75,192,192,0.4)",
+          "rgba(255,206,86,0.4)",
+          "rgba(231,233,237,0.4)",
+          "rgba(54,162,235,0.4)",
+        ],
+        hoverBorderColor: [
+          "#FF6384",
+          "#4BC0C0",
+          "#FFCE56",
+          "#E7E9ED",
+          "#36A2EB",
+        ],
+        data,
+      },
+    ],
+  };
+  return (
+    <CRow className="col-md-6">
+      <CCol>
+        <h4>{title}</h4>
+        <div className="chart-wrapper">
+          <CChartPie datasets={bar.datasets} labels={bar.labels} />
+        </div>
+        <hr />
+      </CCol>
+    </CRow>
+  );
+};
+
 const AdminCardHeader = ({ is_admin, groups, activeGroup, setActiveGroup }) => {
   let menu = [];
   if (is_admin) {
@@ -257,7 +304,7 @@ const ProblemChart = ({ problem, data }) => {
         polar_area[options.indexOf(data[i][problem.id].ans)]++;
     }
     return (
-      <RenderPolarArea
+      <RenderPieChart
         title={problem.title}
         labels={options}
         data={polar_area}
