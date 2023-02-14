@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import CIcon from "@coreui/icons-react";
 import {
   CButton,
   CCard,
@@ -12,10 +12,10 @@ import {
   CInputGroupText,
   CInvalidFeedback,
   CLink,
-  CRow,
+  CRow
 } from "@coreui/react";
-import CIcon from "@coreui/icons-react";
 import { FirebaseAuthConsumer } from "@react-firebase/auth";
+import React, { useState } from "react";
 
 const Register = (props) => {
   var register_form = React.useRef();
