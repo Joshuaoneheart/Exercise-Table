@@ -1,9 +1,11 @@
-import CIcon from "@coreui/icons-react";
 import {
-  CBreadcrumbRouter, CHeader, CHeaderBrand,
+  CBreadcrumbRouter,
+  CHeader,
+  CHeaderBrand,
   CHeaderNav,
   CHeaderNavItem,
-  CHeaderNavLink, CLink, CSubheader, CToggler
+  CHeaderNavLink, CSubheader,
+  CToggler
 } from "@coreui/react";
 import { useContext } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -14,10 +16,7 @@ import { AccountContext } from "hooks/context";
 import routes from "routes/routes";
 
 import {
-  TheHeaderDropdown,
-  TheHeaderDropdownMssg,
-  TheHeaderDropdownNotif,
-  TheHeaderDropdownTasks
+  TheHeaderDropdown
 } from "./index";
 
 const TheHeader = (props) => {
@@ -60,9 +59,6 @@ const TheHeader = (props) => {
         {account.role === "Admin" && (
           <>
             <CHeaderNavItem className="px-3">
-              <CHeaderNavLink to="/dashboard">Dashboard</CHeaderNavLink>
-            </CHeaderNavItem>
-            <CHeaderNavItem className="px-3">
               <CHeaderNavLink to="/users">Users</CHeaderNavLink>
             </CHeaderNavItem>
             <CHeaderNavItem className="px-3">
@@ -73,13 +69,6 @@ const TheHeader = (props) => {
       </CHeaderNav>
 
       <CHeaderNav className="px-3">
-        {account.role === "Admin" && (
-          <>
-            <TheHeaderDropdownNotif />
-            <TheHeaderDropdownTasks />
-            <TheHeaderDropdownMssg />
-          </>
-        )}
         <TheHeaderDropdown {...props} />
       </CHeaderNav>
 
@@ -88,27 +77,6 @@ const TheHeader = (props) => {
           className="border-0 c-subheader-nav m-0 px-0 px-md-3"
           routes={routes}
         />
-        <div className="d-md-down-none mfe-2 c-subheader-nav">
-          {account.role === "Admin" && (
-            <>
-              <CLink className="c-subheader-nav-link" to="/settings">
-                <CIcon name="cil-speech" alt="Settings" />
-              </CLink>
-              <CLink
-                className="c-subheader-nav-link"
-                aria-current="page"
-                to="/"
-              >
-                <CIcon name="cil-graph" alt="Dashboard" />
-                &nbsp;Dashboard
-              </CLink>
-              <CLink className="c-subheader-nav-link" to="/settings">
-                <CIcon name="cil-settings" alt="Settings" />
-                &nbsp;Settings
-              </CLink>
-            </>
-          )}
-        </div>
       </CSubheader>
     </CHeader>
   );
