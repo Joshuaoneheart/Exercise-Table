@@ -27,9 +27,10 @@ import {
 } from "@coreui/react-chartjs";
 import { FirestoreCollection } from "@react-firebase/firestore";
 import { loading } from "components";
+import { firebase } from "db/firebase";
 import { AccountContext } from "hooks/context";
-import { useContext, useState } from "react";
-import { WeeklyBase2String } from "utils/date";
+import { useCallback, useContext, useEffect, useState } from "react";
+import { GetWeeklyBase, WeeklyBase2String } from "utils/date";
 // import { FirestoreCollection } from "@react-firebase/firestore";
 
 // TODO:
@@ -87,11 +88,11 @@ const RenderRadarChart = () => {
 
 // FIXME:
 // Please do not forget to modify me for your own purposes
-const RenderPolarArea = () => {
+const RenderPolarArea = ({ title, labels, data }) => {
   const polar = {
     datasets: [
       {
-        data: [11, 16, 7, 3, 14],
+        data,
         backgroundColor: [
           "#FF6384",
           "#4BC0C0",
@@ -99,15 +100,15 @@ const RenderPolarArea = () => {
           "#E7E9ED",
           "#36A2EB",
         ],
-        label: "My dataset", // for legend
+        label: title, // for legend
       },
     ],
-    labels: ["Red", "Green", "Yellow", "Grey", "Blue"],
+    labels,
   };
   return (
     <CRow className="col-md-6">
       <CCol>
-        <h4>Polar Area</h4>
+        <h4>{title}</h4>
         <div className="chart-wrapper">
           <CChartPolarArea datasets={polar.datasets} labels={polar.labels} />
         </div>
@@ -201,19 +202,15 @@ const RenderLineChart = ({ data }) => {
     </CRow>
   );
 };
-const AdminCardHeader = ({
-  is_admin,
-  accounts,
-  activeAccount,
-  setActiveAccount,
-}) => {
+
+const AdminCardHeader = ({ is_admin, groups, activeGroup, setActiveGroup }) => {
   let menu = [];
   if (is_admin) {
-    for (let i = 0; i < accounts.length; i++) {
+    for (let i = 0; i < groups.ids.length; i++) {
       menu.push(
-        <CDropdownItem onClick={() => setActiveAccount(accounts[i])}>
+        <CDropdownItem onClick={() => setActiveGroup(i)}>
           {" "}
-          {accounts[i].displayName}{" "}
+          {groups.ids[i]}{" "}
         </CDropdownItem>
       );
     }
@@ -225,17 +222,17 @@ const AdminCardHeader = ({
           <CCol>
             <CDropdown>
               <CDropdownToggle caret color="info">
-                <CIcon name="cil-user" /> {activeAccount.displayName}
+                <CIcon name="cil-group" /> {groups.ids[activeGroup]}
               </CDropdownToggle>
               <CDropdownMenu>
-                <CDropdownItem header> List of Users</CDropdownItem>
+                <CDropdownItem header> List of Groups</CDropdownItem>
                 {menu}
               </CDropdownMenu>
             </CDropdown>
           </CCol>
         ) : (
           <CCol xs="5" md="7" lg="7" xl="8">
-            個人操練情況查詢
+            活力組操練情況查詢
           </CCol>
         )}
         <CForm inline style={{ visibility: is_admin ? "visible" : "hidden" }}>
@@ -249,70 +246,140 @@ const AdminCardHeader = ({
   );
 };
 
+const ProblemChart = ({ problem, data }) => {
+  let options;
+  if (problem.type === "MultiChoice") {
+    options = problem["選項"].split(";");
+    let polar_area = [];
+    for (let i = 0; i < options.length; i++) polar_area.push(0);
+    for (let i = 0; i < data.length; i++) {
+      if (data[i][problem.id] && options.indexOf(data[i][problem.id].ans) != -1)
+        polar_area[options.indexOf(data[i][problem.id].ans)]++;
+    }
+    return (
+      <RenderPolarArea
+        title={problem.title}
+        labels={options}
+        data={polar_area}
+      />
+    );
+  } else if (problem.type === "MultiAnswer") return null;
+  else if (problem.type === "Grid") return null;
+  return null;
+};
+
+const ProblemStatistic = ({ problems, groups, activeGroup }) => {
+  const [data, setData] = useState([]);
+  let charts = [];
+  const FetchData = useCallback(async () => {
+    let accounts = groups[activeGroup];
+    let tmpData = [];
+    let now = GetWeeklyBase();
+    for (let i = 0; i < accounts.length; i++) {
+      let user_data = {};
+      try {
+        let collection = await firebase
+          .firestore()
+          .collection("accounts")
+          .doc(accounts[i].id)
+          .collection("data")
+          .get();
+        collection.forEach((doc) => {
+          if (doc.exists && parseInt(doc.id) === now) {
+            user_data = doc.data();
+          }
+        });
+      } catch (e) {
+        console.log(e);
+      }
+      tmpData.push(user_data);
+    }
+    setData(tmpData);
+  }, [activeGroup]);
+  useEffect(() => {
+    FetchData();
+  }, [activeGroup]);
+  for (let i = 0; i < problems.ids.length; i++) {
+    problems.value[i].id = problems.ids[i];
+    charts.push(<ProblemChart problem={problems.value[i]} data={data} />);
+  }
+  return <CRow>{charts}</CRow>;
+};
+
+const GatherAccountsByGroup = (accounts) => {
+  let res = { value: [], ids: [] };
+  for (let i = 0; i < accounts.length; i++) {
+    if (accounts[i].group && !res.ids.includes(accounts[i].group)) {
+      res.ids.push(accounts[i].group);
+      res.value.push([]);
+    }
+    if (accounts[i].group)
+      res.value[res.ids.indexOf(accounts[i].group)].push(accounts[i]);
+  }
+  return res;
+};
+
 // FIXME:
 // May need to add the necessary hooks
 const StatisticCard = ({ is_admin, account, accounts }) => {
-  const [activeAccount, setActiveAccount] = useState(account);
+  let groups = GatherAccountsByGroup(accounts);
+  let [activeGroup, setActiveGroup] = useState(
+    groups.ids.indexOf(account.group) === -1
+      ? 0
+      : groups.ids.indexOf(account.group)
+  );
   return (
-    <FirestoreCollection path={"/accounts/" + activeAccount.id + "/data/"}>
-      {(data) => {
-        if (data.isLoadin) return loading;
-        if (data && data.value) {
-          return (
-            <CCard>
-              <AdminCardHeader
-                is_admin={is_admin}
-                accounts={accounts}
-                activeAccount={activeAccount}
-                setActiveAccount={setActiveAccount}
-              />
-              <CCardBody>
-                <CRow>
-                  <RenderLineChart data={data} />
-                </CRow>
-              </CCardBody>
-            </CCard>
-          );
-        }
-      }}
-    </FirestoreCollection>
+    <CCard>
+      <AdminCardHeader
+        is_admin={is_admin}
+        groups={groups}
+        activeGroup={activeGroup}
+        setActiveGroup={setActiveGroup}
+      />
+      <CCardBody>
+        <FirestoreCollection path="/form/">
+          {(d) => {
+            if (d && d.value)
+              return (
+                <ProblemStatistic
+                  problems={d}
+                  groups={groups.value}
+                  activeGroup={activeGroup}
+                />
+              );
+            else return loading;
+          }}
+        </FirestoreCollection>
+      </CCardBody>
+    </CCard>
   );
 };
 // FIXME:
 // Need to add hooks for each dropdown item
 // Also needed for search
-const Members = () => {
+const BibleGroup = () => {
   const account = useContext(AccountContext);
-  if (account.role === "Admin") {
-    return (
-      <CRow>
-        <FirestoreCollection path="/accounts/">
-          {(d) => {
-            if (d && d.value) {
-              for (let i = 0; i < d.value.length; i++) d.value[i].id = d.ids[i];
-              return (
-                <CCol>
-                  <StatisticCard
-                    account={d.value[0]}
-                    accounts={d.value}
-                    is_admin={true}
-                  />
-                </CCol>
-              );
-            } else return loading;
-          }}
-        </FirestoreCollection>
-      </CRow>
-    );
-  } else {
-    return (
-      <CRow>
-        <CCol>
-          <StatisticCard account={account} is_admin={false} />
-        </CCol>
-      </CRow>
-    );
-  }
+  let is_admin = account.role === "Admin";
+  return (
+    <CRow>
+      <FirestoreCollection path="/accounts/">
+        {(d) => {
+          if (d && d.value) {
+            for (let i = 0; i < d.value.length; i++) d.value[i].id = d.ids[i];
+            return (
+              <CCol>
+                <StatisticCard
+                  account={is_admin ? d.value[0] : account}
+                  accounts={d.value}
+                  is_admin={is_admin}
+                />
+              </CCol>
+            );
+          } else return loading;
+        }}
+      </FirestoreCollection>
+    </CRow>
+  );
 };
 
-export default Members;
+export default BibleGroup;

@@ -1,20 +1,24 @@
-import React from "react";
+import { lazy } from "react";
 
 //Admin
-const ModifyResidence = React.lazy(() =>
+const ModifyResidence = lazy(() =>
   import("../containers/Admin/ModifyResidence/ModifyResidence")
 );
-const ModifyGroup = React.lazy(() =>
-   import("../containers/Admin/ModifyGroup/ModifyGroup")
+const ModifyGroup = lazy(() =>
+  import("../containers/Admin/ModifyGroup/ModifyGroup")
 );
-const ModifyForm = React.lazy(() => import("../containers/Admin/ModifyForm/ModifyForm"));
-const Members = React.lazy(() => import("../containers/Members"));
-const BibleGroup = React.lazy(() => import("../containers/Admin/BibleGroup/BibleGroup"));
-const Profile = React.lazy(() => import("../containers/Admin/Profile/Profile"));
-const Settings = React.lazy(() => import("../containers/Admin/Settings/Settings"));
-const Form = React.lazy(() => import("../containers/Admin/ReviewForm/ReviewForm"));
-const Dashboard = React.lazy(() => import("../views/dashboard/Dashboard"));
-const Users = React.lazy(() => import("../views/users/Users"));
+const ModifyForm = lazy(() =>
+  import("../containers/Admin/ModifyForm/ModifyForm")
+);
+const Members = lazy(() => import("../containers/Members"));
+const BibleGroup = lazy(() =>
+  import("../containers/BibleGroup")
+);
+const Profile = lazy(() => import("../containers/Admin/Profile/Profile"));
+const Settings = lazy(() => import("../containers/Admin/Settings/Settings"));
+const Form = lazy(() => import("../containers/Admin/ReviewForm/ReviewForm"));
+const Dashboard = lazy(() => import("../views/dashboard/Dashboard"));
+const Users = lazy(() => import("../views/users/Users"));
 
 const routes = [
   { path: "/", exact: true, name: "Home" },
@@ -39,7 +43,12 @@ const routes = [
     component: ModifyForm,
   },
   { path: "/members", exact: true, name: "Members", component: Members },
-  { path: "/biblegroup", exact: true, name: "BibleGroup", component: BibleGroup },
+  {
+    path: "/biblegroup",
+    exact: true,
+    name: "BibleGroup",
+    component: BibleGroup,
+  },
   { path: "/form", exact: true, name: "Form", component: Form },
   { path: "/settings", exact: true, name: "Settings", component: Settings },
   { path: "/profile", exact: true, name: "Profile", component: Profile },
