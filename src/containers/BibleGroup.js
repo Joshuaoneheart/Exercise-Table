@@ -37,6 +37,27 @@ import { GetWeeklyBase, WeeklyBase2String } from "utils/date";
 // TODO:
 // 1. Set a function that takes input from firebase and renders the charts accordingly
 
+const colors = [
+  "rgba(255,99,132,1)",
+  "rgba(75,192,192,1)",
+  "rgba(255,206,86,1)",
+  "rgba(231,233,237,1)",
+  "rgba(54,162,235,1)",
+];
+const a_colors = [
+  "rgba(255,99,132,0.4)",
+  "rgba(75,192,192,0.4)",
+  "rgba(255,206,86,0.4)",
+  "rgba(231,233,237,0.4)",
+  "rgba(54,162,235,0.4)",
+];
+const aa_colors = [
+  "rgba(255,99,132,0.2)",
+  "rgba(75,192,192,0.2)",
+  "rgba(255,206,86,0.2)",
+  "rgba(231,233,237,0.2)",
+  "rgba(54,162,235,0.2)",
+];
 // FIXME:
 // Please do not forget to modify me for your own purposes
 const RenderRadarChart = () => {
@@ -122,27 +143,6 @@ const RenderPolarArea = ({ title, labels, data }) => {
 // FIXME:
 // Same as before
 const RenderBarChart = ({ title, titles, labels, data }) => {
-  let colors = [
-    "rgba(255,99,132,1)",
-    "rgba(75,192,192,1)",
-    "rgba(255,206,86,1)",
-    "rgba(231,233,237,1)",
-    "rgba(54,162,235,1)",
-  ];
-  let a_colors = [
-    "rgba(255,99,132,0.4)",
-    "rgba(75,192,192,0.4)",
-    "rgba(255,206,86,0.4)",
-    "rgba(231,233,237,0.4)",
-    "rgba(54,162,235,0.4)",
-  ];
-  let aa_colors = [
-    "rgba(255,99,132,0.2)",
-    "rgba(75,192,192,0.2)",
-    "rgba(255,206,86,0.2)",
-    "rgba(231,233,237,0.2)",
-    "rgba(54,162,235,0.2)",
-  ];
   let datasets = [];
   for (let i = 0; i < data.length; i++) {
     datasets.push({
@@ -291,8 +291,27 @@ const ProblemChart = ({ problem, data }) => {
         data={polar_area}
       />
     );
-  } else if (problem.type === "MultiAnswer") return null;
-  else if (problem.type === "Grid") {
+  } else if (problem.type === "MultiAnswer") {
+    suboptions = problem["子選項"].split(";");
+    let h_bar_data = [];
+    for (let i = 0; i < suboptions.length; i++) h_bar_data.push(0);
+    for (let i = 0; i < data.length; i++) {
+      if (data[i][problem.id]) {
+        for (let j = 0; j < data[i][problem.id].ans.length; j++) {
+          if (suboptions.indexOf(data[i][problem.id].ans[j]) !== -1)
+            h_bar_data[suboptions.indexOf(data[i][problem.id].ans[j])]++;
+        }
+      }
+    }
+    return (
+      <RenderBarChart
+        data={[h_bar_data]}
+        labels={suboptions}
+        title={problem.title}
+        titles={[problem.title]}
+      />
+    );
+  } else if (problem.type === "Grid") {
     suboptions = problem["子選項"].split(";");
     options = problem["選項"].split(";");
     let bar_data = [];
@@ -300,7 +319,6 @@ const ProblemChart = ({ problem, data }) => {
       bar_data.push([]);
       for (let j = 0; j < options.length; j++) bar_data[i].push(0);
       for (let j = 0; j < data.length; j++) {
-        console.log(suboptions[i]);
         if (
           data[j][problem.id] &&
           data[j][problem.id][suboptions[i]] &&
