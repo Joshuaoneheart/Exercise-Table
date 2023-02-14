@@ -13,9 +13,7 @@ import {
   CInput,
   CRow
 } from "@coreui/react";
-import {
-  CChartBar, CChartPie
-} from "@coreui/react-chartjs";
+import { CChartBar, CChartPie } from "@coreui/react-chartjs";
 import { FirestoreCollection } from "@react-firebase/firestore";
 import { loading } from "components";
 import { firebase } from "db/firebase";
