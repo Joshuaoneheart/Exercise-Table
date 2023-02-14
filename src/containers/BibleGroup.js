@@ -11,28 +11,17 @@ import {
   CDropdownToggle,
   CForm,
   CInput,
-  // CListGroup,
-  // CListGroupItem,
   CRow
 } from "@coreui/react";
 import {
-  // CChart,
-  CChartBar,
-  // CChartHorizontalBar,
-  CChartLine,
-  CChartPie,
-  // CChartPie,
-  CChartPolarArea,
-  // CChartDoughnut,
-  CChartRadar
+  CChartBar, CChartPie
 } from "@coreui/react-chartjs";
 import { FirestoreCollection } from "@react-firebase/firestore";
 import { loading } from "components";
 import { firebase } from "db/firebase";
 import { AccountContext } from "hooks/context";
 import { useCallback, useContext, useEffect, useState } from "react";
-import { GetWeeklyBase, WeeklyBase2String } from "utils/date";
-// import { FirestoreCollection } from "@react-firebase/firestore";
+import { GetWeeklyBase } from "utils/date";
 
 // TODO:
 // 1. Set a function that takes input from firebase and renders the charts accordingly
@@ -58,79 +47,6 @@ const aa_colors = [
   "rgba(231,233,237,0.2)",
   "rgba(54,162,235,0.2)",
 ];
-// FIXME:
-// Please do not forget to modify me for your own purposes
-const RenderRadarChart = ({ labels, data, title }) => {
-  // This servers purely as an example
-  const radar = {
-    labels,
-    datasets: [
-      {
-        label: title,
-        backgroundColor: "rgba(179,181,198,0.2)",
-        borderColor: "rgba(179,181,198,1)",
-        pointBackgroundColor: "rgba(179,181,198,1)",
-        pointBorderColor: "#fff",
-        pointHoverBackgroundColor: "#fff",
-        pointHoverBorderColor: "rgba(179,181,198,1)",
-        data,
-      },
-    ],
-  };
-  return (
-    <CRow className="col-md-6">
-      <CCol>
-        <h4>{title}</h4>
-        <div className="chart-wrapper">
-          <CChartRadar
-            datasets={radar.datasets}
-            labels={radar.labels}
-            options={{
-              scales: {
-                ticks: {
-                  beginAtZero: true,
-                },
-              },
-            }}
-          />
-        </div>
-        <hr />
-      </CCol>
-    </CRow>
-  );
-};
-
-// FIXME:
-// Please do not forget to modify me for your own purposes
-const RenderPolarArea = ({ title, labels, data }) => {
-  const polar = {
-    datasets: [
-      {
-        data,
-        backgroundColor: [
-          "#FF6384",
-          "#4BC0C0",
-          "#FFCE56",
-          "#E7E9ED",
-          "#36A2EB",
-        ],
-        label: title, // for legend
-      },
-    ],
-    labels,
-  };
-  return (
-    <CRow className="col-md-6">
-      <CCol>
-        <h4>{title}</h4>
-        <div className="chart-wrapper">
-          <CChartPolarArea datasets={polar.datasets} labels={polar.labels} />
-        </div>
-        <hr />
-      </CCol>
-    </CRow>
-  );
-};
 
 // FIXME:
 // Same as before
@@ -157,61 +73,6 @@ const RenderBarChart = ({ title, titles, labels, data }) => {
         <h4>{title}</h4>
         <div className="chart-wrapper">
           <CChartBar datasets={bar.datasets} labels={bar.labels} />
-        </div>
-        <hr />
-      </CCol>
-    </CRow>
-  );
-};
-
-// FIXME:
-// Saaaaaaaaaaaameeeeeeeeeeeeeee
-const RenderLineChart = ({ data }) => {
-  let labels = [];
-  let chart_data = [];
-  let ids = data.ids.map((x) => parseInt(x));
-  let lower = Math.min(...ids);
-  let upper = Math.max(...ids);
-  for (let i = lower; i <= upper; i++) {
-    labels.push(WeeklyBase2String(i));
-    if (ids.includes(i)) {
-      chart_data.push(data.value[ids.indexOf(i)].scores);
-    } else chart_data.push(null);
-  }
-  const line = {
-    labels,
-    datasets: [
-      {
-        label: "Total Score",
-        fill: false,
-        lineTension: 0.1,
-        backgroundColor: "rgba(75,192,192,0.4)",
-        borderColor: "rgba(75,192,192,1)",
-        borderCapStyle: "butt",
-        borderDash: [],
-        borderDashOffset: 0.0,
-        borderJoinStyle: "miter",
-        pointBorderColor: "rgba(75,192,192,1)",
-        pointBackgroundColor: "#fff",
-        pointBorderWidth: 1,
-        pointHoverRadius: 5,
-        pointHoverBackgroundColor: "rgba(75,192,192,1)",
-        pointHoverBorderColor: "rgba(220,220,220,1)",
-        pointHoverBorderWidth: 2,
-        pointRadius: 1,
-        pointHitRadius: 10,
-        cubicInterpolationMode: "default",
-        data: chart_data,
-        spanGaps: true,
-      },
-    ],
-  };
-  return (
-    <CRow className="col-md-6">
-      <CCol>
-        <h4>Total Score Curve</h4>
-        <div className="chart-wrapper">
-          <CChartLine datasets={line.datasets} labels={line.labels} />
         </div>
         <hr />
       </CCol>
@@ -365,7 +226,7 @@ const ProblemStatistic = ({ problems, groups, activeGroup }) => {
   }, [activeGroup, groups]);
   useEffect(() => {
     FetchData();
-  }, [activeGroup, FetchData]);
+  }, [FetchData]);
   for (let i = 0; i < problems.ids.length; i++) {
     problems.value[i].id = problems.ids[i];
     charts.push(<ProblemChart problem={problems.value[i]} data={data} />);
