@@ -37,49 +37,62 @@ import { GetWeeklyBase, WeeklyBase2String } from "utils/date";
 // TODO:
 // 1. Set a function that takes input from firebase and renders the charts accordingly
 
+const colors = [
+  "rgba(255,99,132,1)",
+  "rgba(75,192,192,1)",
+  "rgba(255,206,86,1)",
+  "rgba(231,233,237,1)",
+  "rgba(54,162,235,1)",
+];
+const a_colors = [
+  "rgba(255,99,132,0.4)",
+  "rgba(75,192,192,0.4)",
+  "rgba(255,206,86,0.4)",
+  "rgba(231,233,237,0.4)",
+  "rgba(54,162,235,0.4)",
+];
+const aa_colors = [
+  "rgba(255,99,132,0.2)",
+  "rgba(75,192,192,0.2)",
+  "rgba(255,206,86,0.2)",
+  "rgba(231,233,237,0.2)",
+  "rgba(54,162,235,0.2)",
+];
 // FIXME:
 // Please do not forget to modify me for your own purposes
-const RenderRadarChart = () => {
+const RenderRadarChart = ({ labels, data, title }) => {
   // This servers purely as an example
   const radar = {
-    labels: [
-      "Eating",
-      "Drinking",
-      "Sleeping",
-      "Designing",
-      "Coding",
-      "Cycling",
-      "Running",
-    ],
+    labels,
     datasets: [
       {
-        label: "My First dataset",
+        label: title,
         backgroundColor: "rgba(179,181,198,0.2)",
         borderColor: "rgba(179,181,198,1)",
         pointBackgroundColor: "rgba(179,181,198,1)",
         pointBorderColor: "#fff",
         pointHoverBackgroundColor: "#fff",
         pointHoverBorderColor: "rgba(179,181,198,1)",
-        data: [65, 59, 90, 81, 56, 55, 40],
-      },
-      {
-        label: "My Second dataset",
-        backgroundColor: "rgba(255,99,132,0.2)",
-        borderColor: "rgba(255,99,132,1)",
-        pointBackgroundColor: "rgba(255,99,132,1)",
-        pointBorderColor: "#fff",
-        pointHoverBackgroundColor: "#fff",
-        pointHoverBorderColor: "rgba(255,99,132,1)",
-        data: [28, 48, 40, 19, 96, 27, 100],
+        data,
       },
     ],
   };
   return (
     <CRow className="col-md-6">
       <CCol>
-        <h4>Radar</h4>
+        <h4>{title}</h4>
         <div className="chart-wrapper">
-          <CChartRadar datasets={radar.datasets} labels={radar.labels} />
+          <CChartRadar
+            datasets={radar.datasets}
+            labels={radar.labels}
+            options={{
+              scales: {
+                ticks: {
+                  beginAtZero: true,
+                },
+              },
+            }}
+          />
         </div>
         <hr />
       </CCol>
@@ -122,27 +135,6 @@ const RenderPolarArea = ({ title, labels, data }) => {
 // FIXME:
 // Same as before
 const RenderBarChart = ({ title, titles, labels, data }) => {
-  let colors = [
-    "rgba(255,99,132,1)",
-    "rgba(75,192,192,1)",
-    "rgba(255,206,86,1)",
-    "rgba(231,233,237,1)",
-    "rgba(54,162,235,1)",
-  ];
-  let a_colors = [
-    "rgba(255,99,132,0.4)",
-    "rgba(75,192,192,0.4)",
-    "rgba(255,206,86,0.4)",
-    "rgba(231,233,237,0.4)",
-    "rgba(54,162,235,0.4)",
-  ];
-  let aa_colors = [
-    "rgba(255,99,132,0.2)",
-    "rgba(75,192,192,0.2)",
-    "rgba(255,206,86,0.2)",
-    "rgba(231,233,237,0.2)",
-    "rgba(54,162,235,0.2)",
-  ];
   let datasets = [];
   for (let i = 0; i < data.length; i++) {
     datasets.push({
@@ -281,7 +273,10 @@ const ProblemChart = ({ problem, data }) => {
     let polar_area = [];
     for (let i = 0; i < options.length; i++) polar_area.push(0);
     for (let i = 0; i < data.length; i++) {
-      if (data[i][problem.id] && options.indexOf(data[i][problem.id].ans) != -1)
+      if (
+        data[i][problem.id] &&
+        options.indexOf(data[i][problem.id].ans) !== -1
+      )
         polar_area[options.indexOf(data[i][problem.id].ans)]++;
     }
     return (
@@ -291,8 +286,26 @@ const ProblemChart = ({ problem, data }) => {
         data={polar_area}
       />
     );
-  } else if (problem.type === "MultiAnswer") return null;
-  else if (problem.type === "Grid") {
+  } else if (problem.type === "MultiAnswer") {
+    suboptions = problem["子選項"].split(";");
+    let h_bar_data = [];
+    for (let i = 0; i < suboptions.length; i++) h_bar_data.push(0);
+    for (let i = 0; i < data.length; i++) {
+      if (data[i][problem.id]) {
+        for (let j = 0; j < data[i][problem.id].ans.length; j++) {
+          if (suboptions.indexOf(data[i][problem.id].ans[j]) !== -1)
+            h_bar_data[suboptions.indexOf(data[i][problem.id].ans[j])]++;
+        }
+      }
+    }
+    return (
+      <RenderPieChart
+        data={h_bar_data}
+        labels={suboptions}
+        title={problem.title}
+      />
+    );
+  } else if (problem.type === "Grid") {
     suboptions = problem["子選項"].split(";");
     options = problem["選項"].split(";");
     let bar_data = [];
@@ -300,7 +313,6 @@ const ProblemChart = ({ problem, data }) => {
       bar_data.push([]);
       for (let j = 0; j < options.length; j++) bar_data[i].push(0);
       for (let j = 0; j < data.length; j++) {
-        console.log(suboptions[i]);
         if (
           data[j][problem.id] &&
           data[j][problem.id][suboptions[i]] &&
@@ -350,10 +362,10 @@ const ProblemStatistic = ({ problems, groups, activeGroup }) => {
       tmpData.push(user_data);
     }
     setData(tmpData);
-  }, [activeGroup]);
+  }, [activeGroup, groups]);
   useEffect(() => {
     FetchData();
-  }, [activeGroup]);
+  }, [activeGroup, FetchData]);
   for (let i = 0; i < problems.ids.length; i++) {
     problems.value[i].id = problems.ids[i];
     charts.push(<ProblemChart problem={problems.value[i]} data={data} />);
