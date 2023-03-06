@@ -1,6 +1,6 @@
 import firebase from "firebase/app";
-import "firebase/firestore";
 import "firebase/auth";
+import "firebase/firestore";
 
 var config = {
   apiKey: "AIzaSyBRYT6ipwBqNlt8xqkU2NfPV5XpU0PXxsE",
@@ -33,7 +33,24 @@ class Firebase {
 			let data = await db.get();
 			return data.data();
 		} catch (e) {
-			console.log(e);
+			alert(e.message);
+		}
+	}
+
+	async setByUrl(url, data){
+		let db = this.firebase.firestore();
+		let path = url.split('/');
+		let flag = 0;
+		for(let i = 1;i < path.length;i++){
+			if(!flag) db = db.collection(path[i]);
+			else db = db.doc(path[i]);
+			flag = !flag;
+		}
+		console.log(url)
+		try {
+			await db.set(data);
+		} catch (e) {
+			alert(e.message);
 		}
 	}
 }

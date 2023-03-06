@@ -56,7 +56,7 @@ const TheHeader = (props) => {
       </CHeaderBrand>
 
       <CHeaderNav className="d-md-down-none mr-auto">
-        {account.role === "Admin" && (
+        {account.is_admin && (
           <>
             <CHeaderNavItem className="px-3">
               <CHeaderNavLink to="/users">Users</CHeaderNavLink>

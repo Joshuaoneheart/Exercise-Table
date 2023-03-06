@@ -15,6 +15,7 @@ import {
   CRow
 } from "@coreui/react";
 import { FirebaseAuthConsumer } from "@react-firebase/auth";
+import Account from "Models/Account";
 import React, { useState } from "react";
 
 const Register = (props) => {
@@ -185,15 +186,11 @@ const Register = (props) => {
                                   register_form.current.elements.email.value,
                                   register_form.current.elements.password.value
                                 )
-                                .then((user_data) => {
-                                  alert("成功創建帳戶");
+                                .then(async (user_data) => {
                                   var date = new Date();
-                                  props.firebase
-                                    .firestore()
-                                    .collection("accounts")
-                                    .doc(user_data.user.uid)
-                                    .set({
-                                      displayName:
+                                  let account = new Account({
+                                    id: user_data.user.uid,
+                                    displayName:
                                         register_form.current.elements.username
                                           .value,
                                       email:
@@ -207,23 +204,20 @@ const Register = (props) => {
                                         date.getDate(),
                                       role: "Member",
                                       status: "Pending",
-                                    })
+                                  });
+                                  await account.save();
+                                  alert("成功創建帳戶");
+                                  props.firebase
+                                    .auth()
+                                    .signOut()
                                     .then(() => {
-                                      props.firebase
-                                        .auth()
-                                        .signOut()
-                                        .then(() => {
-                                          window.location =
-                                            window.location.href.replace(
-                                              "register",
-                                              "/"
-                                            );
-                                        })
-                                        .catch((error) => alert(error.message));
+                                      window.location =
+                                        window.location.href.replace(
+                                          "register",
+                                          "/"
+                                        );
                                     })
-                                    .catch((error) => {
-                                      alert(error.message);
-                                    });
+                                    .catch((error) => alert(error.message));
                                 })
                                 .catch((error) => {
                                   alert(error.message);
