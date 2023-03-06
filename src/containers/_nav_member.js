@@ -21,7 +21,6 @@ const _nav = [
   },
   {
     _tag: "CSidebarNavItem",
-    name: "表單填寫",
     to: "/form",
     icon: "cil-spreadsheet",
   },

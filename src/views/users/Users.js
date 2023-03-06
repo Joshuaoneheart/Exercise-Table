@@ -109,7 +109,7 @@ const toggleDetails = (index) => {
 											<h4>
 											  {item.email}
 											</h4>
-											<p className="text-muted">User since: {item.registered}</p>
+											<p className="text-muted">User since {item.registered}</p>
 								  				{item.status === "Active" && 
 											<CButton size="sm" color="danger">Unbind Account</CButton>}
 								  				{item.status !== "Active" &&

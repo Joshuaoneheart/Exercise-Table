@@ -21,7 +21,6 @@ import { loading } from "components";
 import { AccountContext } from "hooks/context";
 import { useContext, useState } from "react";
 import { WeeklyBase2String } from "utils/date";
-// import { FirestoreCollection } from "@react-firebase/firestore";
 
 // TODO:
 // 1. Set a function that takes input from firebase and renders the charts accordingly

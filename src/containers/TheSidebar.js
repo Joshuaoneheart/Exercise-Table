@@ -26,7 +26,7 @@ const TheSidebar = () => {
   if (account == null && account_num >= 3) alert("連線錯誤");
   if (!account) return null;
   var navigation;
-  if (account.role === "Admin") navigation = admin_navigation;
+  if (account.is_admin) navigation = admin_navigation;
   else navigation = member_navigation;
   return (
     <CSidebar

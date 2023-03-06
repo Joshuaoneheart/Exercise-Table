@@ -93,7 +93,6 @@ const Problem = ({ data, default_data }) => {
     case "MultiAnswer":
       options = data["子選項"].split(";");
       for (let i = 0; i < options.length; i++) {
-        console.log(default_data)
         frame.push(
           <CFormGroup variant="checkbox" key={i}>
             <CInputCheckbox

@@ -1,4 +1,4 @@
-import { lazy, Suspense, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import { HashRouter, Route, Switch } from "react-router-dom";
 import "scss/style.scss";
 
@@ -9,6 +9,7 @@ import { FirestoreProvider } from "@react-firebase/firestore";
 import { loading } from "components";
 import { config, firebase } from "db/firebase";
 import { AccountContext } from "hooks/context";
+import Account from "Models/Account";
 import { history } from "utils/history";
 
 // Containers
@@ -22,13 +23,17 @@ const Page500 = lazy(() => import("views/pages/page500/Page500"));
 
 const SignedIn = (props) => {
   var [account, setAccount] = useState(null);
-  if (!account && props.user)
-    firebase
-      .firestore()
-      .collection("accounts")
-      .doc(props.user.uid)
-      .get()
-      .then((d) => setAccount(d.data()));
+  // fetch account data
+  let FetchAccount = async () => {
+	  if(!account && props.user){
+		  account = new Account({id: props.user.uid});
+		  await account.fetch();
+		  setAccount(account);
+	  }
+  }
+  useEffect(() => {
+	  FetchAccount();
+  }, []);
   if (account) {
     account.id = props.user.uid;
     return (

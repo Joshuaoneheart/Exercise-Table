@@ -1,11 +1,11 @@
-import { Suspense, useContext, memo } from "react";
-import { Redirect, Route, Switch } from "react-router-dom";
 import { CContainer, CFade } from "@coreui/react";
+import { memo, Suspense, useContext } from "react";
+import { Redirect, Route, Switch } from "react-router-dom";
 
 import { AccountContext } from "hooks/context";
 // routes config
-import admin_routes from "routes/routes";
 import member_routes from "routes/member_routes";
+import admin_routes from "routes/routes";
 
 const loading = (
   <div className="pt-3 text-center">
@@ -17,7 +17,7 @@ const TheContent = () => {
   var account = useContext(AccountContext);
   if (!account) return null;
   var routes;
-  if (account.role === "Admin") routes = admin_routes;
+  if (account.is_admin) routes = admin_routes;
   else routes = member_routes;
   return (
     <main className="c-main">

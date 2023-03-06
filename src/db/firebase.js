@@ -15,4 +15,29 @@ var config = {
 
 firebase.initializeApp(config);
 
-export { config, firebase };
+class Firebase {
+	constructor(firebase) {
+		this.firebase = firebase;
+	}
+	
+	async getByUrl(url){
+		let db = this.firebase.firestore();
+		let path = url.split('/');
+		let flag = 0;
+		for(let i = 1;i < path.length;i++){
+			if(!flag) db = db.collection(path[i]);
+			else db = db.doc(path[i]);
+			flag = !flag;
+		}
+		try {
+			let data = await db.get();
+			return data.data();
+		} catch (e) {
+			console.log(e);
+		}
+	}
+}
+
+var DB = new Firebase(firebase);
+
+export { config, firebase, DB };

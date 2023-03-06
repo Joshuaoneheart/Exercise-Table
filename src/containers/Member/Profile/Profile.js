@@ -1,6 +1,6 @@
-import { useContext } from "react";
 import { CCard, CCardBody, CCardHeader, CCol, CRow } from "@coreui/react";
 import { AccountContext } from "hooks/context";
+import { useContext } from "react";
 
 const ModifyCard = () => {
   var account = useContext(AccountContext);
@@ -22,13 +22,13 @@ const ModifyCard = () => {
               <CCol lg="3">
                 <b>Role</b>
               </CCol>
-              <CCol>{account.role}</CCol>
+              <CCol>{account.is_admin? "Admin":"Member"}</CCol>
             </CRow>
             <CRow>
               <CCol lg="3">
                 <b>Status</b>
               </CCol>
-              <CCol>{account.status}</CCol>
+              <CCol>{account.is_active? "Active":"Pending"}</CCol>
             </CRow>
             <CRow>
               <CCol lg="3">
