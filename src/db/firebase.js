@@ -16,43 +16,50 @@ var config = {
 firebase.initializeApp(config);
 
 class Firebase {
-	constructor(firebase) {
-		this.firebase = firebase;
-	}
-	
-	async getByUrl(url){
-		let db = this.firebase.firestore();
-		let path = url.split('/');
-		let flag = 0;
-		for(let i = 1;i < path.length;i++){
-			if(!flag) db = db.collection(path[i]);
-			else db = db.doc(path[i]);
-			flag = !flag;
-		}
-		try {
-			let data = await db.get();
-			return data.data();
-		} catch (e) {
-			alert(e.message);
-		}
-	}
+  constructor(firebase) {
+    this.firebase = firebase;
+  }
 
-	async setByUrl(url, data){
-		let db = this.firebase.firestore();
-		let path = url.split('/');
-		let flag = 0;
-		for(let i = 1;i < path.length;i++){
-			if(!flag) db = db.collection(path[i]);
-			else db = db.doc(path[i]);
-			flag = !flag;
-		}
-		console.log(url)
-		try {
-			await db.set(data);
-		} catch (e) {
-			alert(e.message);
-		}
-	}
+  async signOut() {
+    try {
+      await this.firebase.auth().signOut();
+    } catch (e) {
+      alert(e.message);
+    }
+  }
+
+  async getByUrl(url) {
+    let db = this.firebase.firestore();
+    let path = url.split("/");
+    let flag = 0;
+    for (let i = 1; i < path.length; i++) {
+      if (!flag) db = db.collection(path[i]);
+      else db = db.doc(path[i]);
+      flag = !flag;
+    }
+    try {
+      let data = await db.get();
+      return data.data();
+    } catch (e) {
+      alert(e.message);
+    }
+  }
+
+  async setByUrl(url, data) {
+    let db = this.firebase.firestore();
+    let path = url.split("/");
+    let flag = 0;
+    for (let i = 1; i < path.length; i++) {
+      if (!flag) db = db.collection(path[i]);
+      else db = db.doc(path[i]);
+      flag = !flag;
+    }
+    try {
+      await db.set(data);
+    } catch (e) {
+      alert(e.message);
+    }
+  }
 }
 
 var DB = new Firebase(firebase);

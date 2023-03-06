@@ -1,14 +1,15 @@
-import { useContext } from "react";
+import CIcon from "@coreui/icons-react";
 import {
   CDropdown,
   CDropdownItem,
   CDropdownMenu,
   CDropdownToggle,
   CImg,
-  CLink,
+  CLink
 } from "@coreui/react";
-import CIcon from "@coreui/icons-react";
+import { DB } from "db/firebase";
 import { AccountContext } from "hooks/context";
+import { useContext } from "react";
 
 const TheHeaderDropdown = (props) => {
   var account = useContext(AccountContext);
@@ -49,16 +50,7 @@ const TheHeaderDropdown = (props) => {
           </>
         )}
         <CDropdownItem divider />
-        <CDropdownItem
-          onClick={() =>
-            props.firebase
-              .auth()
-              .signOut()
-              .catch((error) => {
-                window.alert("Error : " + error.message);
-              })
-          }
-        >
+        <CDropdownItem onClick={async () => DB.signOut()}>
           <CIcon name="cil-account-logout" className="mfe-2" />
           Logout
         </CDropdownItem>

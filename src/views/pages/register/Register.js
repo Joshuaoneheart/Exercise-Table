@@ -15,19 +15,23 @@ import {
   CRow
 } from "@coreui/react";
 import { FirebaseAuthConsumer } from "@react-firebase/auth";
+import { DB } from "db/firebase";
 import Account from "Models/Account";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const Register = (props) => {
   var register_form = React.useRef();
   var [create, setCreate] = useState(false);
-  if (!create && props.firebase.auth().uid) {
-    props.firebase
-      .auth()
-      .signOut()
-      .catch((error) => alert(error.message));
-    window.location = window.location.href.replace("register", "/");
-  }
+  // if have signed in, sign out
+  let checkSignedIn = async () => {
+    if (!create && props.firebase.auth().uid) {
+      await DB.signOut();
+      window.location = window.location.href.replace("register", "/");
+    }
+  };
+  useEffect(() => {
+    checkSignedIn();
+  }, []);
   return (
     <FirebaseAuthConsumer>
       <div className="c-app c-default-layout flex-row align-items-center">
@@ -191,33 +195,28 @@ const Register = (props) => {
                                   let account = new Account({
                                     id: user_data.user.uid,
                                     displayName:
-                                        register_form.current.elements.username
-                                          .value,
-                                      email:
-                                        register_form.current.elements.email
-                                          .value,
-                                      registered:
-                                        date.getFullYear() +
-                                        "/" +
-                                        (date.getMonth() + 1) +
-                                        "/" +
-                                        date.getDate(),
-                                      role: "Member",
-                                      status: "Pending",
+                                      register_form.current.elements.username
+                                        .value,
+                                    email:
+                                      register_form.current.elements.email
+                                        .value,
+                                    registered:
+                                      date.getFullYear() +
+                                      "/" +
+                                      (date.getMonth() + 1) +
+                                      "/" +
+                                      date.getDate(),
+                                    role: "Member",
+                                    status: "Pending",
                                   });
                                   await account.save();
                                   alert("成功創建帳戶");
-                                  props.firebase
-                                    .auth()
-                                    .signOut()
-                                    .then(() => {
-                                      window.location =
-                                        window.location.href.replace(
-                                          "register",
-                                          "/"
-                                        );
-                                    })
-                                    .catch((error) => alert(error.message));
+                                  await DB.signOut();
+                                  window.location =
+                                    window.location.href.replace(
+                                      "register",
+                                      "/"
+                                    );
                                 })
                                 .catch((error) => {
                                   alert(error.message);
