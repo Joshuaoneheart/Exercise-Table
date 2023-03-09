@@ -16,7 +16,7 @@ import {
   CTabContent,
   CTabPane
 } from "@coreui/react";
-import { FirestoreBatchedWrite } from "@react-firebase/firestore";
+import Groups from "Models/Groups";
 import { useState } from "react";
 import ModifyListGroupItem from "./ModifyListGroupItem";
 import { AddModal, DeleteModal, TransferModal } from "./ModifyModal";
@@ -25,54 +25,57 @@ format of page
 string(group or residence)
 */
 const ModifyCard = ({ default_data, page, title }) => {
-  const [data, setData] = useState(default_data);
   var [activeTab, setActiveTab] = useState(0);
   const [transferModal, setTransferModal] = useState(null);
   const [deleteModal, setDeleteModal] = useState(null);
   const [addModal, setAddModal] = useState(null);
   var titles = [];
-  var [groups, setGroups] = useState([]);
+  var [groups, setGroups] = useState(
+    new Groups(default_data.value, default_data.ids)
+  );
   var group_members = [];
-  for (let i = 0; i < groups.length; i++) group_members.push([]);
-
-  if (activeTab >= groups.length) activeTab = Math.max(groups.length - 1, 0);
+  groups.groupBy(page);
+  if (activeTab >= groups.length - 1) activeTab = Math.max(groups.length - 2, 0);
   var contents = [];
   var add_modal_options = [];
   var group_name = page === "group" ? "活力組" : "住處";
-  for (var i = 0; i < data.ids.length; i++) {
+
+  for (var i = 0; i < groups.length; i++) {
     // remove Admin resident
-    if (data.value[i].role !== "Member") continue;
-    if (!data.value[i][page]) {
+    if (!groups.ids[i]) {
       // add a resident into addmodal options if he is not in any group
-      add_modal_options.push(
-        <option value={i} key={i}>
-          {data.value[i].displayName}
-        </option>
-      );
-      continue;
-    }
-    // maintain list of groups
-    if (!groups.includes(data.value[i][page])) {
-      groups.push(data.value[i][page]);
+      for (let j = 0; j < groups.list[i].length; j++) {
+        add_modal_options.push(
+          <option value={j} key={i}>
+            {groups.getAccount(i, j).displayName}
+          </option>
+        );
+      }
+    } else {
+      // maintain list of groups
       group_members.push([]);
+      for (let j = 0; j < groups.list[i].length; j++) {
+        group_members[group_members.length - 1].push(
+          <ModifyListGroupItem
+            index={[i, j]}
+            key_name={group_members[group_members.length - 1].length}
+            name={groups.getAccount(i, j).displayName}
+            setTransferModal={setTransferModal}
+            setDeleteModal={setDeleteModal}
+            activeTab={activeTab}
+          />
+        );
+      }
     }
-    group_members[groups.indexOf(data.value[i][page])].push(
-      <ModifyListGroupItem
-        index={i}
-        key={group_members[groups.indexOf(data.value[i][page])].length}
-        name={data.value[i].displayName}
-        setTransferModal={setTransferModal}
-        setDeleteModal={setDeleteModal}
-        activeTab={activeTab}
-      />
-    );
   }
-  for (let i = 0; i < groups.length; i++) {
+  for (let i = 0; i < group_members.length; i++) {
     contents.push(
       <CTabPane key={i} active={activeTab === i}>
         <CListGroup accent>{group_members[i]}</CListGroup>
       </CTabPane>
     );
+  }
+  for (let i = 0; i < groups.names.length; i++) {
     titles.push(
       <CDropdownItem
         key={i}
@@ -80,7 +83,7 @@ const ModifyCard = ({ default_data, page, title }) => {
           setActiveTab(i);
         }.bind(null, i)}
       >
-        {groups[i]}
+        {groups.names[i]}
       </CDropdownItem>
     );
   }
@@ -95,7 +98,7 @@ const ModifyCard = ({ default_data, page, title }) => {
             <CButtonToolbar justify="end">
               <CDropdown>
                 <CDropdownToggle color="info" style={{ color: "#FFFFFF" }}>
-                  {groups.length ? groups[activeTab] : null}
+                  {groups.names.length ? groups.names[activeTab] : null}
                 </CDropdownToggle>
                 <CDropdownMenu style={{ overflow: "auto", maxHeight: "270px" }}>
                   {titles}
@@ -121,7 +124,7 @@ const ModifyCard = ({ default_data, page, title }) => {
                   setDeleteModal({
                     type: "group",
                     title: group_name,
-                    name: groups[activeTab],
+                    name: groups.names[activeTab],
                     index: activeTab,
                   })
                 }
@@ -139,16 +142,13 @@ const ModifyCard = ({ default_data, page, title }) => {
           </CCol>
         </CRow>
         <TransferModal
-          data={data}
-          setData={setData}
           page={page}
           show={transferModal}
           setModal={setTransferModal}
           groups={groups}
+          setGroups={setGroups}
         />
         <DeleteModal
-          data={data}
-          setData={setData}
           page={page}
           show={deleteModal}
           setModal={setDeleteModal}
@@ -158,9 +158,7 @@ const ModifyCard = ({ default_data, page, title }) => {
         />
         <AddModal
           names={add_modal_options}
-          data={data}
           page={page}
-          setData={setData}
           groups={groups}
           setGroups={setGroups}
           show={addModal}
@@ -177,6 +175,7 @@ const ModifyCard = ({ default_data, page, title }) => {
                 setAddModal({
                   type: "resident",
                   page,
+                  groups: groups.names[activeTab],
                   index: activeTab,
                   title: "住戶",
                 })
@@ -184,42 +183,18 @@ const ModifyCard = ({ default_data, page, title }) => {
             >
               新增住戶
             </CButton>{" "}
-            <FirestoreBatchedWrite>
-              {({ addMutationToBatch, commit }) => {
-                return (
-                  <CButton
-                    variant="ghost"
-                    color="primary"
-                    onClick={() => {
-                      var check = window.confirm("確定儲存修改嗎？");
-                      if (!check) return;
-                      var pathPrefix = "/accounts/";
-                      for (var idx in data.ids) {
-                        var path = pathPrefix + data.ids[idx];
-                        if (data.value[idx].isChanged) {
-                          var tmp = {};
-                          tmp[page] = data.value[idx][page];
-                          addMutationToBatch({
-                            path,
-                            value: tmp,
-                            type: "update",
-                          });
-                        }
-                      }
-                      commit()
-                        .then(() => {
-                          alert("儲存完成");
-                        })
-                        .catch((error) => {
-                          alert(error);
-                        });
-                    }}
-                  >
-                    儲存變更
-                  </CButton>
-                );
+            <CButton
+              variant="ghost"
+              color="primary"
+              onClick={async () => {
+                var check = window.confirm("確定儲存修改嗎？");
+                if (!check) return;
+                await groups.save();
+                alert("儲存完成");
               }}
-            </FirestoreBatchedWrite>
+            >
+              儲存變更
+            </CButton>
           </CButtonToolbar>
         </CCol>
       </CCardFooter>

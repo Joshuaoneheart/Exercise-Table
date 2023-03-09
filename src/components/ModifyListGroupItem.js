@@ -7,7 +7,7 @@ import {
   CRow
 } from "@coreui/react";
 const ModifyListGroupItem = ({
-  key,
+  key_name,
   name,
   index,
   setTransferModal,
@@ -16,7 +16,7 @@ const ModifyListGroupItem = ({
 }) => {
   //ToDo: Change ascent to danger when the name has not been bind
   return (
-    <CListGroupItem key={key} accent="secondary" color="secondary">
+    <CListGroupItem key={key_name} accent="secondary" color="secondary">
       <CRow className="align-items-center">
         <CCol xs="4" sm="9" md="9" lg="9" style={{ color: "#000000" }}>
           {name}

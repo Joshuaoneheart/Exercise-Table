@@ -23,32 +23,26 @@ import { useRef } from "react";
   format of page
   string(group or residence)
 */
-const AddModal = ({
-  show,
-  page,
-  data,
-  groups,
-  names,
-  setModal,
-  setData,
-  setGroups,
-}) => {
+const AddModal = ({ show, page, groups, names, setModal, setGroups }) => {
   var form = useRef();
   if (show == null) return null;
   var writeData = () => {
     switch (show.type) {
       case "resident":
         // add a new resident
-        var new_data = data;
-        new_data.value[form.current.elements.name.value][page] =
-          groups[show.index];
-        new_data.value[form.current.elements.name.value].isChanged = true;
-        setData(new_data);
+        for (let i = 0; i < groups.length; i++) {
+          if (!groups.ids[i]) {
+            groups.getAccount(i, form.current.elements.name.value)[page] =
+              groups.names[show.index];
+          }
+        }
+        groups.groupBy(page);
+        setGroups(groups.clone());
         break;
       case "group":
         // add a new group
-        groups.push(form.current.elements.name.value);
-        setGroups(groups);
+        groups.addGroup(form.current.elements.name.value);
+        setGroups(groups.clone());
         break;
       default:
         break;
@@ -91,7 +85,15 @@ const AddModal = ({
                 <CLabel>{page === "group" ? "活力組" : "住處"}名稱</CLabel>
               </CCol>
               <CCol xs="12" md="9">
-                <CInput name="name" required />
+                <CInput
+                  name="name"
+                  required
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter") {
+                      writeData();
+                    }
+                  }}
+                />
               </CCol>
             </CFormGroup>
           )}
@@ -127,20 +129,18 @@ const AddModal = ({
 const DeleteModal = ({
   show,
   page,
-  data,
   group_members,
   groups,
   setModal,
-  setData,
   setGroups,
 }) => {
   if (show === null) return null;
   var deleteData = () => {
     switch (show.type) {
       case "resident":
-        delete data.value[show.index][page];
-        data.value[show.index].isChanged = true;
-        setData(data);
+        delete groups.getAccount(show.index[0], show.index[1])[page];
+        groups.groupBy(page);
+        setGroups(groups.clone());
         break;
       case "group":
         if (group_members[show.index].length !== 0) {
@@ -150,8 +150,8 @@ const DeleteModal = ({
             alert("住處內尚有住戶，請將所有住戶刪除後再刪除住處");
           break;
         }
-        groups.splice(show.index, 1);
-        setGroups(groups);
+        groups.deleteGroup(show.name);
+        setGroups(groups.clone());
         break;
       default:
         break;
@@ -184,21 +184,22 @@ const DeleteModal = ({
   );
 };
 
-const TransferModal = ({ show,page, data, groups, setModal, setData }) => {
+const TransferModal = ({ show, page, groups, setModal, setGroups }) => {
   var form = useRef();
   if (show == null) return null;
   var writeData = () => {
-    data.value[show.index][page] = groups[form.current.elements.group.value];
-    data.value[show.index].isChanged = true;
-    setData(data);
+    groups.getAccount(show.index[0], show.index[1])[page] =
+      form.current.elements.group.value;
+    groups.groupBy(page);
+    setGroups(groups.clone());
     setModal(null);
   };
   var groups_option = [];
-  for (let i = 0; i < groups.length; i++) {
+  for (let i = 0; i < groups.names.length; i++) {
     if (i !== show.group)
       groups_option.push(
-        <option value={i} key={i}>
-          {groups[i]}
+        <option value={groups.names[i]} key={i}>
+          {groups.names[i]}
         </option>
       );
   }
@@ -214,24 +215,22 @@ const TransferModal = ({ show,page, data, groups, setModal, setData }) => {
         <CModalTitle>修改住處</CModalTitle>
       </CModalHeader>
       <CModalBody>
-        {data !== null && (
-          <CForm
-            innerRef={form}
-            action=""
-            method="post"
-            encType="multipart/form-data"
-            className="form-horizontal"
-          >
-            <CFormGroup row inline>
-              <CCol md="3">
-                <CLabel>移動至</CLabel>
-              </CCol>
-              <CCol xs="12" md="9">
-                <CSelect name="group">{groups_option}</CSelect>
-              </CCol>
-            </CFormGroup>
-          </CForm>
-        )}
+        <CForm
+          innerRef={form}
+          action=""
+          method="post"
+          encType="multipart/form-data"
+          className="form-horizontal"
+        >
+          <CFormGroup row inline>
+            <CCol md="3">
+              <CLabel>移動至</CLabel>
+            </CCol>
+            <CCol xs="12" md="9">
+              <CSelect name="group">{groups_option}</CSelect>
+            </CCol>
+          </CFormGroup>
+        </CForm>
       </CModalBody>
       <CModalFooter>
         <CButton color="primary" onClick={writeData}>

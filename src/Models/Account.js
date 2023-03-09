@@ -14,7 +14,7 @@ class Account {
     this.role = props.role;
     this.status = props.status;
     this.is_admin = props.role === "Admin";
-    this.is_active = props.status == "Active";
+    this.is_active = props.status === "Active";
     this.dbUrl = "/accounts/" + this.id;
   }
 
