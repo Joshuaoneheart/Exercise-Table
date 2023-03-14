@@ -16,18 +16,24 @@ class Account {
     this.is_admin = props.role === "Admin";
     this.is_active = props.status === "Active";
     this.dbUrl = "/accounts/" + this.id;
+    this.is_changed = false;
+  }
+
+  update(attribute, value) {
+    this[attribute] = value;
+    this.is_changed = true;
   }
 
   async save() {
-	let res = {};
-	if(this.displayName) res.displayName = this.displayName;
-	if(this.email) res.email = this.email;
-	if(this.group) res.group = this.group;
-	if(this.registered) res.registered = this.registered;
-	if(this.residence) res.residence = this.residence;
-	if(this.role) res.role = this.role;
-	if(this.status) res.status = this.status;
-    await DB.setByUrl(this.dbUrl, res);
+    let res = {};
+    if (this.displayName) res.displayName = this.displayName;
+    if (this.email) res.email = this.email;
+    if (this.group) res.group = this.group;
+    if (this.registered) res.registered = this.registered;
+    if (this.residence) res.residence = this.residence;
+    if (this.role) res.role = this.role;
+    if (this.status) res.status = this.status;
+    if (this.is_changed) await DB.setByUrl(this.dbUrl, res);
   }
 
   async fetch() {

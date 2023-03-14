@@ -32,8 +32,9 @@ const AddModal = ({ show, page, groups, names, setModal, setGroups }) => {
         // add a new resident
         for (let i = 0; i < groups.length; i++) {
           if (!groups.ids[i]) {
-            groups.getAccount(i, form.current.elements.name.value)[page] =
-              groups.names[show.index];
+            groups
+              .getAccount(i, form.current.elements.name.value)
+              .update(page, groups.names[show.index]);
           }
         }
         groups.groupBy(page);
@@ -138,7 +139,7 @@ const DeleteModal = ({
   var deleteData = () => {
     switch (show.type) {
       case "resident":
-        delete groups.getAccount(show.index[0], show.index[1])[page];
+        groups.getAccount(show.index[0], show.index[1]).update(page, undefined);
         groups.groupBy(page);
         setGroups(groups.clone());
         break;
@@ -188,8 +189,9 @@ const TransferModal = ({ show, page, groups, setModal, setGroups }) => {
   var form = useRef();
   if (show == null) return null;
   var writeData = () => {
-    groups.getAccount(show.index[0], show.index[1])[page] =
-      form.current.elements.group.value;
+    groups
+      .getAccount(show.index[0], show.index[1])
+      .update(page, form.current.elements.group.value);
     groups.groupBy(page);
     setGroups(groups.clone());
     setModal(null);
