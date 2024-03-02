@@ -1,6 +1,8 @@
+import CIcon from "@coreui/icons-react";
 import {
   CButton,
   CCol,
+  CRow,
   CForm,
   CFormGroup,
   CInput,
@@ -10,9 +12,9 @@ import {
   CModalFooter,
   CModalHeader,
   CModalTitle,
-  CSelect
+  CSelect,
 } from "@coreui/react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const ProblemFormatChecking = (problem) => {
   const is_numeric = (s) => {
@@ -40,7 +42,7 @@ const ProblemFormatChecking = (problem) => {
 
       // 分數以分號區隔後須為數字
       if (!scores.every(is_numeric)) {
-        alert("分數以分號區隔後須為數字");
+        alert("分數須皆為數字");
         return false;
       }
 
@@ -82,6 +84,8 @@ format of show
 */
 const AddModal = ({ show, data, setData, sections, setSections, setModal }) => {
   var [type, setType] = useState("MultiChoice");
+  var [optionCnt, setOptionCnt] = useState(1);
+  var [suboptionCnt, setSuboptionCnt] = useState(1);
   var form = useRef();
   if (show == null) {
     return null;
@@ -93,11 +97,23 @@ const AddModal = ({ show, data, setData, sections, setSections, setModal }) => {
         var tmp = {};
         tmp["title"] = form.current.elements.title.value;
         tmp["type"] = form.current.elements.type.value;
-        tmp["score"] = form.current.elements.score.value;
-        if (tmp["type"] !== "MultiAnswer")
-          tmp["選項"] = form.current.elements.option.value;
-        if (tmp["type"] !== "MultiChoice")
-          tmp["子選項"] = form.current.elements.suboption.value;
+        tmp["score"] = "";
+        if (tmp["type"] !== "MultiAnswer") tmp["選項"] = "";
+        for (let i = 0; i < optionCnt; i++) {
+          tmp["score"] += form.current.elements["score" + i].value;
+          if (i != optionCnt - 1) tmp["score"] += ";";
+          if (tmp["type"] !== "MultiAnswer") {
+            tmp["選項"] += form.current.elements["option" + i].value;
+            if (i != optionCnt - 1) tmp["選項"] += ";";
+          }
+        }
+        if (tmp["type"] !== "MultiChoice") {
+          tmp["子選項"] = "";
+          for (let i = 0; i < suboptionCnt; i++) {
+            tmp["子選項"] += form.current.elements["suboption" + i].value;
+            if (i != suboptionCnt - 1) tmp["子選項"] += ";";
+          }
+        }
         tmp["section"] = sections[show.index];
         tmp["id"] = "new";
         if (!ProblemFormatChecking(tmp)) return;
@@ -114,6 +130,32 @@ const AddModal = ({ show, data, setData, sections, setSections, setModal }) => {
     setModal(null);
     setType("MultiChoice");
   };
+  let scores = [];
+  let options = [];
+  for (let i = 0; i < optionCnt; i++) {
+    scores.push(
+      <CCol
+        xs={type !== "MultiAnswer" ? "4" : "12"}
+        md={type !== "MultiAnswer" ? "4" : "12"}
+        style={{ paddingBottom: "2vh" }}
+      >
+        <CInput name={"score" + i} required />
+      </CCol>
+    );
+    options.push(
+      <CCol xs="4" md="4" style={{ paddingBottom: "2vh" }}>
+        <CInput name={"option" + i} required />
+      </CCol>
+    );
+  }
+  let suboptions = [];
+  for (let i = 0; i < suboptionCnt; i++) {
+    suboptions.push(
+      <CCol xs="4" md="4" style={{ paddingBottom: "2vh" }}>
+        <CInput name={"suboption" + i} required />
+      </CCol>
+    );
+  }
   return (
     <CModal
       show={show !== null}
@@ -150,8 +192,10 @@ const AddModal = ({ show, data, setData, sections, setSections, setModal }) => {
                 <CCol xs="12" md="9">
                   <CSelect
                     onChange={function (type, setType, event) {
-                      if (type !== event.target.value)
+                      if (type !== event.target.value) {
+                        setOptionCnt(1);
                         setType(event.target.value);
+                      }
                     }.bind(null, type, setType)}
                     name="type"
                     defaultValue="MultiChoice"
@@ -162,33 +206,92 @@ const AddModal = ({ show, data, setData, sections, setSections, setModal }) => {
                   </CSelect>
                 </CCol>
               </CFormGroup>
-              <CFormGroup row inline>
-                <CCol md="3">
-                  <CLabel>分數</CLabel>
+              <CRow>
+                <CCol>
+                  <CFormGroup row inline>
+                    <CCol md="3">
+                      <CLabel>分數</CLabel>
+                    </CCol>
+                    <CCol
+                      md={type !== "MultiAnswer" ? "7" : "9"}
+                      xs={type !== "MultiAnswer" ? "7" : "9"}
+                      style={{
+                        marginLeft: type !== "MultiAnswer" ? "1vw" : "0",
+                      }}
+                    >
+                      <CRow>{scores}</CRow>
+                    </CCol>
+                  </CFormGroup>
+                  {type !== "MultiAnswer" && (
+                    <CFormGroup row inline>
+                      <CCol md="3">
+                        <CLabel>選項</CLabel>
+                      </CCol>
+                      <CCol md="7" xs="7" style={{ marginLeft: "1vw" }}>
+                        <CRow>{options}</CRow>
+                      </CCol>
+                    </CFormGroup>
+                  )}
                 </CCol>
-                <CCol xs="12" md="9">
-                  <CInput name="score" required />
-                </CCol>
-              </CFormGroup>
-              {type !== "MultiAnswer" && (
-                <CFormGroup row inline>
-                  <CCol md="3">
-                    <CLabel>選項</CLabel>
-                  </CCol>
-                  <CCol xs="12" md="9">
-                    <CInput name="option" required />
-                  </CCol>
-                </CFormGroup>
-              )}
+                {type !== "MultiAnswer" && (
+                  <div style={{ width: "4vw" }}>
+                    <CButton
+                      variant="ghost"
+                      color="dark"
+                      onClick={() => {
+                        if (optionCnt === 5) return;
+                        setOptionCnt(optionCnt + 1);
+                      }}
+                    >
+                      <CIcon alt="新增分數、選項" name="cil-plus" />
+                    </CButton>
+                    <CButton
+                      variant="ghost"
+                      color="danger"
+                      onClick={() => {
+                        if (optionCnt === 1) return;
+                        setOptionCnt(optionCnt - 1);
+                      }}
+                    >
+                      <CIcon alt="刪除分數、選項" name="cil-minus" />
+                    </CButton>
+                  </div>
+                )}
+              </CRow>
               {type !== "MultiChoice" && (
-                <CFormGroup row inline>
-                  <CCol md="3">
-                    <CLabel>子選項</CLabel>
+                <CRow>
+                  <CCol>
+                    <CFormGroup row inline>
+                      <CCol md="3">
+                        <CLabel>子選項</CLabel>
+                      </CCol>
+                      <CCol md="7" xs="7" style={{ marginLeft: "1vw" }}>
+                        <CRow>{suboptions}</CRow>
+                      </CCol>
+                    </CFormGroup>
                   </CCol>
-                  <CCol xs="12" md="9">
-                    <CInput name="suboption" required />
-                  </CCol>
-                </CFormGroup>
+                  <div style={{ width: "4vw" }}>
+                    <CButton
+                      variant="ghost"
+                      color="dark"
+                      onClick={() => {
+                        setSuboptionCnt(suboptionCnt + 1);
+                      }}
+                    >
+                      <CIcon alt="新增分數、選項" name="cil-plus" />
+                    </CButton>
+                    <CButton
+                      variant="ghost"
+                      color="danger"
+                      onClick={() => {
+                        if (suboptionCnt === 1) return;
+                        setSuboptionCnt(suboptionCnt - 1);
+                      }}
+                    >
+                      <CIcon alt="刪除分數、選項" name="cil-minus" />
+                    </CButton>
+                  </div>
+                </CRow>
               )}
             </>
           )}
@@ -290,20 +393,32 @@ const DeleteModal = ({
 
 const ModifyModal = ({ show, data, setData, setModal }) => {
   var form = useRef();
+  console.log(show);
+  var [optionCnt, setOptionCnt] = useState(0);
+  var [suboptionCnt, setSuboptionCnt] = useState(0);
   // format of type: [type name, 0 indicates the first open of modal, 1 is otherwise]
-  let [type, setType] = useState(["MultiChoice", 0]);
-  if (show === null) return null;
-  if (type[1] === 0) type = [data.value[show].type, 1];
-  console.log(type);
+  let [type, setType] = useState("MultiChoice");
   var writeData = () => {
     var tmp = {};
     tmp["title"] = form.current.elements.title.value;
     tmp["type"] = form.current.elements.type.value;
-    tmp["score"] = form.current.elements.score.value;
-    if (tmp["type"] !== "MultiAnswer")
-      tmp["選項"] = form.current.elements.option.value;
-    if (tmp["type"] !== "MultiChoice")
-      tmp["子選項"] = form.current.elements.suboption.value;
+    tmp["score"] = "";
+    if (tmp["type"] !== "MultiAnswer") tmp["選項"] = "";
+    for (let i = 0; i < optionCnt; i++) {
+      tmp["score"] += form.current.elements["score" + i].value;
+      if (i != optionCnt - 1) tmp["score"] += ";";
+      if (tmp["type"] !== "MultiAnswer") {
+        tmp["選項"] += form.current.elements["option" + i].value;
+        if (i != optionCnt - 1) tmp["選項"] += ";";
+      }
+    }
+    if (tmp["type"] !== "MultiChoice") {
+      tmp["子選項"] = "";
+      for (let i = 0; i < suboptionCnt; i++) {
+        tmp["子選項"] += form.current.elements["suboption" + i].value;
+        if (i != suboptionCnt - 1) tmp["子選項"] += ";";
+      }
+    }
     tmp["id"] = data.value[show].id;
     tmp["section"] = data.value[show].section;
     if (!ProblemFormatChecking(tmp)) return;
@@ -313,6 +428,60 @@ const ModifyModal = ({ show, data, setData, setModal }) => {
     setModal(null);
   };
 
+  useEffect(() => {
+    if (show) {
+      setType(data.value[show].type);
+      setOptionCnt(
+        "選項" in data.value[show]
+          ? data.value[show]["選項"].split(";").length
+          : 0
+      );
+      setSuboptionCnt(
+        "子選項" in data.value[show]
+          ? data.value[show]["子選項"].split(";").length
+          : 0
+      );
+    }
+  }, [show]);
+  if (show === null) return null;
+  let scores = [];
+  let options = [];
+  for (let i = 0; i < optionCnt; i++) {
+    scores.push(
+      <CCol
+        xs={type !== "MultiAnswer" ? "4" : "12"}
+        md={type !== "MultiAnswer" ? "4" : "12"}
+        style={{ paddingBottom: "2vh" }}
+      >
+        <CInput
+          defaultValue={data.value[show]["score"].split(";")[i]}
+          name={"score" + i}
+          required
+        />
+      </CCol>
+    );
+    options.push(
+      <CCol xs="4" md="4" style={{ paddingBottom: "2vh" }}>
+        <CInput
+          defaultValue={data.value[show]["選項"].split(";")[i]}
+          name={"option" + i}
+          required
+        />
+      </CCol>
+    );
+  }
+  let suboptions = [];
+  for (let i = 0; i < suboptionCnt; i++) {
+    suboptions.push(
+      <CCol xs="4" md="4" style={{ paddingBottom: "2vh" }}>
+        <CInput
+          defaultValue={data.value[show]["子選項"].split(";")[i]}
+          name={"suboption" + i}
+          required
+        />
+      </CCol>
+    );
+  }
   return (
     <CModal
       show={show !== null}
@@ -348,7 +517,7 @@ const ModifyModal = ({ show, data, setData, setModal }) => {
                 <CSelect
                   onChange={function (type, setType, event) {
                     if (type !== event.target.value)
-                      setType([event.target.value, 1]);
+                      setType(event.target.value);
                   }.bind(null, type, setType)}
                   name="type"
                   defaultValue={data.value[show]["type"]}
@@ -359,39 +528,92 @@ const ModifyModal = ({ show, data, setData, setModal }) => {
                 </CSelect>
               </CCol>
             </CFormGroup>
-            <CFormGroup row inline>
-              <CCol md="3">
-                <CLabel>分數</CLabel>
+            <CRow>
+              <CCol>
+                <CFormGroup row inline>
+                  <CCol md="3">
+                    <CLabel>分數</CLabel>
+                  </CCol>
+                  <CCol
+                    md={type !== "MultiAnswer" ? "7" : "9"}
+                    xs={type !== "MultiAnswer" ? "7" : "9"}
+                    style={{
+                      marginLeft: type !== "MultiAnswer" ? "1vw" : "0",
+                    }}
+                  >
+                    <CRow>{scores}</CRow>
+                  </CCol>
+                </CFormGroup>
+                {type[0] !== "MultiAnswer" && (
+                  <CFormGroup row inline>
+                    <CCol md="3">
+                      <CLabel>選項</CLabel>
+                    </CCol>
+                    <CCol md="7" xs="7" style={{ marginLeft: "1vw" }}>
+                      <CRow>{options}</CRow>
+                    </CCol>
+                  </CFormGroup>
+                )}
               </CCol>
-              <CCol xs="12" md="9">
-                <CInput name="score" defaultValue={data.value[show]["score"]} />
-              </CCol>
-            </CFormGroup>
-            {type[0] !== "MultiAnswer" && (
-              <CFormGroup row inline>
-                <CCol md="3">
-                  <CLabel>選項</CLabel>
-                </CCol>
-                <CCol xs="12" md="9">
-                  <CInput
-                    name="option"
-                    defaultValue={data.value[show]["選項"]}
-                  />
-                </CCol>
-              </CFormGroup>
-            )}
+              {type !== "MultiAnswer" && (
+                <div style={{ width: "4vw" }}>
+                  <CButton
+                    variant="ghost"
+                    color="dark"
+                    onClick={() => {
+                      if (optionCnt === 5) return;
+                      setOptionCnt(optionCnt + 1);
+                    }}
+                  >
+                    <CIcon alt="新增分數、選項" name="cil-plus" />
+                  </CButton>
+                  <CButton
+                    variant="ghost"
+                    color="danger"
+                    onClick={() => {
+                      if (optionCnt === 1) return;
+                      setOptionCnt(optionCnt - 1);
+                    }}
+                  >
+                    <CIcon alt="刪除分數、選項" name="cil-minus" />
+                  </CButton>
+                </div>
+              )}
+            </CRow>
             {type[0] !== "MultiChoice" && (
-              <CFormGroup row inline>
-                <CCol md="3">
-                  <CLabel>子選項</CLabel>
+              <CRow>
+                <CCol>
+                  <CFormGroup row inline>
+                    <CCol md="3">
+                      <CLabel>子選項</CLabel>
+                    </CCol>
+                    <CCol md="7" xs="7" style={{ marginLeft: "1vw" }}>
+                      <CRow>{suboptions}</CRow>
+                    </CCol>
+                  </CFormGroup>
                 </CCol>
-                <CCol xs="12" md="9">
-                  <CInput
-                    name="suboption"
-                    defaultValue={data.value[show]["子選項"]}
-                  />
-                </CCol>
-              </CFormGroup>
+                <div style={{ width: "4vw" }}>
+                  <CButton
+                    variant="ghost"
+                    color="dark"
+                    onClick={() => {
+                      setSuboptionCnt(suboptionCnt + 1);
+                    }}
+                  >
+                    <CIcon alt="新增分數、選項" name="cil-plus" />
+                  </CButton>
+                  <CButton
+                    variant="ghost"
+                    color="danger"
+                    onClick={() => {
+                      if (suboptionCnt === 1) return;
+                      setSuboptionCnt(suboptionCnt - 1);
+                    }}
+                  >
+                    <CIcon alt="刪除分數、選項" name="cil-minus" />
+                  </CButton>
+                </div>
+              </CRow>
             )}
           </CForm>
         )}
