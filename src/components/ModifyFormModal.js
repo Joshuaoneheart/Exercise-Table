@@ -394,7 +394,6 @@ const DeleteModal = ({
 
 const ModifyModal = ({ show, data, setData, setModal }) => {
   var form = useRef();
-  console.log(show);
   var [optionCnt, setOptionCnt] = useState(0);
   var [suboptionCnt, setSuboptionCnt] = useState(0);
   // format of type: [type name, 0 indicates the first open of modal, 1 is otherwise]
@@ -435,12 +434,12 @@ const ModifyModal = ({ show, data, setData, setModal }) => {
       setOptionCnt(
         "選項" in data.value[show]
           ? data.value[show]["選項"].split(";").length
-          : 0
+          : 1
       );
       setSuboptionCnt(
         "子選項" in data.value[show]
           ? data.value[show]["子選項"].split(";").length
-          : 0
+          : 1
       );
     }
   }, [show, data.value]);
@@ -465,19 +464,21 @@ const ModifyModal = ({ show, data, setData, setModal }) => {
         />
       </CCol>
     );
-    options.push(
-      <CCol xs="4" md="4" style={{ paddingBottom: "2vh" }}>
-        <CInput
-          defaultValue={
-            type === data.value[show].type
-              ? data.value[show]["選項"].split(";")[i]
-              : ""
-          }
-          name={"option" + i}
-          required
-        />
-      </CCol>
-    );
+    if(type !== "MultiAnswer"){
+      options.push(
+        <CCol xs="4" md="4" style={{ paddingBottom: "2vh" }}>
+          <CInput
+            defaultValue={
+              type === data.value[show].type
+                ? data.value[show]["選項"].split(";")[i]
+                : ""
+            }
+            name={"option" + i}
+            required
+          />
+        </CCol>
+      );
+        }
   }
   let suboptions = [];
   for (let i = 0; i < suboptionCnt; i++) {

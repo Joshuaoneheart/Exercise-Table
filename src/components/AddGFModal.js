@@ -23,6 +23,7 @@ const AddGFModal = ({ data, show, setData, setModal }) => {
     var tmp = {};
     tmp["name"] = form.current.elements.name.value;
     tmp["note"] = form.current.elements.note.value;
+    tmp["id"] = "";
     cur_data.push(tmp);
     setData(cur_data);
     setModal(null);

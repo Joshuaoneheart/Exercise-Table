@@ -1,14 +1,14 @@
 import {
-    CButton,
-    CCard,
-    CCardBody,
-    CCardFooter,
-    CCardHeader,
-    CCol,
-    CForm,
-    CFormGroup,
-    CLabel,
-    CRow
+  CButton,
+  CCard,
+  CCardBody,
+  CCardFooter,
+  CCardHeader,
+  CCol,
+  CForm,
+  CFormGroup,
+  CLabel,
+  CRow,
 } from "@coreui/react";
 import { firebase } from "db/firebase";
 import { useState } from "react";
@@ -16,54 +16,38 @@ import Select from "react-select";
 import { GetWeeklyBase } from "utils/date";
 import AddModal from "./AddGFModal";
 
-const saveChange = (
-  account_id,
-  selected,
-  selected_set,
-  GFs,
-  titles,
-  i, // i-th title with all id selected in "selected"
-  j, // j-th selected id of i-th title
-  data
-) => {
-  if (selected.length <= i) {
-    // termination situation
-    let v = {};
-    // Get id of GF
-    for (let k = 0; k < selected.length; k++) {
-      v[titles[k]] = selected[k].map((x) => GFs[x].id);
+const saveChange = async (account_id, selected, titles) => {
+  // termination situation
+  let v = {};
+  for (let i = 0; i < titles.length; i++) {
+    v[titles[i]] = [];
+    for (let value of selected[i]) {
+      let id = value.split("|")[0];
+      let name = value.split("|")[1];
+      let note = value.split("|")[2];
+      if (id === "") {
+        let res = await firebase.firestore().collection("GF").add({
+          name,
+          note,
+        });
+        v[titles[i]].push(res.id);
+      } else v[titles[i]].push(id);
     }
-    firebase
-      .firestore()
-      .collection("accounts")
-      .doc(account_id)
-      .collection("GF")
-      .doc(GetWeeklyBase().toString())
-      .set(v)
-      .then(() => {
-        alert("儲存完成");
-      })
-      .catch((error) => {
-        alert(error.message);
-      });
-  } else if (selected[i].length <= j) {
-    saveChange(account_id, selected, selected_set, GFs, titles, i + 1, 0, null);
-  } else if (data) {
-    GFs[selected[i][j]].id = data;
-    saveChange(account_id, selected, selected_set, GFs, titles, i, j + 1, null);
-  } else if (!("id" in GFs[selected[i][j]])) {
-    // in case of new created GF
-    firebase
-      .firestore()
-      .collection("GF")
-      .add(GFs[selected[i][j]])
-      .then((d) =>
-        saveChange(account_id, selected, selected_set, GFs, titles, i, j, d.id)
-      )
-      .catch((error) => alert(error.message));
-  } else {
-    saveChange(account_id, selected, selected_set, GFs, titles, i, j + 1, null);
   }
+  console.log(v);
+  await firebase
+    .firestore()
+    .collection("accounts")
+    .doc(account_id)
+    .collection("GF")
+    .doc(GetWeeklyBase().toString())
+    .set(v)
+    .then(() => {
+      alert("儲存完成");
+    })
+    .catch((error) => {
+      alert(error.message);
+    });
 };
 
 const GFFormContent = ({ data, account, default_data }) => {
@@ -71,36 +55,25 @@ const GFFormContent = ({ data, account, default_data }) => {
   const [GFs, setGFs] = useState(data.value);
   const [addModal, setAddModal] = useState(null);
   let default_selected = [];
-  function findID(id) {
-    for (let i = 0; i < GFs.length; i++) {
-      if (id === GFs[i].id) return i;
-    }
-    return -1;
+  let id_to_v = {};
+  for (let i = 0; i < GFs.length; i++) {
+    id_to_v[GFs[i].id] = GFs[i].id + "|" + GFs[i].name + "|" + GFs[i].note;
   }
   for (let i in titles) {
     var d = default_data;
     if (d && d.value)
-      default_selected.push(new Set(d.value[titles[i]].map(findID)));
+      default_selected.push(new Set(d.value[titles[i]].map((x) => id_to_v[x])));
     else default_selected.push(new Set());
   }
-  var [selected, set_selected] = useState(default_selected);
+  var [selected, setSelected] = useState(default_selected);
   var inputs = [];
   for (let i = 0; i < titles.length; i++) {
     var default_options = [];
     var GF_options = [];
     for (var j = 0; j < GFs.length; j++) {
-      if (!GFs[j]) continue;
-      else if (selected[i].has(j)) {
-        GF_options.push({
-          value: j,
-          label: (
-            <span style={{ whiteSpace: "pre" }}>
-              <b>{GFs[j].name}</b>
-            </span>
-          ),
-        });
+      if (selected[i].has(id_to_v[GFs[j].id])) {
         default_options.push({
-          value: j,
+          value: id_to_v[GFs[j].id],
           label: (
             <span style={{ whiteSpace: "pre" }}>
               <b>{GFs[j].name}</b>
@@ -109,7 +82,7 @@ const GFFormContent = ({ data, account, default_data }) => {
         });
       } else
         GF_options.push({
-          value: j,
+          value: id_to_v[GFs[j].id],
           label: (
             <span style={{ whiteSpace: "pre" }}>
               <b>{GFs[j].name}</b> <span>{"      " + GFs[j].note}</span>
@@ -124,17 +97,18 @@ const GFFormContent = ({ data, account, default_data }) => {
           value={default_options}
           defaultValue={default_options}
           isMulti
+          isSearchable
           autoFocus
           options={GF_options}
           defaultMenuIsOpen={false}
-          onChange={function (set_selected, selected, i, value) {
+          onChange={function (setSelected, selected, i, value) {
             var tmp = new Set();
             for (let v of value) {
               tmp.add(v.value);
             }
             selected[i] = tmp;
-            set_selected(Array.from(selected));
-          }.bind(null, set_selected, selected, i)}
+            setSelected(Array.from(selected));
+          }.bind(null, setSelected, selected, i)}
         />
       </CFormGroup>
     );
@@ -177,11 +151,7 @@ const GFFormContent = ({ data, account, default_data }) => {
           variant="ghost"
           color="dark"
           onClick={() => {
-            var s = [];
-            for (let i = 0; i < selected.length; i++) {
-              s.push(Array.from(selected[i]));
-            }
-            saveChange(account.id, s, selected, GFs, titles, 0, 0);
+            saveChange(account.id, selected, titles);
           }}
         >
           提交表單
