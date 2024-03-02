@@ -101,17 +101,17 @@ const AddModal = ({ show, data, setData, sections, setSections, setModal }) => {
         if (tmp["type"] !== "MultiAnswer") tmp["選項"] = "";
         for (let i = 0; i < optionCnt; i++) {
           tmp["score"] += form.current.elements["score" + i].value;
-          if (i != optionCnt - 1) tmp["score"] += ";";
+          if (i !== optionCnt - 1) tmp["score"] += ";";
           if (tmp["type"] !== "MultiAnswer") {
             tmp["選項"] += form.current.elements["option" + i].value;
-            if (i != optionCnt - 1) tmp["選項"] += ";";
+            if (i !== optionCnt - 1) tmp["選項"] += ";";
           }
         }
         if (tmp["type"] !== "MultiChoice") {
           tmp["子選項"] = "";
           for (let i = 0; i < suboptionCnt; i++) {
             tmp["子選項"] += form.current.elements["suboption" + i].value;
-            if (i != suboptionCnt - 1) tmp["子選項"] += ";";
+            if (i !== suboptionCnt - 1) tmp["子選項"] += ";";
           }
         }
         tmp["section"] = sections[show.index];
@@ -194,6 +194,7 @@ const AddModal = ({ show, data, setData, sections, setSections, setModal }) => {
                     onChange={function (type, setType, event) {
                       if (type !== event.target.value) {
                         setOptionCnt(1);
+                        setSuboptionCnt(1);
                         setType(event.target.value);
                       }
                     }.bind(null, type, setType)}
@@ -406,17 +407,17 @@ const ModifyModal = ({ show, data, setData, setModal }) => {
     if (tmp["type"] !== "MultiAnswer") tmp["選項"] = "";
     for (let i = 0; i < optionCnt; i++) {
       tmp["score"] += form.current.elements["score" + i].value;
-      if (i != optionCnt - 1) tmp["score"] += ";";
+      if (i !== optionCnt - 1) tmp["score"] += ";";
       if (tmp["type"] !== "MultiAnswer") {
         tmp["選項"] += form.current.elements["option" + i].value;
-        if (i != optionCnt - 1) tmp["選項"] += ";";
+        if (i !== optionCnt - 1) tmp["選項"] += ";";
       }
     }
     if (tmp["type"] !== "MultiChoice") {
       tmp["子選項"] = "";
       for (let i = 0; i < suboptionCnt; i++) {
         tmp["子選項"] += form.current.elements["suboption" + i].value;
-        if (i != suboptionCnt - 1) tmp["子選項"] += ";";
+        if (i !== suboptionCnt - 1) tmp["子選項"] += ";";
       }
     }
     tmp["id"] = data.value[show].id;
@@ -424,7 +425,7 @@ const ModifyModal = ({ show, data, setData, setModal }) => {
     if (!ProblemFormatChecking(tmp)) return;
     data.value[show] = tmp;
     setData(data);
-    setType(["MultiChoice", 0]);
+    setType("MultiChoice");
     setModal(null);
   };
 
@@ -442,7 +443,7 @@ const ModifyModal = ({ show, data, setData, setModal }) => {
           : 0
       );
     }
-  }, [show]);
+  }, [show, data.value]);
   if (show === null) return null;
   let scores = [];
   let options = [];
@@ -454,7 +455,11 @@ const ModifyModal = ({ show, data, setData, setModal }) => {
         style={{ paddingBottom: "2vh" }}
       >
         <CInput
-          defaultValue={data.value[show]["score"].split(";")[i]}
+          defaultValue={
+            type === data.value[show].type
+              ? data.value[show]["score"].split(";")[i]
+              : ""
+          }
           name={"score" + i}
           required
         />
@@ -463,7 +468,11 @@ const ModifyModal = ({ show, data, setData, setModal }) => {
     options.push(
       <CCol xs="4" md="4" style={{ paddingBottom: "2vh" }}>
         <CInput
-          defaultValue={data.value[show]["選項"].split(";")[i]}
+          defaultValue={
+            type === data.value[show].type
+              ? data.value[show]["選項"].split(";")[i]
+              : ""
+          }
           name={"option" + i}
           required
         />
@@ -475,7 +484,11 @@ const ModifyModal = ({ show, data, setData, setModal }) => {
     suboptions.push(
       <CCol xs="4" md="4" style={{ paddingBottom: "2vh" }}>
         <CInput
-          defaultValue={data.value[show]["子選項"].split(";")[i]}
+          defaultValue={
+            type === data.value[show].type
+              ? data.value[show]["子選項"].split(";")[i]
+              : ""
+          }
           name={"suboption" + i}
           required
         />
@@ -516,8 +529,11 @@ const ModifyModal = ({ show, data, setData, setModal }) => {
               <CCol xs="12" md="9">
                 <CSelect
                   onChange={function (type, setType, event) {
-                    if (type !== event.target.value)
+                    if (type !== event.target.value) {
+                      setOptionCnt(1);
+                      setSuboptionCnt(1);
                       setType(event.target.value);
+                    }
                   }.bind(null, type, setType)}
                   name="type"
                   defaultValue={data.value[show]["type"]}
@@ -544,12 +560,18 @@ const ModifyModal = ({ show, data, setData, setModal }) => {
                     <CRow>{scores}</CRow>
                   </CCol>
                 </CFormGroup>
-                {type[0] !== "MultiAnswer" && (
+                {type !== "MultiAnswer" && (
                   <CFormGroup row inline>
                     <CCol md="3">
                       <CLabel>選項</CLabel>
                     </CCol>
-                    <CCol md="7" xs="7" style={{ marginLeft: "1vw" }}>
+                    <CCol
+                      md="7"
+                      xs="7"
+                      style={{
+                        marginLeft: type !== "MultiAnswer" ? "1vw" : "0",
+                      }}
+                    >
                       <CRow>{options}</CRow>
                     </CCol>
                   </CFormGroup>
@@ -580,7 +602,7 @@ const ModifyModal = ({ show, data, setData, setModal }) => {
                 </div>
               )}
             </CRow>
-            {type[0] !== "MultiChoice" && (
+            {type !== "MultiChoice" && (
               <CRow>
                 <CCol>
                   <CFormGroup row inline>
