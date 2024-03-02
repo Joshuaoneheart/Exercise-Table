@@ -17,7 +17,6 @@ import { GetWeeklyBase } from "utils/date";
 import AddModal from "./AddGFModal";
 
 const saveChange = async (account_id, selected, titles) => {
-  // termination situation
   let v = {};
   for (let i = 0; i < titles.length; i++) {
     v[titles[i]] = [];
@@ -34,7 +33,6 @@ const saveChange = async (account_id, selected, titles) => {
       } else v[titles[i]].push(id);
     }
   }
-  console.log(v);
   await firebase
     .firestore()
     .collection("accounts")
@@ -62,7 +60,13 @@ const GFFormContent = ({ data, account, default_data }) => {
   for (let i in titles) {
     var d = default_data;
     if (d && d.value)
-      default_selected.push(new Set(d.value[titles[i]].map((x) => id_to_v[x])));
+      default_selected.push(
+        new Set(
+          d.value[titles[i]]
+            .map((x) => id_to_v[x])
+            .filter((element) => element !== undefined)
+        )
+      );
     else default_selected.push(new Set());
   }
   var [selected, setSelected] = useState(default_selected);
