@@ -15,6 +15,9 @@ import { useState } from "react";
 import Select from "react-select";
 import { GetWeeklyBase } from "utils/date";
 import AddModal from "./AddGFModal";
+import CIcon from "@coreui/icons-react";
+import { Link } from "react-router-dom";
+import { GF_GRADE } from "const/GF";
 
 const saveChange = async (account_id, selected, titles) => {
   let v = {};
@@ -23,10 +26,16 @@ const saveChange = async (account_id, selected, titles) => {
     for (let value of selected[i]) {
       let id = value.split("|")[0];
       let name = value.split("|")[1];
-      let note = value.split("|")[2];
+      let school = value.split("|")[2]
+      let department = value.split("|")[3]
+      let grade = GF_GRADE.indexOf(value.split("|")[4]);
+      let note = value.split("|")[5];
       if (id === "") {
         let res = await firebase.firestore().collection("GF").add({
           name,
+          school,
+          department,
+          grade,
           note,
         });
         v[titles[i]].push(res.id);
@@ -55,7 +64,7 @@ const GFFormContent = ({ data, account, default_data }) => {
   let default_selected = [];
   let id_to_v = {};
   for (let i = 0; i < GFs.length; i++) {
-    id_to_v[GFs[i].id] = GFs[i].id + "|" + GFs[i].name + "|" + GFs[i].note;
+    id_to_v[GFs[i].id] = GFs[i].id + "|" + GFs[i].name + "|" + GFs[i].school  + "|" + GFs[i].department + "|" + GF_GRADE[GFs[i].grade] + "|" + GFs[i].note;
   }
   for (let i in titles) {
     var d = default_data;
@@ -89,7 +98,8 @@ const GFFormContent = ({ data, account, default_data }) => {
           value: id_to_v[GFs[j].id],
           label: (
             <span style={{ whiteSpace: "pre" }}>
-              <b>{GFs[j].name}</b> <span>{"      " + GFs[j].note}</span>
+              <b>{GFs[j].name}</b> <span>{"      " + GFs[j].school  + " " + GFs[j].department + " " + GF_GRADE[GFs[j].grade] + " " + GFs[j].note + " "}</span>
+              <Link to={"/GF/" + GFs[j].id}><CIcon name="cil-info" /></Link>
             </span>
           ),
         });

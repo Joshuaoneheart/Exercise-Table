@@ -6,6 +6,7 @@ const Profile = lazy(() => import("../containers/Member/Profile/Profile"));
 const Form = lazy(() => import("../containers/Member/SubmitForm/SubmitForm"));
 const GFForm = lazy(() => import("../containers/Member/GFform/GFform"));
 const BibleGroup = lazy(() => import("../containers/BibleGroup"));
+const GF = lazy(() => import("../containers/GF"))
 
 const routes = [
   { path: "/", exact: true, name: "Home" },
@@ -19,6 +20,7 @@ const routes = [
     component: BibleGroup,
   },
   { path: "/members", exact: true, name: "Members", component: Members },
+  { path: "/GF/:id", exact: true, name: "GF", component: GF },
 ];
 
 export default routes;
