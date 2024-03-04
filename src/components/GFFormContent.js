@@ -65,6 +65,7 @@ const saveChange = async (
           grade +
           "|" +
           note;
+          selected[i][j] = has_created[value];
       } else v[titles[i]].push(id);
     }
   }
