@@ -1,12 +1,10 @@
 import { loading } from "components";
 import { useParams } from "react-router-dom";
 import { FirestoreDocument } from "@react-firebase/firestore";
-import { GF_GRADE } from "const/GF";
 
 import { CCol, CRow, CCard, CCardBody, CCardHeader } from "@coreui/react";
 
 const GFCardBody = ({ data }) => {
-  console.log(data);
   return (
     <CCardBody>
       {" "}
@@ -31,7 +29,7 @@ const GFCardBody = ({ data }) => {
               <CCol lg="3">
                 <b>年級</b>
               </CCol>
-              <CCol>{GF_GRADE[data.grade]}</CCol>
+              <CCol>{data.grade}</CCol>
             </CRow>
             <CRow>
               <CCol lg="3">
