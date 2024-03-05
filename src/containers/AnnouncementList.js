@@ -11,7 +11,7 @@ import {
 import { FirestoreCollection } from "@react-firebase/firestore";
 import { loading } from "components";
 import AddAnnouncementModal from "components/AddAnnouncementModal";
-import { firebase, DB } from "db/firebase";
+import { DB } from "db/firebase";
 import { AccountContext } from "hooks/context";
 import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
