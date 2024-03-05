@@ -45,6 +45,12 @@ const _nav = [
     icon: "cil-spreadsheet",
   },
   {
+    _tag: "CSidebarNavItem",
+    name: "福音朋友列表",
+    to: "/GFList",
+    icon: "cil-list",
+  },
+  {
     _tag: "CSidebarNavDivider",
   },
   {
