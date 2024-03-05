@@ -89,7 +89,7 @@ const saveChange = async (
 const GFFormContent = ({ data, account, default_data }) => {
   const titles = ["家聚會", "小排", "主日聚會"];
   const [GFs, setGFs] = useState(data.value);
-  const [addModal, setAddModal] = useState(null);
+  const [addModal, setAddModal] = useState(false);
   let default_selected = [];
   let id_to_v = {};
   for (let i = 0; i < GFs.length; i++) {

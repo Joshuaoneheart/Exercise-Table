@@ -3,8 +3,19 @@ import { useParams } from "react-router-dom";
 import { FirestoreDocument } from "@react-firebase/firestore";
 
 import { CCol, CRow, CCard, CCardBody, CCardHeader } from "@coreui/react";
+import { useEffect, useState } from "react";
+import { DB } from "db/firebase";
 
 const AnnouncementCardBody = ({ data }) => {
+  const [postedBy, setPostedBy] = useState("");
+  useEffect(() => {
+    const getPostByName = async (id) => {
+      let tmp = await DB.getByUrl("/accounts/" + id);
+      if (tmp) setPostedBy(tmp.displayName);
+      else setPostedBy("undefined");
+    };
+    getPostByName(data.posted_by);
+  }, [data]);
   return (
     <CCardBody>
       {" "}
@@ -17,7 +28,7 @@ const AnnouncementCardBody = ({ data }) => {
               <CCol lg="3">
                 <b>發佈人</b>
               </CCol>
-              <CCol>{data.posted_by}</CCol>
+              <CCol>{postedBy}</CCol>
             </CRow>
             <CRow>
               <CCol lg="3">
@@ -45,7 +56,7 @@ const GF = () => {
         <CCard>
           <CCardHeader>公告</CCardHeader>
 
-          <FirestoreDocument path={"/公告/" + id}>
+          <FirestoreDocument path={"/announcement/" + id}>
             {(d) => {
               if (d && d.value) {
                 for (let i = 0; i < d.value.length; i++)

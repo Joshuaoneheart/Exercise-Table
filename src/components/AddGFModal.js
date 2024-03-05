@@ -34,7 +34,7 @@ const AddGFModal = ({ data, show, setData, setModal }) => {
     value: "大一",
     label: <span style={{ whiteSpace: "pre" }}>大一</span>,
   });
-  if (show == null) {
+  if (!show) {
     return null;
   }
   var writeData = async () => {
@@ -73,9 +73,9 @@ const AddGFModal = ({ data, show, setData, setModal }) => {
   });
   return (
     <CModal
-      show={show !== null}
+      show={show}
       onClose={() => {
-        setModal(null);
+        setModal(false);
       }}
     >
       <CModalHeader closeButton>
@@ -177,7 +177,7 @@ const AddGFModal = ({ data, show, setData, setModal }) => {
         <CButton
           color="secondary"
           onClick={() => {
-            setModal(null);
+            setModal(false);
           }}
         >
           取消
