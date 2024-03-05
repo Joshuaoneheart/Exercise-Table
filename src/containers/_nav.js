@@ -1,6 +1,12 @@
 
 const _nav = [
   {
+    _tag: "CSidebarNavItem",
+    name: "公告",
+    to: "/announcementList",
+    icon: "cil-bell",
+  },
+  {
     _tag: "CSidebarNavTitle",
     _children: ["操練情形查詢"],
   },

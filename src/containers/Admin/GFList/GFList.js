@@ -12,7 +12,7 @@ import { loading } from "components";
 import { Link } from "react-router-dom";
 const GFListBody = ({ data }) => {
   const fields = [
-    { key: "name", _style: { width: "7%" } },
+    { key: "name", label: "姓名", _style: { width: "7%" } },
     { key: "school", label: "學校", _style: { width: "7%" } },
     { key: "department", label: "科系", _style: { width: "20%" } },
     { key: "grade", label: "年級", _style: { width: "7%" } },

@@ -20,6 +20,8 @@ const Dashboard = lazy(() => import("../views/dashboard/Dashboard"));
 const Users = lazy(() => import("../views/users/Users"));
 const GF = lazy(() => import("../containers/GF"));
 const GFList = lazy(() => import("../containers/Admin/GFList/GFList"));
+const AnnouncementList = lazy(() => import("../containers/AnnouncementList"));
+const Announcement = lazy(() => import("../containers/Announcement"));
 
 const routes = [
   { path: "/", exact: true, name: "Home" },
@@ -55,6 +57,8 @@ const routes = [
   { path: "/profile", exact: true, name: "Profile", component: Profile },
   { path: "/GFList", exact: true, name: "GFList", component: GFList},
   { path: "/GF/:id", exact: true, name: "GF", component: GF },
+  { path: "/announcementList", exact: true, name: "announcementList", component: AnnouncementList },
+  { path: "/announcement/:id", exact: true, name: "announcement", component: Announcement },
 ];
 
 export default routes;
