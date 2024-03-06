@@ -13,6 +13,7 @@ import {
 } from "@coreui/react";
 import Select from "react-select";
 import { useRef, useState } from "react";
+import { firebase } from "db/firebase";
 import {
   GF_SCHOOL,
   GF_NTUST_DEPARTMENT,
@@ -41,14 +42,15 @@ const AddGFModal = ({ data, show, setData, setModal }) => {
     var cur_data = data;
     var tmp = {};
     tmp["name"] = form.current.elements.name.value;
-    tmp["school"] = school.value;
+    tmp["school"] = school.value; 
     tmp["department"] = department.value;
     tmp["grade"] = grade.value;
     tmp["note"] = form.current.elements.note.value;
-    tmp["id"] = "";
+    let res = await firebase.firestore().collection("GF").add(tmp);
+    tmp.id = res.id;
     cur_data.push(tmp);
     setData(cur_data);
-    setModal(null);
+    setModal(false);
   };
   let schools = GF_SCHOOL.map((x) => {
     return { value: x, label: <span style={{ whiteSpace: "pre" }}>{x}</span> };

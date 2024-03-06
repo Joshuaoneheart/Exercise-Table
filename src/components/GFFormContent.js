@@ -27,46 +27,18 @@ const saveChange = async (
   setSelected
 ) => {
   let v = {};
-  let has_created = {};
   for (let i = 0; i < titles.length; i++) {
     v[titles[i]] = [];
     for (let j = 0; j < selected[i].length; j++) {
-      if (selected[i][j] in has_created)
-        selected[i][j] = has_created[selected[i][j]];
       let value = selected[i][j];
-      let index = parseInt(value.split("|")[0]);
+      // let index = parseInt(value.split("|")[0]);
       let id = value.split("|")[1];
-      let name = value.split("|")[2];
-      let school = value.split("|")[3];
-      let department = value.split("|")[4];
-      let grade = value.split("|")[5];
-      let note = value.split("|")[6];
-      if (id === "") {
-        let res = await firebase.firestore().collection("GF").add({
-          name,
-          school,
-          department,
-          grade,
-          note,
-        });
-        v[titles[i]].push(res.id);
-        GFs[index].id = res.id;
-        has_created[value] =
-          index +
-          "|" +
-          res.id +
-          "|" +
-          name +
-          "|" +
-          school +
-          "|" +
-          department +
-          "|" +
-          grade +
-          "|" +
-          note;
-          selected[i][j] = has_created[value];
-      } else v[titles[i]].push(id);
+      // let name = value.split("|")[2];
+      // let school = value.split("|")[3];
+      // let department = value.split("|")[4];
+      // let grade = value.split("|")[5];
+      // let note = value.split("|")[6];
+      v[titles[i]].push(id);
     }
   }
   await firebase
@@ -150,11 +122,9 @@ const GFFormContent = ({ data, account, default_data }) => {
                   GFs[j].note +
                   " "}
               </span>
-              {GFs[j].id !== "" && (
-                <Link to={"/GF/" + GFs[j].id}>
-                  <CIcon name="cil-info" />
-                </Link>
-              )}
+              <Link to={"/GF/" + GFs[j].id}>
+                <CIcon name="cil-info" />
+              </Link>
             </span>
           ),
         });

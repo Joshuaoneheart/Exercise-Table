@@ -1,6 +1,7 @@
 import CIcon from "@coreui/icons-react";
 import {
   CRow,
+  CButton,
   CCol,
   CCard,
   CCardHeader,
@@ -9,8 +10,12 @@ import {
 } from "@coreui/react";
 import { FirestoreCollection } from "@react-firebase/firestore";
 import { loading } from "components";
+import AddGFModal from "components/AddGFModal";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-const GFListBody = ({ data }) => {
+const GFListCard = ({ data }) => {
+  const [addModal, setAddModal] = useState(false);
+  const [d, setD] = useState(data);
   const fields = [
     { key: "name", label: "姓名", _style: { width: "7%" } },
     { key: "school", label: "學校", _style: { width: "7%" } },
@@ -25,50 +30,74 @@ const GFListBody = ({ data }) => {
       filter: false,
     },
   ];
+  useEffect(() => {
+    setD(data);
+  }, [data]);
 
   return (
-    <CCardBody>
-      <CDataTable
-        items={data}
-        fields={fields}
-        columnFilter
-        tableFilter
-        itemsPerPage={10}
-        hover
-        sorter
-        pagination
-        scopedSlots={{
-          show_details: (item) => {
-            return (
-              <Link to={"/GF/" + item.id}>
-                <CIcon name="cil-info" style={{marginTop: "40%"}}/>
-              </Link>
-            );
-          },
-        }}
-      />
-    </CCardBody>
+    <CCard>
+      <CCardHeader>
+        <CRow>
+          <CCol md="11">福音朋友資料</CCol>
+          <CCol md="1">
+            <CButton
+              variant="ghost"
+              color="primary"
+              onClick={() => {
+                setAddModal(true);
+              }}
+            >
+              <CIcon name="cil-plus" />
+            </CButton>
+          </CCol>
+        </CRow>
+      </CCardHeader>
+      <CCardBody>
+        <AddGFModal
+          show={addModal}
+          setModal={setAddModal}
+          data={d}
+          setData={setD}
+        />
+        <CDataTable
+          items={data}
+          fields={fields}
+          columnFilter
+          tableFilter
+          itemsPerPage={10}
+          hover
+          sorter
+          pagination
+          scopedSlots={{
+            show_details: (item) => {
+              return (
+                <Link to={"/GF/" + item.id}>
+                  <CIcon name="cil-info" style={{ marginTop: "40%" }} />
+                </Link>
+              );
+            },
+          }}
+        />
+      </CCardBody>
+    </CCard>
   );
 };
 const GFList = () => {
   return (
     <CRow>
       <CCol>
-        <CCard>
-          <CCardHeader>福音朋友資料</CCardHeader>
-          <FirestoreCollection path="/GF/">
-            {(d) => {
-              if (d.isLoading) return loading;
-              if (d && d.value) {
-                // add "id" to data
-                for (var i = 0; i < d.value.length; i++) {
-                  d.value[i]["id"] = d.ids[i];
-                }
-                return <GFListBody data={d.value} />;
-              } else return null;
-            }}
-          </FirestoreCollection>
-        </CCard>
+        <FirestoreCollection path="/GF/">
+          {(d) => {
+            if (d.isLoading) return loading;
+            if (d && d.value) {
+              // add "id" to data
+              for (var i = 0; i < d.value.length; i++) {
+                d.value[i]["id"] = d.ids[i];
+              }
+              return <GFListCard data={d.value} />;
+            } else return null;
+          }}
+        </FirestoreCollection>
       </CCol>
     </CRow>
   );
