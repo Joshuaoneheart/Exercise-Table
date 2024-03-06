@@ -1,6 +1,9 @@
 import { loading } from "components";
 import { useParams } from "react-router-dom";
-import { FirestoreDocument } from "@react-firebase/firestore";
+import {
+  FirestoreCollection,
+  FirestoreDocument,
+} from "@react-firebase/firestore";
 
 import {
   CCol,
@@ -9,19 +12,45 @@ import {
   CCardBody,
   CCardHeader,
   CButton,
+  CInput,
+  CCardFooter,
 } from "@coreui/react";
+import AutoLink from "@uiw/react-auto-link";
 import { useContext, useEffect, useState } from "react";
-import { DB } from "db/firebase";
+import { DB, firebase } from "db/firebase";
 import CIcon from "@coreui/icons-react";
 import { AccountContext, AccountsMapContext } from "hooks/context";
 import ModifyAnnouncementModal from "components/ModifyAnnouncementModal";
-
+const CommentList = ({ comments, accountsMap }) => {
+  return comments.map((x) => (
+    <>
+      <CRow>
+        <CCol md="1">
+          <b>{accountsMap[x.posted_by]}</b>
+        </CCol>{" "}
+        <CCol>
+          <AutoLink text={x.content} />
+        </CCol>
+      </CRow>
+      <hr />
+    </>
+  ));
+};
 const AnnouncementCard = ({ init_data, id }) => {
   const account = useContext(AccountContext);
   const accountsMap = useContext(AccountsMapContext);
   const [data, setData] = useState(init_data);
+  const [comment, setComment] = useState("");
   const [modifyModal, setModifyModal] = useState(false);
-
+  const addComment = async () => {
+    await firebase
+      .firestore()
+      .collection("announcement")
+      .doc(id)
+      .collection("comments")
+      .add({ posted_by: account.id, content: comment });
+    setComment("");
+  };
   useEffect(() => {
     const check = async () => {
       if (!data.checked) data.checked = account.id;
@@ -121,6 +150,38 @@ const AnnouncementCard = ({ init_data, id }) => {
           </CCol>
         </CRow>{" "}
       </CCardBody>
+      <CCardFooter>
+        <FirestoreCollection path={"/announcement/" + id + "/comments"}>
+          {(d) => {
+            if (d && d.value) {
+              for (let i = 0; i < d.value.length; i++) d.value[i].id = d.ids[i];
+              return (
+                <CCol>
+                  <CommentList comments={d.value} accountsMap={accountsMap} />
+                </CCol>
+              );
+            } else return loading;
+          }}
+        </FirestoreCollection>
+        <CRow>
+          <CCol md="11">
+            <CInput
+              value={comment}
+              onChange={(e) => {
+                setComment(e.target.value);
+              }}
+              onKeyUp={(event) => {
+                if (event.key === "Enter") {
+                  addComment();
+                }
+              }}
+            />
+          </CCol>
+          <CButton variant="ghost" color="primary" onClick={addComment}>
+            <CIcon name="cil-send" />
+          </CButton>
+        </CRow>
+      </CCardFooter>
     </CCard>
   );
 };

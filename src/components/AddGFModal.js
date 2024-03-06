@@ -12,7 +12,7 @@ import {
   CModalTitle,
 } from "@coreui/react";
 import Select from "react-select";
-import { useRef, useState } from "react";
+import {  useRef, useState } from "react";
 import { firebase } from "db/firebase";
 import {
   GF_SCHOOL,
@@ -20,8 +20,7 @@ import {
   GF_NTU_DEPARTMENT,
   GF_GRADE,
 } from "const/GF";
-
-const AddGFModal = ({ data, show, setData, setModal }) => {
+const AddGFModal = ({ data, GF, show, setData, setModal }) => {
   var form = useRef();
   var [school, setSchool] = useState({
     value: "台大",
