@@ -8,6 +8,7 @@ const GFForm = lazy(() => import("../containers/Member/GFform/GFform"));
 const BibleGroup = lazy(() => import("../containers/BibleGroup"));
 const GF = lazy(() => import("../containers/GF"))
 const AnnouncementList = lazy(() => import("../containers/AnnouncementList"));
+const Announcement = lazy(() => import("../containers/Announcement"));
 
 const routes = [
   { path: "/", exact: true, name: "Home" },
@@ -22,7 +23,8 @@ const routes = [
   },
   { path: "/members", exact: true, name: "Members", component: Members },
   { path: "/GF/:id", exact: true, name: "GF", component: GF },
-  { path: "/announcementList", exact: true, name: "announcement", component: AnnouncementList },
+  { path: "/announcementList", exact: true, name: "announcementList", component: AnnouncementList },
+  { path: "/announcement/:id", exact: true, name: "announcement", component: Announcement },
 ];
 
 export default routes;

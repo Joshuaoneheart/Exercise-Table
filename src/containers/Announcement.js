@@ -13,22 +13,27 @@ import {
 import { useContext, useEffect, useState } from "react";
 import { DB } from "db/firebase";
 import CIcon from "@coreui/icons-react";
-import { AccountContext } from "hooks/context";
+import { AccountContext, AccountsMapContext } from "hooks/context";
 import ModifyAnnouncementModal from "components/ModifyAnnouncementModal";
 
 const AnnouncementCard = ({ init_data, id }) => {
   const account = useContext(AccountContext);
-  const [postedBy, setPostedBy] = useState("");
+  const accountsMap = useContext(AccountsMapContext);
   const [data, setData] = useState(init_data);
   const [modifyModal, setModifyModal] = useState(false);
+
   useEffect(() => {
-    const getPostByName = async (id) => {
-      let tmp = await DB.getByUrl("/accounts/" + id);
-      if (tmp) setPostedBy(tmp.displayName);
-      else setPostedBy("undefined");
+    const check = async () => {
+      if (!data.checked) data.checked = account.id;
+      else if (!data.checked.split(";").includes(account.id))
+        data.checked += ";" + account.id;
+      await DB.setByUrl("/announcement/" + id, data);
     };
+    if (data) check();
+  }, [account, data, id]);
+
+  useEffect(() => {
     if (init_data) {
-      getPostByName(init_data.posted_by);
       setData(Object.assign({}, init_data));
     }
   }, [init_data]);
@@ -71,7 +76,7 @@ const AnnouncementCard = ({ init_data, id }) => {
                 <CCol lg="3">
                   <b>發佈人</b>
                 </CCol>
-                <CCol>{postedBy}</CCol>
+                <CCol>{accountsMap[data.posted_by]}</CCol>
               </CRow>
               <CRow>
                 <CCol lg="3">
@@ -93,6 +98,23 @@ const AnnouncementCard = ({ init_data, id }) => {
                   <div
                     dangerouslySetInnerHTML={{ __html: data && data.content }}
                   />
+                </CCol>
+              </CRow>
+              <CRow>
+                <CCol lg="3">
+                  <b>已讀數</b>
+                </CCol>
+                <CCol>{data.checked.split(";").length}</CCol>
+              </CRow>
+              <CRow>
+                <CCol lg="3">
+                  <b>已讀</b>
+                </CCol>
+                <CCol>
+                  {data.checked
+                    .split(";")
+                    .map((x) => accountsMap[x])
+                    .join(",")}
                 </CCol>
               </CRow>
             </div>

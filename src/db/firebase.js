@@ -39,7 +39,8 @@ class Firebase {
     }
     try {
       let data = await db.get();
-      return data.data();
+      if(data.data) return data.data();
+      else return data;
     } catch (e) {
       alert(e.message);
     }

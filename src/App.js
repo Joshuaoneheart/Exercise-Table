@@ -3,12 +3,13 @@ import { HashRouter, Route, Switch } from "react-router-dom";
 import "scss/style.scss";
 
 import {
-  FirebaseAuthConsumer, FirebaseAuthProvider
+  FirebaseAuthConsumer,
+  FirebaseAuthProvider,
 } from "@react-firebase/auth";
 import { FirestoreProvider } from "@react-firebase/firestore";
 import { loading } from "components";
-import { config, firebase } from "db/firebase";
-import { AccountContext } from "hooks/context";
+import { config, DB, firebase } from "db/firebase";
+import { AccountContext, AccountsMapContext } from "hooks/context";
 import Account from "Models/Account";
 import { history } from "utils/history";
 
@@ -23,23 +24,36 @@ const Page500 = lazy(() => import("views/pages/page500/Page500"));
 
 const SignedIn = (props) => {
   var [account, setAccount] = useState(null);
+  var [accountsMap, setAccountsMap] = useState({});
   // fetch account data
   let FetchAccount = async () => {
-	  if(!account && props.user){
-		  account = new Account({id: props.user.uid});
-		  await account.fetch();
-		  setAccount(account);
-	  }
-  }
+    if (!account && props.user) {
+      account = new Account({ id: props.user.uid });
+      await account.fetch();
+      setAccount(account);
+    }
+  };
+  let FetchAccountsMap = async () => {
+    let tmp = {};
+    let accounts = await DB.getByUrl("/accounts");
+    await accounts.forEach((doc) => {
+      tmp[doc.id] = doc.data().displayName;
+    });
+    setAccountsMap(tmp);
+  };
   useEffect(() => {
-	  FetchAccount();
+    FetchAccount();
+    FetchAccountsMap();
+    setInterval(FetchAccountsMap, 1000 * 60 * 15);
   }, []);
   if (account) {
     account.id = props.user.uid;
     return (
-      <AccountContext.Provider value={account}>
-        <TheLayout firebase={firebase} />
-      </AccountContext.Provider>
+      <AccountsMapContext.Provider value={accountsMap}>
+        <AccountContext.Provider value={account}>
+          <TheLayout firebase={firebase} />
+        </AccountContext.Provider>
+      </AccountsMapContext.Provider>
     );
   } else return loading;
 };

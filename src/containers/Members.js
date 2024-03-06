@@ -1,24 +1,9 @@
-import CIcon from "@coreui/icons-react";
-import {
-  CButton,
-  CCard,
-  CCardBody,
-  CCardHeader,
-  CCol,
-  CDropdown,
-  CDropdownItem,
-  CDropdownMenu,
-  CDropdownToggle,
-  CForm,
-  CInput,
-  CRow
-} from "@coreui/react";
-import {
-  CChartLine
-} from "@coreui/react-chartjs";
+import { CCard, CCardBody, CCardHeader, CCol, CRow } from "@coreui/react";
+import Select from "react-select";
+import { CChartLine } from "@coreui/react-chartjs";
 import { FirestoreCollection } from "@react-firebase/firestore";
 import { loading } from "components";
-import { AccountContext } from "hooks/context";
+import { AccountContext, AccountsMapContext } from "hooks/context";
 import { useContext, useState } from "react";
 import { WeeklyBase2String } from "utils/date";
 
@@ -79,49 +64,47 @@ const RenderLineChart = ({ data }) => {
     </CRow>
   );
 };
-const AdminCardHeader = ({
-  is_admin,
-  accounts,
-  activeAccount,
-  setActiveAccount,
-}) => {
+const AdminCardHeader = ({ is_admin, activeAccount, setActiveAccount }) => {
+  const accountsMap = useContext(AccountsMapContext);
   let menu = [];
   if (is_admin) {
-    for (let i = 0; i < accounts.length; i++) {
-      menu.push(
-        <CDropdownItem onClick={() => setActiveAccount(accounts[i])}>
-          {" "}
-          {accounts[i].displayName}{" "}
-        </CDropdownItem>
-      );
+    for (let [k, v] of Object.entries(accountsMap)) {
+      menu.push({
+        id: k,
+        name: v,
+        value: k + "|" + v,
+        label: <span style={{ whiteSpace: "pre" }}>{v}</span>,
+      });
     }
   }
   return (
     <CCardHeader>
       <CRow className="align-items-center">
         {is_admin ? (
-          <CCol>
-            <CDropdown>
-              <CDropdownToggle caret color="info">
-                <CIcon name="cil-user" /> {activeAccount.displayName}
-              </CDropdownToggle>
-              <CDropdownMenu>
-                <CDropdownItem header> List of Users</CDropdownItem>
-                {menu}
-              </CDropdownMenu>
-            </CDropdown>
+          <CCol md={3} xs={3}>
+            <Select
+              value={{
+                id: activeAccount.id,
+                name: activeAccount.displayName,
+                value: activeAccount.id + "|" + activeAccount.displayName,
+                label: (
+                  <span style={{ whiteSpace: "pre" }}>
+                    {activeAccount.displayName}
+                  </span>
+                ),
+              }}
+              isSearchable
+              options={menu}
+              onChange={(v) => {
+                setActiveAccount({ id: v.id, displayName: v.name });
+              }}
+            />
           </CCol>
         ) : (
           <CCol xs="5" md="7" lg="7" xl="8">
             個人操練情況查詢
           </CCol>
         )}
-        <CForm inline style={{ visibility: is_admin ? "visible" : "hidden" }}>
-          <CInput className="mr-sm-2" placeholder="Search" size="sm" />
-          <CButton color="dark" type="submit" size="sm">
-            <CIcon name="cil-search" size="sm" />
-          </CButton>
-        </CForm>
       </CRow>
     </CCardHeader>
   );
@@ -129,18 +112,21 @@ const AdminCardHeader = ({
 
 // FIXME:
 // May need to add the necessary hooks
-const StatisticCard = ({ is_admin, account, accounts }) => {
-  const [activeAccount, setActiveAccount] = useState(account);
+const StatisticCard = () => {
+  const account = useContext(AccountContext);
+  const [activeAccount, setActiveAccount] = useState({
+    id: account.id,
+    displayName: account.displayName,
+  });
   return (
     <FirestoreCollection path={"/accounts/" + activeAccount.id + "/data/"}>
       {(data) => {
-        if (data.isLoadin) return loading;
+        if (data.isLoading) return loading;
         if (data && data.value) {
           return (
             <CCard>
               <AdminCardHeader
-                is_admin={is_admin}
-                accounts={accounts}
+                is_admin={account.role === "Admin"}
                 activeAccount={activeAccount}
                 setActiveAccount={setActiveAccount}
               />
@@ -160,37 +146,13 @@ const StatisticCard = ({ is_admin, account, accounts }) => {
 // Need to add hooks for each dropdown item
 // Also needed for search
 const Members = () => {
-  const account = useContext(AccountContext);
-  if (account.role === "Admin") {
-    return (
-      <CRow>
-        <FirestoreCollection path="/accounts/">
-          {(d) => {
-            if (d && d.value) {
-              for (let i = 0; i < d.value.length; i++) d.value[i].id = d.ids[i];
-              return (
-                <CCol>
-                  <StatisticCard
-                    account={d.value[0]}
-                    accounts={d.value}
-                    is_admin={true}
-                  />
-                </CCol>
-              );
-            } else return loading;
-          }}
-        </FirestoreCollection>
-      </CRow>
-    );
-  } else {
-    return (
-      <CRow>
-        <CCol>
-          <StatisticCard account={account} is_admin={false} />
-        </CCol>
-      </CRow>
-    );
-  }
+  return (
+    <CRow>
+      <CCol>
+        <StatisticCard />
+      </CCol>
+    </CRow>
+  );
 };
 
 export default Members;

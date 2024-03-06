@@ -11,23 +11,14 @@ import {
 import { FirestoreCollection } from "@react-firebase/firestore";
 import { loading } from "components";
 import AddAnnouncementModal from "components/AddAnnouncementModal";
-import { DB } from "db/firebase";
-import { AccountContext } from "hooks/context";
+import { AccountContext, AccountsMapContext } from "hooks/context";
 import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 const AnnouncementListBody = ({ data, account, addModal, setAddModal }) => {
   const [announcements, setAnnouncements] = useState(data);
+  const accountsMap = useContext(AccountsMapContext);
   useEffect(() => {
-    const getPostByName = async (data) => {
-      for (let i = 0; i < data.length; i++) {
-        if (data[i].posted_by) {
-          let tmp = await DB.getByUrl("/accounts/" + data[i].posted_by);
-          if(tmp) data[i].posted_by = tmp.displayName;
-        } else data[i].posted_by = "undefined";
-      }
-      setAnnouncements(Array.from(data));
-    };
-    getPostByName(data);
+    setAnnouncements(Array.from(data));
   }, [data]);
   const fields = [
     { key: "title", label: "主題", _style: { width: "7%" } },
@@ -63,6 +54,9 @@ const AnnouncementListBody = ({ data, account, addModal, setAddModal }) => {
         sorter
         pagination
         scopedSlots={{
+          posted_by: (item) => {
+            return <td>{accountsMap[item.posted_by]}</td>;
+          },
           timestamp: (item) => {
             if (!item.timestamp) return <td></td>;
             if (item.timestamp.toDate)
