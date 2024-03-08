@@ -7,12 +7,13 @@ import {
   CDataTable,
 } from "@coreui/react";
 import { Link } from "react-router-dom";
-import { FirestoreCollection } from "@react-firebase/firestore";
 import CIcon from "@coreui/icons-react";
-import { loading } from "components";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { GroupContext } from "hooks/context";
-const MemberListBody = ({ data }) => {
+import { firebase } from "db/firebase";
+const MemberListBody = () => {
+  const [data, setData] = useState([]);
+  const groupMap = useContext(GroupContext);
   const fields = [
     { key: "displayName", label: "姓名", _style: { width: "7%" } },
     { key: "group", label: "活力組", _style: { width: "20%" } },
@@ -26,6 +27,23 @@ const MemberListBody = ({ data }) => {
       filter: false,
     },
   ];
+  useEffect(() => {
+    let FetchMember = async () => {
+      let tmp = [];
+      await firebase
+        .firestore()
+        .collection("accounts")
+        .get()
+        .then((snapshot) => {
+          snapshot.forEach((doc) => {
+            tmp.push(Object.assign({ id: doc.id }, doc.data()));
+            tmp[tmp.length - 1].group = groupMap[tmp[tmp.length - 1].group];
+          });
+          setData(tmp);
+        });
+    };
+    FetchMember();
+  }, []);
   return (
     <CCardBody>
       <CDataTable
@@ -40,9 +58,11 @@ const MemberListBody = ({ data }) => {
         scopedSlots={{
           show_details: (item) => {
             return (
-              <Link to={"/member/" + item.id}>
-                <CIcon name="cil-info" style={{ marginTop: "40%" }} />
-              </Link>
+              <td>
+                <Link to={"/member/" + item.id}>
+                  <CIcon name="cil-info" />
+                </Link>
+              </td>
             );
           },
         }}
@@ -52,25 +72,12 @@ const MemberListBody = ({ data }) => {
 };
 
 const MemberList = () => {
-  const groupMap = useContext(GroupContext);
   return (
     <CRow>
       <CCol>
         <CCard>
           <CCardHeader>個人操練情形</CCardHeader>
-          <FirestoreCollection path="/accounts/">
-            {(d) => {
-              if (d.isLoading) return loading;
-              if (d && d.value) {
-                // add "id" to data
-                for (var i = 0; i < d.value.length; i++) {
-                  d.value[i]["id"] = d.ids[i];
-                  d.value[i].group = groupMap[d.value[i].group];
-                }
-                return <MemberListBody data={d.value} />;
-              } else return null;
-            }}
-          </FirestoreCollection>
+          <MemberListBody />;
         </CCard>
       </CCol>
     </CRow>

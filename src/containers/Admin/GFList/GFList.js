@@ -71,9 +71,11 @@ const GFListCard = ({ data }) => {
           scopedSlots={{
             show_details: (item) => {
               return (
-                <Link to={"/GF/" + item.id}>
-                  <CIcon name="cil-info" style={{ marginTop: "40%" }} />
-                </Link>
+                <td>
+                  <Link to={"/GF/" + item.id}>
+                    <CIcon name="cil-info" />
+                  </Link>
+                </td>
               );
             },
           }}

@@ -60,14 +60,16 @@ const BibleGroupListBody = ({ data }) => {
         pagination
         scopedSlots={{
           member: (item) => {
-            if(!(item.id in member)) return <td></td>
-            return <td>{member[item.id].join(",")}</td>
+            if (!(item.id in member)) return <td></td>;
+            return <td>{member[item.id].join(",")}</td>;
           },
           show_details: (item) => {
             return (
-              <Link to={"/biblegroup/" + item.id}>
-                <CIcon name="cil-info" style={{ marginTop: "40%" }} />
-              </Link>
+              <td>
+                <Link to={"/biblegroup/" + item.id}>
+                  <CIcon name="cil-info" />
+                </Link>
+              </td>
             );
           },
         }}
