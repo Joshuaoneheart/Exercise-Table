@@ -14,6 +14,22 @@ const GF_GRADE = [
   "博五",
   "博六及以上",
 ];
+const GF_GRADE_NEXT = {
+  大一: "大二",
+  大二: "大三",
+  大三: "大四",
+  大四: "大五及以上",
+  大五及以上: "大五及以上",
+  碩一: "碩二",
+  碩二: "碩三及以上",
+  碩三及以上: "碩三及以上",
+  博一: "博二",
+  博二: "博三",
+  博三: "博四",
+  博四: "博五",
+  博五: "博六及以上",
+  博六及以上: "博六及以上",
+};
 const GF_SCHOOL = ["台大", "台科大"];
 const GF_NTU_DEPARTMENT = [
   "1010 中國文學系",
@@ -297,4 +313,10 @@ const GF_NTUST_DEPARTMENT = [
   "人工智慧跨域科技研究所",
   "能源永續科技研究所",
 ];
-export { GF_GRADE, GF_SCHOOL, GF_NTU_DEPARTMENT, GF_NTUST_DEPARTMENT };
+export {
+  GF_GRADE,
+  GF_SCHOOL,
+  GF_NTU_DEPARTMENT,
+  GF_NTUST_DEPARTMENT,
+  GF_GRADE_NEXT,
+};

@@ -8,9 +8,10 @@ import {
 } from "@coreui/react";
 import { Link } from "react-router-dom";
 import { FirestoreCollection } from "@react-firebase/firestore";
-import { useEffect, useState } from "react";
 import CIcon from "@coreui/icons-react";
 import { loading } from "components";
+import { useContext } from "react";
+import { GroupContext } from "hooks/context";
 const MemberListBody = ({ data }) => {
   const fields = [
     { key: "displayName", label: "姓名", _style: { width: "7%" } },
@@ -51,6 +52,7 @@ const MemberListBody = ({ data }) => {
 };
 
 const MemberList = () => {
+  const groupMap = useContext(GroupContext);
   return (
     <CRow>
       <CCol>
@@ -63,6 +65,7 @@ const MemberList = () => {
                 // add "id" to data
                 for (var i = 0; i < d.value.length; i++) {
                   d.value[i]["id"] = d.ids[i];
+                  d.value[i].group = groupMap[d.value[i].group];
                 }
                 return <MemberListBody data={d.value} />;
               } else return null;

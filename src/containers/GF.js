@@ -3,8 +3,11 @@ import { useParams } from "react-router-dom";
 import { FirestoreDocument } from "@react-firebase/firestore";
 
 import { CCol, CRow, CCard, CCardBody, CCardHeader } from "@coreui/react";
+import { useContext } from "react";
+import { AccountsMapContext } from "hooks/context";
 
 const GFCardBody = ({ data }) => {
+  const accountsMap = useContext(AccountsMapContext);
   return (
     <CCardBody>
       {" "}
@@ -13,7 +16,7 @@ const GFCardBody = ({ data }) => {
           <h3>{data.name}</h3>
           <hr />
           <div width="20%">
-          <CRow>
+            <CRow>
               <CCol lg="3">
                 <b>學校</b>
               </CCol>
@@ -30,6 +33,33 @@ const GFCardBody = ({ data }) => {
                 <b>年級</b>
               </CCol>
               <CCol>{data.grade}</CCol>
+            </CRow>
+            <CRow>
+              <CCol lg="3">
+                <b>牧養人</b>
+              </CCol>
+              <CCol>
+                {data.shepherd &&
+                  data.shepherd.map((x) => accountsMap[x]).join(",")}
+              </CCol>
+            </CRow>
+            <CRow>
+              <CCol lg="3">
+                <b>累計主日聚會</b>
+              </CCol>
+              <CCol>{data["主日聚會"] && data["主日聚會"]}</CCol>
+            </CRow>
+            <CRow>
+              <CCol lg="3">
+                <b>累計家聚會</b>
+              </CCol>
+              <CCol>{data["家聚會"] && data["家聚會"]}</CCol>
+            </CRow>
+            <CRow>
+              <CCol lg="3">
+                <b>累計小排</b>
+              </CCol>
+              <CCol>{data["小排"] && data["小排"]}</CCol>
             </CRow>
             <CRow>
               <CCol lg="3">
