@@ -133,14 +133,14 @@ const AnnouncementCard = ({ init_data, id }) => {
                 <CCol lg="3">
                   <b>已讀數</b>
                 </CCol>
-                <CCol>{data.checked.split(";").length}</CCol>
+                <CCol>{data.checked && data.checked.split(";").length}</CCol>
               </CRow>
               <CRow>
                 <CCol lg="3">
                   <b>已讀</b>
                 </CCol>
                 <CCol>
-                  {data.checked
+                  {data.checked && data.checked
                     .split(";")
                     .map((x) => accountsMap[x])
                     .join(",")}
@@ -185,25 +185,28 @@ const AnnouncementCard = ({ init_data, id }) => {
     </CCard>
   );
 };
-const GF = () => {
+const Announcement = () => {
   let { id } = useParams();
+  const [data, setData] = useState(false);
+  useEffect(() => {
+    const FetchAnnouncement = async () => {
+      let tmp = await DB.getByUrl("/announcement/" + id);
+      setData(tmp);
+    };
+    FetchAnnouncement();
+  }, [id]);
   return (
     <CRow>
       <CCol>
-        <FirestoreDocument path={"/announcement/" + id}>
-          {(d) => {
-            if (d && d.value) {
-              for (let i = 0; i < d.value.length; i++) d.value[i].id = d.ids[i];
-              return (
-                <CCol>
-                  <AnnouncementCard init_data={d.value} id={id} />
-                </CCol>
-              );
-            } else return loading;
-          }}
-        </FirestoreDocument>
+        {data ? (
+          <CCol>
+            <AnnouncementCard init_data={data} id={id} />
+          </CCol>
+        ) : (
+          loading
+        )}
       </CCol>
     </CRow>
   );
 };
-export default GF;
+export default Announcement;
