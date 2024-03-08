@@ -9,7 +9,12 @@ import {
 import { FirestoreProvider } from "@react-firebase/firestore";
 import { loading } from "components";
 import { config, DB, firebase } from "db/firebase";
-import { AccountContext, AccountsMapContext } from "hooks/context";
+import {
+  AccountContext,
+  AccountsMapContext,
+  GroupContext,
+  ResidenceContext,
+} from "hooks/context";
 import Account from "Models/Account";
 import { history } from "utils/history";
 
@@ -25,6 +30,8 @@ const Page500 = lazy(() => import("views/pages/page500/Page500"));
 const SignedIn = (props) => {
   var [account, setAccount] = useState(null);
   var [accountsMap, setAccountsMap] = useState({});
+  var [groupMap, setGroupMap] = useState({});
+  var [residenceMap, setResidenceMap] = useState({});
   // fetch account data
   let FetchAccount = async () => {
     if (!account && props.user) {
@@ -41,18 +48,45 @@ const SignedIn = (props) => {
     });
     setAccountsMap(tmp);
   };
+  let FetchGroupMap = async () => {
+    let tmp = {};
+    let group = await DB.getByUrl("/group");
+    await group.forEach((doc) => {
+      tmp[doc.id] = doc.data().name;
+    });
+    setGroupMap(tmp);
+  };
+  let FetchResidenceMap = async () => {
+    let tmp = {};
+    let residence = await DB.getByUrl("/residence");
+    await residence.forEach((doc) => {
+      tmp[doc.id] = doc.data().name;
+    });
+    setResidenceMap(tmp);
+  };
   useEffect(() => {
     FetchAccount();
     FetchAccountsMap();
-    setInterval(FetchAccountsMap, 1000 * 60 * 15);
+    FetchGroupMap();
+    FetchResidenceMap();
+    setInterval(() => {
+      FetchAccount();
+      FetchAccountsMap();
+      FetchGroupMap();
+      FetchResidenceMap();
+    }, 1000 * 60 * 15);
   }, []);
   if (account) {
     account.id = props.user.uid;
     return (
       <AccountsMapContext.Provider value={accountsMap}>
-        <AccountContext.Provider value={account}>
-          <TheLayout firebase={firebase} />
-        </AccountContext.Provider>
+        <GroupContext.Provider value={groupMap}>
+          <ResidenceContext.Provider value={residenceMap}>
+            <AccountContext.Provider value={account}>
+              <TheLayout firebase={firebase} />
+            </AccountContext.Provider>
+          </ResidenceContext.Provider>
+        </GroupContext.Provider>
       </AccountsMapContext.Provider>
     );
   } else return loading;

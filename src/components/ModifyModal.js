@@ -10,7 +10,7 @@ import {
   CModalFooter,
   CModalHeader,
   CModalTitle,
-  CSelect
+  CSelect,
 } from "@coreui/react";
 import { useRef } from "react";
 
@@ -145,13 +145,15 @@ const DeleteModal = ({
         break;
       case "group":
         if (group_members[show.index].length !== 0) {
-          if (page === "group")
+          if (page === "group") {
+            console.log("alert");
             alert("活力組內尚有住戶，請將所有住戶刪除後再刪除活力組");
+          }
           if (page === "residence")
             alert("住處內尚有住戶，請將所有住戶刪除後再刪除住處");
           break;
         }
-        groups.deleteGroup(show.name);
+        groups.deleteGroup(show.id);
         setGroups(groups.clone());
         break;
       default:
@@ -171,7 +173,7 @@ const DeleteModal = ({
         <CModalTitle>刪除{show.title}</CModalTitle>
       </CModalHeader>
       <CModalBody>
-        確認刪除{show.title} {show.name} 嗎？
+        確認刪除{show.title} {groups.names[groups.indexOf(show.id)]} 嗎？
       </CModalBody>
       <CModalFooter>
         <CButton color="primary" onClick={deleteData}>
@@ -200,7 +202,7 @@ const TransferModal = ({ show, page, groups, setModal, setGroups }) => {
   for (let i = 0; i < groups.names.length; i++) {
     if (i !== show.group)
       groups_option.push(
-        <option value={groups.names[i]} key={i}>
+        <option value={groups.ids[i]} key={i}>
           {groups.names[i]}
         </option>
       );

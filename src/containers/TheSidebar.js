@@ -1,9 +1,13 @@
 import {
   CCreateElement,
   CSidebar,
-  CSidebarBrand, CSidebarMinimizer, CSidebarNav,
-  CSidebarNavDivider, CSidebarNavDropdown,
-  CSidebarNavItem, CSidebarNavTitle
+  CSidebarBrand,
+  CSidebarMinimizer,
+  CSidebarNav,
+  CSidebarNavDivider,
+  CSidebarNavDropdown,
+  CSidebarNavItem,
+  CSidebarNavTitle,
 } from "@coreui/react";
 import { memo, useContext } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -12,22 +16,131 @@ import { Brand } from "components";
 import { AccountContext } from "hooks/context";
 import { history } from "utils/history";
 
-// sidebar nav config
-import admin_navigation from "./_nav";
-import member_navigation from "./_nav_member";
-
-var account_num = 0;
+var error_num = 0;
 
 const TheSidebar = () => {
   const dispatch = useDispatch();
   const show = useSelector((state) => state.sidebarShow);
   var account = useContext(AccountContext);
-  if (account == null) account_num++;
-  if (account == null && account_num >= 3) alert("連線錯誤");
+  if (account == null) error_num++;
+  if (account == null && error_num >= 3) alert("連線錯誤");
   if (!account) return null;
   var navigation;
-  if (account.is_admin) navigation = admin_navigation;
-  else navigation = member_navigation;
+  if (account.is_admin)
+    navigation = [
+      {
+        _tag: "CSidebarNavItem",
+        name: "公告",
+        to: "/announcement",
+        icon: "cil-bell",
+      },
+      {
+        _tag: "CSidebarNavTitle",
+        _children: ["操練情形查詢"],
+      },
+      {
+        _tag: "CSidebarNavItem",
+        name: "個人",
+        to: "/memberList",
+        icon: "cil-user",
+      },
+      {
+        _tag: "CSidebarNavItem",
+        name: "活力組",
+        to: "/biblegroupList",
+        icon: "cil-bar-chart",
+      },
+      {
+        _tag: "CSidebarNavTitle",
+        _children: ["管理功能"],
+      },
+      {
+        _tag: "CSidebarNavItem",
+        name: "住戶管理",
+        to: "/modifyresidence",
+        icon: "cil-house",
+      },
+      {
+        _tag: "CSidebarNavItem",
+        name: "活力組管理",
+        to: "/modifygroup",
+        icon: "cil-group",
+      },
+      {
+        _tag: "CSidebarNavItem",
+        name: "修改表單",
+        to: "/modifyform",
+        icon: "cil-pencil",
+      },
+      {
+        _tag: "CSidebarNavItem",
+        name: "表單預覽",
+        to: "/form",
+        icon: "cil-spreadsheet",
+      },
+      {
+        _tag: "CSidebarNavItem",
+        name: "福音朋友列表",
+        to: "/GFList",
+        icon: "cil-list",
+      },
+      {
+        _tag: "CSidebarNavDivider",
+      },
+      {
+        _tag: "CSidebarNavDivider",
+        className: "m-2",
+      },
+    ];
+  else {
+    navigation = [
+      {
+        _tag: "CSidebarNavItem",
+        name: "公告",
+        to: "/announcement",
+        icon: "cil-bell",
+      },
+      {
+        _tag: "CSidebarNavTitle",
+        _children: ["操練情形查詢"],
+      },
+      {
+        _tag: "CSidebarNavItem",
+        name: "個人",
+        to: "/member/" + account.id,
+        icon: "cil-user",
+      },
+      {
+        _tag: "CSidebarNavItem",
+        name: "活力組",
+        to: "/biblegroup/" + account.group,
+        icon: "cil-bar-chart",
+      },
+      {
+        _tag: "CSidebarNavTitle",
+        _children: ["表單"],
+      },
+      {
+        _tag: "CSidebarNavItem",
+        to: "/form",
+        name: "操練表填寫",
+        icon: "cil-spreadsheet",
+      },
+      {
+        _tag: "CSidebarNavItem",
+        name: "牧養對象邀約",
+        to: "/GFform",
+        icon: "cil-happy",
+      },
+      {
+        _tag: "CSidebarNavDivider",
+      },
+      {
+        _tag: "CSidebarNavDivider",
+        className: "m-2",
+      },
+    ];
+  }
   return (
     <CSidebar
       show={show}

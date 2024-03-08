@@ -1,6 +1,7 @@
 class Group {
-  constructor(id = "", account_list = []) {
+  constructor(id="", name="", account_list = []) {
     this.id = id;
+    this.name = name
     this.list = account_list;
   }
   

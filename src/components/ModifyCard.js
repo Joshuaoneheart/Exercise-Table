@@ -7,16 +7,13 @@ import {
   CCardFooter,
   CCardHeader,
   CCol,
-  CDropdown,
-  CDropdownItem,
-  CDropdownMenu,
-  CDropdownToggle,
   CListGroup,
   CRow,
   CTabContent,
-  CTabPane
+  CTabPane,
 } from "@coreui/react";
 import Groups from "Models/Groups";
+import Select from "react-select";
 import { useState } from "react";
 import ModifyListGroupItem from "./ModifyListGroupItem";
 import { AddModal, DeleteModal, TransferModal } from "./ModifyModal";
@@ -24,22 +21,23 @@ import { AddModal, DeleteModal, TransferModal } from "./ModifyModal";
 format of page
 string(group or residence)
 */
-const ModifyCard = ({ default_data, page, title }) => {
+const ModifyCard = ({ default_data, page, title, map }) => {
   var [activeTab, setActiveTab] = useState(0);
   const [transferModal, setTransferModal] = useState(null);
   const [deleteModal, setDeleteModal] = useState(null);
   const [addModal, setAddModal] = useState(null);
+  console.log(addModal);
+  console.log(activeTab);
   var titles = [];
   var [groups, setGroups] = useState(
-    new Groups(default_data.value, default_data.ids)
+    new Groups(default_data.value, default_data.ids, map)
   );
   var group_members = [];
   groups.groupBy(page);
-  if (activeTab >= groups.length - 1) activeTab = Math.max(groups.length - 2, 0);
+  if (activeTab > groups.length - 1) activeTab = Math.max(groups.length - 1, 0);
   var contents = [];
   var add_modal_options = [];
   var group_name = page === "group" ? "活力組" : "住處";
-
   for (var i = 0; i < groups.length; i++) {
     // remove Admin resident
     if (!groups.ids[i]) {
@@ -76,16 +74,10 @@ const ModifyCard = ({ default_data, page, title }) => {
     );
   }
   for (let i = 0; i < groups.names.length; i++) {
-    titles.push(
-      <CDropdownItem
-        key={i}
-        onClick={function (i) {
-          setActiveTab(i);
-        }.bind(null, i)}
-      >
-        {groups.names[i]}
-      </CDropdownItem>
-    );
+    titles.push({
+      value: i,
+      label: <span style={{ whiteSpace: "pre" }}>{groups.names[i]}</span>,
+    });
   }
   return (
     <CCard>
@@ -95,15 +87,25 @@ const ModifyCard = ({ default_data, page, title }) => {
             {title}
           </CCol>
           <CCol>
+            <Select
+              style={{ width: "80%" }}
+              value={{
+                value: activeTab,
+                label: (
+                  <span style={{ whiteSpace: "pre" }}>
+                    {groups.names[activeTab]}
+                  </span>
+                ),
+              }}
+              isSearchable
+              options={titles}
+              onChange={(v) => {
+                setActiveTab(v.value);
+              }}
+            />
+          </CCol>
+          <CCol>
             <CButtonToolbar justify="end">
-              <CDropdown>
-                <CDropdownToggle color="info" style={{ color: "#FFFFFF" }}>
-                  {groups.names.length ? groups.names[activeTab] : null}
-                </CDropdownToggle>
-                <CDropdownMenu style={{ overflow: "auto", maxHeight: "270px" }}>
-                  {titles}
-                </CDropdownMenu>
-              </CDropdown>
               <CButton
                 variant="ghost"
                 color="dark"
@@ -124,7 +126,7 @@ const ModifyCard = ({ default_data, page, title }) => {
                   setDeleteModal({
                     type: "group",
                     title: group_name,
-                    name: groups.names[activeTab],
+                    id: groups.ids[activeTab],
                     index: activeTab,
                   })
                 }
@@ -189,7 +191,7 @@ const ModifyCard = ({ default_data, page, title }) => {
               onClick={async () => {
                 var check = window.confirm("確定儲存修改嗎？");
                 if (!check) return;
-                await groups.save();
+                await groups.save(page);
                 alert("儲存完成");
               }}
             >

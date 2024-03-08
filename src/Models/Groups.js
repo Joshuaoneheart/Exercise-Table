@@ -1,10 +1,14 @@
 import Account from "./Account";
 import Group from "./Group";
+import { firebase } from "../db/firebase";
 
 class Groups {
-  constructor(account_list = [], id_list = []) {
-    if(!id_list.length) return;
+  constructor(account_list = [], id_list = [], map) {
+    if (!id_list.length) return;
+    this.new_num = 0;
+    this.map = map;
     this.list = [new Group("all")];
+    this.deleted = [];
     for (let i = 0; i < account_list.length; i++) {
       let account = account_list[i];
       account.id = id_list[i];
@@ -45,35 +49,63 @@ class Groups {
     }
     let new_list = [];
     let new_ids = [];
-
-    for (let i = 0; i < this.length; i++) {
-      let id = this.ids[i];
-      if (id !== "all") {
-        new_ids.push(id);
-        new_list.push(new Group(id, []));
+    for (let i = 0; i < this.list.length; i++) {
+      if (this.list[i].id !== "all") {
+        new_ids.push(this.list[i].id);
+        new_list.push(new Group(this.list[i].id, this.list[i].name, []));
       }
     }
+
     for (let i = 0; i < this.length; i++) {
       for (let j = 0; j < this.list[i].length; j++) {
         let group = this.getAccount(i, j)[by];
-        if(!group) group = "";
+        console.log(group)
+        if (!group) continue;
         if (!new_ids.includes(group)) {
-          let new_group = new Group(group, []);
+          let new_group = new Group(group, this.map[group], []);
           new_list.push(new_group);
           new_ids.push(group);
         }
         new_list[new_ids.indexOf(group)].pushAccount(this.getAccount(i, j));
       }
     }
+    console.log("done");
     this.list = new_list;
   }
 
-  async save() {
+  async save(page) {
+    let tmp = {};
+    for (let i = 0; i < this.length; i++) {
+      if (this.ids[i].startsWith("tmp|")) {
+        let res = await firebase
+          .firestore()
+          .collection(page)
+          .add({ name: this.names[i] });
+        tmp[this.ids[i]] = res.id;
+        this.list[i].id = res.id;
+        delete this.map[this.ids[i]];
+        this.map[res.id] = this.names[i];
+      }
+    }
+    for (let i = 0; i < this.deleted.length; i++) {
+      if(!this.deleted[i].id.startsWith("tmp|")) await firebase
+        .firestore()
+        .collection(page)
+        .doc(this.deleted[i].id)
+        .get()
+        .then((snapshot) => {
+          snapshot.ref.delete();
+        });
+    }
+    this.deleted = [];
     for (let i = 0; i < this.length; i++) {
       for (let j = 0; j < this.list[i].length; j++) {
+        if (this.getAccount(i, j)[page] in tmp)
+          this.getAccount(i, j).update(page, tmp[this.getAccount(i, j)[page]]);
         await this.getAccount(i, j).save();
       }
     }
+    this.groupBy(page);
   }
 
   get length() {
@@ -81,7 +113,7 @@ class Groups {
   }
 
   get names() {
-    return this.list.filter((x) => x.id).map((x) => x.id);
+    return this.list.map((x) => x.name);
   }
 
   get ids() {
@@ -91,16 +123,24 @@ class Groups {
   clone() {
     let new_group = new Groups();
     new_group.list = this.list;
+    new_group.map = this.map;
+    new_group.new_num = this.new_num;
+    new_group.deleted = this.deleted;
     return new_group;
   }
 
-  addGroup(id) {
-    this.list.push(new Group(id, []));
+  addGroup(name) {
+    this.list.push(new Group("tmp|" + this.new_num, name, []));
+    this.map["tmp|" + this.new_num] = name;
+    this.new_num++;
   }
 
   deleteGroup(id) {
     let idx = this.indexOf(id);
     console.assert(JSON.stringify(this.list[idx].list) === JSON.stringify([]));
+    this.list[idx].id = id;
+    delete this.map[id];
+    this.deleted.push(this.list[idx]);
     this.list.splice(idx, 1);
   }
 }

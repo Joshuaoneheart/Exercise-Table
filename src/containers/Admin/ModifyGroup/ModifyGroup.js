@@ -7,8 +7,11 @@ import {
 } from "@react-firebase/firestore";
 import { loading } from "components";
 import ModifyCard from "components/ModifyCard";
+import { GroupContext } from "hooks/context";
+import { useContext } from "react";
 
 const ModifyGroup = () => {
+  const groupMap = useContext(GroupContext);
   return (
     <>
       <CRow>
@@ -18,7 +21,7 @@ const ModifyGroup = () => {
               loading
             ) : (
               <CCol>
-                <ModifyCard default_data={d} page={"group"} title={"住戶活力組管理"}/>
+                <ModifyCard default_data={d} page={"group"} map={groupMap} title={"住戶活力組管理"}/>
               </CCol>
             );
           }}
