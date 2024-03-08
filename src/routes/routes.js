@@ -30,7 +30,7 @@ const AnnouncementList = lazy(() => import("../containers/AnnouncementList"));
 const Announcement = lazy(() => import("../containers/Announcement"));
 
 const routes = [
-  { path: "/", exact: true, name: "Home" },
+  { path: "/", exact: true, name: "Home", component: AnnouncementList },
   { path: "/dashboard", name: "Dashboard", component: Dashboard },
   { path: "/users", exact: true, name: "Users", component: Users },
   {

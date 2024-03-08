@@ -11,7 +11,7 @@ const AnnouncementList = lazy(() => import("../containers/AnnouncementList"));
 const Announcement = lazy(() => import("../containers/Announcement"));
 
 const routes = [
-  { path: "/", exact: true, name: "Home" },
+  { path: "/", exact: true, name: "Home", component: Form },
   { path: "/form", exact: true, name: "Form", component: Form },
   { path: "/GFform", exact: true, name: "GFForm", component: GFForm },
   { path: "/profile", exact: true, name: "Profile", component: Profile },

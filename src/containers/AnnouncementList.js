@@ -45,6 +45,7 @@ const AnnouncementListBody = ({ data, account, addModal, setAddModal }) => {
       />
 
       <CDataTable
+        sorterValue={{column: "timestamp", asc: false}}
         items={announcements}
         fields={fields}
         columnFilter
