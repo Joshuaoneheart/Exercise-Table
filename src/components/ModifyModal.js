@@ -146,7 +146,6 @@ const DeleteModal = ({
       case "group":
         if (group_members[show.index].length !== 0) {
           if (page === "group") {
-            console.log("alert");
             alert("活力組內尚有住戶，請將所有住戶刪除後再刪除活力組");
           }
           if (page === "residence")

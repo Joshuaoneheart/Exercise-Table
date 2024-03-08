@@ -7,19 +7,17 @@ import {
   CCardFooter,
   CCardHeader,
   CCol,
-  CDropdown,
-  CDropdownItem,
-  CDropdownMenu,
-  CDropdownToggle,
   CListGroup,
   CListGroupItem,
-  CRow, CTabContent,
-  CTabPane
+  CRow,
+  CTabContent,
+  CTabPane,
 } from "@coreui/react";
 import {
   FirestoreBatchedWrite,
-  FirestoreCollection
+  FirestoreCollection,
 } from "@react-firebase/firestore";
+import Select from "react-select";
 import { loading } from "components";
 import { AddModal, DeleteModal, ModifyModal } from "components/ModifyFormModal";
 import { firebase } from "db/firebase";
@@ -100,16 +98,11 @@ const ModifyCard = ({ default_data }) => {
 
   // handle Dropdown list of sections
   for (let i = 0; i < sections.length; i++) {
-    titles.push(
-      <CDropdownItem
-        key={i}
-        onClick={function (i) {
-          setActiveTab(i);
-        }.bind(null, i)}
-      >
-        {sections[i]}
-      </CDropdownItem>
-    );
+    titles.push({
+      idx: i,
+      value: sections[i],
+      label: <span style={{ whiteSpace: "pre" }}>{sections[i]}</span>,
+    });
     contents.push(
       <CTabPane key={i} active={activeTab === i}>
         <CListGroup accent>{section_members[i]}</CListGroup>
@@ -120,17 +113,30 @@ const ModifyCard = ({ default_data }) => {
     <CCard>
       <CCardHeader>
         <CRow className="align-items-center">
-          <CCol>表單修改</CCol>
+          <CCol xs="5" md="7" lg="7" xl="8">
+            表單修改
+          </CCol>
+          <CCol>
+            <Select
+              style={{ width: "80%" }}
+              value={{
+                idx: activeTab,
+                value: sections[activeTab],
+                label: (
+                  <span style={{ whiteSpace: "pre" }}>
+                    {sections[activeTab]}
+                  </span>
+                ),
+              }}
+              isSearchable
+              options={titles}
+              onChange={(v) => {
+                setActiveTab(v.idx);
+              }}
+            />
+          </CCol>
           <CCol>
             <CButtonToolbar justify="end">
-              <CDropdown>
-                <CDropdownToggle color="info" style={{ color: "#FFFFFF" }}>
-                  {sections[activeTab]}
-                </CDropdownToggle>
-                <CDropdownMenu style={{ overflow: "auto", maxHeight: "270px" }}>
-                  {titles}
-                </CDropdownMenu>
-              </CDropdown>
               <CButton
                 variant="ghost"
                 color="dark"

@@ -26,8 +26,6 @@ const ModifyCard = ({ default_data, page, title, map }) => {
   const [transferModal, setTransferModal] = useState(null);
   const [deleteModal, setDeleteModal] = useState(null);
   const [addModal, setAddModal] = useState(null);
-  console.log(addModal);
-  console.log(activeTab);
   var titles = [];
   var [groups, setGroups] = useState(
     new Groups(default_data.value, default_data.ids, map)
@@ -75,7 +73,8 @@ const ModifyCard = ({ default_data, page, title, map }) => {
   }
   for (let i = 0; i < groups.names.length; i++) {
     titles.push({
-      value: i,
+      idx: i,
+      value: groups.names[i],
       label: <span style={{ whiteSpace: "pre" }}>{groups.names[i]}</span>,
     });
   }
@@ -90,7 +89,8 @@ const ModifyCard = ({ default_data, page, title, map }) => {
             <Select
               style={{ width: "80%" }}
               value={{
-                value: activeTab,
+                idx: activeTab,
+                value: groups.names[activeTab],
                 label: (
                   <span style={{ whiteSpace: "pre" }}>
                     {groups.names[activeTab]}
@@ -100,7 +100,7 @@ const ModifyCard = ({ default_data, page, title, map }) => {
               isSearchable
               options={titles}
               onChange={(v) => {
-                setActiveTab(v.value);
+                setActiveTab(v.idx);
               }}
             />
           </CCol>
