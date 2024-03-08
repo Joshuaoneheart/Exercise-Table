@@ -59,7 +59,6 @@ class Groups {
     for (let i = 0; i < this.length; i++) {
       for (let j = 0; j < this.list[i].length; j++) {
         let group = this.getAccount(i, j)[by];
-        console.log(group)
         if (!group) continue;
         if (!new_ids.includes(group)) {
           let new_group = new Group(group, this.map[group], []);
@@ -69,7 +68,6 @@ class Groups {
         new_list[new_ids.indexOf(group)].pushAccount(this.getAccount(i, j));
       }
     }
-    console.log("done");
     this.list = new_list;
   }
 

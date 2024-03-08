@@ -1,9 +1,11 @@
 import { CCard, CCardBody, CCol, CRow } from "@coreui/react";
 import { CChartBar, CChartPie } from "@coreui/react-chartjs";
 import { FirestoreCollection } from "@react-firebase/firestore";
+import Groups from "Models/Groups";
 import { loading } from "components";
-import { firebase } from "db/firebase";
-import { useCallback, useEffect, useState } from "react";
+import { firebase, DB } from "db/firebase";
+import { GroupContext } from "hooks/context";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom/cjs/react-router-dom.min";
 import { GetWeeklyBase } from "utils/date";
 
@@ -180,22 +182,19 @@ const ProblemChart = ({ problem, data }) => {
   return null;
 };
 
-const ProblemStatistic = ({ problems, groups, group_name }) => {
+const ProblemStatistic = ({ problems, groups, group_id }) => {
   const [data, setData] = useState([]);
   let charts = [];
   const FetchData = useCallback(async () => {
-    let accounts = groups[group_name];
+    let accounts = groups.list[groups.indexOf(group_id)];
     let tmpData = [];
     let now = GetWeeklyBase();
     for (let i = 0; i < accounts.length; i++) {
       let user_data = {};
       try {
-        let collection = await firebase
-          .firestore()
-          .collection("accounts")
-          .doc(accounts[i])
-          .collection("data")
-          .get();
+        let collection = await DB.getByUrl(
+          "/accounts/" + accounts.list[i].id + "/data"
+        );
         collection.forEach((doc) => {
           if (doc.exists && parseInt(doc.id) === now) {
             user_data = doc.data();
@@ -207,7 +206,7 @@ const ProblemStatistic = ({ problems, groups, group_name }) => {
       tmpData.push(user_data);
     }
     setData(tmpData);
-  }, [group_name, groups]);
+  }, [group_id, groups]);
   useEffect(() => {
     FetchData();
   }, [FetchData]);
@@ -218,21 +217,10 @@ const ProblemStatistic = ({ problems, groups, group_name }) => {
   return <CRow>{charts}</CRow>;
 };
 
-const GatherAccountsByGroup = (accounts) => {
-  let res = {};
-  for (let i = 0; i < accounts.length; i++) {
-    if (accounts[i].group && !(accounts[i].group in res)) {
-      res[accounts[i].group] = [accounts[i].id];
-    }
-    if (accounts[i].group) res[accounts[i].group].push(accounts[i].id);
-  }
-  return res;
-};
-
 // FIXME:
 // May need to add the necessary hooks
-const StatisticCard = ({ account, accounts, group_name }) => {
-  let groups = GatherAccountsByGroup(accounts);
+const StatisticCard = ({ group_id, groups }) => {
+  groups.groupBy("group");
   return (
     <CCard>
       <CCardBody>
@@ -242,7 +230,7 @@ const StatisticCard = ({ account, accounts, group_name }) => {
               return (
                 <ProblemStatistic
                   problems={d}
-                  group_name={groups}
+                  group_id={group_id}
                   groups={groups}
                 />
               );
@@ -257,16 +245,19 @@ const StatisticCard = ({ account, accounts, group_name }) => {
 // Need to add hooks for each dropdown item
 // Also needed for search
 const BibleGroup = () => {
-  const { name } = useParams();
+  const { id } = useParams();
+  const groupMap = useContext(GroupContext);
   return (
     <CRow>
       <FirestoreCollection path="/accounts/">
         {(d) => {
           if (d && d.value) {
-            for (let i = 0; i < d.value.length; i++) d.value[i].id = d.ids[i];
             return (
               <CCol>
-                <StatisticCard group_name={name} accounts={d.value} />
+                <StatisticCard
+                  group_id={id}
+                  groups={new Groups(d.value, d.ids, groupMap)}
+                />
               </CCol>
             );
           } else return loading;

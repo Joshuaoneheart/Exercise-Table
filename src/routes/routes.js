@@ -77,7 +77,7 @@ const routes = [
     component: BibleGroupList,
   },
   {
-    path: "/biblegroup/:name",
+    path: "/biblegroup/:id",
     exact: true,
     name: "biblegroup",
     component: BibleGroup,

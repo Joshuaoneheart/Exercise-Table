@@ -30,7 +30,7 @@ const routes = [
   },
   { path: "/member/:id", exact: true, name: "members", component: Members },
   {
-    path: "/biblegroup/:name",
+    path: "/biblegroup/:id",
     exact: true,
     name: "biblegroup",
     component: BibleGroup,
