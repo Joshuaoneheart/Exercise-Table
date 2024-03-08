@@ -18,14 +18,22 @@ firebase.initializeApp(config);
 class Firebase {
   constructor(firebase) {
     this.firebase = firebase;
+    this.interval_ids = [];
   }
 
   async signOut() {
     try {
       await this.firebase.auth().signOut();
+      for (let interval_id of this.interval_ids) {
+        clearInterval(interval_id);
+      }
     } catch (e) {
       alert(e.message);
     }
+  }
+
+  addIntervalId(id) {
+    this.interval_ids.push(id);
   }
 
   async getByUrl(url) {
@@ -39,7 +47,7 @@ class Firebase {
     }
     try {
       let data = await db.get();
-      if(data.data) return data.data();
+      if (data.data) return data.data();
       else return data;
     } catch (e) {
       alert(e.message);

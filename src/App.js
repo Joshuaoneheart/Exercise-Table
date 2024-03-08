@@ -34,39 +34,40 @@ const SignedIn = (props) => {
   var [groupMap, setGroupMap] = useState({});
   var [residenceMap, setResidenceMap] = useState({});
   // fetch account data
-  let FetchAccount = async () => {
-    if (!account && props.user) {
-      account = new Account({ id: props.user.uid });
-      await account.fetch();
-      setAccount(account);
-    }
-  };
-  let FetchAccountsMap = async () => {
-    let tmp = {};
-    let accounts = await DB.getByUrl("/accounts");
-    await accounts.forEach((doc) => {
-      tmp[doc.id] = doc.data().displayName;
-    });
-    setAccountsMap(tmp);
-  };
-  let FetchGroupMap = async () => {
-    let tmp = {};
-    let group = await DB.getByUrl("/group");
-    await group.forEach((doc) => {
-      tmp[doc.id] = doc.data().name;
-    });
-    setGroupMap(tmp);
-  };
-  let FetchResidenceMap = async () => {
-    let tmp = {};
-    let residence = await DB.getByUrl("/residence");
-    await residence.forEach((doc) => {
-      tmp[doc.id] = doc.data().name;
-    });
-    setResidenceMap(tmp);
-  };
+
   useEffect(() => {
     // fetch server data
+    let FetchAccount = async () => {
+      if (!account && props.user) {
+        let tmp = new Account({ id: props.user.uid });
+        await tmp.fetch();
+        setAccount(tmp);
+      }
+    };
+    let FetchAccountsMap = async () => {
+      let tmp = {};
+      let accounts = await DB.getByUrl("/accounts");
+      await accounts.forEach((doc) => {
+        tmp[doc.id] = doc.data().displayName;
+      });
+      setAccountsMap(tmp);
+    };
+    let FetchGroupMap = async () => {
+      let tmp = {};
+      let group = await DB.getByUrl("/group");
+      await group.forEach((doc) => {
+        tmp[doc.id] = doc.data().name;
+      });
+      setGroupMap(tmp);
+    };
+    let FetchResidenceMap = async () => {
+      let tmp = {};
+      let residence = await DB.getByUrl("/residence");
+      await residence.forEach((doc) => {
+        tmp[doc.id] = doc.data().name;
+      });
+      setResidenceMap(tmp);
+    };
     FetchAccount();
     FetchAccountsMap();
     FetchGroupMap();
@@ -198,13 +199,15 @@ const SignedIn = (props) => {
         });
     };
     UpdateData();
-    setInterval(() => {
-      FetchAccount();
-      FetchAccountsMap();
-      FetchGroupMap();
-      FetchResidenceMap();
-    }, 1000 * 60 * 15);
-  }, []);
+    DB.addIntervalId(
+      setInterval(() => {
+        FetchAccount();
+        FetchAccountsMap();
+        FetchGroupMap();
+        FetchResidenceMap();
+      }, 1000 * 60 * 15)
+    );
+  }, [account, props]);
   if (account) {
     account.id = props.user.uid;
     return (

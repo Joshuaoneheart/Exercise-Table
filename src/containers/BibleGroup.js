@@ -3,7 +3,7 @@ import { CChartBar, CChartPie } from "@coreui/react-chartjs";
 import { FirestoreCollection } from "@react-firebase/firestore";
 import Groups from "Models/Groups";
 import { loading } from "components";
-import { firebase, DB } from "db/firebase";
+import { DB } from "db/firebase";
 import { GroupContext } from "hooks/context";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom/cjs/react-router-dom.min";

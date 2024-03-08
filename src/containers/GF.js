@@ -3,11 +3,37 @@ import { useParams } from "react-router-dom";
 import { FirestoreDocument } from "@react-firebase/firestore";
 
 import { CCol, CRow, CCard, CCardBody, CCardHeader } from "@coreui/react";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AccountsMapContext } from "hooks/context";
-
-const GFCardBody = ({ data }) => {
+import { GetWeeklyBase } from "utils/date";
+import { DB } from "db/firebase";
+const GFCardBody = ({ init_data }) => {
+  const [data, setData] = useState(init_data);
   const accountsMap = useContext(AccountsMapContext);
+  useEffect(() => {
+    let getWeekData = async () => {
+      let tmp = Object.assign({}, init_data);
+      for (let i = 0; i < Object.keys(accountsMap).length; i++) {
+        let GF_data = await DB.getByUrl(
+          "/accounts/" + Object.keys(accountsMap)[i] + "/GF/" + GetWeeklyBase()
+        );
+        if (GF_data)
+          for (let [k, v] of Object.entries(GF_data)) {
+            for (let GF_id of v) {
+              if (GF_id === init_data.id) {
+                if (!tmp.shepherd) tmp.shepherd = [];
+                if (!tmp.shepherd.includes(Object.keys(accountsMap)[i]))
+                  tmp.shepherd.push(Object.keys(accountsMap)[i]);
+                if (!tmp[k]) tmp[k] = 0;
+                tmp[k]++;
+              }
+            }
+          }
+      }
+      setData(tmp);
+    };
+    getWeekData(init_data);
+  }, [init_data, accountsMap]);
   return (
     <CCardBody>
       {" "}
@@ -84,11 +110,10 @@ const GF = () => {
           <FirestoreDocument path={"/GF/" + id}>
             {(d) => {
               if (d && d.value) {
-                for (let i = 0; i < d.value.length; i++)
-                  d.value[i].id = d.ids[i];
+                d.value.id = id;
                 return (
                   <CCol>
-                    <GFCardBody data={d.value} />
+                    <GFCardBody init_data={d.value} />
                   </CCol>
                 );
               } else return loading;

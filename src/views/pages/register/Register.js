@@ -12,7 +12,7 @@ import {
   CInputGroupText,
   CInvalidFeedback,
   CLink,
-  CRow
+  CRow,
 } from "@coreui/react";
 import { FirebaseAuthConsumer } from "@react-firebase/auth";
 import { DB } from "db/firebase";
@@ -22,16 +22,16 @@ import React, { useEffect, useState } from "react";
 const Register = (props) => {
   var register_form = React.useRef();
   var [create, setCreate] = useState(false);
-  // if have signed in, sign out
-  let checkSignedIn = async () => {
-    if (!create && props.firebase.auth().uid) {
-      await DB.signOut();
-      window.location = window.location.href.replace("register", "/");
-    }
-  };
   useEffect(() => {
+    // if have signed in, sign out
+    let checkSignedIn = async () => {
+      if (!create && props.firebase.auth().uid) {
+        await DB.signOut();
+        window.location = window.location.href.replace("register", "/");
+      }
+    };
     checkSignedIn();
-  }, []);
+  }, [props, create]);
   return (
     <FirebaseAuthConsumer>
       <div className="c-app c-default-layout flex-row align-items-center">
