@@ -57,7 +57,7 @@ const routes = [
   { path: "/GFList", exact: true, name: "GFList", component: GFList },
   { path: "/GF/:id", exact: true, name: "GF", component: GF },
   {
-    path: "/announcement",
+    path: "/announcementList",
     exact: true,
     name: "announcement list",
     component: AnnouncementList,
