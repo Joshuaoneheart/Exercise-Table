@@ -1,24 +1,12 @@
-import CIcon from "@coreui/icons-react";
-import {
-  CButton,
-  CCard,
-  CCardBody,
-  CCardHeader,
-  CCol,
-  CDropdown,
-  CDropdownItem,
-  CDropdownMenu,
-  CDropdownToggle,
-  CForm,
-  CInput,
-  CRow
-} from "@coreui/react";
+import { CCard, CCardBody, CCol, CRow } from "@coreui/react";
 import { CChartBar, CChartPie } from "@coreui/react-chartjs";
 import { FirestoreCollection } from "@react-firebase/firestore";
+import Groups from "Models/Groups";
 import { loading } from "components";
-import { firebase } from "db/firebase";
-import { AccountContext } from "hooks/context";
+import { DB } from "db/firebase";
+import { GroupContext } from "hooks/context";
 import { useCallback, useContext, useEffect, useState } from "react";
+import { useParams } from "react-router-dom/cjs/react-router-dom.min";
 import { GetWeeklyBase } from "utils/date";
 
 // TODO:
@@ -194,22 +182,19 @@ const ProblemChart = ({ problem, data }) => {
   return null;
 };
 
-const ProblemStatistic = ({ problems, groups, activeGroup }) => {
+const ProblemStatistic = ({ problems, groups, group_id }) => {
   const [data, setData] = useState([]);
   let charts = [];
   const FetchData = useCallback(async () => {
-    let accounts = groups[activeGroup];
+    let accounts = groups.list[groups.indexOf(group_id)];
     let tmpData = [];
     let now = GetWeeklyBase();
     for (let i = 0; i < accounts.length; i++) {
       let user_data = {};
       try {
-        let collection = await firebase
-          .firestore()
-          .collection("accounts")
-          .doc(accounts[i].id)
-          .collection("data")
-          .get();
+        let collection = await DB.getByUrl(
+          "/accounts/" + accounts.list[i].id + "/data"
+        );
         collection.forEach((doc) => {
           if (doc.exists && parseInt(doc.id) === now) {
             user_data = doc.data();
@@ -221,7 +206,7 @@ const ProblemStatistic = ({ problems, groups, activeGroup }) => {
       tmpData.push(user_data);
     }
     setData(tmpData);
-  }, [activeGroup, groups]);
+  }, [group_id, groups]);
   useEffect(() => {
     FetchData();
   }, [FetchData]);
@@ -232,79 +217,12 @@ const ProblemStatistic = ({ problems, groups, activeGroup }) => {
   return <CRow>{charts}</CRow>;
 };
 
-const AdminCardHeader = ({ is_admin, groups, activeGroup, setActiveGroup }) => {
-  let menu = [];
-  if (is_admin) {
-    for (let i = 0; i < groups.ids.length; i++) {
-      menu.push(
-        <CDropdownItem onClick={() => setActiveGroup(i)}>
-          {" "}
-          {groups.ids[i]}{" "}
-        </CDropdownItem>
-      );
-    }
-  }
-  return (
-    <CCardHeader>
-      <CRow className="align-items-center">
-        {is_admin ? (
-          <CCol>
-            <CDropdown>
-              <CDropdownToggle caret color="info">
-                <CIcon name="cil-group" /> {groups.ids[activeGroup]}
-              </CDropdownToggle>
-              <CDropdownMenu>
-                <CDropdownItem header> List of Groups</CDropdownItem>
-                {menu}
-              </CDropdownMenu>
-            </CDropdown>
-          </CCol>
-        ) : (
-          <CCol xs="5" md="7" lg="7" xl="8">
-            活力組操練情況查詢
-          </CCol>
-        )}
-        <CForm inline style={{ visibility: is_admin ? "visible" : "hidden" }}>
-          <CInput className="mr-sm-2" placeholder="Search" size="sm" />
-          <CButton color="dark" type="submit" size="sm">
-            <CIcon name="cil-search" size="sm" />
-          </CButton>
-        </CForm>
-      </CRow>
-    </CCardHeader>
-  );
-};
-
-const GatherAccountsByGroup = (accounts) => {
-  let res = { value: [], ids: [] };
-  for (let i = 0; i < accounts.length; i++) {
-    if (accounts[i].group && !res.ids.includes(accounts[i].group)) {
-      res.ids.push(accounts[i].group);
-      res.value.push([]);
-    }
-    if (accounts[i].group)
-      res.value[res.ids.indexOf(accounts[i].group)].push(accounts[i]);
-  }
-  return res;
-};
-
 // FIXME:
 // May need to add the necessary hooks
-const StatisticCard = ({ is_admin, account, accounts }) => {
-  let groups = GatherAccountsByGroup(accounts);
-  let [activeGroup, setActiveGroup] = useState(
-    groups.ids.indexOf(account.group) === -1
-      ? 0
-      : groups.ids.indexOf(account.group)
-  );
+const StatisticCard = ({ group_id, groups }) => {
+  groups.groupBy("group");
   return (
     <CCard>
-      <AdminCardHeader
-        is_admin={is_admin}
-        groups={groups}
-        activeGroup={activeGroup}
-        setActiveGroup={setActiveGroup}
-      />
       <CCardBody>
         <FirestoreCollection path="/form/">
           {(d) => {
@@ -312,8 +230,8 @@ const StatisticCard = ({ is_admin, account, accounts }) => {
               return (
                 <ProblemStatistic
                   problems={d}
-                  groups={groups.value}
-                  activeGroup={activeGroup}
+                  group_id={group_id}
+                  groups={groups}
                 />
               );
             else return loading;
@@ -327,20 +245,18 @@ const StatisticCard = ({ is_admin, account, accounts }) => {
 // Need to add hooks for each dropdown item
 // Also needed for search
 const BibleGroup = () => {
-  const account = useContext(AccountContext);
-  let is_admin = account.role === "Admin";
+  const { id } = useParams();
+  const groupMap = useContext(GroupContext);
   return (
     <CRow>
       <FirestoreCollection path="/accounts/">
         {(d) => {
           if (d && d.value) {
-            for (let i = 0; i < d.value.length; i++) d.value[i].id = d.ids[i];
             return (
               <CCol>
                 <StatisticCard
-                  account={is_admin ? d.value[0] : account}
-                  accounts={d.value}
-                  is_admin={is_admin}
+                  group_id={id}
+                  groups={new Groups(d.value, d.ids, groupMap)}
                 />
               </CCol>
             );

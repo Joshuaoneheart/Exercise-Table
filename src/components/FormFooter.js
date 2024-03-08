@@ -24,7 +24,6 @@ const FormFooter = ({ form, account, metadata }) => {
                 var total_score = 0;
                 for (let i = 0; i < metadata.value.length; i++) {
                   var problem = metadata.value[i];
-                  console.log(problem, total_score);
                   switch (problem.type) {
                     case "Grid":
                       var suboptions = problem["子選項"].split(";");

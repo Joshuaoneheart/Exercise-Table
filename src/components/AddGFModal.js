@@ -1,37 +1,82 @@
 import {
-    CButton,
-    CCol,
-    CForm,
-    CFormGroup,
-    CInput,
-    CLabel,
-    CModal,
-    CModalBody,
-    CModalFooter,
-    CModalHeader,
-    CModalTitle
+  CButton,
+  CCol,
+  CForm,
+  CFormGroup,
+  CInput,
+  CLabel,
+  CModal,
+  CModalBody,
+  CModalFooter,
+  CModalHeader,
+  CModalTitle,
 } from "@coreui/react";
-import { useRef } from "react";
-
-const AddGFModal = ({ data, show, setData, setModal }) => {
+import Select from "react-select";
+import {  useRef, useState } from "react";
+import { firebase } from "db/firebase";
+import {
+  GF_SCHOOL,
+  GF_NTUST_DEPARTMENT,
+  GF_NTU_DEPARTMENT,
+  GF_GRADE,
+} from "const/GF";
+const AddGFModal = ({ data, GF, show, setData, setModal }) => {
   var form = useRef();
-  if (show == null) {
+  var [school, setSchool] = useState({
+    value: "台大",
+    label: <span style={{ whiteSpace: "pre" }}>台大</span>,
+  });
+  var [department, setDepartment] = useState({
+    value: GF_NTU_DEPARTMENT[0],
+    label: <span style={{ whiteSpace: "pre" }}>{GF_NTU_DEPARTMENT[0]}</span>,
+  });
+  var [grade, setGrade] = useState({
+    value: "大一",
+    label: <span style={{ whiteSpace: "pre" }}>大一</span>,
+  });
+  if (!show) {
     return null;
   }
   var writeData = async () => {
     var cur_data = data;
     var tmp = {};
     tmp["name"] = form.current.elements.name.value;
+    tmp["school"] = school.value; 
+    tmp["department"] = department.value;
+    tmp["grade"] = grade.value;
     tmp["note"] = form.current.elements.note.value;
+    let res = await firebase.firestore().collection("GF").add(tmp);
+    tmp.id = res.id;
     cur_data.push(tmp);
     setData(cur_data);
-    setModal(null);
+    setModal(false);
   };
+  let schools = GF_SCHOOL.map((x) => {
+    return { value: x, label: <span style={{ whiteSpace: "pre" }}>{x}</span> };
+  });
+  let departments;
+  if (school.value === "台大") {
+    departments = GF_NTU_DEPARTMENT.map((x) => {
+      return {
+        value: x,
+        label: <span style={{ whiteSpace: "pre" }}>{x}</span>,
+      };
+    });
+  } else if (school.value === "台科大")
+    departments = GF_NTUST_DEPARTMENT.map((x) => {
+      return {
+        value: x,
+        label: <span style={{ whiteSpace: "pre" }}>{x}</span>,
+      };
+    });
+  let grades = GF_GRADE.map((x) => {
+    return { value: x, label: <span style={{ whiteSpace: "pre" }}>{x}</span> };
+  });
   return (
     <CModal
-      show={show !== null}
+      show={show}
       onClose={() => {
-        setModal(null);
+        setModal(false);
       }}
     >
       <CModalHeader closeButton>
@@ -55,6 +100,69 @@ const AddGFModal = ({ data, show, setData, setModal }) => {
           </CFormGroup>
           <CFormGroup row inline>
             <CCol md="3">
+              <CLabel>學校</CLabel>
+            </CCol>
+            <CCol xs="12" md="9">
+              <Select
+                value={school}
+                isSearchable
+                options={schools}
+                onChange={(v) => {
+                  setSchool(v);
+                  if (v.value === "台大")
+                    setDepartment({
+                      value: GF_NTU_DEPARTMENT[0],
+                      label: (
+                        <span style={{ whiteSpace: "pre" }}>
+                          {GF_NTU_DEPARTMENT[0]}
+                        </span>
+                      ),
+                    });
+                  else if (v.value === "台科大")
+                    setDepartment({
+                      value: GF_NTUST_DEPARTMENT[0],
+                      label: (
+                        <span style={{ whiteSpace: "pre" }}>
+                          {GF_NTUST_DEPARTMENT[0]}
+                        </span>
+                      ),
+                    });
+                }}
+              />
+            </CCol>
+          </CFormGroup>
+          <CFormGroup row inline>
+            <CCol md="3">
+              <CLabel>科系</CLabel>
+            </CCol>
+            <CCol xs="12" md="9">
+              <Select
+                value={department}
+                isSearchable
+                options={departments}
+                onChange={(v) => {
+                  setDepartment(v);
+                }}
+              />
+            </CCol>
+          </CFormGroup>
+          <CFormGroup row inline>
+            <CCol md="3">
+              <CLabel>年級</CLabel>
+            </CCol>
+            <CCol xs="12" md="9">
+              <Select
+                value={grade}
+                isSearchable
+                options={grades}
+                onChange={(v) => {
+                  setGrade(v);
+                }}
+              />
+            </CCol>
+          </CFormGroup>
+          <CFormGroup row inline>
+            <CCol md="3">
               <CLabel>備註</CLabel>
             </CCol>
             <CCol xs="12" md="9">
@@ -70,7 +178,7 @@ const AddGFModal = ({ data, show, setData, setModal }) => {
         <CButton
           color="secondary"
           onClick={() => {
-            setModal(null);
+            setModal(false);
           }}
         >
           取消
