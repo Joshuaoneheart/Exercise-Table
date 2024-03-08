@@ -31,7 +31,7 @@ const TheSidebar = () => {
       {
         _tag: "CSidebarNavItem",
         name: "公告",
-        to: "/announcement",
+        to: "/announcementList",
         icon: "cil-bell",
       },
       {
@@ -97,7 +97,7 @@ const TheSidebar = () => {
       {
         _tag: "CSidebarNavItem",
         name: "公告",
-        to: "/announcement",
+        to: "/announcementList",
         icon: "cil-bell",
       },
       {
