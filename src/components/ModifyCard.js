@@ -22,7 +22,7 @@ format of page
 string(group or residence)
 */
 const ModifyCard = ({ default_data, page, title, map }) => {
-  var [activeTab, setActiveTab] = useState(0);
+  var [activeTab, setActiveTab] = useState(1);
   const [transferModal, setTransferModal] = useState(null);
   const [deleteModal, setDeleteModal] = useState(null);
   const [addModal, setAddModal] = useState(null);
@@ -36,42 +36,39 @@ const ModifyCard = ({ default_data, page, title, map }) => {
   var contents = [];
   var add_modal_options = [];
   var group_name = page === "group" ? "活力組" : "住處";
-  for (var i = 0; i < groups.length; i++) {
-    // remove Admin resident
-    if (!groups.ids[i]) {
-      // add a resident into addmodal options if he is not in any group
-      for (let j = 0; j < groups.list[i].length; j++) {
-        add_modal_options.push(
-          <option value={j} key={i}>
-            {groups.getAccount(i, j).displayName}
-          </option>
-        );
-      }
-    } else {
-      // maintain list of groups
-      group_members.push([]);
-      for (let j = 0; j < groups.list[i].length; j++) {
-        group_members[group_members.length - 1].push(
-          <ModifyListGroupItem
-            index={[i, j]}
-            key_name={group_members[group_members.length - 1].length}
-            name={groups.getAccount(i, j).displayName}
-            setTransferModal={setTransferModal}
-            setDeleteModal={setDeleteModal}
-            activeTab={activeTab}
-          />
-        );
-      }
+  for (let i = 0; i < groups.list[0].length; i++) {
+    // add a resident into addmodal options if he is not in any group
+    if (groups.getAccount(0, i).role !== "Admin")
+      add_modal_options.push(
+        <option value={i} key={i}>
+          {groups.getAccount(0, i).displayName}
+        </option>
+      );
+  }
+  for (var i = 1; i < groups.length; i++) {
+    // maintain list of groups
+    group_members.push([]);
+    for (let j = 0; j < groups.list[i].length; j++) {
+      group_members[group_members.length - 1].push(
+        <ModifyListGroupItem
+          index={[i, j]}
+          key_name={group_members[group_members.length - 1].length}
+          name={groups.getAccount(i, j).displayName}
+          setTransferModal={setTransferModal}
+          setDeleteModal={setDeleteModal}
+          activeTab={activeTab}
+        />
+      );
     }
   }
   for (let i = 0; i < group_members.length; i++) {
     contents.push(
-      <CTabPane key={i} active={activeTab === i}>
+      <CTabPane key={i} active={activeTab === (i + 1)}>
         <CListGroup accent>{group_members[i]}</CListGroup>
       </CTabPane>
     );
   }
-  for (let i = 0; i < groups.names.length; i++) {
+  for (let i = 1; i < groups.names.length; i++) {
     titles.push({
       idx: i,
       value: groups.names[i],

@@ -7,8 +7,9 @@ class Groups {
     if (!id_list.length) return;
     this.new_num = 0;
     this.map = map;
-    this.list = [new Group("all")];
+    this.list = [new Group("all"), new Group("no")];
     this.deleted = [];
+    this.no_group = [];
     for (let i = 0; i < account_list.length; i++) {
       let account = account_list[i];
       account.id = id_list[i];
@@ -59,7 +60,10 @@ class Groups {
     for (let i = 0; i < this.length; i++) {
       for (let j = 0; j < this.list[i].length; j++) {
         let group = this.getAccount(i, j)[by];
-        if (!group) continue;
+        if (!group) {
+          new_list[0].pushAccount(this.getAccount(i, j));
+          continue;
+        }
         if (!new_ids.includes(group)) {
           let new_group = new Group(group, this.map[group], []);
           new_list.push(new_group);
@@ -86,14 +90,15 @@ class Groups {
       }
     }
     for (let i = 0; i < this.deleted.length; i++) {
-      if(!this.deleted[i].id.startsWith("tmp|")) await firebase
-        .firestore()
-        .collection(page)
-        .doc(this.deleted[i].id)
-        .get()
-        .then((snapshot) => {
-          snapshot.ref.delete();
-        });
+      if (!this.deleted[i].id.startsWith("tmp|"))
+        await firebase
+          .firestore()
+          .collection(page)
+          .doc(this.deleted[i].id)
+          .get()
+          .then((snapshot) => {
+            snapshot.ref.delete();
+          });
     }
     this.deleted = [];
     for (let i = 0; i < this.length; i++) {

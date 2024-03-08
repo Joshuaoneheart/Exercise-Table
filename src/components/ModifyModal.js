@@ -30,13 +30,9 @@ const AddModal = ({ show, page, groups, names, setModal, setGroups }) => {
     switch (show.type) {
       case "resident":
         // add a new resident
-        for (let i = 0; i < groups.length; i++) {
-          if (!groups.ids[i]) {
-            groups
-              .getAccount(i, form.current.elements.name.value)
-              .update(page, groups.names[show.index]);
-          }
-        }
+        groups
+          .getAccount(0, form.current.elements.name.value)
+          .update(page, groups.ids[show.index]);
         groups.groupBy(page);
         setGroups(groups.clone());
         break;
@@ -198,7 +194,7 @@ const TransferModal = ({ show, page, groups, setModal, setGroups }) => {
     setModal(null);
   };
   var groups_option = [];
-  for (let i = 0; i < groups.names.length; i++) {
+  for (let i = 1; i < groups.names.length; i++) {
     if (i !== show.group)
       groups_option.push(
         <option value={groups.ids[i]} key={i}>
