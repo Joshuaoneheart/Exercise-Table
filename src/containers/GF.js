@@ -62,6 +62,12 @@ const GFCardBody = ({ init_data }) => {
             </CRow>
             <CRow>
               <CCol lg="3">
+                <b>身份</b>
+              </CCol>
+              <CCol>{data.type}</CCol>
+            </CRow>
+            <CRow>
+              <CCol lg="3">
                 <b>牧養人</b>
               </CCol>
               <CCol>
