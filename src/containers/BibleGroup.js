@@ -16,29 +16,44 @@ const colors = [
   "rgba(255,99,132,1)",
   "rgba(75,192,192,1)",
   "rgba(255,206,86,1)",
-  "rgba(231,233,237,1)",
+  "rgba(88,25,8,1)",
   "rgba(54,162,235,1)",
+  "rgba(46,14,2,1)",
+  "rgba(226,174,221,1)",
+  "rgba(255,232,194,1)",
+  "rgba(228,255,225,1)",
+  "rgba(161,134,158,1)"
 ];
 const a_colors = [
   "rgba(255,99,132,0.4)",
   "rgba(75,192,192,0.4)",
   "rgba(255,206,86,0.4)",
-  "rgba(231,233,237,0.4)",
+  "rgba(88,25,8,0.4)",
   "rgba(54,162,235,0.4)",
+  "rgba(46,14,2,0.4)",
+  "rgba(226,174,221,0.4)",
+  "rgba(255,232,194,0.4)",
+  "rgba(228,255,225,0.4)",
+  "rgba(161,134,158,0.4)"
 ];
 const aa_colors = [
   "rgba(255,99,132,0.2)",
   "rgba(75,192,192,0.2)",
   "rgba(255,206,86,0.2)",
-  "rgba(231,233,237,0.2)",
+  "rgba(88,25,8,0.2)",
   "rgba(54,162,235,0.2)",
+  "rgba(46,14,2,0.2)",
+  "rgba(226,174,221,0.2)",
+  "rgba(255,232,194,0.2)",
+  "rgba(228,255,225,0.2)",
+  "rgba(161,134,158,0.2)"
 ];
 
 // FIXME:
 // Same as before
 const RenderBarChart = ({ title, titles, labels, data }) => {
   let datasets = [];
-  for (let i = 0; i < data.length; i++) {
+  for (let i = 0; i < titles.length; i++) {
     datasets.push({
       label: titles[i],
       backgroundColor: aa_colors[i],
@@ -72,29 +87,11 @@ const RenderPieChart = ({ title, labels, data }) => {
     datasets: [
       {
         label: title,
-        backgroundColor: [
-          "#FF6384",
-          "#4BC0C0",
-          "#FFCE56",
-          "#E7E9ED",
-          "#36A2EB",
-        ],
-        borderColor: ["#FF6384", "#4BC0C0", "#FFCE56", "#E7E9ED", "#36A2EB"],
+        backgroundColor: colors,
+        borderColor: colors,
         borderWidth: 1,
-        hoverBackgroundColor: [
-          "rgba(255,99,132,0.4)",
-          "rgba(75,192,192,0.4)",
-          "rgba(255,206,86,0.4)",
-          "rgba(231,233,237,0.4)",
-          "rgba(54,162,235,0.4)",
-        ],
-        hoverBorderColor: [
-          "#FF6384",
-          "#4BC0C0",
-          "#FFCE56",
-          "#E7E9ED",
-          "#36A2EB",
-        ],
+        hoverBackgroundColor: a_colors,
+        hoverBorderColor: colors,
         data,
       },
     ],
@@ -173,8 +170,8 @@ const ProblemChart = ({ problem, data }) => {
     return (
       <RenderBarChart
         title={problem.title}
-        titles={options}
-        labels={suboptions}
+        titles={suboptions}
+        labels={options}
         data={bar_data}
       />
     );

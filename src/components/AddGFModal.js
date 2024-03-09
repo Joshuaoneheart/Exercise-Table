@@ -12,27 +12,32 @@ import {
   CModalTitle,
 } from "@coreui/react";
 import Select from "react-select";
-import {  useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { firebase } from "db/firebase";
 import {
   GF_SCHOOL,
   GF_NTUST_DEPARTMENT,
   GF_NTU_DEPARTMENT,
   GF_GRADE,
+  GF_TYPE,
 } from "const/GF";
 const AddGFModal = ({ data, GF, show, setData, setModal }) => {
-  var form = useRef();
-  var [school, setSchool] = useState({
+  const form = useRef();
+  const [school, setSchool] = useState({
     value: "台大",
     label: <span style={{ whiteSpace: "pre" }}>台大</span>,
   });
-  var [department, setDepartment] = useState({
+  const [department, setDepartment] = useState({
     value: GF_NTU_DEPARTMENT[0],
     label: <span style={{ whiteSpace: "pre" }}>{GF_NTU_DEPARTMENT[0]}</span>,
   });
-  var [grade, setGrade] = useState({
+  const [grade, setGrade] = useState({
     value: "大一",
     label: <span style={{ whiteSpace: "pre" }}>大一</span>,
+  });
+  const [type, setType] = useState({
+    value: "福音朋友",
+    label: <span style={{ whiteSpace: "pre" }}>福音朋友</span>,
   });
   if (!show) {
     return null;
@@ -41,9 +46,10 @@ const AddGFModal = ({ data, GF, show, setData, setModal }) => {
     var cur_data = data;
     var tmp = {};
     tmp["name"] = form.current.elements.name.value;
-    tmp["school"] = school.value; 
+    tmp["school"] = school.value;
     tmp["department"] = department.value;
     tmp["grade"] = grade.value;
+    tmp["type"] = type.value;
     tmp["note"] = form.current.elements.note.value;
     let res = await firebase.firestore().collection("GF").add(tmp);
     tmp.id = res.id;
@@ -70,6 +76,9 @@ const AddGFModal = ({ data, GF, show, setData, setModal }) => {
       };
     });
   let grades = GF_GRADE.map((x) => {
+    return { value: x, label: <span style={{ whiteSpace: "pre" }}>{x}</span> };
+  });
+  let types = GF_TYPE.map((x) => {
     return { value: x, label: <span style={{ whiteSpace: "pre" }}>{x}</span> };
   });
   return (
@@ -157,6 +166,21 @@ const AddGFModal = ({ data, GF, show, setData, setModal }) => {
                 options={grades}
                 onChange={(v) => {
                   setGrade(v);
+                }}
+              />
+            </CCol>
+          </CFormGroup>
+          <CFormGroup row inline>
+            <CCol md="3">
+              <CLabel>身份</CLabel>
+            </CCol>
+            <CCol xs="12" md="9">
+              <Select
+                value={type}
+                isSearchable
+                options={types}
+                onChange={(v) => {
+                  setType(v);
                 }}
               />
             </CCol>

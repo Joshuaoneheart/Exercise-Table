@@ -21,6 +21,7 @@ const GFListCard = ({ data }) => {
     { key: "school", label: "學校", _style: { width: "7%" } },
     { key: "department", label: "科系", _style: { width: "20%" } },
     { key: "grade", label: "年級", _style: { width: "7%" } },
+    { key: "type", label: "身份", _style: { width: "7%" } },
     { key: "note", label: "備註", _style: { width: "50%" } },
     {
       key: "show_details",

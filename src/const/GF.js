@@ -1,3 +1,7 @@
+const GF_TYPE = [
+  "福音朋友",
+  "小羊"
+]
 const GF_GRADE = [
   "大一",
   "大二",
@@ -319,4 +323,5 @@ export {
   GF_NTU_DEPARTMENT,
   GF_NTUST_DEPARTMENT,
   GF_GRADE_NEXT,
+  GF_TYPE
 };
