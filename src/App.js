@@ -118,6 +118,10 @@ const SignedIn = (props) => {
           account_data.push(Object.assign({ id: doc.id }, doc.data()));
           account_score[doc.id] = 0;
           account_revival[doc.id] = 0;
+          if (doc.data().group) {
+            group_lord_table[doc.data().group] = 0;
+            group_score[doc.data().group] = 0;
+          }
         });
         await GFs.forEach((doc) => {
           GF_data.push(Object.assign({ id: doc.id }, doc.data()));
