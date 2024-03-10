@@ -1,17 +1,17 @@
 import {
-    CCard,
-    CCardBody,
-    CCardHeader,
-    CCol,
-    CDropdown,
-    CDropdownItem,
-    CDropdownMenu,
-    CDropdownToggle,
-    CForm,
-    CRow,
-    CTabContent,
-    CTabPane,
-    CTabs
+  CCard,
+  CCardBody,
+  CCardHeader,
+  CCol,
+  CDropdown,
+  CDropdownItem,
+  CDropdownMenu,
+  CDropdownToggle,
+  CForm,
+  CRow,
+  CTabContent,
+  CTabPane,
+  CTabs,
 } from "@coreui/react";
 import { useRef, useState } from "react";
 import FormFooter from "./FormFooter";
@@ -67,7 +67,12 @@ const DataTabs = ({ data, is_footer, account, metadata, default_data }) => {
         </CRow>
       </CCardHeader>
       <CCardBody>
-        <CForm innerRef={form}>
+        <CForm
+          innerRef={form}
+          onSubmit={(e) => {
+            e.preventDefault();
+          }}
+        >
           <CTabs activeTab={section}>
             <CTabContent>{tabpanes}</CTabContent>
           </CTabs>

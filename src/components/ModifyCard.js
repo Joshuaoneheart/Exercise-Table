@@ -45,7 +45,6 @@ const ModifyCard = ({ default_data, page, title, map }) => {
         </option>
       );
   }
-  console.log(groups)
   for (var i = 1; i < groups.length; i++) {
     // maintain list of groups
     group_members.push([]);

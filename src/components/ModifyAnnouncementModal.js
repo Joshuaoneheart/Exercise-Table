@@ -81,6 +81,9 @@ const ModifyAnnouncementModal = ({
           method="post"
           encType="multipart/form-data"
           className="form-horizontal"
+          onSubmit={(e) => {
+            e.preventDefault();
+          }}
         >
           <CFormGroup row inline>
             <CCol md="3">

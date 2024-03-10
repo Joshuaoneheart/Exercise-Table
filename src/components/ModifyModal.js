@@ -63,6 +63,9 @@ const AddModal = ({ show, page, groups, names, setModal, setGroups }) => {
           method="post"
           encType="multipart/form-data"
           className="form-horizontal"
+          onSubmit={(e) => {
+            e.preventDefault();
+          }}
         >
           {show.type === "resident" && (
             <>
@@ -82,10 +85,7 @@ const AddModal = ({ show, page, groups, names, setModal, setGroups }) => {
                 <CLabel>{page === "group" ? "活力組" : "住處"}名稱</CLabel>
               </CCol>
               <CCol xs="12" md="9">
-                <CInput
-                  name="name"
-                  required
-                />
+                <CInput name="name" required />
               </CCol>
             </CFormGroup>
           )}
@@ -215,6 +215,9 @@ const TransferModal = ({ show, page, groups, setModal, setGroups }) => {
           method="post"
           encType="multipart/form-data"
           className="form-horizontal"
+          onSubmit={(e) => {
+            e.preventDefault();
+          }}
         >
           <CFormGroup row inline>
             <CCol md="3">
