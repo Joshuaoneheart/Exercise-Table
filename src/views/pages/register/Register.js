@@ -192,23 +192,26 @@ const Register = (props) => {
                                 )
                                 .then(async (user_data) => {
                                   var date = new Date();
-                                  let account = new Account({
-                                    id: user_data.user.uid,
-                                    displayName:
-                                      register_form.current.elements.username
-                                        .value,
-                                    email:
-                                      register_form.current.elements.email
-                                        .value,
-                                    registered:
-                                      date.getFullYear() +
-                                      "/" +
-                                      (date.getMonth() + 1) +
-                                      "/" +
-                                      date.getDate(),
-                                    role: "Member",
-                                    status: "Pending",
-                                  });
+                                  let account = new Account(
+                                    {
+                                      id: user_data.user.uid,
+                                      displayName:
+                                        register_form.current.elements.username
+                                          .value,
+                                      email:
+                                        register_form.current.elements.email
+                                          .value,
+                                      registered:
+                                        date.getFullYear() +
+                                        "/" +
+                                        (date.getMonth() + 1) +
+                                        "/" +
+                                        date.getDate(),
+                                      role: "Member",
+                                      status: "Pending",
+                                    },
+                                    true
+                                  );
                                   await account.save();
                                   alert("成功創建帳戶");
                                   await DB.signOut();
