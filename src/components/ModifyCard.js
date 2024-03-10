@@ -181,7 +181,7 @@ const ModifyCard = ({ default_data, page, title, map }) => {
               }
             >
               新增住戶
-            </CButton>{" "}
+            </CButton>
             <CButton
               variant="ghost"
               color="primary"

@@ -47,17 +47,22 @@ const GFCardBody = ({ init_data }) => {
       />
       <CRow>
         <CCol style={{ fontSize: "18px" }}>
-          <CRow>
-            <h3>{data.name}</h3>
-            <CButton
-              variant="ghost"
-              color="dark"
-              onClick={() => {
-                setModifyModal(true);
-              }}
-            >
-              <CIcon alt="修改" name="cil-pencil" />
-            </CButton>
+          <CRow className="align-items-center">
+            <CCol md="11">
+              <h3>{data.name}</h3>
+            </CCol>
+            <CCol md="1">
+              <CButton
+                variant="ghost"
+                color="primary"
+                className="end"
+                onClick={() => {
+                  setModifyModal(true);
+                }}
+              >
+                <CIcon alt="修改" name="cil-pencil" />
+              </CButton>
+            </CCol>
           </CRow>
           <hr />
           <div width="20%">
