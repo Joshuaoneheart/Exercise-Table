@@ -63,7 +63,7 @@ const ModifyCard = ({ default_data, page, title, map }) => {
   }
   for (let i = 0; i < group_members.length; i++) {
     contents.push(
-      <CTabPane key={i} active={activeTab === (i + 1)}>
+      <CTabPane key={i} active={activeTab === i + 1}>
         <CListGroup accent>{group_members[i]}</CListGroup>
       </CTabPane>
     );

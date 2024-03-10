@@ -7,7 +7,10 @@ import { useContext, useEffect, useState } from "react";
 import { AccountsMapContext } from "hooks/context";
 import { GetWeeklyBase } from "utils/date";
 import { DB } from "db/firebase";
+import ModifyGFModal from "components/ModifyGFModal";
+
 const GFCardBody = ({ init_data }) => {
+  const [modifyModal, setModifyModal] = useState(false);
   const [data, setData] = useState(init_data);
   const accountsMap = useContext(AccountsMapContext);
   useEffect(() => {
@@ -36,10 +39,26 @@ const GFCardBody = ({ init_data }) => {
   }, [init_data, accountsMap]);
   return (
     <CCardBody>
-      {" "}
+      <ModifyGFModal
+        data={data}
+        setData={setData}
+        show={modifyModal}
+        setModal={setModifyModal}
+      />
       <CRow>
         <CCol style={{ fontSize: "18px" }}>
-          <h3>{data.name}</h3>
+          <CRow>
+            <h3>{data.name}</h3>
+            <CButton
+              variant="ghost"
+              color="dark"
+              onClick={() => {
+                setModifyModal(true);
+              }}
+            >
+              <CIcon alt="修改" name="cil-pencil" />
+            </CButton>
+          </CRow>
           <hr />
           <div width="20%">
             <CRow>
@@ -101,7 +120,7 @@ const GFCardBody = ({ init_data }) => {
             </CRow>
           </div>
         </CCol>
-      </CRow>{" "}
+      </CRow>
     </CCardBody>
   );
 };

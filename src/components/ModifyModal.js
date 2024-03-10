@@ -234,7 +234,7 @@ const TransferModal = ({ show, page, groups, setModal, setGroups }) => {
       <CModalFooter>
         <CButton color="primary" onClick={writeData}>
           儲存修改
-        </CButton>{" "}
+        </CButton>
         <CButton color="secondary" onClick={() => setModal(null)}>
           取消
         </CButton>
