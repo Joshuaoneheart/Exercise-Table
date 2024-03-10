@@ -113,7 +113,7 @@ const ModifyCard = ({ default_data }) => {
     <CCard>
       <CCardHeader>
         <CRow className="align-items-center">
-          <CCol xs="5" md="7" lg="7" xl="8">
+          <CCol xs="4" md="7" lg="7" xl="8">
             表單修改
           </CCol>
           <CCol>
@@ -135,7 +135,7 @@ const ModifyCard = ({ default_data }) => {
               }}
             />
           </CCol>
-          <CCol>
+          <CCol xs="4">
             <CButtonToolbar justify="end">
               <CButton
                 variant="ghost"

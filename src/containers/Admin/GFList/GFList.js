@@ -39,8 +39,8 @@ const GFListCard = ({ data }) => {
     <CCard>
       <CCardHeader>
         <CRow>
-          <CCol md="11">福音朋友資料</CCol>
-          <CCol md="1">
+          <CCol xs="10" md="11">福音朋友資料</CCol>
+          <CCol xs="1" md="1">
             <CButton
               variant="ghost"
               color="primary"
