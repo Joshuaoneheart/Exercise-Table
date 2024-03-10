@@ -85,11 +85,6 @@ const AddModal = ({ show, page, groups, names, setModal, setGroups }) => {
                 <CInput
                   name="name"
                   required
-                  onKeyDown={(event) => {
-                    if (event.key === "Enter") {
-                      writeData();
-                    }
-                  }}
                 />
               </CCol>
             </CFormGroup>
@@ -140,7 +135,7 @@ const DeleteModal = ({
         setGroups(groups.clone());
         break;
       case "group":
-        if (group_members[show.index].length !== 0) {
+        if (group_members[show.index - 1].length !== 0) {
           if (page === "group") {
             alert("活力組內尚有住戶，請將所有住戶刪除後再刪除活力組");
           }
