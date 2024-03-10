@@ -1,9 +1,6 @@
 import { loading } from "components";
 import { useParams } from "react-router-dom";
-import {
-  FirestoreCollection,
-  FirestoreDocument,
-} from "@react-firebase/firestore";
+import { FirestoreCollection } from "@react-firebase/firestore";
 
 import {
   CCol,
@@ -140,10 +137,11 @@ const AnnouncementCard = ({ init_data, id }) => {
                   <b>已讀</b>
                 </CCol>
                 <CCol>
-                  {data.checked && data.checked
-                    .split(";")
-                    .map((x) => accountsMap[x])
-                    .join(",")}
+                  {data.checked &&
+                    data.checked
+                      .split(";")
+                      .map((x) => accountsMap[x])
+                      .join(",")}
                 </CCol>
               </CRow>
             </div>

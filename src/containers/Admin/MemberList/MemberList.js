@@ -43,7 +43,7 @@ const MemberListBody = () => {
         });
     };
     FetchMember();
-  }, []);
+  }, [groupMap]);
   return (
     <CCardBody>
       <CDataTable

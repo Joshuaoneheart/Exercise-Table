@@ -79,7 +79,7 @@ const ModifyCard = ({ default_data, page, title, map }) => {
     <CCard>
       <CCardHeader>
         <CRow className="align-items-center">
-          <CCol xs="5" md="7" lg="7" xl="8">
+          <CCol xs="4" md="7" lg="7" xl="8">
             {title}
           </CCol>
           <CCol>
@@ -101,7 +101,7 @@ const ModifyCard = ({ default_data, page, title, map }) => {
               }}
             />
           </CCol>
-          <CCol>
+          <CCol xs="4">
             <CButtonToolbar justify="end">
               <CButton
                 variant="ghost"

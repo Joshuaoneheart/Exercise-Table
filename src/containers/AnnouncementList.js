@@ -97,9 +97,9 @@ const AnnouncementList = () => {
         <CCard>
           <CCardHeader>
             <CRow>
-              <CCol md="11">公告</CCol>
+              <CCol xs="10" md="11">公告</CCol>
               {account.role === "Admin" && (
-                <CCol md="1">
+                <CCol xs="1" md="1">
                   <CButton
                     variant="ghost"
                     color="primary"
