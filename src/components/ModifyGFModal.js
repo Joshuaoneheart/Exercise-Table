@@ -19,6 +19,7 @@ import {
   GF_NTUST_DEPARTMENT,
   GF_NTU_DEPARTMENT,
   GF_GRADE,
+  GF_TYPE,
 } from "const/GF";
 const ModifyGFModal = ({ data, show, setData, setModal }) => {
   var form = useRef();
@@ -34,6 +35,10 @@ const ModifyGFModal = ({ data, show, setData, setModal }) => {
     value: data.grade,
     label: <span style={{ whiteSpace: "pre" }}>{data.grade}</span>,
   });
+  const [type, setType] = useState({
+    value: "福音朋友",
+    label: <span style={{ whiteSpace: "pre" }}>福音朋友</span>,
+  });
   if (!show) {
     return null;
   }
@@ -44,6 +49,7 @@ const ModifyGFModal = ({ data, show, setData, setModal }) => {
     tmp["school"] = school.value;
     tmp["department"] = department.value;
     tmp["grade"] = grade.value;
+    tmp["type"] = type.value;
     tmp["note"] = form.current.elements.note.value;
     await firebase.firestore().collection("GF").doc(data.__id).update(tmp);
     cur_data = { ...cur_data, ...tmp };
@@ -69,6 +75,9 @@ const ModifyGFModal = ({ data, show, setData, setModal }) => {
       };
     });
   let grades = GF_GRADE.map((x) => {
+    return { value: x, label: <span style={{ whiteSpace: "pre" }}>{x}</span> };
+  });
+  let types = GF_TYPE.map((x) => {
     return { value: x, label: <span style={{ whiteSpace: "pre" }}>{x}</span> };
   });
   return (
@@ -156,6 +165,21 @@ const ModifyGFModal = ({ data, show, setData, setModal }) => {
                 options={grades}
                 onChange={(v) => {
                   setGrade(v);
+                }}
+              />
+            </CCol>
+          </CFormGroup>
+          <CFormGroup row inline>
+            <CCol md="3">
+              <CLabel>身份</CLabel>
+            </CCol>
+            <CCol xs="12" md="9">
+              <Select
+                value={type}
+                isSearchable
+                options={types}
+                onChange={(v) => {
+                  setType(v);
                 }}
               />
             </CCol>

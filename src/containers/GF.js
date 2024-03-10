@@ -2,12 +2,20 @@ import { loading } from "components";
 import { useParams } from "react-router-dom";
 import { FirestoreDocument } from "@react-firebase/firestore";
 
-import { CCol, CRow, CCard, CCardBody, CCardHeader } from "@coreui/react";
+import {
+  CCol,
+  CButton,
+  CRow,
+  CCard,
+  CCardBody,
+  CCardHeader,
+} from "@coreui/react";
 import { useContext, useEffect, useState } from "react";
 import { AccountsMapContext } from "hooks/context";
 import { GetWeeklyBase } from "utils/date";
 import { DB } from "db/firebase";
 import ModifyGFModal from "components/ModifyGFModal";
+import CIcon from "@coreui/icons-react";
 
 const GFCardBody = ({ init_data }) => {
   const [modifyModal, setModifyModal] = useState(false);
