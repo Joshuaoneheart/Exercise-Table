@@ -472,7 +472,7 @@ const ModifyModal = ({ show, data, setData, setModal }) => {
         <CCol xs="4" md="4" style={{ paddingBottom: "2vh" }}>
           <CInput
             defaultValue={
-              type === data.value[show].type
+              "選項" in data.value[show]
                 ? data.value[show]["選項"].split(";")[i]
                 : ""
             }
@@ -489,7 +489,7 @@ const ModifyModal = ({ show, data, setData, setModal }) => {
       <CCol xs="4" md="4" style={{ paddingBottom: "2vh" }}>
         <CInput
           defaultValue={
-            type === data.value[show].type
+            "子選項" in data.value[show]
               ? data.value[show]["子選項"].split(";")[i]
               : ""
           }
