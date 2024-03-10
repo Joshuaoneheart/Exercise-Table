@@ -75,9 +75,9 @@ const AnnouncementCard = ({ init_data, id }) => {
           setData={setData}
         />
         <CRow>
-          <CCol md="11">公告</CCol>
+          <CCol xs="10" md="11">公告</CCol>
           {data && account.id === data.posted_by && (
-            <CCol md="1">
+            <CCol xs="1" md="1">
               <CButton
                 variant="ghost"
                 color="primary"
