@@ -36,8 +36,8 @@ const ModifyGFModal = ({ data, show, setData, setModal }) => {
     label: <span style={{ whiteSpace: "pre" }}>{data.grade}</span>,
   });
   const [type, setType] = useState({
-    value: "福音朋友",
-    label: <span style={{ whiteSpace: "pre" }}>福音朋友</span>,
+    value: data.type,
+    label: <span style={{ whiteSpace: "pre" }}>{data.type}</span>,
   });
   if (!show) {
     return null;
@@ -52,7 +52,7 @@ const ModifyGFModal = ({ data, show, setData, setModal }) => {
     tmp["type"] = type.value;
     tmp["note"] = form.current.elements.note.value;
     await firebase.firestore().collection("GF").doc(data.__id).update(tmp);
-    cur_data = { ...cur_data, ...tmp };
+    Object.assign(cur_data, tmp);
     setData(cur_data);
     setModal(false);
   };
@@ -88,7 +88,7 @@ const ModifyGFModal = ({ data, show, setData, setModal }) => {
       }}
     >
       <CModalHeader closeButton>
-        <CModalTitle>新增牧養對象</CModalTitle>
+        <CModalTitle>編輯</CModalTitle>
       </CModalHeader>
       <CModalBody>
         <CForm

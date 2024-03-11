@@ -56,10 +56,10 @@ const GFCardBody = ({ init_data }) => {
       <CRow>
         <CCol style={{ fontSize: "18px" }}>
           <CRow className="align-items-center">
-            <CCol md="11">
+            <CCol xs="10" md="11">
               <h3>{data.name}</h3>
             </CCol>
-            <CCol md="1">
+            <CCol xs="1" md="1">
               <CButton
                 variant="ghost"
                 color="primary"
