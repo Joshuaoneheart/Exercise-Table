@@ -135,7 +135,7 @@ const ModifyCard = ({ default_data }) => {
               }}
             />
           </CCol>
-          <CCol xs="4">
+          <CCol xs="4" md="2">
             <CButtonToolbar justify="end">
               <CButton
                 variant="ghost"

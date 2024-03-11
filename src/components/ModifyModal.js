@@ -63,6 +63,9 @@ const AddModal = ({ show, page, groups, names, setModal, setGroups }) => {
           method="post"
           encType="multipart/form-data"
           className="form-horizontal"
+          onSubmit={(e) => {
+            e.preventDefault();
+          }}
         >
           {show.type === "resident" && (
             <>
@@ -82,15 +85,7 @@ const AddModal = ({ show, page, groups, names, setModal, setGroups }) => {
                 <CLabel>{page === "group" ? "活力組" : "住處"}名稱</CLabel>
               </CCol>
               <CCol xs="12" md="9">
-                <CInput
-                  name="name"
-                  required
-                  onKeyDown={(event) => {
-                    if (event.key === "Enter") {
-                      writeData();
-                    }
-                  }}
-                />
+                <CInput name="name" required />
               </CCol>
             </CFormGroup>
           )}
@@ -140,7 +135,7 @@ const DeleteModal = ({
         setGroups(groups.clone());
         break;
       case "group":
-        if (group_members[show.index].length !== 0) {
+        if (group_members[show.index - 1].length !== 0) {
           if (page === "group") {
             alert("活力組內尚有住戶，請將所有住戶刪除後再刪除活力組");
           }
@@ -220,6 +215,9 @@ const TransferModal = ({ show, page, groups, setModal, setGroups }) => {
           method="post"
           encType="multipart/form-data"
           className="form-horizontal"
+          onSubmit={(e) => {
+            e.preventDefault();
+          }}
         >
           <CFormGroup row inline>
             <CCol md="3">

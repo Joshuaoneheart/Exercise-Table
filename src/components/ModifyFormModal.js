@@ -174,6 +174,9 @@ const AddModal = ({ show, data, setData, sections, setSections, setModal }) => {
           method="post"
           encType="multipart/form-data"
           className="form-horizontal"
+          onSubmit={(e) => {
+            e.preventDefault();
+          }}
         >
           {show.type === "problem" && (
             <>
@@ -469,7 +472,7 @@ const ModifyModal = ({ show, data, setData, setModal }) => {
         <CCol xs="4" md="4" style={{ paddingBottom: "2vh" }}>
           <CInput
             defaultValue={
-              type === data.value[show].type
+              "選項" in data.value[show]
                 ? data.value[show]["選項"].split(";")[i]
                 : ""
             }
@@ -486,7 +489,7 @@ const ModifyModal = ({ show, data, setData, setModal }) => {
       <CCol xs="4" md="4" style={{ paddingBottom: "2vh" }}>
         <CInput
           defaultValue={
-            type === data.value[show].type
+            "子選項" in data.value[show]
               ? data.value[show]["子選項"].split(";")[i]
               : ""
           }
@@ -514,6 +517,9 @@ const ModifyModal = ({ show, data, setData, setModal }) => {
             method="post"
             encType="multipart/form-data"
             className="form-horizontal"
+            onSubmit={(e) => {
+              e.preventDefault();
+            }}
           >
             <CFormGroup row inline>
               <CCol md="3">

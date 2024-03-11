@@ -161,6 +161,9 @@ const GFFormContent = ({ data, account, default_data }) => {
           method="post"
           encType="multipart/form-data"
           className="form-horizontal"
+          onSubmit={(e) => {
+            e.preventDefault();
+          }}
         >
           {inputs}
         </CForm>

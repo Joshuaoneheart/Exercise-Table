@@ -1,10 +1,10 @@
 import { DB } from "../db/firebase";
 class Account {
-  constructor(props) {
-    this.readFromMap(props);
+  constructor(props, is_changed = false) {
+    this.readFromMap(props, is_changed);
   }
 
-  readFromMap(props) {
+  readFromMap(props, is_changed) {
     this.id = props.id;
     this.displayName = props.displayName;
     this.email = props.email;
@@ -16,7 +16,7 @@ class Account {
     this.is_admin = props.role === "Admin";
     this.is_active = props.status === "Active";
     this.dbUrl = "/accounts/" + this.id;
-    this.is_changed = false;
+    this.is_changed = is_changed;
   }
 
   update(attribute, value) {
@@ -33,7 +33,7 @@ class Account {
     if (this.residence) res.residence = this.residence;
     if (this.role) res.role = this.role;
     if (this.status) res.status = this.status;
-    if (this.is_changed) await DB.setByUrl(this.dbUrl, res);
+    if (this.is_changed) await DB.updateByUrl(this.dbUrl, res);
   }
 
   async fetch() {

@@ -69,6 +69,22 @@ class Firebase {
       alert(e.message);
     }
   }
+
+  async updateByUrl(url, data) {
+    let db = this.firebase.firestore();
+    let path = url.split("/");
+    let flag = 0;
+    for (let i = 1; i < path.length; i++) {
+      if (!flag) db = db.collection(path[i]);
+      else db = db.doc(path[i]);
+      flag = !flag;
+    }
+    try {
+      await db.update(data);
+    } catch (e) {
+      alert(e.message);
+    }
+  }
 }
 
 var DB = new Firebase(firebase);

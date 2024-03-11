@@ -101,7 +101,7 @@ const ModifyCard = ({ default_data, page, title, map }) => {
               }}
             />
           </CCol>
-          <CCol xs="4">
+          <CCol xs="4" md="2">
             <CButtonToolbar justify="end">
               <CButton
                 variant="ghost"
