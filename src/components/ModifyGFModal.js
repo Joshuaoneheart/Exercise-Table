@@ -97,6 +97,9 @@ const ModifyGFModal = ({ data, show, setData, setModal }) => {
           method="post"
           encType="multipart/form-data"
           className="form-horizontal"
+          onSubmit={(e) => {
+            e.preventDefault();
+          }}
         >
           <CFormGroup row inline>
             <CCol md="3">

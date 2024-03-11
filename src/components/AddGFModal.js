@@ -201,7 +201,7 @@ const AddGFModal = ({ data, GF, show, setData, setModal }) => {
       <CModalFooter>
         <CButton color="primary" onClick={writeData}>
           新增
-        </CButton>{" "}
+        </CButton>
         <CButton
           color="secondary"
           onClick={() => {

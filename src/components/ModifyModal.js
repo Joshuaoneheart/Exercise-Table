@@ -94,7 +94,7 @@ const AddModal = ({ show, page, groups, names, setModal, setGroups }) => {
       <CModalFooter>
         <CButton color="primary" onClick={writeData}>
           新增
-        </CButton>{" "}
+        </CButton>
         <CButton
           color="secondary"
           onClick={() => {
