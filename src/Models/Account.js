@@ -33,7 +33,7 @@ class Account {
     if (this.residence) res.residence = this.residence;
     if (this.role) res.role = this.role;
     if (this.status) res.status = this.status;
-    if (this.is_changed) await DB.setByUrl(this.dbUrl, res);
+    if (this.is_changed) await DB.updateByUrl(this.dbUrl, res);
   }
 
   async fetch() {
