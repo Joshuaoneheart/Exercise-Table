@@ -21,39 +21,38 @@ import {
   GF_GRADE,
   GF_TYPE,
 } from "const/GF";
-const AddGFModal = ({ data, GF, show, setData, setModal }) => {
-  const form = useRef();
-  const [school, setSchool] = useState({
-    value: "台大",
-    label: <span style={{ whiteSpace: "pre" }}>台大</span>,
+const ModifyGFModal = ({ data, show, setData, setModal }) => {
+  var form = useRef();
+  var [school, setSchool] = useState({
+    value: data.school,
+    label: <span style={{ whiteSpace: "pre" }}>{data.school}</span>,
   });
-  const [department, setDepartment] = useState({
-    value: GF_NTU_DEPARTMENT[0],
-    label: <span style={{ whiteSpace: "pre" }}>{GF_NTU_DEPARTMENT[0]}</span>,
+  var [department, setDepartment] = useState({
+    value: data.department,
+    label: <span style={{ whiteSpace: "pre" }}>{data.department}</span>,
   });
-  const [grade, setGrade] = useState({
-    value: "大一",
-    label: <span style={{ whiteSpace: "pre" }}>大一</span>,
+  var [grade, setGrade] = useState({
+    value: data.grade,
+    label: <span style={{ whiteSpace: "pre" }}>{data.grade}</span>,
   });
   const [type, setType] = useState({
-    value: "福音朋友",
-    label: <span style={{ whiteSpace: "pre" }}>福音朋友</span>,
+    value: data.type,
+    label: <span style={{ whiteSpace: "pre" }}>{data.type}</span>,
   });
   if (!show) {
     return null;
   }
   var writeData = async () => {
-    var cur_data = data;
-    var tmp = {};
+    let cur_data = data;
+    let tmp = {};
     tmp["name"] = form.current.elements.name.value;
     tmp["school"] = school.value;
     tmp["department"] = department.value;
     tmp["grade"] = grade.value;
     tmp["type"] = type.value;
     tmp["note"] = form.current.elements.note.value;
-    let res = await firebase.firestore().collection("GF").add(tmp);
-    tmp.id = res.id;
-    cur_data.push(tmp);
+    await firebase.firestore().collection("GF").doc(data.__id).update(tmp);
+    Object.assign(cur_data, tmp);
     setData(cur_data);
     setModal(false);
   };
@@ -89,7 +88,7 @@ const AddGFModal = ({ data, GF, show, setData, setModal }) => {
       }}
     >
       <CModalHeader closeButton>
-        <CModalTitle>新增牧養對象</CModalTitle>
+        <CModalTitle>編輯牧養對象</CModalTitle>
       </CModalHeader>
       <CModalBody>
         <CForm
@@ -107,7 +106,7 @@ const AddGFModal = ({ data, GF, show, setData, setModal }) => {
               <CLabel>姓名</CLabel>
             </CCol>
             <CCol xs="12" md="9">
-              <CInput name="name" required />
+              <CInput name="name" defaultValue={data.name} required />
             </CCol>
           </CFormGroup>
           <CFormGroup row inline>
@@ -193,14 +192,14 @@ const AddGFModal = ({ data, GF, show, setData, setModal }) => {
               <CLabel>備註</CLabel>
             </CCol>
             <CCol xs="12" md="9">
-              <CInput name="note" required />
+              <CInput name="note" defaultValue={data.note} required />
             </CCol>
           </CFormGroup>
         </CForm>
       </CModalBody>
       <CModalFooter>
         <CButton color="primary" onClick={writeData}>
-          新增
+          修改
         </CButton>
         <CButton
           color="secondary"
@@ -215,4 +214,4 @@ const AddGFModal = ({ data, GF, show, setData, setModal }) => {
   );
 };
 
-export default AddGFModal;
+export default ModifyGFModal;

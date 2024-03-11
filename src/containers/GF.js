@@ -2,12 +2,23 @@ import { loading } from "components";
 import { useParams } from "react-router-dom";
 import { FirestoreDocument } from "@react-firebase/firestore";
 
-import { CCol, CRow, CCard, CCardBody, CCardHeader } from "@coreui/react";
+import {
+  CCol,
+  CButton,
+  CRow,
+  CCard,
+  CCardBody,
+  CCardHeader,
+} from "@coreui/react";
 import { useContext, useEffect, useState } from "react";
 import { AccountsMapContext } from "hooks/context";
 import { GetWeeklyBase } from "utils/date";
 import { DB } from "db/firebase";
+import ModifyGFModal from "components/ModifyGFModal";
+import CIcon from "@coreui/icons-react";
+
 const GFCardBody = ({ init_data }) => {
+  const [modifyModal, setModifyModal] = useState(false);
   const [data, setData] = useState(init_data);
   const accountsMap = useContext(AccountsMapContext);
   useEffect(() => {
@@ -36,10 +47,31 @@ const GFCardBody = ({ init_data }) => {
   }, [init_data, accountsMap]);
   return (
     <CCardBody>
-      {" "}
+      <ModifyGFModal
+        data={data}
+        setData={setData}
+        show={modifyModal}
+        setModal={setModifyModal}
+      />
       <CRow>
         <CCol style={{ fontSize: "18px" }}>
-          <h3>{data.name}</h3>
+          <CRow className="align-items-center">
+            <CCol xs="10" md="11">
+              <h3>{data.name}</h3>
+            </CCol>
+            <CCol xs="1" md="1">
+              <CButton
+                variant="ghost"
+                color="primary"
+                className="end"
+                onClick={() => {
+                  setModifyModal(true);
+                }}
+              >
+                <CIcon alt="修改" name="cil-pencil" />
+              </CButton>
+            </CCol>
+          </CRow>
           <hr />
           <div width="20%">
             <CRow>
@@ -101,7 +133,7 @@ const GFCardBody = ({ init_data }) => {
             </CRow>
           </div>
         </CCol>
-      </CRow>{" "}
+      </CRow>
     </CCardBody>
   );
 };
