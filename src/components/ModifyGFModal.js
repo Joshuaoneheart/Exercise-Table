@@ -88,7 +88,7 @@ const ModifyGFModal = ({ data, show, setData, setModal }) => {
       }}
     >
       <CModalHeader closeButton>
-        <CModalTitle>編輯</CModalTitle>
+        <CModalTitle>編輯牧養對象</CModalTitle>
       </CModalHeader>
       <CModalBody>
         <CForm
