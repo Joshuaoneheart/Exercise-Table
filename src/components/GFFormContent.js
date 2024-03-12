@@ -1,5 +1,6 @@
 import {
   CButton,
+  CButtonGroup,
   CCard,
   CCardBody,
   CCardFooter,
@@ -175,25 +176,34 @@ const GFFormContent = ({ data, account, default_data }) => {
           setModal={setAddModal}
         />
       </CCardBody>
-      <CCardFooter>
-        <CButton
-          variant="ghost"
-          color="primary"
-          onClick={function (setAddModal) {
-            setAddModal(true);
-          }.bind(null, setAddModal)}
-        >
-          新增牧養對象
-        </CButton>
-        <CButton
-          variant="ghost"
-          color="dark"
-          onClick={() => {
-            saveChange(account.id, selected, titles, GFs, setGFs, setSelected);
-          }}
-        >
-          提交表單
-        </CButton>
+      <CCardFooter align="right">
+        <CButtonGroup>
+          <CButton
+            variant="outline"
+            color="primary"
+            onClick={function (setAddModal) {
+              setAddModal(true);
+            }.bind(null, setAddModal)}
+          >
+            新增牧養對象
+          </CButton>
+          <CButton
+            variant="outline"
+            color="dark"
+            onClick={() => {
+              saveChange(
+                account.id,
+                selected,
+                titles,
+                GFs,
+                setGFs,
+                setSelected
+              );
+            }}
+          >
+            提交表單
+          </CButton>
+        </CButtonGroup>
       </CCardFooter>
     </CCard>
   );

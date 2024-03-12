@@ -1,6 +1,7 @@
 import CIcon from "@coreui/icons-react";
 import {
   CButton,
+  CButtonGroup,
   CButtonToolbar,
   CCard,
   CCardBody,
@@ -79,10 +80,8 @@ const ModifyCard = ({ default_data, page, title, map }) => {
     <CCard>
       <CCardHeader>
         <CRow className="align-items-center">
-          <CCol xs="4" md="7" lg="7" xl="8">
-            {title}
-          </CCol>
-          <CCol>
+          <CCol>{title}</CCol>
+          <CCol xs="4" md="3">
             <Select
               style={{ width: "80%" }}
               value={{
@@ -101,36 +100,38 @@ const ModifyCard = ({ default_data, page, title, map }) => {
               }}
             />
           </CCol>
-          <CCol xs="4" md="2">
-            <CButtonToolbar justify="end">
-              <CButton
-                variant="ghost"
-                color="dark"
-                onClick={() =>
-                  setAddModal({
-                    type: "group",
-                    page: "group",
-                    title: group_name,
-                  })
-                }
-              >
-                <CIcon alt={"新增" + group_name} name="cil-library-add" />
-              </CButton>
-              <CButton
-                variant="ghost"
-                color="danger"
-                onClick={() =>
-                  setDeleteModal({
-                    type: "group",
-                    title: group_name,
-                    id: groups.ids[activeTab],
-                    index: activeTab,
-                  })
-                }
-              >
-                <CIcon alt={"刪除" + group_name} name="cil-trash" />
-              </CButton>
-            </CButtonToolbar>
+          <CCol xs="3" md="2">
+            <CRow alignHorizontal="end" style={{ padding: "inherit" }}>
+              <CButtonGroup>
+                <CButton
+                  variant="outline"
+                  color="dark"
+                  onClick={() =>
+                    setAddModal({
+                      type: "group",
+                      page: "group",
+                      title: group_name,
+                    })
+                  }
+                >
+                  <CIcon alt={"新增" + group_name} name="cil-library-add" />
+                </CButton>
+                <CButton
+                  variant="outline"
+                  color="danger"
+                  onClick={() =>
+                    setDeleteModal({
+                      type: "group",
+                      title: group_name,
+                      id: groups.ids[activeTab],
+                      index: activeTab,
+                    })
+                  }
+                >
+                  <CIcon alt={"刪除" + group_name} name="cil-trash" />
+                </CButton>
+              </CButtonGroup>
+            </CRow>
           </CCol>
         </CRow>
       </CCardHeader>
@@ -164,38 +165,36 @@ const ModifyCard = ({ default_data, page, title, map }) => {
           setModal={setAddModal}
         />
       </CCardBody>
-      <CCardFooter>
-        <CCol align="end">
-          <CButtonToolbar>
-            <CButton
-              variant="ghost"
-              color="dark"
-              onClick={() =>
-                setAddModal({
-                  type: "resident",
-                  page,
-                  groups: groups.names[activeTab],
-                  index: activeTab,
-                  title: "住戶",
-                })
-              }
-            >
-              新增住戶
-            </CButton>
-            <CButton
-              variant="ghost"
-              color="primary"
-              onClick={async () => {
-                var check = window.confirm("確定儲存修改嗎？");
-                if (!check) return;
-                await groups.save(page);
-                alert("儲存完成");
-              }}
-            >
-              儲存變更
-            </CButton>
-          </CButtonToolbar>
-        </CCol>
+      <CCardFooter align="right">
+        <CButtonGroup>
+          <CButton
+            variant="outline"
+            color="dark"
+            onClick={() =>
+              setAddModal({
+                type: "resident",
+                page,
+                groups: groups.names[activeTab],
+                index: activeTab,
+                title: "住戶",
+              })
+            }
+          >
+            新增住戶
+          </CButton>
+          <CButton
+            variant="outline"
+            color="primary"
+            onClick={async () => {
+              var check = window.confirm("確定儲存修改嗎？");
+              if (!check) return;
+              await groups.save(page);
+              alert("儲存完成");
+            }}
+          >
+            儲存變更
+          </CButton>
+        </CButtonGroup>
       </CCardFooter>
     </CCard>
   );

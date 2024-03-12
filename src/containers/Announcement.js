@@ -79,7 +79,7 @@ const AnnouncementCard = ({ init_data, id }) => {
           {data && account.id === data.posted_by && (
             <CCol xs="1" md="1">
               <CButton
-                variant="ghost"
+                variant="outline"
                 color="primary"
                 onClick={() => {
                   setModifyModal(true);
@@ -175,7 +175,7 @@ const AnnouncementCard = ({ init_data, id }) => {
               }}
             />
           </CCol>
-          <CButton variant="ghost" color="primary" onClick={addComment}>
+          <CButton variant="outline" color="primary" onClick={addComment}>
             <CIcon name="cil-send" />
           </CButton>
         </CRow>

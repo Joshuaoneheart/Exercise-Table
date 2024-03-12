@@ -61,7 +61,7 @@ const GFCardBody = ({ init_data }) => {
             </CCol>
             <CCol xs="1" md="1">
               <CButton
-                variant="ghost"
+                variant="outline"
                 color="primary"
                 className="end"
                 onClick={() => {

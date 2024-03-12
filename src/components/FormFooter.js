@@ -6,12 +6,12 @@ import { GetWeeklyBase } from "utils/date";
 
 const FormFooter = ({ form, account, metadata }) => {
   return (
-    <CCardFooter>
+    <CCardFooter align="right">
       <FirestoreBatchedWrite>
         {({ addMutationToBatch, commit }) => {
           return (
             <CButton
-              variant="ghost"
+              variant="outline"
               color="dark"
               onClick={(event) => {
                 event.target.disabled = true;

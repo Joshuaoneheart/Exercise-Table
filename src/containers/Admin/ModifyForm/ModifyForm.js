@@ -1,7 +1,7 @@
 import CIcon from "@coreui/icons-react";
 import {
   CButton,
-  CButtonToolbar,
+  CButtonGroup,
   CCard,
   CCardBody,
   CCardFooter,
@@ -36,31 +36,33 @@ const ModifyListGroupItem = ({
           {name}
         </CCol>
         <CCol>
-          <CButtonToolbar justify="end">
-            <CButton
-              variant="ghost"
-              color="dark"
-              onClick={() => {
-                setModifyModal(index);
-              }}
-            >
-              <CIcon name="cil-pencil" />
-            </CButton>
-            <CButton
-              variant="ghost"
-              color="danger"
-              onClick={() => {
-                setDeleteModal({
-                  type: "problem",
-                  title: "問題",
-                  index,
-                  name,
-                });
-              }}
-            >
-              <CIcon name="cil-trash" />
-            </CButton>
-          </CButtonToolbar>
+          <CRow alignHorizontal="end" style={{ padding: "inherit" }}>
+            <CButtonGroup justify="end">
+              <CButton
+                variant="outline"
+                color="dark"
+                onClick={() => {
+                  setModifyModal(index);
+                }}
+              >
+                <CIcon name="cil-pencil" />
+              </CButton>
+              <CButton
+                variant="outline"
+                color="danger"
+                onClick={() => {
+                  setDeleteModal({
+                    type: "problem",
+                    title: "問題",
+                    index,
+                    name,
+                  });
+                }}
+              >
+                <CIcon name="cil-trash" />
+              </CButton>
+            </CButtonGroup>
+          </CRow>
         </CCol>
       </CRow>
     </CListGroupItem>
@@ -136,31 +138,33 @@ const ModifyCard = ({ default_data }) => {
             />
           </CCol>
           <CCol xs="4" md="2">
-            <CButtonToolbar justify="end">
-              <CButton
-                variant="ghost"
-                color="dark"
-                onClick={function () {
-                  setAddModal({ title: "區塊", type: "section" });
-                }}
-              >
-                <CIcon alt="新增區塊" name="cil-library-add" />
-              </CButton>
-              <CButton
-                variant="ghost"
-                color="danger"
-                onClick={() => {
-                  setDeleteModal({
-                    type: "group",
-                    title: "區塊",
-                    name: sections[activeTab],
-                    index: activeTab,
-                  });
-                }}
-              >
-                <CIcon alt="刪除區塊" name="cil-trash" />
-              </CButton>
-            </CButtonToolbar>
+            <CRow alignHorizontal="end" style={{ padding: "inherit" }}>
+              <CButtonGroup justify="end">
+                <CButton
+                  variant="outline"
+                  color="dark"
+                  onClick={function () {
+                    setAddModal({ title: "區塊", type: "section" });
+                  }}
+                >
+                  <CIcon alt="新增區塊" name="cil-library-add" />
+                </CButton>
+                <CButton
+                  variant="outline"
+                  color="danger"
+                  onClick={() => {
+                    setDeleteModal({
+                      type: "group",
+                      title: "區塊",
+                      name: sections[activeTab],
+                      index: activeTab,
+                    });
+                  }}
+                >
+                  <CIcon alt="刪除區塊" name="cil-trash" />
+                </CButton>
+              </CButtonGroup>
+            </CRow>
           </CCol>
         </CRow>
       </CCardHeader>
@@ -195,10 +199,10 @@ const ModifyCard = ({ default_data }) => {
           setModal={setAddModal}
         />
       </CCardBody>
-      <CCardFooter>
-        <CButtonToolbar>
+      <CCardFooter align="right">
+        <CButtonGroup>
           <CButton
-            variant="ghost"
+            variant="outline"
             color="dark"
             onClick={function (activeTab) {
               setAddModal({ type: "problem", title: "問題", index: activeTab });
@@ -210,7 +214,7 @@ const ModifyCard = ({ default_data }) => {
             {({ addMutationToBatch, commit }) => {
               return (
                 <CButton
-                  variant="ghost"
+                  variant="outline"
                   color="primary"
                   onClick={async () => {
                     var check = window.confirm("確定儲存修改嗎？");
@@ -264,7 +268,7 @@ const ModifyCard = ({ default_data }) => {
               );
             }}
           </FirestoreBatchedWrite>
-        </CButtonToolbar>
+        </CButtonGroup>
       </CCardFooter>
     </CCard>
   );
