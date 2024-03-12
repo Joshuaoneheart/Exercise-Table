@@ -1,10 +1,10 @@
 import CIcon from "@coreui/icons-react";
 import {
   CButton,
-  CButtonToolbar,
+  CButtonGroup,
   CCol,
   CListGroupItem,
-  CRow
+  CRow,
 } from "@coreui/react";
 const ModifyListGroupItem = ({
   key_name,
@@ -22,31 +22,33 @@ const ModifyListGroupItem = ({
           {name}
         </CCol>
         <CCol>
-          <CButtonToolbar justify="end">
-            <CButton
-              variant="ghost"
-              color="dark"
-              onClick={() => {
-                setTransferModal({ index, group: activeTab });
-              }}
-            >
-              <CIcon name="cil-swap-horizontal" />
-            </CButton>
-            <CButton
-              variant="ghost"
-              color="danger"
-              onClick={() => {
-                setDeleteModal({
-                  title: "住戶",
-                  type: "resident",
-                  name,
-                  index,
-                });
-              }}
-            >
-              <CIcon name="cil-trash" />
-            </CButton>
-          </CButtonToolbar>
+          <CRow alignHorizontal="end" style={{ padding: "inherit" }}>
+            <CButtonGroup>
+              <CButton
+                variant="outline"
+                color="dark"
+                onClick={() => {
+                  setTransferModal({ index, group: activeTab });
+                }}
+              >
+                <CIcon name="cil-swap-horizontal" />
+              </CButton>
+              <CButton
+                variant="outline"
+                color="danger"
+                onClick={() => {
+                  setDeleteModal({
+                    title: "住戶",
+                    type: "resident",
+                    name,
+                    index,
+                  });
+                }}
+              >
+                <CIcon name="cil-trash" />
+              </CButton>
+            </CButtonGroup>
+          </CRow>
         </CCol>
       </CRow>
     </CListGroupItem>
