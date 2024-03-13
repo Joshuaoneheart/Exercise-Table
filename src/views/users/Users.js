@@ -12,6 +12,7 @@ import {
 import { useState } from "react";
 
 import { FirestoreCollection } from "@react-firebase/firestore";
+import { loading } from "components";
 
 const getBadge = (status) => {
   switch (status) {
@@ -27,12 +28,6 @@ const getBadge = (status) => {
       return "primary";
   }
 };
-const loading = (
-  <div className="pt-3 text-center">
-    <div className="sk-spinner sk-spinner-pulse"></div>
-  </div>
-);
-
 const Users = () => {
   const [details, setDetails] = useState([]);
 
@@ -49,7 +44,7 @@ const Users = () => {
 
   return (
     <CRow>
-      <CCol xl={9}>
+      <CCol>
         <CCard>
           <CCardHeader>Users</CCardHeader>
           <CCardBody>
