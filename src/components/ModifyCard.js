@@ -2,7 +2,6 @@ import CIcon from "@coreui/icons-react";
 import {
   CButton,
   CButtonGroup,
-  CButtonToolbar,
   CCard,
   CCardBody,
   CCardFooter,
