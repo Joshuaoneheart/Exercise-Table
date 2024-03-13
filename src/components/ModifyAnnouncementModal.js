@@ -11,7 +11,7 @@ import {
   CModalHeader,
   CModalTitle,
 } from "@coreui/react";
-import { firebase } from "db/firebase";
+import { DB } from "db/firebase";
 import { useEffect, useRef, useState } from "react";
 import { ContentState, EditorState, convertToRaw } from "draft-js";
 import { Editor } from "react-draft-wysiwyg";
@@ -49,11 +49,7 @@ const ModifyAnnouncementModal = ({
     tmp["content"] = draftToHtml(convertToRaw(editorState.getCurrentContent()));
     tmp["posted_by"] = account.id;
     tmp["timestamp"] = new Date();
-    await firebase
-      .firestore()
-      .collection("announcement")
-      .doc(id)
-      .set(tmp)
+    await DB.updateByUrl("/announcement/" + id, tmp)
       .then(() => {
         alert("編輯完成");
         setData(tmp);
