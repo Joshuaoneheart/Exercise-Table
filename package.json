@@ -67,9 +67,9 @@
     "prettier": "^2.4.0"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
+    "start": "react-scripts --openssl-legacy-provider start",
+    "build": "react-scripts --openssl-legacy-provider build",
+    "test": "react-scripts --openssl-legacy-provider test",
     "test:cov": "npm test -- --coverage --watchAll=false",
     "test:debug": "react-scripts --inspect-brk test --runInBand",
     "eject": "react-scripts eject",
@@ -101,7 +101,7 @@
     ]
   },
   "engines": {
-    "node": "16.x",
+    "node": "20.x",
     "npm": "8.x"
   }
 }
