@@ -53,7 +53,7 @@ const AnnouncementCard = ({ init_data, id }) => {
       if (!data.checked) data.checked = account.id;
       else if (!data.checked.split(";").includes(account.id))
         data.checked += ";" + account.id;
-      await DB.setByUrl("/announcement/" + id, data);
+      await DB.updateByUrl("/announcement/" + id, data);
     };
     if (data) check();
   }, [account, data, id]);
