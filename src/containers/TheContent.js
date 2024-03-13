@@ -6,12 +6,7 @@ import { AccountContext } from "hooks/context";
 // routes config
 import member_routes from "routes/member_routes";
 import admin_routes from "routes/routes";
-
-const loading = (
-  <div className="pt-3 text-center">
-    <div className="sk-spinner sk-spinner-pulse"></div>
-  </div>
-);
+import { loading } from "components";
 
 const TheContent = () => {
   var account = useContext(AccountContext);

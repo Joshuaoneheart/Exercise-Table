@@ -28,7 +28,6 @@ const getBadge = (status) => {
       return "primary";
   }
 };
-
 const Users = () => {
   const [details, setDetails] = useState([]);
 
@@ -45,7 +44,7 @@ const Users = () => {
 
   return (
     <CRow>
-      <CCol xl={9}>
+      <CCol>
         <CCard>
           <CCardHeader>Users</CCardHeader>
           <CCardBody>
