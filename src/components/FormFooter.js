@@ -25,8 +25,29 @@ const FormFooter = ({ form, account, metadata }) => {
                 for (let i = 0; i < metadata.value.length; i++) {
                   var problem = metadata.value[i];
                   switch (problem.type) {
+                    case "MultiGrid":
+                      let options = metadata.value[i]["選項"];
+                      v[metadata.ids[i]] = {};
+                      for (let j = 0; j < options.length; j++) {
+                        let nodeList =
+                          form.current.elements[
+                            metadata.ids[i] + "-" + options[j]
+                          ];
+                        for (let k = 0; k < nodeList.length; k++) {
+                          if (nodeList[k].checked) {
+                            if (!(options[j] in v[metadata.ids[i]]))
+                              v[metadata.ids[i]][options[j]] = { ans: [], score: 0 };
+                            v[metadata.ids[i]][options[j]].ans.push(nodeList[k].value);
+                            v[metadata.ids[i]][options[j]].score += parseInt(
+                              problem.score[j]
+                            );
+                            total_score += parseInt(problem.score[j]);
+                          }
+                        }
+                      }
+                      break;
                     case "Grid":
-                      var suboptions = problem["子選項"].split(";");
+                      let suboptions = problem["子選項"];
                       v[problem.id] = {};
                       for (let j = 0; j < suboptions.length; j++) {
                         let ans =
@@ -36,15 +57,10 @@ const FormFooter = ({ form, account, metadata }) => {
                         if (ans) {
                           v[problem.id][suboptions[j]] = {
                             ans: ans,
-                            score:
-                              problem.score.split(";")[
-                                problem["選項"].split(";").indexOf(ans)
-                              ],
+                            score: problem.score[problem["選項"].indexOf(ans)],
                           };
                           total_score += parseInt(
-                            problem.score.split(";")[
-                              problem["選項"].split(";").indexOf(ans)
-                            ]
+                            problem.score[problem["選項"].indexOf(ans)]
                           );
                         }
                       }
@@ -54,20 +70,15 @@ const FormFooter = ({ form, account, metadata }) => {
                       if (ans) {
                         v[problem.id] = {
                           ans: ans,
-                          score:
-                            problem.score.split(";")[
-                              problem["選項"].split(";").indexOf(ans)
-                            ],
+                          score: problem.score[problem["選項"].indexOf(ans)],
                         };
                         total_score += parseInt(
-                          problem.score.split(";")[
-                            problem["選項"].split(";").indexOf(ans)
-                          ]
+                          problem.score[problem["選項"].indexOf(ans)]
                         );
                       }
                       break;
                     case "MultiAnswer":
-                      var nodeList = form.current.elements[metadata.ids[i]];
+                      let nodeList = form.current.elements[metadata.ids[i]];
                       for (let j = 0; j < nodeList.length; j++) {
                         if (nodeList[j].checked) {
                           if (!(metadata.ids[i] in v))

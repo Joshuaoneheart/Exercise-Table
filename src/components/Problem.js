@@ -4,7 +4,7 @@ import {
   CInputCheckbox,
   CInputRadio,
   CLabel,
-  CRow
+  CRow,
 } from "@coreui/react";
 
 const Problem = ({ data, default_data }) => {
@@ -13,7 +13,7 @@ const Problem = ({ data, default_data }) => {
   var title_style = { color: "#636f83" };
   var button_style = { height: "20px", width: "20px" };
   switch (data.type) {
-    case "Grid":
+    case "MultiGrid":
       var option_row = [];
       var row = [];
       option_row.push(<CCol></CCol>);
@@ -32,9 +32,63 @@ const Problem = ({ data, default_data }) => {
       let suboptions = data["子選項"];
       for (let j = 0; j < suboptions.length; j++) {
         let suboption = suboptions[j];
-        var subframe = [];
+        let subframe = [];
         subframe.push(<CCol style={option_style}>{suboption}</CCol>);
         for (var option of options) {
+          subframe.push(
+            <CCol
+              key={j}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <CInputCheckbox
+                className="form-check-input"
+                name={data.id + "-" + option}
+                value={suboption}
+                style={Object.assign({}, button_style, { marginLeft: "2px" })}
+                defaultChecked={
+                  default_data &&
+                  option in default_data &&
+                  default_data[option].ans.includes(suboption)
+                }
+              />
+            </CCol>
+          );
+        }
+        row.push(<CRow>{subframe}</CRow>);
+      }
+      frame.push(
+        <>
+          <CRow>{option_row}</CRow>
+          {row}
+        </>
+      );
+      break;
+    case "Grid":
+      option_row = [];
+      row = [];
+      option_row.push(<CCol></CCol>);
+      options = data["選項"];
+      for (let i = 0; i < options.length; i++) {
+        let option = options[i];
+        option_row.push(
+          <CCol
+            key={i}
+            style={Object.assign({}, option_style, { textAlign: "center" })}
+          >
+            {option}
+          </CCol>
+        );
+      }
+      suboptions = data["子選項"];
+      for (let j = 0; j < suboptions.length; j++) {
+        let suboption = suboptions[j];
+        var subframe = [];
+        subframe.push(<CCol style={option_style}>{suboption}</CCol>);
+        for (option of options) {
           subframe.push(
             <CCol
               key={j}
@@ -100,7 +154,9 @@ const Problem = ({ data, default_data }) => {
               name={data.id}
               value={options[i]}
               style={button_style}
-              defaultChecked={default_data && default_data.ans.includes(options[i])}
+              defaultChecked={
+                default_data && default_data.ans.includes(options[i])
+              }
             />
             <CLabel
               variant="checkbox"

@@ -1,8 +1,6 @@
-import CIcon from "@coreui/icons-react";
 import {
   CButton,
   CCol,
-  CRow,
   CForm,
   CFormGroup,
   CInput,
@@ -137,6 +135,7 @@ const AddModal = ({ show, data, setData, sections, setSections, setModal }) => {
     MultiChoice: <MultiChoiceFields />,
     MultiAnswer: <MultiAnswerFields />,
     Grid: <GridFields />,
+    MultiGrid: <MultiGridFields />
   };
   return (
     <CModal
@@ -293,8 +292,6 @@ const DeleteModal = ({
 
 const ModifyModal = ({ show, data, setData, setModal }) => {
   var form = useRef();
-  var [optionCnt, setOptionCnt] = useState(0);
-  var [suboptionCnt, setSuboptionCnt] = useState(0);
   // format of type: [type name, 0 indicates the first open of modal, 1 is otherwise]
   let [type, setType] = useState("MultiChoice");
   var writeData = () => {
@@ -338,6 +335,7 @@ const ModifyModal = ({ show, data, setData, setModal }) => {
     MultiChoice: <MultiChoiceFields data={data.value[show]} />,
     MultiAnswer: <MultiAnswerFields data={data.value[show]} />,
     Grid: <GridFields data={data.value[show]} />,
+    MultiGrid: <MultiGridFields data={data.value[show]}/>
   };
   return (
     <CModal
