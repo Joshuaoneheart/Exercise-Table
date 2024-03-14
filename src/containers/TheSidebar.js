@@ -111,12 +111,6 @@ const TheSidebar = () => {
         icon: "cil-user",
       },
       {
-        _tag: "CSidebarNavItem",
-        name: "活力組",
-        to: "/biblegroup/" + account.group,
-        icon: "cil-bar-chart",
-      },
-      {
         _tag: "CSidebarNavTitle",
         _children: ["表單"],
       },
