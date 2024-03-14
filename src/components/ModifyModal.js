@@ -206,7 +206,7 @@ const TransferModal = ({ show, page, groups, setModal, setGroups }) => {
       }}
     >
       <CModalHeader closeButton>
-        <CModalTitle>修改住處</CModalTitle>
+        <CModalTitle>轉移{page === "group" ? "活力組" : "住處"}</CModalTitle>
       </CModalHeader>
       <CModalBody>
         <CForm

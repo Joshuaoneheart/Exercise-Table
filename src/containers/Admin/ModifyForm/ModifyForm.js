@@ -19,7 +19,12 @@ import {
 } from "@react-firebase/firestore";
 import Select from "react-select";
 import { loading } from "components";
-import { AddModal, DeleteModal, ModifyModal } from "components/ModifyFormModal";
+import {
+  AddModal,
+  DeleteModal,
+  ModifyModal,
+  TransferModal,
+} from "components/ModifyFormModal";
 import { firebase } from "db/firebase";
 import { useState } from "react";
 
@@ -28,6 +33,7 @@ const ModifyListGroupItem = ({
   name,
   setModifyModal,
   setDeleteModal,
+  setTransferModal,
 }) => {
   return (
     <CListGroupItem accent="secondary" color="secondary" key={index}>
@@ -46,6 +52,15 @@ const ModifyListGroupItem = ({
                 }}
               >
                 <CIcon name="cil-pencil" />
+              </CButton>
+              <CButton
+                variant="outline"
+                color="primary"
+                onClick={() => {
+                  setTransferModal(index);
+                }}
+              >
+                <CIcon name="cil-swap-horizontal" />
               </CButton>
               <CButton
                 variant="outline"
@@ -74,6 +89,7 @@ const ModifyCard = ({ default_data }) => {
   const [modifyModal, setModifyModal] = useState(null);
   const [deleteModal, setDeleteModal] = useState(null);
   const [addModal, setAddModal] = useState(null);
+  const [transferModal, setTransferModal] = useState(null);
   var [sections, setSections] = useState([]);
   if (sections.length <= activeTab)
     activeTab = sections.length > 0 ? sections.length - 1 : 0;
@@ -94,6 +110,7 @@ const ModifyCard = ({ default_data }) => {
         index={i}
         setModifyModal={setModifyModal}
         setDeleteModal={setDeleteModal}
+        setTransferModal={setTransferModal}
       />
     );
   }
@@ -197,6 +214,13 @@ const ModifyCard = ({ default_data }) => {
           setSections={setSections}
           show={addModal}
           setModal={setAddModal}
+        />
+        <TransferModal
+          data={data}
+          setData={setData}
+          sections={sections}
+          show={transferModal}
+          setModal={setTransferModal}
         />
       </CCardBody>
       <CCardFooter align="right">
