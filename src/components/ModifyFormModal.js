@@ -87,7 +87,7 @@ format of show
 const AddModal = ({ show, data, setData, sections, setSections, setModal }) => {
   var [type, setType] = useState("MultiChoice");
   var form = useRef();
-  if (show == null) {
+  if (show === null) {
     return null;
   }
   var writeData = () => {
@@ -326,10 +326,10 @@ const ModifyModal = ({ show, data, setData, setModal }) => {
   };
 
   useEffect(() => {
-    if (show) {
+    if (show !== null) {
       setType(data.value[show].type);
     }
-  }, [show, data.value]);
+  }, [show, data]);
   if (show === null) return null;
   const fields = {
     MultiChoice: <MultiChoiceFields data={data.value[show]} />,

@@ -13,19 +13,23 @@ const MultiChoiceFields = ({ data }) => {
   let options = [];
   for (let i = 0; i < optionCnt; i++) {
     scores.push(
-      <CCol xs="4" md="4" style={{ paddingBottom: "2vh" }}>
+      <CCol xs="6" md="4" style={{ paddingBottom: "2vh" }}>
         <CInput
           name={"score" + i}
-          defaultValue={data && data.type === "MultiChoice" && data.score[i]}
+          defaultValue={
+            data && data.type === "MultiChoice" ? data.score[i] : ""
+          }
           required
         />
       </CCol>
     );
     options.push(
-      <CCol xs="4" md="4" style={{ paddingBottom: "2vh" }}>
+      <CCol xs="6" md="4" style={{ paddingBottom: "2vh" }}>
         <CInput
           name={"option" + i}
-          defaultValue={data && data.type === "MultiChoice" && data["選項"][i]}
+          defaultValue={
+            data && data.type === "MultiChoice" ? data["選項"][i] : ""
+          }
           required
         />
       </CCol>
@@ -33,7 +37,7 @@ const MultiChoiceFields = ({ data }) => {
   }
   return (
     <CRow>
-      <CCol>
+      <CCol xs="9" md="10">
         <CFormGroup row inline>
           <CCol md="3">
             <CLabel>分數</CLabel>
@@ -87,9 +91,7 @@ const MultiAnswerFields = ({ data }) => {
   var [suboptionCnt, setSuboptionCnt] = useState(1);
   useEffect(() => {
     if (data) {
-      setSuboptionCnt(
-        data.type === "MultiAnswer" ? data["子選項"].length : 1
-      );
+      setSuboptionCnt(data.type === "MultiAnswer" ? data["子選項"].length : 1);
     }
   }, [data]);
   let suboptions = [];
@@ -99,16 +101,16 @@ const MultiAnswerFields = ({ data }) => {
       <CInput
         name={"score0"}
         required
-        defaultValue={data && data.type === "MultiAnswer" && data.score[0]}
+        defaultValue={data && data.type === "MultiAnswer" ? data.score[0] : ""}
       />
     </CCol>
   );
   for (let i = 0; i < suboptionCnt; i++) {
     suboptions.push(
-      <CCol xs="7" md="4" style={{ paddingBottom: "2vh" }}>
+      <CCol xs="6" md="4" style={{ paddingBottom: "2vh" }}>
         <CInput
           defaultValue={
-            data && data.type === "MultiAnswer" && data["子選項"][i]
+            data && data.type === "MultiAnswer" ? data["子選項"][i] : ""
           }
           name={"suboption" + i}
           required
@@ -181,19 +183,19 @@ const GridFields = ({ data }) => {
   let suboptions = [];
   for (let i = 0; i < optionCnt; i++) {
     scores.push(
-      <CCol xs="4" md="4" style={{ paddingBottom: "2vh" }}>
+      <CCol xs="6" md="4" style={{ paddingBottom: "2vh" }}>
         <CInput
           name={"score" + i}
-          defaultValue={data && data.type === "Grid" && data.score[i]}
+          defaultValue={data && data.type === "Grid" ? data.score[i] : ""}
           required
         />
       </CCol>
     );
     options.push(
-      <CCol xs="4" md="4" style={{ paddingBottom: "2vh" }}>
+      <CCol xs="6" md="4" style={{ paddingBottom: "2vh" }}>
         <CInput
           name={"option" + i}
-          defaultValue={data && data.type === "Grid" && data["選項"][i]}
+          defaultValue={data && data.type === "Grid" ? data["選項"][i] : ""}
           required
         />
       </CCol>
@@ -201,9 +203,9 @@ const GridFields = ({ data }) => {
   }
   for (let i = 0; i < suboptionCnt; i++) {
     suboptions.push(
-      <CCol xs="4" md="4" style={{ paddingBottom: "2vh" }}>
+      <CCol xs="6" md="4" style={{ paddingBottom: "2vh" }}>
         <CInput
-          defaultValue={data && data.type === "Grid" && data["子選項"][i]}
+          defaultValue={data && data.type === "Grid" ? data["子選項"][i] : ""}
           name={"suboption" + i}
           required
         />
@@ -213,7 +215,7 @@ const GridFields = ({ data }) => {
   return (
     <>
       <CRow>
-        <CCol>
+        <CCol xs="9" md="10">
           <CFormGroup row inline>
             <CCol md="3">
               <CLabel>分數</CLabel>
@@ -261,7 +263,7 @@ const GridFields = ({ data }) => {
         </div>
       </CRow>
       <CRow>
-        <CCol>
+        <CCol xs="9" md="10">
           <CFormGroup row inline>
             <CCol md="3">
               <CLabel>子選項</CLabel>
@@ -311,19 +313,21 @@ const MultiGridFields = ({ data }) => {
   let suboptions = [];
   for (let i = 0; i < optionCnt; i++) {
     scores.push(
-      <CCol xs="4" md="4" style={{ paddingBottom: "2vh" }}>
+      <CCol xs="6" md="4" style={{ paddingBottom: "2vh" }}>
         <CInput
           name={"score" + i}
-          defaultValue={data && data.type === "MultiGrid" && data.score[i]}
+          defaultValue={data && data.type === "MultiGrid" ? data.score[i] : ""}
           required
         />
       </CCol>
     );
     options.push(
-      <CCol xs="4" md="4" style={{ paddingBottom: "2vh" }}>
+      <CCol xs="6" md="4" style={{ paddingBottom: "2vh" }}>
         <CInput
           name={"option" + i}
-          defaultValue={data && data.type === "MultiGrid" && data["選項"][i]}
+          defaultValue={
+            data && data.type === "MultiGrid" ? data["選項"][i] : ""
+          }
           required
         />
       </CCol>
@@ -331,9 +335,11 @@ const MultiGridFields = ({ data }) => {
   }
   for (let i = 0; i < suboptionCnt; i++) {
     suboptions.push(
-      <CCol xs="4" md="4" style={{ paddingBottom: "2vh" }}>
+      <CCol xs="6" md="4" style={{ paddingBottom: "2vh" }}>
         <CInput
-          defaultValue={data && data.type === "MultiGrid" && data["子選項"][i]}
+          defaultValue={
+            data && data.type === "MultiGrid" ? data["子選項"][i] : ""
+          }
           name={"suboption" + i}
           required
         />
@@ -343,7 +349,7 @@ const MultiGridFields = ({ data }) => {
   return (
     <>
       <CRow>
-        <CCol>
+        <CCol xs="9" md="10">
           <CFormGroup row inline>
             <CCol md="3">
               <CLabel>分數</CLabel>
@@ -391,7 +397,7 @@ const MultiGridFields = ({ data }) => {
         </div>
       </CRow>
       <CRow>
-        <CCol>
+        <CCol xs="9" md="10">
           <CFormGroup row inline>
             <CCol md="3">
               <CLabel>子選項</CLabel>
