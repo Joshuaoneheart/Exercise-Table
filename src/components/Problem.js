@@ -17,7 +17,7 @@ const Problem = ({ data, default_data }) => {
       var option_row = [];
       var row = [];
       option_row.push(<CCol></CCol>);
-      let options = data["選項"].split(";");
+      let options = data["選項"];
       for (let i = 0; i < options.length; i++) {
         let option = options[i];
         option_row.push(
@@ -29,7 +29,7 @@ const Problem = ({ data, default_data }) => {
           </CCol>
         );
       }
-      let suboptions = data["子選項"].split(";");
+      let suboptions = data["子選項"];
       for (let j = 0; j < suboptions.length; j++) {
         let suboption = suboptions[j];
         var subframe = [];
@@ -68,7 +68,7 @@ const Problem = ({ data, default_data }) => {
       );
       break;
     case "MultiChoice":
-      options = data["選項"].split(";");
+      options = data["選項"];
       for (let i = 0; i < options.length; i++) {
         let option = options[i];
         frame.push(
@@ -91,7 +91,7 @@ const Problem = ({ data, default_data }) => {
       }
       break;
     case "MultiAnswer":
-      options = data["子選項"].split(";");
+      options = data["子選項"];
       for (let i = 0; i < options.length; i++) {
         frame.push(
           <CFormGroup variant="checkbox" key={i}>
