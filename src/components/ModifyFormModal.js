@@ -129,6 +129,7 @@ const AddModal = ({ show, data, setData, sections, setSections, setModal }) => {
       case "section":
         sections.push(form.current.elements.name.value);
         setSections(sections);
+        setModal(null);
         break;
       default:
         break;
@@ -413,4 +414,69 @@ const ModifyModal = ({ show, data, setData, setModal }) => {
     </CModal>
   );
 };
-export { AddModal, DeleteModal, ModifyModal };
+
+const TransferModal = ({ show, data, setData, sections, setModal }) => {
+  let form = useRef();
+  if (show === null) return null;
+  const writeData = () => {
+    let new_data = Object.assign({}, data);
+    new_data.value[show].section =
+      sections[form.current.elements.section.value];
+    setData(Object.assign({}, new_data));
+    setModal(null);
+  };
+  let section_options = [];
+  for (let i = 0; i < sections.length; i++) {
+    if (sections[i] !== data.value[show].section) {
+      console.log(i);
+      section_options.push(
+        <option value={i} key={i}>
+          {sections[i]}
+        </option>
+      );
+    }
+  }
+
+  return (
+    <CModal
+      show={show !== null}
+      onClose={() => {
+        setModal(null);
+      }}
+    >
+      <CModalHeader closeButton>
+        <CModalTitle>轉移區塊</CModalTitle>
+      </CModalHeader>
+      <CModalBody>
+        <CForm
+          innerRef={form}
+          action=""
+          method="post"
+          encType="multipart/form-data"
+          className="form-horizontal"
+          onSubmit={(e) => {
+            e.preventDefault();
+          }}
+        >
+          <CFormGroup row inline>
+            <CCol md="3">
+              <CLabel>移動至</CLabel>
+            </CCol>
+            <CCol xs="12" md="9">
+              <CSelect name="section">{section_options}</CSelect>
+            </CCol>
+          </CFormGroup>
+        </CForm>
+      </CModalBody>
+      <CModalFooter>
+        <CButton color="primary" onClick={writeData}>
+          儲存修改
+        </CButton>
+        <CButton color="secondary" onClick={() => setModal(null)}>
+          取消
+        </CButton>
+      </CModalFooter>
+    </CModal>
+  );
+};
+export { AddModal, DeleteModal, ModifyModal, TransferModal };

@@ -5,7 +5,6 @@ const Members = lazy(() => import("../containers/Member"));
 const Profile = lazy(() => import("../containers/Member/Profile/Profile"));
 const Form = lazy(() => import("../containers/Member/SubmitForm/SubmitForm"));
 const GFForm = lazy(() => import("../containers/Member/GFform/GFform"));
-const BibleGroup = lazy(() => import("../containers/BibleGroup"));
 const GF = lazy(() => import("../containers/GF"));
 const AnnouncementList = lazy(() => import("../containers/AnnouncementList"));
 const Announcement = lazy(() => import("../containers/Announcement"));
@@ -29,12 +28,6 @@ const routes = [
     component: Announcement,
   },
   { path: "/member/:id", exact: true, name: "members", component: Members },
-  {
-    path: "/biblegroup/:id",
-    exact: true,
-    name: "biblegroup",
-    component: BibleGroup,
-  },
 ];
 
 export default routes;
