@@ -303,6 +303,9 @@ const ModifyModal = ({ show, data, setData, setModal }) => {
     tmp["title"] = form.current.elements.title.value;
     tmp["type"] = form.current.elements.type.value;
     tmp["score"] = [];
+    if (tmp["type"] === "Number") {
+      tmp["max"] = form.current.elements["max0"].value;
+    }
     if (["MultiChoice", "Grid", "MultiGrid"].includes(tmp["type"]))
       tmp["選項"] = [];
     let i = 0;
