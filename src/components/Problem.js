@@ -6,6 +6,7 @@ import {
   CLabel,
   CRow,
 } from "@coreui/react";
+import { InputNumber } from "antd";
 
 const Problem = ({ data, default_data }) => {
   var frame = [];
@@ -13,6 +14,16 @@ const Problem = ({ data, default_data }) => {
   var title_style = { color: "#636f83" };
   var button_style = { height: "20px", width: "20px" };
   switch (data.type) {
+    case "Number":
+      frame.push(
+        <InputNumber
+          name={data.id}
+          max={data.max}
+          min={0}
+          defaultValue={default_data ? default_data.ans : 0}
+        />
+      );
+      break;
     case "MultiGrid":
       var option_row = [];
       var row = [];

@@ -250,7 +250,7 @@ const ModifyCard = ({ default_data }) => {
                         addMutationToBatch({
                           path,
                           value: problem,
-                          type: "set",
+                          type: "update",
                         });
                       }
                     }

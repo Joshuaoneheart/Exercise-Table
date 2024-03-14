@@ -25,6 +25,14 @@ const FormFooter = ({ form, account, metadata }) => {
                 for (let i = 0; i < metadata.value.length; i++) {
                   var problem = metadata.value[i];
                   switch (problem.type) {
+                    case "Number":
+                      v[metadata.ids[i]] = {
+                        ans: form.current.elements[metadata.ids[i]].value,
+                        score:
+                          form.current.elements[metadata.ids[i]].value *
+                          parseInt(metadata.value[i].score[0]),
+                      };
+                      break;
                     case "MultiGrid":
                       let options = metadata.value[i]["選項"];
                       v[metadata.ids[i]] = {};
@@ -36,8 +44,13 @@ const FormFooter = ({ form, account, metadata }) => {
                         for (let k = 0; k < nodeList.length; k++) {
                           if (nodeList[k].checked) {
                             if (!(options[j] in v[metadata.ids[i]]))
-                              v[metadata.ids[i]][options[j]] = { ans: [], score: 0 };
-                            v[metadata.ids[i]][options[j]].ans.push(nodeList[k].value);
+                              v[metadata.ids[i]][options[j]] = {
+                                ans: [],
+                                score: 0,
+                              };
+                            v[metadata.ids[i]][options[j]].ans.push(
+                              nodeList[k].value
+                            );
                             v[metadata.ids[i]][options[j]].score += parseInt(
                               problem.score[j]
                             );
@@ -84,7 +97,9 @@ const FormFooter = ({ form, account, metadata }) => {
                           if (!(metadata.ids[i] in v))
                             v[metadata.ids[i]] = { ans: [], score: 0 };
                           v[metadata.ids[i]].ans.push(nodeList[j].value);
-                          v[metadata.ids[i]].score += parseInt(problem.score);
+                          v[metadata.ids[i]].score += parseInt(
+                            problem.score[0]
+                          );
                           total_score += parseInt(problem.score);
                         }
                       }
@@ -97,7 +112,7 @@ const FormFooter = ({ form, account, metadata }) => {
                 addMutationToBatch({
                   path: "/accounts/" + account.id + "/data/" + GetWeeklyBase(),
                   value: v,
-                  type: "set",
+                  type: "update",
                 });
                 commit()
                   .then(() => {
