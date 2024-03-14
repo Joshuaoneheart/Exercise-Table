@@ -87,7 +87,7 @@ format of show
 const AddModal = ({ show, data, setData, sections, setSections, setModal }) => {
   var [type, setType] = useState("MultiChoice");
   var form = useRef();
-  if (show == null) {
+  if (show === null) {
     return null;
   }
   var writeData = () => {
@@ -97,16 +97,20 @@ const AddModal = ({ show, data, setData, sections, setSections, setModal }) => {
         tmp["title"] = form.current.elements.title.value;
         tmp["type"] = form.current.elements.type.value;
         tmp["score"] = [];
-        if (tmp["type"] !== "MultiAnswer") tmp["選項"] = [];
+        if (["MultiChoice", "Grid", "MultiGrid"].includes(tmp["type"]))
+          tmp["選項"] = [];
         let i = 0;
+        if (tmp["type"] === "Number") {
+          tmp["max"] = form.current.elements["max0"].value;
+        }
         while (form.current.elements["score" + i]) {
           tmp["score"].push(form.current.elements["score" + i].value);
-          if (tmp["type"] !== "MultiAnswer") {
+          if (["MultiChoice", "Grid", "MultiGrid"].includes(tmp["type"])) {
             tmp["選項"].push(form.current.elements["option" + i].value);
           }
           i++;
         }
-        if (tmp["type"] !== "MultiChoice") {
+        if (["MultiAnswer", "Grid", "MultiGrid"].includes(tmp["type"])) {
           tmp["子選項"] = [];
           let i = 0;
           while (form.current.elements["suboption" + i]) {
@@ -117,7 +121,6 @@ const AddModal = ({ show, data, setData, sections, setSections, setModal }) => {
         tmp["section"] = sections[show.index];
         tmp["id"] = "new";
         if (!ProblemFormatChecking(tmp)) return;
-        console.log(tmp);
         data.value.push(tmp);
         setData(Object.assign({}, data));
         setModal(null);
@@ -135,7 +138,8 @@ const AddModal = ({ show, data, setData, sections, setSections, setModal }) => {
     MultiChoice: <MultiChoiceFields />,
     MultiAnswer: <MultiAnswerFields />,
     Grid: <GridFields />,
-    MultiGrid: <MultiGridFields />
+    MultiGrid: <MultiGridFields />,
+    Number: <NumberFields />,
   };
   return (
     <CModal
@@ -165,7 +169,7 @@ const AddModal = ({ show, data, setData, sections, setSections, setModal }) => {
                 <CCol md="3">
                   <CLabel>標題</CLabel>
                 </CCol>
-                <CCol xs="12" md="9">
+                <CCol xs="9" md="9">
                   <CInput name="title" required />
                 </CCol>
               </CFormGroup>
@@ -173,7 +177,7 @@ const AddModal = ({ show, data, setData, sections, setSections, setModal }) => {
                 <CCol md="3">
                   <CLabel>類型</CLabel>
                 </CCol>
-                <CCol xs="12" md="9">
+                <CCol xs="9" md="9">
                   <CSelect
                     onChange={(event) => {
                       if (type !== event.target.value) {
@@ -299,16 +303,17 @@ const ModifyModal = ({ show, data, setData, setModal }) => {
     tmp["title"] = form.current.elements.title.value;
     tmp["type"] = form.current.elements.type.value;
     tmp["score"] = [];
-    if (tmp["type"] !== "MultiAnswer") tmp["選項"] = [];
+    if (["MultiChoice", "Grid", "MultiGrid"].includes(tmp["type"]))
+      tmp["選項"] = [];
     let i = 0;
     while (form.current.elements["score" + i]) {
       tmp["score"].push(form.current.elements["score" + i].value);
-      if (tmp["type"] !== "MultiAnswer") {
+      if (["MultiChoice", "Grid", "MultiGrid"].includes(tmp["type"])) {
         tmp["選項"].push(form.current.elements["option" + i].value);
       }
       i++;
     }
-    if (tmp["type"] !== "MultiChoice") {
+    if (["MultiAnswer", "Grid", "MultiGrid"].includes(tmp["type"])) {
       tmp["子選項"] = [];
       let i = 0;
       while (form.current.elements["suboption" + i]) {
@@ -326,16 +331,17 @@ const ModifyModal = ({ show, data, setData, setModal }) => {
   };
 
   useEffect(() => {
-    if (show) {
+    if (show !== null) {
       setType(data.value[show].type);
     }
-  }, [show, data.value]);
+  }, [show, data]);
   if (show === null) return null;
   const fields = {
     MultiChoice: <MultiChoiceFields data={data.value[show]} />,
     MultiAnswer: <MultiAnswerFields data={data.value[show]} />,
     Grid: <GridFields data={data.value[show]} />,
-    MultiGrid: <MultiGridFields data={data.value[show]}/>
+    MultiGrid: <MultiGridFields data={data.value[show]} />,
+    Number: <NumberFields data={data.value[show]} />,
   };
   return (
     <CModal
@@ -363,7 +369,7 @@ const ModifyModal = ({ show, data, setData, setModal }) => {
               <CCol md="3">
                 <CLabel>標題</CLabel>
               </CCol>
-              <CCol xs="12" md="9">
+              <CCol xs="9" md="9">
                 <CInput name="title" defaultValue={data.value[show]["title"]} />
               </CCol>
             </CFormGroup>
@@ -371,7 +377,7 @@ const ModifyModal = ({ show, data, setData, setModal }) => {
               <CCol md="3">
                 <CLabel>類型</CLabel>
               </CCol>
-              <CCol xs="12" md="9">
+              <CCol xs="9" md="9">
                 <CSelect
                   onChange={function (type, setType, event) {
                     if (type !== event.target.value) {

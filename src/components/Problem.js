@@ -6,6 +6,7 @@ import {
   CLabel,
   CRow,
 } from "@coreui/react";
+import { InputNumber } from "antd";
 
 const Problem = ({ data, default_data }) => {
   var frame = [];
@@ -13,15 +14,27 @@ const Problem = ({ data, default_data }) => {
   var title_style = { color: "#636f83" };
   var button_style = { height: "20px", width: "20px" };
   switch (data.type) {
+    case "Number":
+      frame.push(
+        <InputNumber
+          name={data.id}
+          max={data.max}
+          min={0}
+          defaultValue={default_data ? default_data.ans : 0}
+        />
+      );
+      break;
     case "MultiGrid":
       var option_row = [];
       var row = [];
-      option_row.push(<CCol></CCol>);
+      option_row.push(<CCol xs="4" md="2"></CCol>);
       let options = data["選項"];
       for (let i = 0; i < options.length; i++) {
         let option = options[i];
         option_row.push(
           <CCol
+            xs="4"
+            md="2"
             key={i}
             style={Object.assign({}, option_style, { textAlign: "center" })}
           >
@@ -33,10 +46,16 @@ const Problem = ({ data, default_data }) => {
       for (let j = 0; j < suboptions.length; j++) {
         let suboption = suboptions[j];
         let subframe = [];
-        subframe.push(<CCol style={option_style}>{suboption}</CCol>);
+        subframe.push(
+          <CCol xs="4" md="2" style={option_style}>
+            {suboption}
+          </CCol>
+        );
         for (var option of options) {
           subframe.push(
             <CCol
+              xs="4"
+              md="2"
               key={j}
               style={{
                 display: "flex",
@@ -58,11 +77,11 @@ const Problem = ({ data, default_data }) => {
             </CCol>
           );
         }
-        row.push(<CRow>{subframe}</CRow>);
+        row.push(<CRow style={{ flexWrap: "nowrap" }}>{subframe}</CRow>);
       }
       frame.push(
         <>
-          <CRow>{option_row}</CRow>
+          <CRow style={{ flexWrap: "nowrap" }}>{option_row}</CRow>
           {row}
         </>
       );
@@ -70,12 +89,14 @@ const Problem = ({ data, default_data }) => {
     case "Grid":
       option_row = [];
       row = [];
-      option_row.push(<CCol></CCol>);
+      option_row.push(<CCol xs="4" md="2"></CCol>);
       options = data["選項"];
       for (let i = 0; i < options.length; i++) {
         let option = options[i];
         option_row.push(
           <CCol
+            xs="4"
+            md="2"
             key={i}
             style={Object.assign({}, option_style, { textAlign: "center" })}
           >
@@ -87,10 +108,16 @@ const Problem = ({ data, default_data }) => {
       for (let j = 0; j < suboptions.length; j++) {
         let suboption = suboptions[j];
         var subframe = [];
-        subframe.push(<CCol style={option_style}>{suboption}</CCol>);
+        subframe.push(
+          <CCol xs="4" md="2" style={option_style}>
+            {suboption}
+          </CCol>
+        );
         for (option of options) {
           subframe.push(
             <CCol
+              xs="4"
+              md="2"
               key={j}
               style={{
                 display: "flex",
@@ -112,11 +139,11 @@ const Problem = ({ data, default_data }) => {
             </CCol>
           );
         }
-        row.push(<CRow>{subframe}</CRow>);
+        row.push(<CRow style={{ flexWrap: "nowrap" }}>{subframe}</CRow>);
       }
       frame.push(
         <>
-          <CRow>{option_row}</CRow>
+          <CRow style={{ flexWrap: "nowrap" }}>{option_row}</CRow>
           {row}
         </>
       );
@@ -176,7 +203,7 @@ const Problem = ({ data, default_data }) => {
       <CFormGroup style={{ marginBottom: "25px" }}>
         <h4 style={title_style}>{data.title}</h4>
         <hr />
-        <CCol>{frame}</CCol>
+        <CCol style={{ overflowX: "scroll" }}>{frame}</CCol>
       </CFormGroup>
     </>
   );

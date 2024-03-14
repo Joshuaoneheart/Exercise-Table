@@ -36,6 +36,7 @@
     "@react-firebase/firestore": "^0.5.5",
     "@uiw/react-auto-link": "^4.22.3",
     "@wojtekmaj/enzyme-adapter-react-17": "^0.6.0",
+    "antd": "^5.15.2",
     "classnames": "^2.2.6",
     "core-js": "^3.16.0",
     "draft-js": "^0.11.7",
