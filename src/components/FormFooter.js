@@ -112,7 +112,7 @@ const FormFooter = ({ form, account, metadata }) => {
                 addMutationToBatch({
                   path: "/accounts/" + account.id + "/data/" + GetWeeklyBase(),
                   value: v,
-                  type: "update",
+                  type: "set",
                 });
                 commit()
                   .then(() => {
