@@ -9,8 +9,8 @@ import {
 import { CChartLine } from "@coreui/react-chartjs";
 import { FirestoreCollection } from "@react-firebase/firestore";
 import { loading } from "components";
-import { GetWeeklyBase, WeeklyBase2String } from "utils/date";
-import { DB, firebase } from "db/firebase";
+import { WeeklyBase2String } from "utils/date";
+import { DB } from "db/firebase";
 import { useParams } from "react-router-dom/cjs/react-router-dom.min";
 import { useEffect, useState } from "react";
 
@@ -68,7 +68,6 @@ const RenderLineChart = ({ data }) => {
 };
 
 const MemberTable = ({ data }) => {
-  let ids = data.ids.map((x) => parseInt(x));
   const [problems, setProblems] = useState(null);
   useEffect(() => {
     const getProblems = async () => {
@@ -82,13 +81,20 @@ const MemberTable = ({ data }) => {
     getProblems();
   }, []);
   if (problems === null) return loading;
-  let columns = [{ key: "week_base", label: "Week" }];
+  let columns = [
+    {
+      key: "week_base",
+      label: "Week",
+      _style: { minWidth: "100px", flexWrap: "nowrap" },
+    },
+  ];
   for (let problem of problems) {
     if (problem.type === "Grid") {
       for (let suboption of problem["子選項"]) {
         columns.push({
           key: problem.id + "-" + suboption,
           label: problem.title + "-" + suboption,
+          _style: { minWidth: "100px", flexWrap: "nowrap" },
         });
       }
     } else if (problem.type === "MultiGrid") {
@@ -96,9 +102,15 @@ const MemberTable = ({ data }) => {
         columns.push({
           key: problem.id + "-" + option,
           label: problem.title + "-" + option,
+          _style: { minWidth: "100px", flexWrap: "nowrap" },
         });
       }
-    } else columns.push({ key: problem.id, label: problem.title });
+    } else
+      columns.push({
+        key: problem.id,
+        label: problem.title,
+        _style: { minWidth: "100px", flexWrap: "nowrap" },
+      });
   }
   let items = [];
   for (let i = 0; i < data.value.length; i++) {
@@ -111,19 +123,30 @@ const MemberTable = ({ data }) => {
         items[i][problem.id] = data.value[i][problem.id].ans.length;
       else if (problem.type === "Grid") {
         for (let suboption of problem["子選項"]) {
-          items[i][problem.id + "-" + suboption] =
-            data.value[i][problem.id][suboption].ans;
+          if (suboption in data.value[i][problem.id])
+            items[i][problem.id + "-" + suboption] =
+              data.value[i][problem.id][suboption].ans;
         }
-      } else if (problem.type == "MultiGrid") {
+      } else if (problem.type === "MultiGrid") {
         for (let option of problem["選項"]) {
-          items[i][problem.id + "-" + option] =
-            data.value[i][problem.id][option].ans.length;
+          if (option in data.value[i][problem.id]) {
+            items[i][problem.id + "-" + option] =
+              data.value[i][problem.id][option].ans.length;
+          }
         }
-      } else if (problem.type == "Number")
+      } else if (problem.type === "Number")
         items[i][problem.id] = data.value[i][problem.id].ans;
     }
   }
-  return <CDataTable pagination fields={columns} items={items} />;
+  items = items.reverse();
+  return (
+    <CDataTable
+      style={{ flexWrap: "nowrap" }}
+      pagination
+      fields={columns}
+      items={items}
+    />
+  );
 };
 
 const Member = () => {

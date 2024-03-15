@@ -236,14 +236,6 @@ const SignedIn = (props) => {
         });
     };
     UpdateData();
-    DB.addIntervalId(
-      setInterval(() => {
-        FetchAccount();
-        FetchAccountsMap();
-        FetchGroupMap();
-        FetchResidenceMap();
-      }, 1000 * 60 * 15)
-    );
   }, [account, props]);
   if (account) {
     account.id = props.user.uid;

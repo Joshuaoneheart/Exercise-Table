@@ -387,7 +387,7 @@ const StatisticCard = ({ group_id, groups }) => {
     ),
   });
   let week_bases = [];
-  for (let i = 0; i <= GetWeeklyBase(); i++) {
+  for (let i = 127; i <= GetWeeklyBase(); i++) {
     week_bases.push({
       id: i,
       value: WeeklyBase2String(i),
