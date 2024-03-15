@@ -26,12 +26,16 @@ const FormFooter = ({ form, account, metadata }) => {
                   var problem = metadata.value[i];
                   switch (problem.type) {
                     case "Number":
+                      let score =
+                        form.current.elements[metadata.ids[i]].value *
+                        parseInt(metadata.value[i].score[0]);
                       v[metadata.ids[i]] = {
                         ans: form.current.elements[metadata.ids[i]].value,
-                        score:
-                          form.current.elements[metadata.ids[i]].value *
-                          parseInt(metadata.value[i].score[0]),
+                        score,
                       };
+                      if (!(problem.section in v)) v[problem.section] = 0;
+                      v[problem.section] += score;
+                      total_score += score;
                       break;
                     case "MultiGrid":
                       let options = metadata.value[i]["選項"];
@@ -54,6 +58,8 @@ const FormFooter = ({ form, account, metadata }) => {
                             v[metadata.ids[i]][options[j]].score += parseInt(
                               problem.score[j]
                             );
+                            if (!(problem.section in v)) v[problem.section] = 0;
+                            v[problem.section] += parseInt(problem.score[j]);
                             total_score += parseInt(problem.score[j]);
                           }
                         }
@@ -75,6 +81,10 @@ const FormFooter = ({ form, account, metadata }) => {
                           total_score += parseInt(
                             problem.score[problem["選項"].indexOf(ans)]
                           );
+                          if (!(problem.section in v)) v[problem.section] = 0;
+                          v[problem.section] += parseInt(
+                            problem.score[problem["選項"].indexOf(ans)]
+                          );
                         }
                       }
                       break;
@@ -86,6 +96,10 @@ const FormFooter = ({ form, account, metadata }) => {
                           score: problem.score[problem["選項"].indexOf(ans)],
                         };
                         total_score += parseInt(
+                          problem.score[problem["選項"].indexOf(ans)]
+                        );
+                        if (!(problem.section in v)) v[problem.section] = 0;
+                        v[problem.section] += parseInt(
                           problem.score[problem["選項"].indexOf(ans)]
                         );
                       }
@@ -101,6 +115,8 @@ const FormFooter = ({ form, account, metadata }) => {
                             problem.score[0]
                           );
                           total_score += parseInt(problem.score);
+                          if (!(problem.section in v)) v[problem.section] = 0;
+                          v[problem.section] += parseInt(problem.score);
                         }
                       }
                       break;

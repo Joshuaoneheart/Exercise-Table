@@ -38,7 +38,10 @@ const ModifyCard = ({ default_data, page, title, map }) => {
   var group_name = page === "group" ? "活力組" : "住處";
   for (let i = 0; i < groups.list[0].length; i++) {
     // add a resident into addmodal options if he is not in any group
-    if (groups.getAccount(0, i).role !== "Admin")
+    if (
+      groups.getAccount(0, i).role !== "Admin" &&
+      groups.getAccount(0, i).status === "Active"
+    )
       add_modal_options.push(
         <option value={i} key={i}>
           {groups.getAccount(0, i).displayName}
