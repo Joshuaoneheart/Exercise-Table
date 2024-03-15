@@ -63,6 +63,10 @@ const RenderBarChart = ({ title, titles, labels, data, tooltip_label }) => {
             return data["labels"][tooltipItem[0]["index"]];
           },
           label: (tooltipItem, data) => {
+            if (
+              !tooltip_label[tooltipItem.datasetIndex][tooltipItem.index].length
+            )
+              return null;
             return (
               data["datasets"][tooltipItem.datasetIndex].label +
               " " +
