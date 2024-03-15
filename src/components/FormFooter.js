@@ -125,6 +125,7 @@ const FormFooter = ({ form, account, metadata }) => {
                   }
                 }
                 v.scores = total_score;
+                v.week_base = GetWeeklyBase();
                 addMutationToBatch({
                   path: "/accounts/" + account.id + "/data/" + GetWeeklyBase(),
                   value: v,
