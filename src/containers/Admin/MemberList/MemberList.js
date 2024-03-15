@@ -17,8 +17,11 @@ const MemberListBody = () => {
   const fields = [
     { key: "displayName", label: "姓名", _style: { width: "7%" } },
     { key: "group", label: "活力組", _style: { width: "20%" } },
-    { key: "revival", label: "上週晨興", _style: { width: "20%" } },
-    { key: "score", label: "上週總分", _style: { width: "20%" } },
+    { key: "lord_table", label: "累計主日聚會", _style: { width: "20%" } },
+    { key: "神人生活操練", label: "累計神人生活操練", _style: { width: "20%" } },
+    { key: "福音牧養操練", label: "累計福音牧養操練", _style: { width: "20%" } },
+    { key: "召會生活操練", label: "累計召會生活操練", _style: { width: "20%" } },
+    { key: "total_score", label: "累計總分", _style: { width: "20%" } },
     {
       key: "show_details",
       label: "",
@@ -47,7 +50,7 @@ const MemberListBody = () => {
   return (
     <CCardBody>
       <CDataTable
-        items={data.filter((d) => d.role === "Member")}
+        items={data.filter((d) => d.role === "Member" && d.status === "Active")}
         fields={fields}
         columnFilter
         tableFilter

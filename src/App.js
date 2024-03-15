@@ -28,6 +28,20 @@ const Register = lazy(() => import("views/pages/register/Register"));
 const Page404 = lazy(() => import("views/pages/page404/Page404"));
 const Page500 = lazy(() => import("views/pages/page500/Page500"));
 
+const GatherProblemsBySection = (d) => {
+  var data = { value: [], sections: [] };
+  for (var i = 0; i < d.value.length; i++) {
+    // assign unique id to problem
+    d.value[i].id = d.ids[i];
+    if (!data.sections.includes(d.value[i].section)) {
+      data.sections.push(d.value[i].section);
+      data.value.push([]);
+    }
+    data.value[data.sections.indexOf(d.value[i].section)].push(d.value[i]);
+  }
+  return data;
+};
+
 const SignedIn = (props) => {
   var [account, setAccount] = useState(null);
   var [accountsMap, setAccountsMap] = useState({});
@@ -76,6 +90,12 @@ const SignedIn = (props) => {
       let counter = await DB.getByUrl("/info/counter");
       let accounts = await DB.getByUrl("/accounts");
       let GFs = await DB.getByUrl("/GF");
+      let problem_docs = await DB.getByUrl("/form");
+      let problems = { value: [], ids: [] };
+      await problem_docs.forEach((doc) => {
+        problems.value.push(doc.data());
+        problems.ids.push(doc.id);
+      });
       let this_year_pass = false;
       const now_year = new Date().getFullYear();
       if (now_year !== counter.year_counter) {
@@ -106,18 +126,15 @@ const SignedIn = (props) => {
       if (GetWeeklyBase() !== counter.week_counter) {
         let group_score = {};
         let group_lord_table = {};
-        let account_score = {};
-        let account_revival = {};
         let account_data = [];
         let GF_data = [];
         let GF_account_map = {};
         let GF_stats = {};
         const lord_table_id = "0it0L8KlnfUVO1i4VUqi";
-        const revival_id = "aKCafr0M2nYzoRSUmSni";
+        // Get sections
+        problems = GatherProblemsBySection(problems);
         await accounts.forEach((doc) => {
           account_data.push(Object.assign({ id: doc.id }, doc.data()));
-          account_score[doc.id] = 0;
-          account_revival[doc.id] = 0;
           if (doc.data().group) {
             group_lord_table[doc.data().group] = 0;
             group_score[doc.data().group] = 0;
@@ -141,6 +158,35 @@ const SignedIn = (props) => {
             let GF_data = await DB.getByUrl(
               "/accounts/" + account_data[j].id + "/GF/" + i
             );
+            let data = await DB.getByUrl(
+              "/accounts/" + account_data[j].id + "/data/" + i
+            );
+            if (data) {
+              if (!("total_score" in account_data[j]))
+                account_data[j].total_score = 0;
+              if (!("lord_table" in account_data[j]))
+                account_data[j].lord_table = 0;
+              account_data[j].lord_table +=
+                data[lord_table_id].ans === "有" ? 1 : 0;
+              if (data.scores) account_data[j].total_score += data.scores;
+              for (let section in problems.section) {
+                if (!(section in account_data[j])) account_data[j][section] = 0;
+                if (!data[section]) continue;
+                account_data[j][section] += data[section];
+              }
+              if (i === GetWeeklyBase() - 1) {
+                //統計活力組總分與上週主日情形
+                if (!(account_data[j].group in group_score)) {
+                  group_score[account_data[j].group] = data.scores;
+                  group_lord_table[account_data[j].group] =
+                    data[lord_table_id].ans === "有" ? 1 : 0;
+                } else {
+                  group_score[account_data[j].group] += data.scores;
+                  group_lord_table[account_data[j].group] +=
+                    data[lord_table_id].ans === "有" ? 1 : 0;
+                }
+              }
+            }
             if (GF_data)
               for (let [k, v] of Object.entries(GF_data)) {
                 for (let GF_id of v) {
@@ -158,41 +204,26 @@ const SignedIn = (props) => {
             .doc(GF_id)
             .update(Object.assign({ shepherd: GF_account_map[GF_id] }, stats));
         }
-        // fetch last week data
-        for (let i = 0; i < account_data.length; i++) {
-          let data = await DB.getByUrl(
-            "/accounts/" + account_data[i].id + "/data/" + (GetWeeklyBase() - 1)
-          );
-          if (data) {
-            //統計活力組總分與上週主日情形
-            if (!(account_data[i].group in group_score)) {
-              group_score[account_data[i].group] = data.scores;
-              group_lord_table[account_data[i].group] =
-                data[lord_table_id].ans === "有" ? 1 : 0;
-            } else {
-              group_score[account_data[i].group] += data.scores;
-              group_lord_table[account_data[i].group] +=
-                data[lord_table_id].ans === "有" ? 1 : 0;
-            }
-            account_score[account_data[i].id] = data.scores;
-            account_revival[account_data[i].id] = data[revival_id].ans.length;
-          }
-        }
         for (let [group_id, score] of Object.entries(group_score)) {
           await firebase.firestore().collection("group").doc(group_id).update({
             table: group_lord_table[group_id],
             score,
           });
         }
-        for (let [account_id, score] of Object.entries(account_score)) {
+        for (let i = 0; i < account_data.length; i++) {
+          let tmp = {};
+          for (let section in problems.section)
+            if (account_data[i][section])
+              tmp[section] = account_data[i][section];
+          if (account_data[i].total_score)
+            tmp.total_score = account_data[i].total_score;
+          if (account_data[i].lord_table)
+            tmp.lord_table = account_data[i].lord_table;
           await firebase
             .firestore()
             .collection("accounts")
-            .doc(account_id)
-            .update({
-              score,
-              revival: account_revival[account_id],
-            });
+            .doc(account_data[i].id)
+            .update(tmp);
         }
       }
       await firebase
@@ -205,14 +236,6 @@ const SignedIn = (props) => {
         });
     };
     UpdateData();
-    DB.addIntervalId(
-      setInterval(() => {
-        FetchAccount();
-        FetchAccountsMap();
-        FetchGroupMap();
-        FetchResidenceMap();
-      }, 1000 * 60 * 15)
-    );
   }, [account, props]);
   if (account) {
     account.id = props.user.uid;

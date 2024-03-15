@@ -1,4 +1,4 @@
-import { CCard, CCardBody, CCol, CRow } from "@coreui/react";
+import { CCard, CCardBody, CCardHeader, CCol, CRow } from "@coreui/react";
 import { CChartBar, CChartPie } from "@coreui/react-chartjs";
 import { FirestoreCollection } from "@react-firebase/firestore";
 import Groups from "Models/Groups";
@@ -7,7 +7,8 @@ import { DB } from "db/firebase";
 import { AccountsMapContext, GroupContext } from "hooks/context";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom/cjs/react-router-dom.min";
-import { GetWeeklyBase } from "utils/date";
+import { GetWeeklyBase, WeeklyBase2String } from "utils/date";
+import Select from "react-select";
 
 const colors = [
   "rgba(255,99,132,1)",
@@ -62,9 +63,17 @@ const RenderBarChart = ({ title, titles, labels, data, tooltip_label }) => {
             return data["labels"][tooltipItem[0]["index"]];
           },
           label: (tooltipItem, data) => {
-            return tooltip_label[tooltipItem.datasetIndex][
-              tooltipItem.index
-            ].join(",");
+            if (
+              !tooltip_label[tooltipItem.datasetIndex][tooltipItem.index].length
+            )
+              return null;
+            return (
+              data["datasets"][tooltipItem.datasetIndex].label +
+              " " +
+              tooltip_label[tooltipItem.datasetIndex][tooltipItem.index].join(
+                ","
+              )
+            );
           },
           labelColor(tooltipItem, chart) {
             function getValue(prop) {
@@ -329,13 +338,13 @@ const ProblemChart = ({ problem, data }) => {
   return null;
 };
 
-const ProblemStatistic = ({ problems, groups, group_id }) => {
+const ProblemStatistic = ({ problems, groups, group_id, week_base }) => {
   const [data, setData] = useState([]);
   let charts = [];
   const FetchData = useCallback(async () => {
     let accounts = groups.list[groups.indexOf(group_id)];
     let tmpData = [];
-    let now = GetWeeklyBase();
+    let now = week_base;
     for (let i = 0; i < accounts.length; i++) {
       let user_data = { id: accounts.list[i].id };
       try {
@@ -353,7 +362,7 @@ const ProblemStatistic = ({ problems, groups, group_id }) => {
       tmpData.push(user_data);
     }
     setData(tmpData);
-  }, [group_id, groups]);
+  }, [group_id, groups, week_base]);
   useEffect(() => {
     FetchData();
   }, [FetchData]);
@@ -368,8 +377,43 @@ const ProblemStatistic = ({ problems, groups, group_id }) => {
 // May need to add the necessary hooks
 const StatisticCard = ({ group_id, groups }) => {
   groups.groupBy("group");
+  const [week_base, setWeekBase] = useState({
+    id: GetWeeklyBase(),
+    value: WeeklyBase2String(GetWeeklyBase()),
+    label: (
+      <span style={{ whiteSpace: "pre" }}>
+        {WeeklyBase2String(GetWeeklyBase())}
+      </span>
+    ),
+  });
+  let week_bases = [];
+  for (let i = 127; i <= GetWeeklyBase(); i++) {
+    week_bases.push({
+      id: i,
+      value: WeeklyBase2String(i),
+      label: <span style={{ whiteSpace: "pre" }}>{WeeklyBase2String(i)}</span>,
+    });
+  }
+  week_bases = week_bases.reverse();
   return (
     <CCard>
+      <CCardHeader>
+        <CRow className="align-items-center">
+          <CCol xs="4" md="7" lg="7" xl="8">
+            活力組操練情形
+          </CCol>
+          <CCol>
+            <Select
+              value={week_base}
+              isSearchable
+              options={week_bases}
+              onChange={(v) => {
+                setWeekBase(v);
+              }}
+            />
+          </CCol>
+        </CRow>
+      </CCardHeader>
       <CCardBody>
         <FirestoreCollection path="/form/">
           {(d) => {
@@ -379,6 +423,7 @@ const StatisticCard = ({ group_id, groups }) => {
                   problems={d}
                   group_id={group_id}
                   groups={groups}
+                  week_base={week_base.id}
                 />
               );
             else return loading;
