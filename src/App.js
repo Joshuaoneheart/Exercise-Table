@@ -88,142 +88,153 @@ const SignedIn = (props) => {
     FetchResidenceMap();
     const UpdateData = async () => {
       let counter = await DB.getByUrl("/info/counter");
-      let accounts = await DB.getByUrl("/accounts");
-      let GFs = await DB.getByUrl("/GF");
-      let problem_docs = await DB.getByUrl("/form");
-      let problems = { value: [], ids: [] };
-      await problem_docs.forEach((doc) => {
-        problems.value.push(doc.data());
-        problems.ids.push(doc.id);
-      });
       let this_year_pass = false;
       const now_year = new Date().getFullYear();
-      if (now_year !== counter.year_counter) {
-        // 更新 GF 年級
-        let GF = await DB.getByUrl("/GF");
-        for (let i = counter.year_counter; i < now_year - 1; i++) {
-          await GF.forEach((doc) => {
-            if (doc.data().grade)
-              firebase
-                .firestore()
-                .collection("GF")
-                .doc(doc.id)
-                .update({ grade: GF_GRADE_NEXT[doc.data().grade] });
-          });
-        }
-        if (new Date().getMonth() >= 8) {
-          this_year_pass = true;
-          await GF.forEach((doc) => {
-            if (doc.data().grade)
-              firebase
-                .firestore()
-                .collection("GF")
-                .doc(doc.id)
-                .update({ grade: GF_GRADE_NEXT[doc.data().grade] });
-          });
-        }
-      }
-      if (GetWeeklyBase() !== counter.week_counter) {
-        let group_score = {};
-        let group_lord_table = {};
-        let account_data = [];
-        let GF_data = [];
-        let GF_account_map = {};
-        let GF_stats = {};
-        const lord_table_id = "0it0L8KlnfUVO1i4VUqi";
-        // Get sections
-        problems = GatherProblemsBySection(problems);
-        await accounts.forEach((doc) => {
-          account_data.push(Object.assign({ id: doc.id }, doc.data()));
-          if (doc.data().group) {
-            group_lord_table[doc.data().group] = 0;
-            group_score[doc.data().group] = 0;
+      if (
+        now_year !== counter.year_counter ||
+        GetWeeklyBase() !== counter.week_counter
+      ) {
+        let GFs = await DB.getByUrl("/GF");
+        if (now_year !== counter.year_counter) {
+          // 更新 GF 年級
+          for (let i = counter.year_counter; i < now_year - 1; i++) {
+            await GFs.forEach((doc) => {
+              if (doc.data().grade)
+                firebase
+                  .firestore()
+                  .collection("GF")
+                  .doc(doc.id)
+                  .update({ grade: GF_GRADE_NEXT[doc.data().grade] });
+            });
           }
-        });
-        await GFs.forEach((doc) => {
-          GF_data.push(Object.assign({ id: doc.id }, doc.data()));
-        });
-        for (let i = 0; i < GF_data.length; i++) {
-          GF_account_map[GF_data[i].id] = GF_data[i].shepherd
-            ? GF_data[i].shepherd
-            : [];
-          GF_stats[GF_data[i].id] = {
-            主日聚會: GF_data[i]["主日聚會"] ? GF_data[i]["主日聚會"] : 0,
-            家聚會: GF_data[i]["家聚會"] ? GF_data[i]["家聚會"] : 0,
-            小排: GF_data[i]["小排"] ? GF_data[i]["小排"] : 0,
-          };
+          if (new Date().getMonth() >= 8) {
+            this_year_pass = true;
+            await GFs.forEach((doc) => {
+              if (doc.data().grade)
+                firebase
+                  .firestore()
+                  .collection("GF")
+                  .doc(doc.id)
+                  .update({ grade: GF_GRADE_NEXT[doc.data().grade] });
+            });
+          }
         }
-        for (let i = counter.week_counter; i < GetWeeklyBase(); i++) {
-          for (let j = 0; j < account_data.length; j++) {
-            let GF_data = await DB.getByUrl(
-              "/accounts/" + account_data[j].id + "/GF/" + i
-            );
-            let data = await DB.getByUrl(
-              "/accounts/" + account_data[j].id + "/data/" + i
-            );
-            if (data) {
-              if (!("total_score" in account_data[j]))
-                account_data[j].total_score = 0;
-              if (!("lord_table" in account_data[j]))
-                account_data[j].lord_table = 0;
-              account_data[j].lord_table +=
-                data[lord_table_id].ans === "有" ? 1 : 0;
-              if (data.scores) account_data[j].total_score += data.scores;
-              for (let section in problems.section) {
-                if (!(section in account_data[j])) account_data[j][section] = 0;
-                if (!data[section]) continue;
-                account_data[j][section] += data[section];
-              }
-              if (i === GetWeeklyBase() - 1) {
-                //統計活力組總分與上週主日情形
-                if (!(account_data[j].group in group_score)) {
-                  group_score[account_data[j].group] = data.scores;
-                  group_lord_table[account_data[j].group] =
-                    data[lord_table_id].ans === "有" ? 1 : 0;
-                } else {
-                  group_score[account_data[j].group] += data.scores;
-                  group_lord_table[account_data[j].group] +=
-                    data[lord_table_id].ans === "有" ? 1 : 0;
-                }
-              }
+        if (GetWeeklyBase() !== counter.week_counter) {
+          let problem_docs = await DB.getByUrl("/form");
+          let accounts = await DB.getByUrl("/accounts");
+          let problems = { value: [], ids: [] };
+          await problem_docs.forEach((doc) => {
+            problems.value.push(doc.data());
+            problems.ids.push(doc.id);
+          });
+          let group_score = {};
+          let group_lord_table = {};
+          let account_data = [];
+          let GF_data = [];
+          let GF_account_map = {};
+          let GF_stats = {};
+          const lord_table_id = "0it0L8KlnfUVO1i4VUqi";
+          // Get sections
+          problems = GatherProblemsBySection(problems);
+          await accounts.forEach((doc) => {
+            account_data.push(Object.assign({ id: doc.id }, doc.data()));
+            if (doc.data().group) {
+              group_lord_table[doc.data().group] = 0;
+              group_score[doc.data().group] = 0;
             }
-            if (GF_data)
-              for (let [k, v] of Object.entries(GF_data)) {
-                for (let GF_id of v) {
-                  if (!GF_account_map[GF_id].includes(account_data[j].id))
-                    GF_account_map[GF_id].push(account_data[j].id);
-                  GF_stats[GF_id][k]++;
+          });
+          await GFs.forEach((doc) => {
+            GF_data.push(Object.assign({ id: doc.id }, doc.data()));
+          });
+          for (let i = 0; i < GF_data.length; i++) {
+            GF_account_map[GF_data[i].id] = GF_data[i].shepherd
+              ? GF_data[i].shepherd
+              : [];
+            GF_stats[GF_data[i].id] = {
+              主日聚會: GF_data[i]["主日聚會"] ? GF_data[i]["主日聚會"] : 0,
+              家聚會: GF_data[i]["家聚會"] ? GF_data[i]["家聚會"] : 0,
+              小排: GF_data[i]["小排"] ? GF_data[i]["小排"] : 0,
+            };
+          }
+          for (let i = counter.week_counter; i < GetWeeklyBase(); i++) {
+            for (let j = 0; j < account_data.length; j++) {
+              let GF_data = await DB.getByUrl(
+                "/accounts/" + account_data[j].id + "/GF/" + i
+              );
+              let data = await DB.getByUrl(
+                "/accounts/" + account_data[j].id + "/data/" + i
+              );
+              if (data) {
+                if (!("total_score" in account_data[j]))
+                  account_data[j].total_score = 0;
+                if (!("lord_table" in account_data[j]))
+                  account_data[j].lord_table = 0;
+                account_data[j].lord_table +=
+                  data[lord_table_id].ans === "有" ? 1 : 0;
+                if (data.scores) account_data[j].total_score += data.scores;
+                for (let section in problems.section) {
+                  if (!(section in account_data[j]))
+                    account_data[j][section] = 0;
+                  if (!data[section]) continue;
+                  account_data[j][section] += data[section];
+                }
+                if (i === GetWeeklyBase() - 1) {
+                  //統計活力組總分與上週主日情形
+                  if (!(account_data[j].group in group_score)) {
+                    group_score[account_data[j].group] = data.scores;
+                    group_lord_table[account_data[j].group] =
+                      data[lord_table_id].ans === "有" ? 1 : 0;
+                  } else {
+                    group_score[account_data[j].group] += data.scores;
+                    group_lord_table[account_data[j].group] +=
+                      data[lord_table_id].ans === "有" ? 1 : 0;
+                  }
                 }
               }
+              if (GF_data)
+                for (let [k, v] of Object.entries(GF_data)) {
+                  for (let GF_id of v) {
+                    if (!GF_account_map[GF_id].includes(account_data[j].id))
+                      GF_account_map[GF_id].push(account_data[j].id);
+                    GF_stats[GF_id][k]++;
+                  }
+                }
+            }
           }
-        }
-        for (let [GF_id, stats] of Object.entries(GF_stats)) {
-          await firebase
-            .firestore()
-            .collection("GF")
-            .doc(GF_id)
-            .update(Object.assign({ shepherd: GF_account_map[GF_id] }, stats));
-        }
-        for (let [group_id, score] of Object.entries(group_score)) {
-          await firebase.firestore().collection("group").doc(group_id).update({
-            table: group_lord_table[group_id],
-            score,
-          });
-        }
-        for (let i = 0; i < account_data.length; i++) {
-          let tmp = {};
-          for (let section in problems.section)
-            if (account_data[i][section])
-              tmp[section] = account_data[i][section];
-          if (account_data[i].total_score)
-            tmp.total_score = account_data[i].total_score;
-          if (account_data[i].lord_table)
-            tmp.lord_table = account_data[i].lord_table;
-          await firebase
-            .firestore()
-            .collection("accounts")
-            .doc(account_data[i].id)
-            .update(tmp);
+          for (let [GF_id, stats] of Object.entries(GF_stats)) {
+            await firebase
+              .firestore()
+              .collection("GF")
+              .doc(GF_id)
+              .update(
+                Object.assign({ shepherd: GF_account_map[GF_id] }, stats)
+              );
+          }
+          for (let [group_id, score] of Object.entries(group_score)) {
+            await firebase
+              .firestore()
+              .collection("group")
+              .doc(group_id)
+              .update({
+                table: group_lord_table[group_id],
+                score,
+              });
+          }
+          for (let i = 0; i < account_data.length; i++) {
+            let tmp = {};
+            for (let section in problems.section)
+              if (account_data[i][section])
+                tmp[section] = account_data[i][section];
+            if (account_data[i].total_score)
+              tmp.total_score = account_data[i].total_score;
+            if (account_data[i].lord_table)
+              tmp.lord_table = account_data[i].lord_table;
+            await firebase
+              .firestore()
+              .collection("accounts")
+              .doc(account_data[i].id)
+              .update(tmp);
+          }
         }
       }
       await firebase
