@@ -8,7 +8,7 @@ import {
 } from "@coreui/react";
 import { CChartLine } from "@coreui/react-chartjs";
 import { loading } from "components";
-import { WeeklyBase2String } from "utils/date";
+import { GetWeeklyBase, WeeklyBase2String } from "utils/date";
 import { DB, firebase } from "db/firebase";
 import { useParams } from "react-router-dom/cjs/react-router-dom.min";
 import { useContext, useEffect, useState } from "react";
@@ -137,7 +137,14 @@ const MemberTable = ({ data, id }) => {
         召會生活操練: 0,
         神人生活操練: 0,
         福音牧養操練: 0,
+        lord_table: 0,
+        score: 0,
+        cur_召會生活操練: 0,
+        cur_神人生活操練: 0,
+        cur_福音牧養操練: 0,
+        cur_lord_table: 0,
       };
+      const lord_table_id = "0it0L8KlnfUVO1i4VUqi";
       for (let i = 0; i < data.value.length; i++) {
         items.push({
           week_base: WeeklyBase2String(parseInt(data.ids[i])),
@@ -191,19 +198,45 @@ const MemberTable = ({ data, id }) => {
           items[i][problem.section] += score;
           items[i].score += score;
         }
-        result.total_score += items[i].score;
-        await DB.updateByUrl("/accounts/" + id + "/data/" + data.ids[i], {
-          scores: items[i].score,
-          召會生活操練: items[i]["召會生活操練"]? items[i]["召會生活操練"]: 0,
-          神人生活操練: items[i]["神人生活操練"]? items[i]["神人生活操練"]: 0,
-          福音牧養操練: items[i]["福音牧養操練"]? items[i]["福音牧養操練"]: 0,
-        });
-        if ("召會生活操練" in items[i])
-          result["召會生活操練"] += items[i]["召會生活操練"];
-        if ("神人生活操練" in items[i])
-          result["神人生活操練"] += items[i]["神人生活操練"];
-        if ("福音牧養操練" in items[i])
-          result["福音牧養操練"] += items[i]["福音牧養操練"];
+        if (
+          data.value[i].scores !== items[i].score ||
+          data.value[i]["召會生活操練"] !== items[i]["召會生活操練"] ||
+          data.value[i]["神人生活操練"] !== items[i]["神人生活操練"] ||
+          data.value[i]["福音牧養操練"] !== items[i]["福音牧養操練"]
+        )
+          await DB.updateByUrl("/accounts/" + id + "/data/" + data.ids[i], {
+            scores: items[i].score,
+            召會生活操練: items[i]["召會生活操練"]
+              ? items[i]["召會生活操練"]
+              : 0,
+            神人生活操練: items[i]["神人生活操練"]
+              ? items[i]["神人生活操練"]
+              : 0,
+            福音牧養操練: items[i]["福音牧養操練"]
+              ? items[i]["福音牧養操練"]
+              : 0,
+          });
+        if (parseInt(data.ids[i]) !== GetWeeklyBase()) {
+          result.total_score += items[i].score;
+          if ("召會生活操練" in items[i])
+            result["召會生活操練"] += items[i]["召會生活操練"];
+          if ("神人生活操練" in items[i])
+            result["神人生活操練"] += items[i]["神人生活操練"];
+          if ("福音牧養操練" in items[i])
+            result["福音牧養操練"] += items[i]["福音牧養操練"];
+          if (data.value[i][lord_table_id])
+            result.lord_table += data.value[i][lord_table_id].ans === "有";
+        } else {
+          result.score = items[i].score;
+          if ("召會生活操練" in items[i])
+            result["cur_召會生活操練"] = items[i]["召會生活操練"];
+          if ("神人生活操練" in items[i])
+            result["cur_神人生活操練"] = items[i]["神人生活操練"];
+          if ("福音牧養操練" in items[i])
+            result["cur_福音牧養操練"] = items[i]["福音牧養操練"];
+          if (data.value[i][lord_table_id])
+            result.cur_lord_table = data.value[i][lord_table_id].ans === "有";
+        }
       }
       items = items.reverse();
       await DB.updateByUrl("/accounts/" + id, result);
