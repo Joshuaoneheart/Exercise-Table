@@ -24,7 +24,7 @@ class Account {
     this.is_changed = true;
   }
 
-  async save() {
+  async save(set = false) {
     let res = {};
     if (this.displayName) res.displayName = this.displayName;
     if (this.email) res.email = this.email;
@@ -33,7 +33,10 @@ class Account {
     if (this.residence) res.residence = this.residence;
     if (this.role) res.role = this.role;
     if (this.status) res.status = this.status;
-    if (this.is_changed) await DB.updateByUrl(this.dbUrl, res);
+    if (this.is_changed) {
+      if (set) await DB.setByUrl(this.dbUrl, res);
+      else await DB.updateByUrl(this.dbUrl, res);
+    }
   }
 
   async fetch() {

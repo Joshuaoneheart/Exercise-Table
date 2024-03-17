@@ -47,12 +47,14 @@ const SignedIn = (props) => {
       if (!account && props.user) {
         let tmp = new Account({ id: props.user.uid });
         await tmp.fetch();
+        if (tmp.status === "Pending") DB.signOut();
         setAccount(tmp);
       }
     };
     FetchAccount();
     const UpdateData = async () => {
       let counter = await DB.getByUrl("/info/counter");
+      if (!counter) return;
       let this_year_pass = false;
       const now_year = new Date().getFullYear();
       if (
@@ -283,7 +285,7 @@ const App = () => {
                 <FirestoreProvider {...config} firebase={firebase}>
                   <FirebaseAuthConsumer>
                     {({ isSignedIn, user, providerId }) => {
-                      if (isSignedIn) {
+                      if (isSignedIn && user.emailVerified) {
                         return <SignedIn user={user} />;
                       } else return <Login firebase={firebase} />;
                     }}

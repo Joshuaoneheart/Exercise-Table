@@ -172,14 +172,16 @@ const Register = (props) => {
                             }
                             if (pass_flag) {
                               if (
-                                !/@ntu\.edu\.tw$/.test(
+                                /@ntu\.edu\.tw$/.test(
                                   register_form.current.elements.email.value
-                                ) &&
-                                !/@mail\.ntust\.edu\.tw/.test(
+                                ) ||
+                                /@mail\.ntust\.edu\.tw/.test(
                                   register_form.current.elements.email.value
                                 )
                               ) {
-                                alert("請使用台大或台科大的學校信箱進行註冊");
+                                alert(
+                                  "請使用非台大或台科大的學校信箱進行註冊，因台大或台科大信箱會擋驗證信"
+                                );
                                 return;
                               }
                               event.target.disabled = true;
@@ -212,7 +214,10 @@ const Register = (props) => {
                                     },
                                     true
                                   );
-                                  await account.save();
+                                  await props.firebase
+                                    .auth()
+                                    .currentUser.sendEmailVerification();
+                                  await account.save(true);
                                   alert("成功創建帳戶");
                                   await DB.signOut();
                                   window.location =
