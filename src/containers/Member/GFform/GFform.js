@@ -1,7 +1,7 @@
 import { CCol, CRow } from "@coreui/react";
 import {
   FirestoreCollection,
-  FirestoreDocument
+  FirestoreDocument,
 } from "@react-firebase/firestore";
 import { loading } from "components";
 import GFFormContent from "components/GFFormContent";
@@ -19,26 +19,28 @@ const GFForm = () => {
         >
           {(default_data) => {
             if (default_data.isLoading) return loading;
-            return (
-              <FirestoreCollection path="/GF/">
-                {(d) => {
-                  if (d.isLoading) return loading;
-                  if (d && d.value) {
-                    // add "id" to data
-                    for (var i = 0; i < d.value.length; i++) {
-                      d.value[i]["id"] = d.ids[i];
-                    }
-                    return (
-                      <GFFormContent
-                        default_data={default_data}
-                        data={d}
-                        account={account}
-                      />
-                    );
-                  } else return null;
-                }}
-              </FirestoreCollection>
-            );
+            if (default_data && default_data.value)
+              return (
+                <FirestoreCollection path="/GF/">
+                  {(d) => {
+                    if (d.isLoading) return loading;
+                    if (d && d.value) {
+                      // add "id" to data
+                      for (var i = 0; i < d.value.length; i++) {
+                        d.value[i]["id"] = d.ids[i];
+                      }
+                      return (
+                        <GFFormContent
+                          default_data={default_data}
+                          data={d}
+                          account={account}
+                        />
+                      );
+                    } else return loading;
+                  }}
+                </FirestoreCollection>
+              );
+            else return loading;
           }}
         </FirestoreDocument>
       </CCol>
