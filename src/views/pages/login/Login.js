@@ -11,14 +11,16 @@ import {
   CInputGroupPrepend,
   CInputGroupText,
   CLink,
-  CRow
+  CRow,
 } from "@coreui/react";
 import React from "react";
 
 const Login = (props) => {
   var username = React.useRef();
   var password = React.useRef();
-  let login = () =>
+  let login = () => {
+    localStorage.setItem("username", username.current.value);
+    localStorage.setItem("password", password.current.value);
     props.firebase
       .auth()
       .signInWithEmailAndPassword(
@@ -26,6 +28,7 @@ const Login = (props) => {
         password.current.value
       )
       .catch((error) => window.alert("Error : " + error.message));
+  };
   return (
     <div className="c-app c-default-layout flex-row align-items-center">
       <CContainer>
@@ -41,6 +44,11 @@ const Login = (props) => {
                       <CInputGroupText>@</CInputGroupText>
                     </CInputGroupPrepend>
                     <CInput
+                      defaultValue={
+                        localStorage.getItem("username")
+                          ? localStorage.getItem("username")
+                          : ""
+                      }
                       innerRef={username}
                       type="text"
                       placeholder="Email"
@@ -54,6 +62,11 @@ const Login = (props) => {
                       </CInputGroupText>
                     </CInputGroupPrepend>
                     <CInput
+                      defaultValue={
+                        localStorage.getItem("password")
+                          ? localStorage.getItem("password")
+                          : ""
+                      }
                       innerRef={password}
                       type="password"
                       placeholder="Password"
@@ -71,13 +84,10 @@ const Login = (props) => {
                         Login
                       </CButton>
                     </CCol>
-                    <CCol>
+                    <CCol className="text-right">
                       <CLink to="/register">
                         <CButton color="primary">Register</CButton>
                       </CLink>
-                    </CCol>
-                    <CCol className="text-right">
-                      <CButton color="link">Forgot password?</CButton>
                     </CCol>
                   </CRow>
                 </CForm>

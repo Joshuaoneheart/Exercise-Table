@@ -47,12 +47,14 @@ const SignedIn = (props) => {
       if (!account && props.user) {
         let tmp = new Account({ id: props.user.uid });
         await tmp.fetch();
+        if (tmp.status === "Pending") DB.signOut();
         setAccount(tmp);
       }
     };
     FetchAccount();
     const UpdateData = async () => {
       let counter = await DB.getByUrl("/info/counter");
+      if (!counter) return;
       let this_year_pass = false;
       const now_year = new Date().getFullYear();
       if (
@@ -141,7 +143,7 @@ const SignedIn = (props) => {
                 account_data[j].lord_table +=
                   data[lord_table_id].ans === "有" ? 1 : 0;
                 if (data.scores) account_data[j].total_score += data.scores;
-                for (let section in problems.section) {
+                for (let section of problems.sections) {
                   if (!(section in account_data[j]))
                     account_data[j][section] = 0;
                   if (!data[section]) continue;
@@ -190,10 +192,33 @@ const SignedIn = (props) => {
               });
           }
           for (let i = 0; i < account_data.length; i++) {
-            let tmp = {};
-            for (let section in problems.section)
+            let data = await DB.getByUrl(
+              "/accounts/" + account_data[i].id + "/data/" + GetWeeklyBase()
+            );
+            let tmp = {
+              score: 0,
+              cur_召會生活操練: 0,
+              cur_神人生活操練: 0,
+              cur_福音牧養操練: 0,
+              cur_lord_table: 0,
+            };
+            if (data) {
+              tmp.score = data.scores ? data.scores : 0;
+              tmp["cur_召會生活操練"] = data["召會生活操練"]
+                ? data["召會生活操練"]
+                : 0;
+              tmp["cur_神人生活操練"] = data["神人生活操練"]
+                ? data["神人生活操練"]
+                : 0;
+              tmp["cur_福音牧養操練"] = data["福音牧養操練"]
+                ? data["福音牧養操練"]
+                : 0;
+              tmp["cur_lord_table"] = data[lord_table_id].ans === "有" ? 1 : 0;
+            }
+            for (let section of problems.sections) {
               if (account_data[i][section])
                 tmp[section] = account_data[i][section];
+            }
             if (account_data[i].total_score)
               tmp.total_score = account_data[i].total_score;
             if (account_data[i].lord_table)
@@ -260,7 +285,7 @@ const App = () => {
                 <FirestoreProvider {...config} firebase={firebase}>
                   <FirebaseAuthConsumer>
                     {({ isSignedIn, user, providerId }) => {
-                      if (isSignedIn) {
+                      if (isSignedIn && user.emailVerified) {
                         return <SignedIn user={user} />;
                       } else return <Login firebase={firebase} />;
                     }}
