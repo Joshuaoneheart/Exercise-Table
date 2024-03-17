@@ -246,7 +246,7 @@ const MemberTable = ({ data, id }) => {
           if ("福音牧養操練" in items[i])
             result["cur_福音牧養操練"] = items[i]["福音牧養操練"];
           if (data.value[i][lord_table_id])
-            result.cur_lord_table = data.value[i][lord_table_id].ans === "有";
+            result.cur_lord_table = data.value[i][lord_table_id].ans === "有"? 1:0;
         }
       }
       items = items.reverse();
