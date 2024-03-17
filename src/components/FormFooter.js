@@ -135,9 +135,9 @@ const FormFooter = ({ form, account, metadata }) => {
                   path: "/accounts/" + account.id,
                   value: {
                     score: v.scores,
-                    cur_召會生活操練: v["召會生活操練"],
-                    cur_神人生活操練: v["神人生活操練"],
-                    cur_福音牧養操練: v["福音牧養操練"],
+                    cur_召會生活操練: v["召會生活操練"]? v["召會生活操練"]: 0,
+                    cur_神人生活操練: v["神人生活操練"]? v["神人生活操練"]: 0,
+                    cur_福音牧養操練: v["福音牧養操練"]? v["福音牧養操練"]: 0,
                     cur_lord_table:
                       v["0it0L8KlnfUVO1i4VUqi"].ans === "有" ? 1 : 0,
                   },
