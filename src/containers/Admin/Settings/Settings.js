@@ -254,14 +254,14 @@ const DownloadCard = () => {
 const Settings = () => {
   return (
     <>
-      <CCard>
-        <CCardHeader>
-          <CCol>
-            <CRow className="align-items-center">接受表單回應</CRow>
-          </CCol>
-        </CCardHeader>
-        <ModifyCard />
-      </CCard>
+      {/* <CCard> */}
+      {/*   <CCardHeader> */}
+      {/*     <CCol> */}
+      {/*       <CRow className="align-items-center">接受表單回應</CRow> */}
+      {/*     </CCol> */}
+      {/*   </CCardHeader> */}
+      {/*   <ModifyCard /> */}
+      {/* </CCard> */}
       <DownloadCard />
       <CCard>
         <CCardHeader>
