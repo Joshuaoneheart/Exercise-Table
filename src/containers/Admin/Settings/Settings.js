@@ -266,11 +266,15 @@ const Settings = () => {
       <CCard>
         <CCardHeader>
           <CCol>
-            <CRow className="align-items-center">定本學期開始結束時間</CRow>
+            <CRow className="align-items-center">學期時間設定</CRow>
           </CCol>
         </CCardHeader>
         <CCardBody>
-          <CustomDatePicker />
+          <CustomDatePicker
+            semesterID="123-1"
+            presetStart={new Date()}
+            presetEnd={new Date()}
+          />
         </CCardBody>
       </CCard>
     </>
