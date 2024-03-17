@@ -18,6 +18,7 @@ import { firebase } from "db/firebase";
 import { GetWeeklyBase, WeeklyBase2String } from "utils/date";
 import FileSaver from "file-saver";
 import XLSX from "xlsx";
+import CustomDatePicker from "components/CustomDatePicker";
 
 const ModifyCard = () => {
   const [SystemState, setSystemState] = useState(false);
@@ -253,15 +254,29 @@ const DownloadCard = () => {
 const Settings = () => {
   return (
     <>
+      {/* <CCard> */}
+      {/*   <CCardHeader> */}
+      {/*     <CCol> */}
+      {/*       <CRow className="align-items-center">接受表單回應</CRow> */}
+      {/*     </CCol> */}
+      {/*   </CCardHeader> */}
+      {/*   <ModifyCard /> */}
+      {/* </CCard> */}
+      <DownloadCard />
       <CCard>
         <CCardHeader>
           <CCol>
-            <CRow className="align-items-center">接受表單回應</CRow>
+            <CRow className="align-items-center">學期時間設定</CRow>
           </CCol>
         </CCardHeader>
-        <ModifyCard />
+        <CCardBody>
+          <CustomDatePicker
+            semesterID="123-1"
+            presetStart={new Date()}
+            presetEnd={new Date()}
+          />
+        </CCardBody>
       </CCard>
-      <DownloadCard />
     </>
   );
 };
