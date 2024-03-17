@@ -1,11 +1,10 @@
 import { CCol, CRow } from "@coreui/react";
 import ModifyCard from "components/ModifyCard";
-import { GroupContext } from "hooks/context";
-import { useContext, useEffect, useState } from "react";
-import { firebase } from "db/firebase";
+import { useEffect, useState } from "react";
+import { DB, firebase } from "db/firebase";
 import { loading } from "components";
 const ModifyGroup = () => {
-  const groupMap = useContext(GroupContext);
+  const [groupMap, setGroupMap] = useState(null);
   const [d, setD] = useState(false);
   useEffect(() => {
     let FetchMember = async () => {
@@ -22,8 +21,18 @@ const ModifyGroup = () => {
           setD(tmp);
         });
     };
+    let FetchGroupMap = async () => {
+      let tmp = {};
+      let group = await DB.getByUrl("/group");
+      await group.forEach((doc) => {
+        tmp[doc.id] = doc.data().name;
+      });
+      setGroupMap(tmp);
+    };
     FetchMember();
+    FetchGroupMap();
   }, []);
+  if(groupMap === null) return loading;
   return (
     <>
       <CRow>

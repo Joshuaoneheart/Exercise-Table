@@ -4,8 +4,7 @@ import { FirestoreCollection } from "@react-firebase/firestore";
 import Groups from "Models/Groups";
 import { loading } from "components";
 import { DB } from "db/firebase";
-import { AccountsMapContext, GroupContext } from "hooks/context";
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom/cjs/react-router-dom.min";
 import { GetWeeklyBase, WeeklyBase2String } from "utils/date";
 import Select from "react-select";
@@ -196,10 +195,9 @@ const RenderPieChart = ({ title, labels, data, tooltip_label }) => {
   );
 };
 
-const ProblemChart = ({ problem, data }) => {
+const ProblemChart = ({ problem, data, accountsMap }) => {
   let options;
   let suboptions;
-  const accountsMap = useContext(AccountsMapContext);
   if (problem.type === "MultiChoice") {
     options = problem["選項"];
     let polar_area = [];
@@ -338,7 +336,13 @@ const ProblemChart = ({ problem, data }) => {
   return null;
 };
 
-const ProblemStatistic = ({ problems, groups, group_id, week_base }) => {
+const ProblemStatistic = ({
+  problems,
+  groups,
+  group_id,
+  week_base,
+  accountsMap,
+}) => {
   const [data, setData] = useState([]);
   let charts = [];
   const FetchData = useCallback(async () => {
@@ -368,14 +372,20 @@ const ProblemStatistic = ({ problems, groups, group_id, week_base }) => {
   }, [FetchData]);
   for (let i = 0; i < problems.ids.length; i++) {
     problems.value[i].id = problems.ids[i];
-    charts.push(<ProblemChart problem={problems.value[i]} data={data} />);
+    charts.push(
+      <ProblemChart
+        problem={problems.value[i]}
+        data={data}
+        accountsMap={accountsMap}
+      />
+    );
   }
   return <CRow>{charts}</CRow>;
 };
 
 // FIXME:
 // May need to add the necessary hooks
-const StatisticCard = ({ group_id, groups }) => {
+const StatisticCard = ({ group_id, groups, accountsMap }) => {
   groups.groupBy("group");
   const [week_base, setWeekBase] = useState({
     id: GetWeeklyBase(),
@@ -424,6 +434,7 @@ const StatisticCard = ({ group_id, groups }) => {
                   group_id={group_id}
                   groups={groups}
                   week_base={week_base.id}
+                  accountsMap={accountsMap}
                 />
               );
             else return loading;
@@ -438,17 +449,35 @@ const StatisticCard = ({ group_id, groups }) => {
 // Also needed for search
 const BibleGroup = () => {
   const { id } = useParams();
-  const groupMap = useContext(GroupContext);
+  const [groupMap, setGroupMap] = useState(null);
+  useEffect(() => {
+    let FetchGroupMap = async () => {
+      let tmp = {};
+      let group = await DB.getByUrl("/group");
+      await group.forEach((doc) => {
+        tmp[doc.id] = doc.data().name;
+      });
+      setGroupMap(tmp);
+    };
+    FetchGroupMap();
+  }, []);
+  if (groupMap === null) return loading;
   return (
     <CRow>
       <FirestoreCollection path="/accounts/">
         {(d) => {
           if (d && d.value) {
+            let accountsMap = {};
+            for (let i = 0; i < d.value.length; i++) {
+              accountsMap[d.ids[i]] = d.value[i].displayName;
+            }
+
             return (
               <CCol>
                 <StatisticCard
                   group_id={id}
                   groups={new Groups(d.value, d.ids, groupMap)}
+                  accountsMap={accountsMap}
                 />
               </CCol>
             );

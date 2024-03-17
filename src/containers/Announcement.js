@@ -16,7 +16,7 @@ import AutoLink from "@uiw/react-auto-link";
 import { useContext, useEffect, useState } from "react";
 import { DB, firebase } from "db/firebase";
 import CIcon from "@coreui/icons-react";
-import { AccountContext, AccountsMapContext } from "hooks/context";
+import { AccountContext } from "hooks/context";
 import ModifyAnnouncementModal from "components/ModifyAnnouncementModal";
 const CommentList = ({ comments, accountsMap }) => {
   return comments.map((x) => (
@@ -35,10 +35,10 @@ const CommentList = ({ comments, accountsMap }) => {
 };
 const AnnouncementCard = ({ init_data, id }) => {
   const account = useContext(AccountContext);
-  const accountsMap = useContext(AccountsMapContext);
   const [data, setData] = useState(init_data);
   const [comment, setComment] = useState("");
   const [modifyModal, setModifyModal] = useState(false);
+  const [accountsMap, setAccountsMap] = useState(null);
   const addComment = async () => {
     await firebase
       .firestore()
@@ -48,6 +48,17 @@ const AnnouncementCard = ({ init_data, id }) => {
       .add({ posted_by: account.id, content: comment });
     setComment("");
   };
+  useEffect(() => {
+    let FetchAccountsMap = async () => {
+      let tmp = {};
+      let accounts = await DB.getByUrl("/accounts");
+      await accounts.forEach((doc) => {
+        tmp[doc.id] = doc.data().displayName;
+      });
+      setAccountsMap(tmp);
+    };
+    FetchAccountsMap();
+  }, []);
   useEffect(() => {
     const check = async () => {
       if (!data.checked) data.checked = account.id;
@@ -63,6 +74,7 @@ const AnnouncementCard = ({ init_data, id }) => {
       setData(Object.assign({}, init_data));
     }
   }, [init_data]);
+  if(accountsMap === null) return loading
   return (
     <CCard>
       <CCardHeader>
@@ -75,7 +87,9 @@ const AnnouncementCard = ({ init_data, id }) => {
           setData={setData}
         />
         <CRow>
-          <CCol xs="10" md="11">公告</CCol>
+          <CCol xs="10" md="11">
+            公告
+          </CCol>
           {data && account.id === data.posted_by && (
             <CCol xs="1" md="1">
               <CButton

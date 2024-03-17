@@ -11,15 +11,28 @@ import {
 import { FirestoreCollection } from "@react-firebase/firestore";
 import { loading } from "components";
 import AddAnnouncementModal from "components/AddAnnouncementModal";
-import { AccountContext, AccountsMapContext } from "hooks/context";
+import { DB } from "db/firebase";
+import { AccountContext } from "hooks/context";
 import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 const AnnouncementListBody = ({ data, account, addModal, setAddModal }) => {
   const [announcements, setAnnouncements] = useState(data);
-  const accountsMap = useContext(AccountsMapContext);
+  const [accountsMap, setAccountsMap] = useState(null);
+  useEffect(() => {
+    let FetchAccountsMap = async () => {
+      let tmp = {};
+      let accounts = await DB.getByUrl("/accounts");
+      await accounts.forEach((doc) => {
+        tmp[doc.id] = doc.data().displayName;
+      });
+      setAccountsMap(tmp);
+    };
+    FetchAccountsMap();
+  }, []);
   useEffect(() => {
     setAnnouncements(Array.from(data));
   }, [data]);
+  if (accountsMap === null) return loading;
   const fields = [
     { key: "title", label: "主題", _style: { width: "7%" } },
     { key: "timestamp", label: "發佈時間", _style: { width: "20%" } },
@@ -45,7 +58,7 @@ const AnnouncementListBody = ({ data, account, addModal, setAddModal }) => {
       />
 
       <CDataTable
-        sorterValue={{column: "timestamp", asc: false}}
+        sorterValue={{ column: "timestamp", asc: false }}
         items={announcements}
         fields={fields}
         columnFilter
@@ -97,7 +110,9 @@ const AnnouncementList = () => {
         <CCard>
           <CCardHeader>
             <CRow>
-              <CCol xs="10" md="11">公告</CCol>
+              <CCol xs="10" md="11">
+                公告
+              </CCol>
               {account.role === "Admin" && (
                 <CCol xs="1" md="1">
                   <CButton

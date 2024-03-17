@@ -2,11 +2,23 @@ import { CCol, CRow } from "@coreui/react";
 import { FirestoreCollection } from "@react-firebase/firestore";
 import { loading } from "components";
 import ModifyCard from "components/ModifyCard";
-import { ResidenceContext } from "hooks/context";
-import { useContext } from "react";
+import { DB } from "db/firebase";
+import { useEffect, useState } from "react";
 
 const ModifyResidence = () => {
-  const residenceMap = useContext(ResidenceContext);
+  const [residenceMap, setResidenceMap] = useState(null);
+  useEffect(() => {
+    let FetchResidenceMap = async () => {
+      let tmp = {};
+      let residence = await DB.getByUrl("/residence");
+      await residence.forEach((doc) => {
+        tmp[doc.id] = doc.data().name;
+      });
+      setResidenceMap(tmp);
+    };
+    FetchResidenceMap();
+  }, []);
+  if(residenceMap === null) return loading
   return (
     <>
       <CRow>

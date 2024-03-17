@@ -9,12 +9,7 @@ import {
 import { FirestoreProvider } from "@react-firebase/firestore";
 import { loading } from "components";
 import { config, DB, firebase } from "db/firebase";
-import {
-  AccountContext,
-  AccountsMapContext,
-  GroupContext,
-  ResidenceContext,
-} from "hooks/context";
+import { AccountContext } from "hooks/context";
 import Account from "Models/Account";
 import { history } from "utils/history";
 import { GetWeeklyBase } from "utils/date";
@@ -44,9 +39,6 @@ const GatherProblemsBySection = (d) => {
 
 const SignedIn = (props) => {
   var [account, setAccount] = useState(null);
-  var [accountsMap, setAccountsMap] = useState({});
-  var [groupMap, setGroupMap] = useState({});
-  var [residenceMap, setResidenceMap] = useState({});
   // fetch account data
 
   useEffect(() => {
@@ -58,44 +50,21 @@ const SignedIn = (props) => {
         setAccount(tmp);
       }
     };
-    let FetchAccountsMap = async () => {
-      let tmp = {};
-      let accounts = await DB.getByUrl("/accounts");
-      await accounts.forEach((doc) => {
-        tmp[doc.id] = doc.data().displayName;
-      });
-      setAccountsMap(tmp);
-    };
-    let FetchGroupMap = async () => {
-      let tmp = {};
-      let group = await DB.getByUrl("/group");
-      await group.forEach((doc) => {
-        tmp[doc.id] = doc.data().name;
-      });
-      setGroupMap(tmp);
-    };
-    let FetchResidenceMap = async () => {
-      let tmp = {};
-      let residence = await DB.getByUrl("/residence");
-      await residence.forEach((doc) => {
-        tmp[doc.id] = doc.data().name;
-      });
-      setResidenceMap(tmp);
-    };
     FetchAccount();
-    FetchAccountsMap();
-    FetchGroupMap();
-    FetchResidenceMap();
     const UpdateData = async () => {
       let counter = await DB.getByUrl("/info/counter");
       let this_year_pass = false;
       const now_year = new Date().getFullYear();
       if (
         now_year !== counter.year_counter ||
+        (counter.year_counter === now_year - 1 && new Date().getMonth() >= 8) ||
         GetWeeklyBase() !== counter.week_counter
       ) {
         let GFs = await DB.getByUrl("/GF");
-        if (now_year !== counter.year_counter) {
+        if (
+          now_year !== counter.year_counter ||
+          (counter.year_counter === now_year - 1 && new Date().getMonth() >= 8)
+        ) {
           // 更新 GF 年級
           for (let i = counter.year_counter; i < now_year - 1; i++) {
             await GFs.forEach((doc) => {
@@ -251,15 +220,9 @@ const SignedIn = (props) => {
   if (account) {
     account.id = props.user.uid;
     return (
-      <AccountsMapContext.Provider value={accountsMap}>
-        <GroupContext.Provider value={groupMap}>
-          <ResidenceContext.Provider value={residenceMap}>
-            <AccountContext.Provider value={account}>
-              <TheLayout firebase={firebase} />
-            </AccountContext.Provider>
-          </ResidenceContext.Provider>
-        </GroupContext.Provider>
-      </AccountsMapContext.Provider>
+      <AccountContext.Provider value={account}>
+        <TheLayout firebase={firebase} />
+      </AccountContext.Provider>
     );
   } else return loading;
 };
