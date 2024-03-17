@@ -2,9 +2,19 @@
 
 import { CButton, CCardFooter } from "@coreui/react";
 import { FirestoreBatchedWrite } from "@react-firebase/firestore";
-import { GetWeeklyBase } from "utils/date";
+import { DB } from "db/firebase";
+import { useEffect, useState } from "react";
+import { GetWeeklyBase, GetWeeklyBaseFromTime } from "utils/date";
 
 const FormFooter = ({ form, account, metadata }) => {
+  const [semester, setSemester] = useState(null);
+  useEffect(() => {
+    const FetchSemester = async () => {
+      let tmp = await DB.getByUrl("/info/semester");
+      setSemester(tmp);
+    };
+    FetchSemester();
+  }, []);
   return (
     <CCardFooter align="right">
       <FirestoreBatchedWrite>
@@ -13,6 +23,13 @@ const FormFooter = ({ form, account, metadata }) => {
             <CButton
               variant="outline"
               color="dark"
+              disabled={
+                semester !== null &&
+                GetWeeklyBaseFromTime(semester.end.toDate()) >=
+                  GetWeeklyBase() &&
+                GetWeeklyBaseFromTime(semester.start.toDate()) <=
+                  GetWeeklyBase()
+              }
               onClick={(event) => {
                 event.target.disabled = true;
                 if (!form.current) {

@@ -1,6 +1,5 @@
-import { React, useState } from "react";
+import { React } from "react";
 import {
-  CButton,
   CCard,
   CCardBody,
   CCardHeader,
@@ -19,26 +18,6 @@ import { GetWeeklyBase, WeeklyBase2String } from "utils/date";
 import FileSaver from "file-saver";
 import XLSX from "xlsx";
 import CustomDatePicker from "components/CustomDatePicker";
-
-const ModifyCard = () => {
-  const [SystemState, setSystemState] = useState(false);
-  const flipState = () => setSystemState(!SystemState);
-
-  return (
-    <CCardBody>
-      <CCol>
-        <CRow className="align-items-center">
-          <CButton
-            color={SystemState ? "success" : "danger"}
-            onClick={() => flipState()}
-          >
-            {SystemState ? "開啓" : "關閉"}
-          </CButton>
-        </CRow>
-      </CCol>
-    </CCardBody>
-  );
-};
 
 class Workbook {
   constructor() {
@@ -270,11 +249,7 @@ const Settings = () => {
           </CCol>
         </CCardHeader>
         <CCardBody>
-          <CustomDatePicker
-            semesterID="123-1"
-            presetStart={new Date()}
-            presetEnd={new Date()}
-          />
+          <CustomDatePicker />
         </CCardBody>
       </CCard>
     </>

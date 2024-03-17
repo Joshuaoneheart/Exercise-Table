@@ -6,7 +6,7 @@ const GetWeeklyBase = () => {
 };
 
 const GetWeeklyBaseFromTime = (date) => {
-  var now = new date.getTime();
+  var now = date.getTime();
   return Math.floor((now - BaseDate) / 7 / 86400000);
 };
 
