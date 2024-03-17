@@ -10,8 +10,7 @@ import {
   CCardBody,
   CCardHeader,
 } from "@coreui/react";
-import { useContext, useEffect, useState } from "react";
-import { AccountsMapContext } from "hooks/context";
+import { useEffect, useState } from "react";
 import { GetWeeklyBase } from "utils/date";
 import { DB } from "db/firebase";
 import ModifyGFModal from "components/ModifyGFModal";
@@ -20,9 +19,15 @@ import CIcon from "@coreui/icons-react";
 const GFCardBody = ({ init_data }) => {
   const [modifyModal, setModifyModal] = useState(false);
   const [data, setData] = useState(init_data);
-  const accountsMap = useContext(AccountsMapContext);
+  const [accountsMap, setAccountsMap] = useState(null);
   useEffect(() => {
     let getWeekData = async () => {
+      let accountsMap = {};
+      let accounts = await DB.getByUrl("/accounts");
+      await accounts.forEach((doc) => {
+        accountsMap[doc.id] = doc.data().displayName;
+      });
+      setAccountsMap(accountsMap);
       let tmp = Object.assign({}, init_data);
       for (let i = 0; i < Object.keys(accountsMap).length; i++) {
         let GF_data = await DB.getByUrl(
@@ -45,6 +50,7 @@ const GFCardBody = ({ init_data }) => {
     };
     getWeekData(init_data);
   }, [init_data, accountsMap]);
+  if (accountsMap === null) return loading;
   return (
     <CCardBody>
       <ModifyGFModal

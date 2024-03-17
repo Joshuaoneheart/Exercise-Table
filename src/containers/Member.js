@@ -11,8 +11,7 @@ import { loading } from "components";
 import { GetWeeklyBase, WeeklyBase2String } from "utils/date";
 import { DB, firebase } from "db/firebase";
 import { useParams } from "react-router-dom/cjs/react-router-dom.min";
-import { useContext, useEffect, useState } from "react";
-import { AccountsMapContext } from "hooks/context";
+import { useEffect, useState } from "react";
 
 const RenderLineChart = ({ data }) => {
   let labels = [];
@@ -258,8 +257,8 @@ const MemberTable = ({ data, id }) => {
 
 const Member = () => {
   const { id } = useParams();
-  const accountsMap = useContext(AccountsMapContext);
   const [data, setData] = useState(null);
+  const [account, setAccount] = useState(null);
   useEffect(() => {
     const GetData = async () => {
       let data = { value: [], ids: [] };
@@ -274,16 +273,18 @@ const Member = () => {
         data.value.push(doc.data());
         data.ids.push(doc.id);
       });
+      let res = await DB.getByUrl("/accounts/" + id);
+      setAccount(res);
       setData(data);
     };
     GetData();
   }, [id]);
-  if (data === null) return loading;
+  if (data === null || account === null) return loading;
   return (
     <CRow>
       <CCol>
         <CCard>
-          <CCardHeader>個人操練情況查詢-{accountsMap[id]}</CCardHeader>
+          <CCardHeader>個人操練情況查詢-{account.displayName}</CCardHeader>
           <CCardBody>
             <CRow>
               <RenderLineChart data={data} />

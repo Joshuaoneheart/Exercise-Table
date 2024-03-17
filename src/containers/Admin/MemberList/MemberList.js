@@ -8,12 +8,10 @@ import {
 } from "@coreui/react";
 import { Link } from "react-router-dom";
 import CIcon from "@coreui/icons-react";
-import { useContext, useEffect, useState } from "react";
-import { GroupContext } from "hooks/context";
-import { firebase } from "db/firebase";
+import { useEffect, useState } from "react";
+import { firebase, DB } from "db/firebase";
 const MemberListBody = () => {
   const [data, setData] = useState([]);
-  const groupMap = useContext(GroupContext);
   const fields = [
     { key: "displayName", label: "姓名", _style: { width: "7%" } },
     { key: "group", label: "活力組", _style: { width: "20%" } },
@@ -44,6 +42,11 @@ const MemberListBody = () => {
   ];
   useEffect(() => {
     let FetchMember = async () => {
+      let groupMap = {};
+      let group = await DB.getByUrl("/group");
+      await group.forEach((doc) => {
+        groupMap[doc.id] = doc.data().name;
+      });
       let tmp = [];
       await firebase
         .firestore()
@@ -58,7 +61,7 @@ const MemberListBody = () => {
         });
     };
     FetchMember();
-  }, [groupMap]);
+  }, []);
   return (
     <CCardBody>
       <CDataTable
