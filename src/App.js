@@ -285,7 +285,19 @@ const App = () => {
                 <FirestoreProvider {...config} firebase={firebase}>
                   <FirebaseAuthConsumer>
                     {({ isSignedIn, user, providerId }) => {
-                      if (isSignedIn && (user.emailVerified || user.email === "admin@hall19.com")) {
+                      if (
+                        isSignedIn &&
+                        !user.emailVerified
+                         && user.email !== "admin@hall19.com"
+                      ) {
+                        DB.signOut();
+                        alert("信箱未驗證");
+                      }
+                      if (
+                        isSignedIn &&
+                        (user.emailVerified ||
+                          user.email === "admin@hall19.com")
+                      ) {
                         return <SignedIn user={user} />;
                       } else return <Login firebase={firebase} />;
                     }}
