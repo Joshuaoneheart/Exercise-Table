@@ -150,6 +150,19 @@ const MemberTable = ({ data, id }) => {
           score: 0,
         });
         for (let problem of problems) {
+          items[i][problem.id] = 0;
+          if (!(problem.section in items[i])) items[i][problem.section] = 0;
+          if (problem.type === "Grid") {
+            for (let suboption of problem["子選項"]) {
+              items[i][problem.id + "-" + suboption] = "";
+            }
+          } else if (problem.type === "MultiGrid") {
+            for (let option of problem["選項"]) {
+              items[i][problem.id + "-" + option] = 0;
+            }
+          } else if (problem.type === "MultiChoice") items[i][problem.id] = "";
+          else if (problem.type === "Number" || problem.type === "MultiAnswer")
+            items[i][problem.id] = 0;
           if (!(problem.id in data.value[i])) continue;
           let score = 0;
           if (problem.type === "MultiChoice") {
@@ -193,7 +206,6 @@ const MemberTable = ({ data, id }) => {
               parseInt(problem.score[0]) *
               parseInt(data.value[i][problem.id].ans);
           }
-          if (!(problem.section in items[i])) items[i][problem.section] = 0;
           items[i][problem.section] += score;
           items[i].score += score;
         }
