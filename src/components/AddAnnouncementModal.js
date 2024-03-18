@@ -26,7 +26,6 @@ const AddAnnouncementModal = ({ data, show, account, setData, setModal }) => {
     return null;
   }
   var writeData = async () => {
-    console.log(form.current.elements.top);
     var cur_data = data;
     var tmp = {};
     tmp["title"] = form.current.elements.title.value;

@@ -26,12 +26,15 @@ const GFForm = () => {
                   if (d && d.value) {
                     // add "id" to data
                     for (var i = 0; i < d.value.length; i++) {
-                      d.value[i]["id"] = d.ids[i];
+                      d.value[i].id = d.ids[i];
                     }
+                    d.value = d.value.filter(
+                      (x) => x.gender === account.gender
+                    );
                     return (
                       <GFFormContent
                         default_data={default_data}
-                        data={d}
+                        data={d.value}
                         account={account}
                       />
                     );

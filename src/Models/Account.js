@@ -11,6 +11,7 @@ class Account {
     this.group = props.group;
     this.registered = props.registered;
     this.residence = props.residence;
+    this.gender = props.gender;
     this.role = props.role;
     this.status = props.status;
     this.is_admin = props.role === "Admin";
@@ -33,6 +34,7 @@ class Account {
     if (this.residence) res.residence = this.residence;
     if (this.role) res.role = this.role;
     if (this.status) res.status = this.status;
+    if (this.gender) res.gender = this.gender;
     if (this.is_changed) {
       if (set) await DB.setByUrl(this.dbUrl, res);
       else await DB.updateByUrl(this.dbUrl, res);

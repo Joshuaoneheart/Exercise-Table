@@ -17,11 +17,13 @@ import {
 import { FirebaseAuthConsumer } from "@react-firebase/auth";
 import { DB } from "db/firebase";
 import Account from "Models/Account";
+import Select from "react-select";
 import React, { useEffect, useState } from "react";
 
 const Register = (props) => {
-  var register_form = React.useRef();
-  var [create, setCreate] = useState(false);
+  const register_form = React.useRef();
+  const [create, setCreate] = useState(false);
+  const [gender, setGender] = useState("男");
   useEffect(() => {
     // if have signed in, sign out
     let checkSignedIn = async () => {
@@ -107,6 +109,7 @@ const Register = (props) => {
                         Password cannot be empty.
                       </CInvalidFeedback>
                     </CInputGroup>
+
                     <CInputGroup className="mb-4">
                       <CInputGroupPrepend>
                         <CInputGroupText>
@@ -131,6 +134,36 @@ const Register = (props) => {
                       <CInvalidFeedback>
                         Please enter the same password as above.
                       </CInvalidFeedback>
+                    </CInputGroup>
+                    <CInputGroup className="mb-4">
+                      <CCol xs="12" md="12" style={{ padding: "0" }}>
+                        <Select
+                          defaultValue={{
+                            value: "男",
+                            label: (
+                              <span style={{ whiteSpace: "pre" }}>男</span>
+                            ),
+                          }}
+                          options={[
+                            {
+                              value: "男",
+                              label: (
+                                <span style={{ whiteSpace: "pre" }}>男</span>
+                              ),
+                            },
+                            {
+                              value: "女",
+                              label: (
+                                <span style={{ whiteSpace: "pre" }}>女</span>
+                              ),
+                            },
+                          ]}
+                          onChange={(v) => {
+                            setGender(v.value);
+                          }}
+                          name="gender"
+                        />
+                      </CCol>
                     </CInputGroup>
                     <CRow>
                       <CCol>
@@ -211,6 +244,7 @@ const Register = (props) => {
                                         date.getDate(),
                                       role: "Member",
                                       status: "Pending",
+                                      gender
                                     },
                                     true
                                   );

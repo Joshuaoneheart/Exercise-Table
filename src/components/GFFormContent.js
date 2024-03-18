@@ -56,7 +56,7 @@ const saveChange = async (account_id, selected, titles, notes) => {
 
 const GFFormContent = ({ data, account, default_data }) => {
   const titles = ["家聚會", "小排", "主日聚會"];
-  const [GFs, setGFs] = useState(data.value);
+  const [GFs, setGFs] = useState(data);
   const [addModal, setAddModal] = useState(false);
   let default_selected = [];
   let default_notes = [];
@@ -99,8 +99,8 @@ const GFFormContent = ({ data, account, default_data }) => {
   var [selected, setSelected] = useState(default_selected);
   var [notes, setNotes] = useState(default_notes);
   useEffect(() => {
-  const titles = ["家聚會", "小排", "主日聚會"];
-  let id_to_v = {};
+    const titles = ["家聚會", "小排", "主日聚會"];
+    let id_to_v = {};
     for (let i = 0; i < GFs.length; i++) {
       id_to_v[GFs[i].id] =
         i +
@@ -245,6 +245,7 @@ const GFFormContent = ({ data, account, default_data }) => {
           setData={setGFs}
           show={addModal}
           setModal={setAddModal}
+          account={account}
         />
         {!!note_list.length && (
           <>
