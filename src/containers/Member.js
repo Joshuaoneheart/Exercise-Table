@@ -8,7 +8,11 @@ import {
 } from "@coreui/react";
 import { CChartLine } from "@coreui/react-chartjs";
 import { loading } from "components";
-import { GetWeeklyBase, GetWeeklyBaseFromTime, WeeklyBase2String } from "utils/date";
+import {
+  GetWeeklyBase,
+  GetWeeklyBaseFromTime,
+  WeeklyBase2String,
+} from "utils/date";
 import { DB, firebase } from "db/firebase";
 import { useParams } from "react-router-dom/cjs/react-router-dom.min";
 import { useEffect, useState } from "react";

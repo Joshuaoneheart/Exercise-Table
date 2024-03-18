@@ -13,7 +13,7 @@ import {
   CRow,
 } from "@coreui/react";
 import { firebase } from "db/firebase";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Select from "react-select";
 import { GetWeeklyBase } from "utils/date";
 import AddModal from "./AddGFModal";
@@ -38,6 +38,7 @@ const saveChange = async (account_id, selected, titles, notes) => {
       else v[titles[i]].push(id);
     }
   }
+  v["week_base"] = GetWeeklyBase();
   await firebase
     .firestore()
     .collection("accounts")
@@ -97,6 +98,49 @@ const GFFormContent = ({ data, account, default_data }) => {
   }
   var [selected, setSelected] = useState(default_selected);
   var [notes, setNotes] = useState(default_notes);
+  useEffect(() => {
+  const titles = ["家聚會", "小排", "主日聚會"];
+  let id_to_v = {};
+    for (let i = 0; i < GFs.length; i++) {
+      id_to_v[GFs[i].id] =
+        i +
+        "|" +
+        GFs[i].id +
+        "|" +
+        GFs[i].name +
+        "|" +
+        GFs[i].school +
+        "|" +
+        GFs[i].department +
+        "|" +
+        GFs[i].grade +
+        "|" +
+        GFs[i].type +
+        "|" +
+        GFs[i].note;
+    }
+    let default_selected = [];
+    let default_notes = [];
+    for (let i in titles) {
+      var d = default_data;
+      default_notes.push({});
+      if (d && d.value) {
+        default_selected.push(
+          d.value[titles[i]]
+            .map((x) => {
+              if (typeof x === "string") return id_to_v[x];
+              else return id_to_v[x.id];
+            })
+            .filter((element) => element !== undefined)
+        );
+        for (let x of d.value[titles[i]]) {
+          if (typeof x !== "string") default_notes[i][x.id] = x.note;
+        }
+      } else default_selected.push([]);
+    }
+    setSelected(default_selected);
+    setNotes(default_notes);
+  }, [default_data, GFs]);
   var inputs = [];
   for (let i = 0; i < titles.length; i++) {
     var default_options = [];
@@ -228,12 +272,7 @@ const GFFormContent = ({ data, account, default_data }) => {
             variant="outline"
             color="dark"
             onClick={() => {
-              saveChange(
-                account.id,
-                selected,
-                titles,
-                notes
-              );
+              saveChange(account.id, selected, titles, notes);
             }}
           >
             提交表單

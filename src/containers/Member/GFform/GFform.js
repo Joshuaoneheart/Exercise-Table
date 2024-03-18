@@ -19,28 +19,26 @@ const GFForm = () => {
         >
           {(default_data) => {
             if (default_data.isLoading) return loading;
-            if (default_data && default_data.value)
-              return (
-                <FirestoreCollection path="/GF/">
-                  {(d) => {
-                    if (d.isLoading) return loading;
-                    if (d && d.value) {
-                      // add "id" to data
-                      for (var i = 0; i < d.value.length; i++) {
-                        d.value[i]["id"] = d.ids[i];
-                      }
-                      return (
-                        <GFFormContent
-                          default_data={default_data}
-                          data={d}
-                          account={account}
-                        />
-                      );
-                    } else return loading;
-                  }}
-                </FirestoreCollection>
-              );
-            else return loading;
+            return (
+              <FirestoreCollection path="/GF/">
+                {(d) => {
+                  if (d.isLoading) return loading;
+                  if (d && d.value) {
+                    // add "id" to data
+                    for (var i = 0; i < d.value.length; i++) {
+                      d.value[i]["id"] = d.ids[i];
+                    }
+                    return (
+                      <GFFormContent
+                        default_data={default_data}
+                        data={d}
+                        account={account}
+                      />
+                    );
+                  } else return loading;
+                }}
+              </FirestoreCollection>
+            );
           }}
         </FirestoreDocument>
       </CCol>
