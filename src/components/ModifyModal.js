@@ -31,7 +31,10 @@ const AddModal = ({ show, page, groups, names, setModal, setGroups }) => {
       case "resident":
         // add a new resident
         groups
-          .getAccount(0, form.current.elements.name.value)
+          .getAccount(
+            0,
+            groups.list[0].indexOf(form.current.elements.name.value)
+          )
           .update(page, groups.ids[show.index]);
         groups.groupBy(page);
         setGroups(groups.clone());

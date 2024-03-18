@@ -43,7 +43,7 @@ const ModifyCard = ({ default_data, page, title, map }) => {
       groups.getAccount(0, i).status === "Active"
     )
       add_modal_options.push(
-        <option value={i} key={i}>
+        <option value={groups.getAccount(0, i).id} key={i}>
           {groups.getAccount(0, i).displayName}
         </option>
       );

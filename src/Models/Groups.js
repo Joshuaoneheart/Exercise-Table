@@ -9,7 +9,6 @@ class Groups {
     this.map = map;
     this.list = [new Group("all"), new Group("no")];
     this.deleted = [];
-    this.no_group = [];
     for (let i = 0; i < account_list.length; i++) {
       let account = account_list[i];
       account.id = id_list[i];
@@ -22,6 +21,12 @@ class Groups {
       if (this.list[i].id === id) return i;
     }
     return -1;
+  }
+
+  trim() {
+    for (let group of this.list) {
+      if (group.length === 0 && group.id !== "no") this.list.splice(this.list.indexOf(group), 1);
+    }
   }
 
   includes(id) {
@@ -83,9 +88,9 @@ class Groups {
           .firestore()
           .collection(page)
           .add({ name: this.names[i] });
+        delete this.map[this.ids[i]];
         tmp[this.ids[i]] = res.id;
         this.list[i].id = res.id;
-        delete this.map[this.ids[i]];
         this.map[res.id] = this.names[i];
       }
     }
@@ -101,14 +106,15 @@ class Groups {
           });
     }
     this.deleted = [];
-    for (let i = 0; i < this.length; i++) {
-      for (let j = 0; j < this.list[i].length; j++) {
-        if (this.getAccount(i, j)[page] in tmp)
-          this.getAccount(i, j).update(page, tmp[this.getAccount(i, j)[page]]);
-        await this.getAccount(i, j).save();
+    for (let group of this.list) {
+      if (group.id === "no") continue;
+      for (let account of group.list) {
+        if (account[page] in tmp) account.update(page, tmp[account[page]]);
+        await account.save();
       }
     }
     this.groupBy(page);
+    this.trim();
   }
 
   get length() {
