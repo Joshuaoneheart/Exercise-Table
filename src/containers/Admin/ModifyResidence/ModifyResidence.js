@@ -18,7 +18,7 @@ const ModifyResidence = () => {
     };
     FetchResidenceMap();
   }, []);
-  if(residenceMap === null) return loading
+  if (residenceMap === null) return loading;
   return (
     <>
       <CRow>

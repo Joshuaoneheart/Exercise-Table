@@ -9,10 +9,17 @@ import {
   CCard,
   CCardBody,
   CCardHeader,
+  CTooltip,
+  CDataTable,
+  CLink,
 } from "@coreui/react";
 import { useEffect, useState } from "react";
-import { GetWeeklyBase } from "utils/date";
-import { DB } from "db/firebase";
+import {
+  GetWeeklyBase,
+  GetWeeklyBaseFromTime,
+  WeeklyBase2String,
+} from "utils/date";
+import { DB, firebase } from "db/firebase";
 import ModifyGFModal from "components/ModifyGFModal";
 import CIcon from "@coreui/icons-react";
 
@@ -20,8 +27,9 @@ const GFCardBody = ({ init_data }) => {
   const [modifyModal, setModifyModal] = useState(false);
   const [data, setData] = useState(init_data);
   const [accountsMap, setAccountsMap] = useState(null);
+  const [tableData, setTableData] = useState(null);
   useEffect(() => {
-    let getWeekData = async () => {
+    let getData = async () => {
       let accountsMap = {};
       let accounts = await DB.getByUrl("/accounts");
       await accounts.forEach((doc) => {
@@ -35,8 +43,9 @@ const GFCardBody = ({ init_data }) => {
         );
         if (GF_data)
           for (let [k, v] of Object.entries(GF_data)) {
+            if (k === "week_base") continue;
             for (let GF_id of v) {
-              if (GF_id === init_data.id) {
+              if (GF_id === init_data.id || GF_id.id === init_data.id) {
                 if (!tmp.shepherd) tmp.shepherd = [];
                 if (!tmp.shepherd.includes(Object.keys(accountsMap)[i]))
                   tmp.shepherd.push(Object.keys(accountsMap)[i]);
@@ -47,10 +56,76 @@ const GFCardBody = ({ init_data }) => {
           }
       }
       setData(tmp);
+      let semester = await DB.getByUrl("/info/semester");
+      let data_by_week = {};
+      for (let shepherd of tmp.shepherd) {
+        let docs = await firebase
+          .firestore()
+          .collection("accounts")
+          .doc(shepherd)
+          .collection("GF")
+          .where(
+            "week_base",
+            ">=",
+            GetWeeklyBaseFromTime(semester.start.toDate())
+          )
+          .get();
+        if (docs)
+          await docs.forEach((doc) => {
+            if (!(parseInt(doc.id) in data_by_week))
+              data_by_week[parseInt(doc.id)] = {
+                week: parseInt(doc.id),
+                主日聚會: [],
+                家聚會: [],
+                小排: [],
+              };
+            if (doc.data()["主日聚會"].includes(tmp.id))
+              data_by_week[parseInt(doc.id)]["主日聚會"].push(shepherd);
+            for (let d of doc.data()["家聚會"]) {
+              if ((typeof d === "string" && d === tmp.id) || d.id === tmp.id) {
+                data_by_week[parseInt(doc.id)]["家聚會"].push({
+                  id: shepherd,
+                  note: d.note,
+                });
+                break;
+              }
+            }
+            if (doc.data()["小排"].includes(tmp.id))
+              data_by_week[parseInt(doc.id)]["小排"].push(shepherd);
+          });
+      }
+      let data = [];
+      for (let v of Object.values(data_by_week)) {
+        data.push(v);
+      }
+      data.sort((x) => -x.week);
+      setTableData(data);
     };
-    getWeekData(init_data);
-  }, [init_data, accountsMap]);
+    getData(init_data);
+  }, [init_data]);
   if (accountsMap === null) return loading;
+  let columns = [
+    {
+      key: "week",
+      label: "Week",
+      _style: { minWidth: "100px", flexWrap: "nowrap" },
+    },
+    {
+      key: "主日聚會",
+      label: "主日聚會",
+      _style: { minWidth: "100px", flexWrap: "nowrap" },
+    },
+    {
+      key: "家聚會",
+      label: "家聚會",
+      _style: { minWidth: "100px", flexWrap: "nowrap" },
+    },
+    {
+      key: "小排",
+      label: "小排",
+      _style: { minWidth: "100px", flexWrap: "nowrap" },
+    },
+  ];
   return (
     <CCardBody>
       <ModifyGFModal
@@ -140,6 +215,55 @@ const GFCardBody = ({ init_data }) => {
           </div>
         </CCol>
       </CRow>
+      <CDataTable
+        style={{ flexWrap: "nowrap" }}
+        pagination
+        fields={columns}
+        items={tableData}
+        scopedSlots={{
+          week: (item) => {
+            return <td>{WeeklyBase2String(item.week)}</td>;
+          },
+          主日聚會: (item) => {
+            return (
+              <td>
+                {item["主日聚會"]
+                  .map((x) => accountsMap[x])
+                  .filter((x) => x)
+                  .join(",")}
+              </td>
+            );
+          },
+          家聚會: (item) => {
+            let tmp = [];
+            let i = 0;
+            for (let d of item["家聚會"]) {
+              if (i !== 0) tmp.push(",");
+              if (typeof d === "string" && accountsMap[d])
+                tmp.push(accountsMap[d]);
+              else if (accountsMap[d.id]) {
+                tmp.push(
+                  <CTooltip key={i} placement="top" content={d.note}>
+                    <CLink>{accountsMap[d.id]}</CLink>
+                  </CTooltip>
+                );
+              }
+              i++;
+            }
+            return <td>{tmp}</td>;
+          },
+          小排: (item) => {
+            return (
+              <td>
+                {item["小排"]
+                  .map((x) => accountsMap[x])
+                  .filter((x) => x)
+                  .join(",")}
+              </td>
+            );
+          },
+        }}
+      />
     </CCardBody>
   );
 };

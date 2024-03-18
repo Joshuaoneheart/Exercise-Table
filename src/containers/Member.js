@@ -8,7 +8,11 @@ import {
 } from "@coreui/react";
 import { CChartLine } from "@coreui/react-chartjs";
 import { loading } from "components";
-import { GetWeeklyBase, WeeklyBase2String } from "utils/date";
+import {
+  GetWeeklyBase,
+  GetWeeklyBaseFromTime,
+  WeeklyBase2String,
+} from "utils/date";
 import { DB, firebase } from "db/firebase";
 import { useParams } from "react-router-dom/cjs/react-router-dom.min";
 import { useEffect, useState } from "react";
@@ -246,7 +250,8 @@ const MemberTable = ({ data, id }) => {
           if ("福音牧養操練" in items[i])
             result["cur_福音牧養操練"] = items[i]["福音牧養操練"];
           if (data.value[i][lord_table_id])
-            result.cur_lord_table = data.value[i][lord_table_id].ans === "有"? 1:0;
+            result.cur_lord_table =
+              data.value[i][lord_table_id].ans === "有" ? 1 : 0;
         }
       }
       items = items.reverse();
@@ -273,13 +278,18 @@ const Member = () => {
   const [account, setAccount] = useState(null);
   useEffect(() => {
     const GetData = async () => {
+      const semester = await DB.getByUrl("/info/semester");
       let data = { value: [], ids: [] };
       const tmp = await firebase
         .firestore()
         .collection("accounts")
         .doc(id)
         .collection("data")
-        .where("week_base", ">=", 127)
+        .where(
+          "week_base",
+          ">=",
+          GetWeeklyBaseFromTime(semester.start.toDate())
+        )
         .get();
       await tmp.forEach((doc) => {
         data.value.push(doc.data());

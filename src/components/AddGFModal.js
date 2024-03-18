@@ -21,7 +21,7 @@ import {
   GF_GRADE,
   GF_TYPE,
 } from "const/GF";
-const AddGFModal = ({ data, GF, show, setData, setModal }) => {
+const AddGFModal = ({ data, account, show, setData, setModal }) => {
   const form = useRef();
   const [school, setSchool] = useState({
     value: "台大",
@@ -49,6 +49,7 @@ const AddGFModal = ({ data, GF, show, setData, setModal }) => {
     tmp["school"] = school.value;
     tmp["department"] = department.value;
     tmp["grade"] = grade.value;
+    tmp["gender"] = account.gender;
     tmp["type"] = type.value;
     tmp["note"] = form.current.elements.note.value;
     let res = await firebase.firestore().collection("GF").add(tmp);
