@@ -22,7 +22,7 @@ const CommentList = ({ comments, accountsMap }) => {
   return comments.map((x) => (
     <>
       <CRow>
-        <CCol md="1">
+        <CCol xs="2" md="1">
           <b>{accountsMap[x.posted_by]}</b>
         </CCol>{" "}
         <CCol>
@@ -176,7 +176,7 @@ const AnnouncementCard = ({ init_data, id }) => {
           }}
         </FirestoreCollection>
         <CRow>
-          <CCol md="11">
+          <CCol xs="10" md="11">
             <CInput
               value={comment}
               onChange={(e) => {

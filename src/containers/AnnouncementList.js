@@ -39,6 +39,13 @@ const AnnouncementListBody = ({ data, account, addModal, setAddModal }) => {
     { key: "posted_by", label: "發佈人", _style: { width: "7%" } },
     { key: "content", label: "內容預覽", _style: { width: "50%" } },
     {
+      key: "top",
+      label: "",
+      _style: { width: "1%" },
+      sorter: false,
+      filter: false,
+    },
+    {
       key: "show_details",
       label: "",
       _style: { width: "1%" },
@@ -58,7 +65,7 @@ const AnnouncementListBody = ({ data, account, addModal, setAddModal }) => {
       />
 
       <CDataTable
-        sorterValue={{ column: "timestamp", asc: false }}
+        sorterValue={{ column: "top", asc: false }}
         items={announcements}
         fields={fields}
         columnFilter
@@ -68,6 +75,9 @@ const AnnouncementListBody = ({ data, account, addModal, setAddModal }) => {
         sorter
         pagination
         scopedSlots={{
+          top: (item) => {
+            return <td></td>;
+          },
           posted_by: (item) => {
             return <td>{accountsMap[item.posted_by]}</td>;
           },
@@ -91,9 +101,11 @@ const AnnouncementListBody = ({ data, account, addModal, setAddModal }) => {
           },
           show_details: (item) => {
             return (
-              <Link to={"/Announcement/" + item.id}>
-                <CIcon name="cil-info" style={{ marginTop: "40%" }} />
-              </Link>
+              <td>
+                <Link to={"/Announcement/" + item.id}>
+                  <CIcon name="cil-info" />
+                </Link>
+              </td>
             );
           },
         }}

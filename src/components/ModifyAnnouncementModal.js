@@ -4,6 +4,7 @@ import {
   CForm,
   CFormGroup,
   CInput,
+  CInputCheckbox,
   CLabel,
   CModal,
   CModalBody,
@@ -47,6 +48,7 @@ const ModifyAnnouncementModal = ({
     var tmp = {};
     tmp["title"] = form.current.elements.title.value;
     tmp["content"] = draftToHtml(convertToRaw(editorState.getCurrentContent()));
+    tmp["top"] = form.current.elements.top.checked ? 1 : 0;
     tmp["posted_by"] = account.id;
     tmp["timestamp"] = new Date();
     await DB.updateByUrl("/announcement/" + id, tmp)
@@ -111,6 +113,18 @@ const ModifyAnnouncementModal = ({
                   }}
                 />
               </div>
+            </CCol>
+          </CFormGroup>
+          <CFormGroup row inline>
+            <CCol md="3">
+              <CLabel>置頂</CLabel>
+            </CCol>
+            <CCol xs="12" md="9">
+              <CInputCheckbox
+                defaultChecked={data.top === 1}
+                style={{ height: "20px", width: "20px" }}
+                name="top"
+              />
             </CCol>
           </CFormGroup>
         </CForm>
