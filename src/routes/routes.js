@@ -28,6 +28,7 @@ const GF = lazy(() => import("../containers/GF"));
 const GFList = lazy(() => import("../containers/Admin/GFList/GFList"));
 const AnnouncementList = lazy(() => import("../containers/AnnouncementList"));
 const Announcement = lazy(() => import("../containers/Announcement"));
+const Summary = lazy(() => import("../containers/Admin/Summary/Summary"));
 
 const routes = [
   { path: "/", exact: true, name: "Home", component: AnnouncementList },
@@ -68,7 +69,12 @@ const routes = [
     name: "announcement",
     component: Announcement,
   },
-  { path: "/memberList", exact: true, name: "member list", component: MemberList },
+  {
+    path: "/memberList",
+    exact: true,
+    name: "member list",
+    component: MemberList,
+  },
   { path: "/member/:id", exact: true, name: "member", component: Member },
   {
     path: "/biblegroupList",
@@ -81,6 +87,12 @@ const routes = [
     exact: true,
     name: "biblegroup",
     component: BibleGroup,
+  },
+  {
+    path: "/summary",
+    exact: true,
+    name: "summary",
+    component: Summary,
   },
 ];
 
