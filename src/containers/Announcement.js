@@ -74,7 +74,7 @@ const AnnouncementCard = ({ init_data, id }) => {
       setData(Object.assign({}, init_data));
     }
   }, [init_data]);
-  if(accountsMap === null) return loading
+  if (accountsMap === null) return loading;
   return (
     <CCard>
       <CCardHeader>
