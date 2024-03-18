@@ -106,7 +106,10 @@ const AddAnnouncementModal = ({ data, show, account, setData, setModal }) => {
               <CLabel>置頂</CLabel>
             </CCol>
             <CCol xs="12" md="9">
-              <CInputCheckbox style={{ height: "20px", width: "20px" }} name="top" />
+              <CInputCheckbox
+                style={{ height: "20px", width: "20px" }}
+                name="top"
+              />
             </CCol>
           </CFormGroup>
         </CForm>

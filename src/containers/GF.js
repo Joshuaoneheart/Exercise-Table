@@ -45,7 +45,7 @@ const GFCardBody = ({ init_data }) => {
           for (let [k, v] of Object.entries(GF_data)) {
             if (k === "week_base") continue;
             for (let GF_id of v) {
-              if (GF_id === init_data.id) {
+              if (GF_id === init_data.id || GF_id.id === init_data.id) {
                 if (!tmp.shepherd) tmp.shepherd = [];
                 if (!tmp.shepherd.includes(Object.keys(accountsMap)[i]))
                   tmp.shepherd.push(Object.keys(accountsMap)[i]);
@@ -83,7 +83,10 @@ const GFCardBody = ({ init_data }) => {
               data_by_week[parseInt(doc.id)]["主日聚會"].push(shepherd);
             for (let d of doc.data()["家聚會"]) {
               if ((typeof d === "string" && d === tmp.id) || d.id === tmp.id) {
-                data_by_week[parseInt(doc.id)]["家聚會"].push(shepherd);
+                data_by_week[parseInt(doc.id)]["家聚會"].push({
+                  id: shepherd,
+                  note: d.note,
+                });
                 break;
               }
             }
