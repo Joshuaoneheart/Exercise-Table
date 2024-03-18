@@ -75,27 +75,32 @@ const MemberListBody = () => {
         pagination
         scopedSlots={{
           total_score: (item) => {
-            let tmp = item.total_score;
+            let tmp = 0;
+            if (item.total_score) tmp += item.total_score;
             if (item.score) tmp += item.score;
             return <td>{tmp}</td>;
           },
           召會生活操練: (item) => {
-            let tmp = item["召會生活操練"];
+            let tmp = 0;
+            if (item["召會生活操練"]) tmp += item["召會生活操練"];
             if (item["cur_召會生活操練"]) tmp += item["cur_召會生活操練"];
             return <td>{tmp}</td>;
           },
           福音牧養操練: (item) => {
-            let tmp = item["福音牧養操練"];
+            let tmp = 0;
+            if (item["福音牧養操練"]) tmp += item["福音牧養操練"];
             if (item["cur_福音牧養操練"]) tmp += item["cur_福音牧養操練"];
             return <td>{tmp}</td>;
           },
           神人生活操練: (item) => {
-            let tmp = item["神人生活操練"];
+            let tmp = 0;
+            if (item["神人生活操練"]) tmp += item["神人生活操練"];
             if (item["cur_神人生活操練"]) tmp += item["cur_神人生活操練"];
             return <td>{tmp}</td>;
           },
           lord_table: (item) => {
-            let tmp = item.lord_table;
+            let tmp = 0;
+            if (item.lord_table) tmp += item.lord_table;
             if (item.cur_lord_table) tmp += item.cur_lord_table;
             return <td>{tmp}</td>;
           },

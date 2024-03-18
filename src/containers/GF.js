@@ -11,8 +11,8 @@ import {
   CCardHeader,
 } from "@coreui/react";
 import { useEffect, useState } from "react";
-import { GetWeeklyBase } from "utils/date";
-import { DB } from "db/firebase";
+import { GetWeeklyBase, GetWeeklyBaseFromTime } from "utils/date";
+import { DB, firebase } from "db/firebase";
 import ModifyGFModal from "components/ModifyGFModal";
 import CIcon from "@coreui/icons-react";
 
@@ -20,8 +20,9 @@ const GFCardBody = ({ init_data }) => {
   const [modifyModal, setModifyModal] = useState(false);
   const [data, setData] = useState(init_data);
   const [accountsMap, setAccountsMap] = useState(null);
+  const [tableData, setTableData] = useState(null);
   useEffect(() => {
-    let getWeekData = async () => {
+    let getData = async () => {
       let accountsMap = {};
       let accounts = await DB.getByUrl("/accounts");
       await accounts.forEach((doc) => {
@@ -47,8 +48,21 @@ const GFCardBody = ({ init_data }) => {
           }
       }
       setData(tmp);
+      let semester = await DB.getByUrl("/info/semester");
+      for (let shepherd of tmp.shepherd) {
+        let docs = await firebase
+          .firestore()
+          .collection("accounts")
+          .doc(shepherd)
+          .collection("GF")
+          .where(
+            "week_base",
+            ">=",
+            GetWeeklyBaseFromTime(semester.start.toDate())
+          );
+      }
     };
-    getWeekData(init_data);
+    getData(init_data);
   }, [init_data, accountsMap]);
   if (accountsMap === null) return loading;
   return (
