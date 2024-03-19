@@ -50,7 +50,6 @@ const ModifyAnnouncementModal = ({
     tmp["content"] = draftToHtml(convertToRaw(editorState.getCurrentContent()));
     tmp["top"] = form.current.elements.top.checked ? 1 : 0;
     tmp["posted_by"] = account.id;
-    tmp["timestamp"] = new Date();
     await DB.updateByUrl("/announcement/" + id, tmp)
       .then(() => {
         alert("編輯完成");
