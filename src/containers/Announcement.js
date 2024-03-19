@@ -18,6 +18,7 @@ import { DB, firebase } from "db/firebase";
 import CIcon from "@coreui/icons-react";
 import { AccountContext } from "hooks/context";
 import ModifyAnnouncementModal from "components/ModifyAnnouncementModal";
+import { GetAccountsMap } from "utils/account";
 const CommentList = ({ comments, accountsMap }) => {
   return comments.map((x) => (
     <>
@@ -50,12 +51,7 @@ const AnnouncementCard = ({ init_data, id }) => {
   };
   useEffect(() => {
     let FetchAccountsMap = async () => {
-      let tmp = {};
-      let accounts = await DB.getByUrl("/accounts");
-      await accounts.forEach((doc) => {
-        tmp[doc.id] = doc.data().displayName;
-      });
-      setAccountsMap(tmp);
+      setAccountsMap(await GetAccountsMap());
     };
     FetchAccountsMap();
   }, []);

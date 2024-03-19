@@ -1,4 +1,4 @@
-import { firebase } from "db/firebase";
+import { firebase, DB } from "db/firebase";
 import { GetWeeklyBaseFromTime } from "./date";
 const GetSemesterData = async (id, semester) => {
   let data = { value: [], ids: [] };
@@ -15,4 +15,14 @@ const GetSemesterData = async (id, semester) => {
   });
   return data;
 };
-export { GetSemesterData };
+
+const GetAccountsMap = async () => {
+  let accounts = await DB.getByUrl("/accounts");
+  let accountsMap = {};
+  await accounts.forEach((doc) => {
+    if (doc.data().role === "Admin" || doc.data().status === "Pending") return;
+    accountsMap[doc.id] = doc.data().displayName;
+  });
+  return accountsMap;
+};
+export { GetSemesterData, GetAccountsMap };

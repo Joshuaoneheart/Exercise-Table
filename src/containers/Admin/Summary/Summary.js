@@ -1,6 +1,6 @@
 import { DB } from "db/firebase";
 import { useState, useEffect } from "react";
-import { GetSemesterData } from "utils/account";
+import { GetAccountsMap, GetSemesterData } from "utils/account";
 import { GetProblems, SummaryScore } from "utils/problem";
 import { DataFrame } from "pandas-js";
 import { loading } from "components";
@@ -27,14 +27,9 @@ const Summary = () => {
   useEffect(() => {
     const getRaw = async () => {
       let tmp = [];
-      let accounts = await DB.getByUrl("/accounts");
-      let accountsMap = {};
+      let accountsMap = await GetAccountsMap();
       let semester = await DB.getByUrl("/info/semester");
       let problems = await GetProblems();
-      await accounts.forEach((doc) => {
-        if (doc.data().role === "Admin") return;
-        accountsMap[doc.id] = doc.data().displayName;
-      });
       // generate empty row
       for (let id of Object.keys(accountsMap)) {
         let weeks = await GetSemesterData(id, semester);
