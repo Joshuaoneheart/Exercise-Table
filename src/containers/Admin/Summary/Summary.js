@@ -114,25 +114,6 @@ const Summary = () => {
   for (let i = 0; i < conditions.length; i++) {
     if (i !== 0) list_items.push(<hr />);
     let choice_select = null;
-    let include_nan = null;
-    if (
-      conditions[i].c === ">=" ||
-      conditions[i].c === "<=" ||
-      conditions[i].c === "all"
-    )
-      include_nan = (
-        <CCol xs="2" md="2">
-          <CLabel style={{ width: "100%" }}>包含未交</CLabel>
-          <CInputCheckbox
-            style={{ width: "20px", height: "20px" }}
-            onChange={(e) => {
-              let tmp = Array.from(conditions);
-              tmp[i].include_nan = e.target.checked;
-              setConditions(tmp);
-            }}
-          />
-        </CCol>
-      );
     if (
       conditions[i].data &&
       (conditions[i].data.type === "Grid" ||
@@ -267,7 +248,17 @@ const Summary = () => {
             />
           </CCol>
         )}
-        {include_nan}
+        <CCol xs="2" md="2">
+          <CLabel style={{ width: "100%" }}>包含未交</CLabel>
+          <CInputCheckbox
+            style={{ width: "20px", height: "20px" }}
+            onChange={(e) => {
+              let tmp = Array.from(conditions);
+              tmp[i].include_nan = e.target.checked;
+              setConditions(tmp);
+            }}
+          />
+        </CCol>
       </CRow>
     );
   }
@@ -302,7 +293,7 @@ const Summary = () => {
       if (df.columns.includes(condition.problem))
         problem_data = df.get(condition.problem);
       else nan_cnt = total_num;
-      let all_cnt = total_num;
+      let all_cnt = 0;
       let cnt = 0;
       if (problem_data !== null) {
         if (
@@ -323,16 +314,18 @@ const Summary = () => {
             })
           ).length;
         } else {
-          let non_nan = problem_data.filter(
-            problem_data.map((x) => {
-              if (typeof x === "string") return true;
-              return !isNaN(x);
-            })
-          );
+          let non_nan = problem_data
+            .filter(
+              problem_data.map((x) => {
+                if (typeof x === "string") return true;
+                return !isNaN(x);
+              })
+            )
+            .map((x) => Number(x));
           all_cnt = non_nan.length;
           if (condition.small_c === "<=")
             cnt = non_nan.filter(non_nan.lte(condition.small_c_n)).length;
-          else if (condition.small_c_n === ">=")
+          else if (condition.small_c === ">=")
             cnt = non_nan.filter(non_nan.gte(condition.small_c_n)).length;
           nan_cnt = problem_data.filter(
             problem_data.map((x) => {
@@ -354,6 +347,7 @@ const Summary = () => {
         }
         flag &= cnt === all_cnt;
       } else if (condition.c === "none") {
+        if (condition.include_nan) cnt += nan_cnt;
         flag &= cnt === 0;
       }
     }
