@@ -302,6 +302,7 @@ const Summary = () => {
       if (df.columns.includes(condition.problem))
         problem_data = df.get(condition.problem);
       else nan_cnt = total_num;
+      let all_cnt = total_num;
       let cnt = 0;
       if (problem_data !== null) {
         if (
@@ -315,6 +316,12 @@ const Summary = () => {
               return isNaN(x);
             })
           ).length;
+          all_cnt = problem_data.filter(
+            problem_data.map((x) => {
+              if (typeof x === "string") return true;
+              return !isNaN(x);
+            })
+          ).length;
         } else {
           let non_nan = problem_data.filter(
             problem_data.map((x) => {
@@ -322,6 +329,7 @@ const Summary = () => {
               return !isNaN(x);
             })
           );
+          all_cnt = non_nan.length;
           if (condition.small_c === "<=")
             cnt = non_nan.filter(non_nan.lte(condition.small_c_n)).length;
           else if (condition.small_c_n === ">=")
@@ -341,8 +349,10 @@ const Summary = () => {
         if (condition.include_nan) cnt += nan_cnt;
         flag &= cnt >= condition.c_n;
       } else if (condition.c === "all") {
-        if (condition.include_nan) cnt += nan_cnt;
-        flag &= cnt === total_num;
+        if (condition.include_nan) {
+          all_cnt = total_num;
+        }
+        flag &= cnt === all_cnt;
       } else if (condition.c === "none") {
         flag &= cnt === 0;
       }

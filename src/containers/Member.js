@@ -12,7 +12,7 @@ import { WeeklyBase2String } from "utils/date";
 import { DB } from "db/firebase";
 import { useParams } from "react-router-dom/cjs/react-router-dom.min";
 import { useEffect, useState } from "react";
-import { SummaryScore } from "utils/problem";
+import { GetProblems, SummaryScore } from "utils/problem";
 import { GetSemesterData } from "utils/account";
 
 const RenderLineChart = ({ data }) => {
@@ -72,7 +72,7 @@ const MemberTable = ({ data, id }) => {
   const [items, setItems] = useState(null);
   const [columns, setColumns] = useState(null);
   useEffect(() => {
-    const GetProblems = async () => {
+    const GetProblemData = async () => {
       let problems = await GetProblems();
       let columns = [
         {
@@ -133,7 +133,7 @@ const MemberTable = ({ data, id }) => {
       setItems(items);
       setColumns(columns);
     };
-    GetProblems();
+    GetProblemData();
   }, [id, data]);
   if (items === null) return loading;
   return (
