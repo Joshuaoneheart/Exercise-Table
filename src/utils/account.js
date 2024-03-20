@@ -16,11 +16,12 @@ const GetSemesterData = async (id, semester) => {
   return data;
 };
 
-const GetAccountsMap = async () => {
+const GetAccountsMap = async (include_admin) => {
   let accounts = await DB.getByUrl("/accounts");
   let accountsMap = {};
   await accounts.forEach((doc) => {
-    if (doc.data().role === "Admin" || doc.data().status === "Pending") return;
+    if (!include_admin && doc.data().role === "Admin") return;
+    if (doc.data().status === "Pending") return;
     accountsMap[doc.id] = doc.data().displayName;
   });
   return accountsMap;

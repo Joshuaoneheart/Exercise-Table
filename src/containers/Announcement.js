@@ -21,6 +21,7 @@ import CIcon from "@coreui/icons-react";
 import { AccountContext } from "hooks/context";
 import ModifyAnnouncementModal from "components/ModifyAnnouncementModal";
 import { GetAccountsMap } from "utils/account";
+import { FormatDate } from "utils/date";
 const CommentList = ({ comments, accountsMap }) => {
   return comments.map((x) => (
     <>
@@ -53,7 +54,7 @@ const AnnouncementCard = ({ init_data, id }) => {
   };
   useEffect(() => {
     let FetchAccountsMap = async () => {
-      setAccountsMap(await GetAccountsMap());
+      setAccountsMap(await GetAccountsMap(true));
     };
     FetchAccountsMap();
   }, []);
@@ -124,8 +125,8 @@ const AnnouncementCard = ({ init_data, id }) => {
                   {data &&
                     data.timestamp &&
                     (data.timestamp.toDate
-                      ? data.timestamp.toDate().toString()
-                      : data.timestamp.toString())}
+                      ? FormatDate(data.timestamp.toDate())
+                      : FormatDate(data.timestamp))}
                 </CCol>
               </CRow>
               <CRow>
@@ -148,14 +149,14 @@ const AnnouncementCard = ({ init_data, id }) => {
                         .split(";")
                         .filter((x) => accountsMap[x])
                         .map((x) => accountsMap[x])
-                        .join("\n")
+                        .join("<br />")
                     }
                   >
                     <CLink
                       style={{
                         opacity: 0.7,
                         fontSize: 14,
-                        color: "aaaaaa"
+                        color: "aaaaaa",
                       }}
                     >
                       已讀{" "}

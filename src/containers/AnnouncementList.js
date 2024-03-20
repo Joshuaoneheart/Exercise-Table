@@ -15,6 +15,7 @@ import { AccountContext } from "hooks/context";
 import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { GetAccountsMap } from "utils/account";
+import { FormatDate } from "utils/date";
 const AnnouncementListBody = ({ data, account, addModal, setAddModal }) => {
   const [announcements, setAnnouncements] = useState(data);
   const [accountsMap, setAccountsMap] = useState(null);
@@ -79,8 +80,8 @@ const AnnouncementListBody = ({ data, account, addModal, setAddModal }) => {
           timestamp: (item) => {
             if (!item.timestamp) return <td></td>;
             if (item.timestamp.toDate)
-              return <td>{item.timestamp.toDate().toString()}</td>;
-            else return <td>{item.timestamp.toString()}</td>;
+              return <td>{FormatDate(item.timestamp.toDate())}</td>;
+            else return <td>{FormatDate(item.timestamp)}</td>;
           },
           content: (item) => {
             let tmp = item.content;
