@@ -45,7 +45,7 @@ const ModifyAnnouncementModal = ({
     return null;
   }
   var writeData = async () => {
-    var tmp = {};
+    var tmp = Object.assign({}, data);
     tmp["title"] = form.current.elements.title.value;
     tmp["content"] = draftToHtml(convertToRaw(editorState.getCurrentContent()));
     tmp["top"] = form.current.elements.top.checked ? 1 : 0;
