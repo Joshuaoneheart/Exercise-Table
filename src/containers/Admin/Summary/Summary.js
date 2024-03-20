@@ -38,12 +38,14 @@ const Summary = () => {
         let week = null;
         if (df.columns.includes("week_base")) week = df.get("week_base");
         let empty_row = [];
+        let nan_week_cnt = 0;
         for (
           let i = GetWeeklyBaseFromTime(semester.start.toDate());
           i <= GetWeeklyBaseFromTime(semester.end.toDate());
           i++
         ) {
           if (!week || !week.values.includes(WeeklyBase2String(i))) {
+            nan_week_cnt++;
             empty_row.push({
               week_base: WeeklyBase2String(i),
               score: 0,
@@ -55,7 +57,10 @@ const Summary = () => {
         }
         df = df.append(new DataFrame(empty_row));
         tmp.push(
-          Object.assign({ name: accountsMap[id], dataframe: df }, result)
+          Object.assign(
+            { nan_week_cnt, name: accountsMap[id], dataframe: df },
+            result
+          )
         );
       }
       setTotalNum(
@@ -343,6 +348,7 @@ const Summary = () => {
         神人生活操練: item["神人生活操練"] + item["cur_神人生活操練"],
         召會生活操練: item["召會生活操練"] + item["cur_召會生活操練"],
         score: item.score + item.total_score,
+        nan_week_cnt: item.nan_week_cnt
       });
   }
   return (
@@ -375,6 +381,11 @@ const Summary = () => {
                   key: "name",
                   label: "Name",
                   _style: { minWidth: "100px", flexWrap: "nowrap" },
+                },
+                {
+                  key: "nan_week_cnt",
+                  label: "未交週數",
+                  _style: { minWidth: "25px", flexWrap: "nowrap" },
                 },
                 {
                   key: "福音牧養操練",
