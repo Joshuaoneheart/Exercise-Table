@@ -11,6 +11,8 @@ import {
   CButton,
   CInput,
   CCardFooter,
+  CLink,
+  CTooltip,
 } from "@coreui/react";
 import AutoLink from "@uiw/react-auto-link";
 import { useContext, useEffect, useState } from "react";
@@ -137,21 +139,32 @@ const AnnouncementCard = ({ init_data, id }) => {
                 </CCol>
               </CRow>
               <CRow>
-                <CCol lg="3">
-                  <b>已讀數</b>
-                </CCol>
-                <CCol>{data.checked && data.checked.split(";").length}</CCol>
-              </CRow>
-              <CRow>
-                <CCol lg="3">
-                  <b>已讀</b>
-                </CCol>
                 <CCol>
-                  {data.checked &&
-                    data.checked
-                      .split(";")
-                      .map((x) => accountsMap[x])
-                      .join(",")}
+                  <CTooltip
+                    placement="top"
+                    content={
+                      data.checked &&
+                      data.checked
+                        .split(";")
+                        .filter((x) => accountsMap[x])
+                        .map((x) => accountsMap[x])
+                        .join("\n")
+                    }
+                  >
+                    <CLink
+                      style={{
+                        opacity: 0.7,
+                        fontSize: 14,
+                        color: "aaaaaa"
+                      }}
+                    >
+                      已讀{" "}
+                      {data.checked
+                        ? data.checked.split(";").filter((x) => accountsMap[x])
+                            .length
+                        : 0}
+                    </CLink>
+                  </CTooltip>
                 </CCol>
               </CRow>
             </div>
