@@ -1,10 +1,7 @@
 const loading = (
-  <div className="spinner-box">
-    <div className="leo-border-1">
-      <div className="leo-core-1"></div>
-    </div>
-    <div className="leo-border-2">
-      <div className="leo-core-2"></div>
+  <div style={{ display: "flex", width: "100%", height: "100%", justifyContent: "center", alignItems: "center" }}>
+    <div class="spinner-grow" role="status">
+      <span class="visually-hidden"></span>
     </div>
   </div>
 );
