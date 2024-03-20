@@ -76,7 +76,21 @@ const MemberListBody = () => {
         .get()
         .then((snapshot) => {
           snapshot.forEach((doc) => {
-            tmp.push(Object.assign({ id: doc.id }, doc.data()));
+            let item = Object.assign({}, doc.data());
+            if (!item.total_score) item.total_score = 0;
+            if (item.score) item.total_score += item.score;
+            if (!item["召會生活操練"]) item["召會生活操練"] = 0;
+            if (item["cur_召會生活操練"])
+              item["召會生活操練"] += item["cur_召會生活操練"];
+            if (!item["神人生活操練"]) item["神人生活操練"] = 0;
+            if (item["cur_神人生活操練"])
+              item["神人生活操練"] += item["cur_神人生活操練"];
+            if (!item["福音牧養操練"]) item["福音牧養操練"] = 0;
+            if (item["cur_福音牧養操練"])
+              item["福音牧養操練"] += item["cur_福音牧養操練"];
+            if (!item.lord_table) item.lord_table = 0;
+            if (item.cur_lord_table) item.lord_table += item.cur_lord_table;
+            tmp.push(Object.assign({ id: doc.id }, item));
             tmp[tmp.length - 1].group = groupMap[tmp[tmp.length - 1].group];
           });
         });
@@ -103,36 +117,6 @@ const MemberListBody = () => {
         sorter
         pagination
         scopedSlots={{
-          total_score: (item) => {
-            let tmp = 0;
-            if (item.total_score) tmp += item.total_score;
-            if (item.score) tmp += item.score;
-            return <td>{tmp}</td>;
-          },
-          召會生活操練: (item) => {
-            let tmp = 0;
-            if (item["召會生活操練"]) tmp += item["召會生活操練"];
-            if (item["cur_召會生活操練"]) tmp += item["cur_召會生活操練"];
-            return <td>{tmp}</td>;
-          },
-          福音牧養操練: (item) => {
-            let tmp = 0;
-            if (item["福音牧養操練"]) tmp += item["福音牧養操練"];
-            if (item["cur_福音牧養操練"]) tmp += item["cur_福音牧養操練"];
-            return <td>{tmp}</td>;
-          },
-          神人生活操練: (item) => {
-            let tmp = 0;
-            if (item["神人生活操練"]) tmp += item["神人生活操練"];
-            if (item["cur_神人生活操練"]) tmp += item["cur_神人生活操練"];
-            return <td>{tmp}</td>;
-          },
-          lord_table: (item) => {
-            let tmp = 0;
-            if (item.lord_table) tmp += item.lord_table;
-            if (item.cur_lord_table) tmp += item.cur_lord_table;
-            return <td>{tmp}</td>;
-          },
           show_details: (item) => {
             return (
               <td>
