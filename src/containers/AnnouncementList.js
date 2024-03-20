@@ -21,7 +21,7 @@ const AnnouncementListBody = ({ data, account, addModal, setAddModal }) => {
   const [accountsMap, setAccountsMap] = useState(null);
   useEffect(() => {
     let FetchAccountsMap = async () => {
-      setAccountsMap(await GetAccountsMap());
+      setAccountsMap(await GetAccountsMap(true));
     };
     FetchAccountsMap();
   }, []);
