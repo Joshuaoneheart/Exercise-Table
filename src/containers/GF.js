@@ -22,6 +22,7 @@ import {
 import { DB, firebase } from "db/firebase";
 import ModifyGFModal from "components/ModifyGFModal";
 import CIcon from "@coreui/icons-react";
+import { GetAccountsMap } from "utils/account";
 
 const GFCardBody = ({ init_data }) => {
   const [modifyModal, setModifyModal] = useState(false);
@@ -30,11 +31,7 @@ const GFCardBody = ({ init_data }) => {
   const [tableData, setTableData] = useState(null);
   useEffect(() => {
     let getData = async () => {
-      let accountsMap = {};
-      let accounts = await DB.getByUrl("/accounts");
-      await accounts.forEach((doc) => {
-        accountsMap[doc.id] = doc.data().displayName;
-      });
+      let accountsMap = await GetAccountsMap();
       setAccountsMap(accountsMap);
       let tmp = Object.assign({}, init_data);
       for (let i = 0; i < Object.keys(accountsMap).length; i++) {

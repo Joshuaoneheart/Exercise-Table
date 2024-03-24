@@ -11,6 +11,8 @@ import {
   CButton,
   CInput,
   CCardFooter,
+  CLink,
+  CTooltip,
 } from "@coreui/react";
 import AutoLink from "@uiw/react-auto-link";
 import { useContext, useEffect, useState } from "react";
@@ -18,6 +20,8 @@ import { DB, firebase } from "db/firebase";
 import CIcon from "@coreui/icons-react";
 import { AccountContext } from "hooks/context";
 import ModifyAnnouncementModal from "components/ModifyAnnouncementModal";
+import { GetAccountsMap } from "utils/account";
+import { FormatDate } from "utils/date";
 const CommentList = ({ comments, accountsMap }) => {
   return comments.map((x) => (
     <>
@@ -50,12 +54,7 @@ const AnnouncementCard = ({ init_data, id }) => {
   };
   useEffect(() => {
     let FetchAccountsMap = async () => {
-      let tmp = {};
-      let accounts = await DB.getByUrl("/accounts");
-      await accounts.forEach((doc) => {
-        tmp[doc.id] = doc.data().displayName;
-      });
-      setAccountsMap(tmp);
+      setAccountsMap(await GetAccountsMap(true));
     };
     FetchAccountsMap();
   }, []);
@@ -126,8 +125,8 @@ const AnnouncementCard = ({ init_data, id }) => {
                   {data &&
                     data.timestamp &&
                     (data.timestamp.toDate
-                      ? data.timestamp.toDate().toString()
-                      : data.timestamp.toString())}
+                      ? FormatDate(data.timestamp.toDate())
+                      : FormatDate(data.timestamp))}
                 </CCol>
               </CRow>
               <CRow>
@@ -141,21 +140,32 @@ const AnnouncementCard = ({ init_data, id }) => {
                 </CCol>
               </CRow>
               <CRow>
-                <CCol lg="3">
-                  <b>已讀數</b>
-                </CCol>
-                <CCol>{data.checked && data.checked.split(";").length}</CCol>
-              </CRow>
-              <CRow>
-                <CCol lg="3">
-                  <b>已讀</b>
-                </CCol>
                 <CCol>
-                  {data.checked &&
-                    data.checked
-                      .split(";")
-                      .map((x) => accountsMap[x])
-                      .join(",")}
+                  <CTooltip
+                    placement="top"
+                    content={
+                      data.checked &&
+                      data.checked
+                        .split(";")
+                        .filter((x) => accountsMap[x])
+                        .map((x) => accountsMap[x])
+                        .join("<br />")
+                    }
+                  >
+                    <CLink
+                      style={{
+                        opacity: 0.7,
+                        fontSize: 14,
+                        color: "aaaaaa",
+                      }}
+                    >
+                      已讀{" "}
+                      {data.checked
+                        ? data.checked.split(";").filter((x) => accountsMap[x])
+                            .length
+                        : 0}
+                    </CLink>
+                  </CTooltip>
                 </CCol>
               </CRow>
             </div>

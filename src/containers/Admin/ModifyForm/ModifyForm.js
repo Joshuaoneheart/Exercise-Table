@@ -248,6 +248,7 @@ const ModifyCard = ({ default_data }) => {
                       let problem = data.value[i];
                       if (problem.id === "new") {
                         try {
+						  delete problem.id
                           await firebase
                             .firestore()
                             .collection("form")

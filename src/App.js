@@ -108,14 +108,14 @@ const SignedIn = (props) => {
           // Get sections
           problems = GatherProblemsBySection(problems);
           await accounts.forEach((doc) => {
-            account_data.push(Object.assign({ id: doc.id }, doc.data()));
+            account_data.push(Object.assign(doc.data(), { id: doc.id }));
             if (doc.data().group) {
               group_lord_table[doc.data().group] = 0;
               group_score[doc.data().group] = 0;
             }
           });
           await GFs.forEach((doc) => {
-            GF_data.push(Object.assign({ id: doc.id }, doc.data()));
+            GF_data.push(Object.assign(doc.data(), { id: doc.id }));
           });
           for (let i = 0; i < GF_data.length; i++) {
             GF_account_map[GF_data[i].id] = GF_data[i].shepherd

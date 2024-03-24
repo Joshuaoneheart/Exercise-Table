@@ -18,4 +18,28 @@ const WeeklyBase2String = (base) => {
   }/${end.getDate()}`;
 };
 
-export { BaseDate, GetWeeklyBase, WeeklyBase2String, GetWeeklyBaseFromTime };
+const FormatDate = (date) => {
+  const weekday = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+  return (
+    date.getFullYear() +
+    "/" +
+    (date.getMonth() + 1) +
+    "/" +
+    date.getDate() +
+    "(" +
+    weekday[date.getDay()] +
+    ")" +
+    " " +
+    date.getHours() +
+    ":" +
+    (date.getMinutes() > 10 ? date.getMinutes() : "0" + date.getMinutes())
+  );
+};
+
+export {
+  BaseDate,
+  GetWeeklyBase,
+  WeeklyBase2String,
+  GetWeeklyBaseFromTime,
+  FormatDate,
+};
