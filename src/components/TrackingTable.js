@@ -1,22 +1,57 @@
 import { Table, Tag, Space } from "antd";
 import { TimePicker } from "antd";
+import dayjs from "dayjs";
+
+const format = "HH:mm";
 
 const columns = [
   {
-    title: "Name",
-    dataIndex: "name",
-    key: "name",
+    title: "操練項目",
+    dataIndex: "topic",
+    key: "topic",
     render: (text) => <a>{text}</a>,
   },
   {
-    title: "Age",
-    dataIndex: "age",
-    key: "age",
+    title: "主日",
+    dataIndex: "sunday",
+    key: "sunday",
+    render: (text) => <TimePicker defaultValue={dayjs(text)} format={format} />,
   },
   {
-    title: "Address",
-    dataIndex: "address",
-    key: "address",
+    title: "周一",
+    dataIndex: "monday",
+    key: "monday",
+    render: (text) => <TimePicker defaultValue={dayjs(text)} format={format} />,
+  },
+  {
+    title: "周二",
+    dataIndex: "tuesday",
+    key: "tuesday",
+    render: (text) => <TimePicker defaultValue={dayjs(text)} format={format} />,
+  },
+  {
+    title: "周三",
+    dataIndex: "wednesday",
+    key: "wednesday",
+    render: (text) => <TimePicker defaultValue={dayjs(text)} format={format} />,
+  },
+  {
+    title: "周四",
+    dataIndex: "thursday",
+    key: "thursday",
+    render: (text) => <TimePicker defaultValue={dayjs(text)} format={format} />,
+  },
+  {
+    title: "周五",
+    dataIndex: "friday",
+    key: "friday",
+    render: (text) => <TimePicker defaultValue={dayjs(text)} format={format} />,
+  },
+  {
+    title: "周六",
+    dataIndex: "saturday",
+    key: "saturday",
+    render: (text) => <TimePicker defaultValue={dayjs(text)} format={format} />,
   },
   {
     title: "Tags",
@@ -51,32 +86,33 @@ const columns = [
 ];
 const data = [
   {
-    key: "1",
-    name: "John Brown",
-    age: 32,
-    address: "New York No. 1 Lake Park",
+    topic: "起床時間",
+    monday: dayjs(),
+    tuesday: dayjs(),
+    wednesday: dayjs(),
+    thursday: dayjs(),
+    friday: dayjs(),
+    saturday: dayjs(),
+    sunday: dayjs(),
     tags: ["nice", "developer"],
   },
   {
-    key: "2",
-    name: "Jim Green",
-    age: 42,
-    address: "London No. 1 Lake Park",
+    topic: "就寢時間",
+    monday: dayjs(),
+    tuesday: dayjs(),
+    wednesday: dayjs(),
+    thursday: dayjs(),
+    friday: dayjs(),
+    saturday: dayjs(),
+    sunday: dayjs(),
     tags: ["loser"],
   },
-  {
-    key: "3",
-    name: "Joe Black",
-    age: 32,
-    address: "Sydney No. 1 Lake Park",
-    tags: ["cool", "teacher"],
-  },
 ];
+
 const TrackingTable = () => {
-  const format = "HH:mm";
   return (
     <>
-      <Table columns={columns} dataSource={data} />
+      <Table columns={columns} dataSource={data} pagination={false} bordered />
     </>
   );
 };
