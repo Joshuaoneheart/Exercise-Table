@@ -19,6 +19,7 @@ const BibleGroupList = lazy(() =>
   import("../containers/Admin/BibleGroupList/BibleGroupList")
 );
 
+const HabitTracker = lazy(() => import("../containers/HabitTracker"));
 const Profile = lazy(() => import("../containers/Admin/Profile/Profile"));
 const Settings = lazy(() => import("../containers/Admin/Settings/Settings"));
 const Form = lazy(() => import("../containers/Admin/ReviewForm/ReviewForm"));
@@ -57,6 +58,12 @@ const routes = [
   { path: "/GFList", exact: true, name: "GFList", component: GFList },
   { path: "/GF/:id", exact: true, name: "GF", component: GF },
   {
+    path: "/habitTracker",
+    exact: true,
+    name: "Habit Tracker",
+    component: HabitTracker,
+  },
+  {
     path: "/announcementList",
     exact: true,
     name: "announcement list",
@@ -68,7 +75,12 @@ const routes = [
     name: "announcement",
     component: Announcement,
   },
-  { path: "/memberList", exact: true, name: "member list", component: MemberList },
+  {
+    path: "/memberList",
+    exact: true,
+    name: "member list",
+    component: MemberList,
+  },
   { path: "/member/:id", exact: true, name: "member", component: Member },
   {
     path: "/biblegroupList",
