@@ -348,7 +348,7 @@ const Summary = () => {
         神人生活操練: item["神人生活操練"] + item["cur_神人生活操練"],
         召會生活操練: item["召會生活操練"] + item["cur_召會生活操練"],
         score: item.score + item.total_score,
-        nan_week_cnt: item.nan_week_cnt
+        nan_week_cnt: item.nan_week_cnt,
       });
   }
   return (

@@ -4,7 +4,7 @@ const GetProblems = async () => {
   let docs = await DB.getByUrl("/form");
   let problems = [];
   await docs.forEach((doc) => {
-    problems.push(Object.assign({ id: doc.id }, doc.data()));
+    problems.push(Object.assign(doc.data(), {id: doc.id}));
   });
   return problems;
 };
@@ -80,6 +80,7 @@ const SummaryScore = async (data, problems, id) => {
         }
       } else if (problem.type === "Number") {
         items[i][problem.id] = data.value[i][problem.id].ans;
+		console.log(data.value[i][problem.id].ans)
         score +=
           parseInt(problem.score[0]) * parseInt(data.value[i][problem.id].ans);
       }
