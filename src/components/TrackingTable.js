@@ -54,26 +54,9 @@ const columns = [
     dataIndex: "saturday",
     key: "saturday",
     render: (text) => <TimePicker defaultValue={dayjs(text)} format={format} />,
-    // render: (text) => {
-    //   console.log(text, typeof text);
-    //   typeof text === "number" ? (
-    //     <a>{text}</a>
-    //   ) : (
-    //     <TimePicker defaultValue={dayjs(text)} format={format} />
-    //   );
-    // },
-  },
-  {
-    title: "Action",
-    key: "action",
-    render: (_, record) => (
-      <Space size="middle">
-        <a>Invite {record.name}</a>
-        <a>Delete</a>
-      </Space>
-    ),
   },
 ];
+
 const data = [
   {
     topic: "起床時間",
@@ -111,11 +94,16 @@ const tracking = [
 ];
 
 const TrackingTable = () => {
+  let trackingColumn = columns.map((col) =>
+    Object.assign({}, col, { render: undefined })
+  );
+  console.log(columns);
   return (
     <>
       <Table columns={columns} dataSource={data} pagination={false} bordered />
+      {/* It might work better if you set a fixed size for each column field */}
       <Table
-        columns={columns}
+        columns={trackingColumn}
         dataSource={tracking}
         pagination={false}
         showHeader={false}
