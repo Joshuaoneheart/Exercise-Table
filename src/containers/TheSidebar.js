@@ -91,6 +91,12 @@ const TheSidebar = () => {
         icon: "cil-list",
       },
       {
+        _tag: "CSidebarNavItem",
+        name: "學期結算",
+        to: "/summary",
+        icon: "cil-calculator",
+      },
+      {
         _tag: "CSidebarNavDivider",
       },
       {
