@@ -53,34 +53,15 @@ const columns = [
     title: "周六",
     dataIndex: "saturday",
     key: "saturday",
-    render: (text) => {
-      console.log(text, typeof text);
-      typeof text === "number" ? (
-        <a>{text}</a>
-      ) : (
-        <TimePicker defaultValue={dayjs(text)} format={format} />
-      );
-    },
-  },
-  {
-    title: "Tags",
-    key: "tags",
-    dataIndex: "tags",
-    render: (_, { tags }) => (
-      <>
-        {tags.map((tag) => {
-          let color = tag.length > 5 ? "geekblue" : "green";
-          if (tag === "loser") {
-            color = "volcano";
-          }
-          return (
-            <Tag color={color} key={tag}>
-              {tag.toUpperCase()}
-            </Tag>
-          );
-        })}
-      </>
-    ),
+    render: (text) => <TimePicker defaultValue={dayjs(text)} format={format} />,
+    // render: (text) => {
+    //   console.log(text, typeof text);
+    //   typeof text === "number" ? (
+    //     <a>{text}</a>
+    //   ) : (
+    //     <TimePicker defaultValue={dayjs(text)} format={format} />
+    //   );
+    // },
   },
   {
     title: "Action",
@@ -103,7 +84,6 @@ const data = [
     friday: dayjs(),
     saturday: dayjs(),
     sunday: dayjs(),
-    tags: ["nice", "developer"],
   },
   {
     topic: "就寢時間",
@@ -114,7 +94,6 @@ const data = [
     friday: dayjs(),
     saturday: dayjs(),
     sunday: dayjs(),
-    tags: ["loser"],
   },
 ];
 
@@ -128,7 +107,6 @@ const tracking = [
     friday: 10,
     saturday: 10,
     sunday: 10,
-    tags: ["loser"],
   },
 ];
 
