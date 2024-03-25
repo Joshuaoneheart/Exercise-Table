@@ -2,6 +2,7 @@ import { Table, Tag, Space } from "antd";
 import { TimePicker } from "antd";
 import dayjs from "dayjs";
 
+// relevant documentation: https://ant.design/components/table
 const format = "HH:mm";
 
 const columns = [
@@ -9,7 +10,8 @@ const columns = [
     title: "操練項目",
     dataIndex: "topic",
     key: "topic",
-    render: (text) => <a>{text}</a>,
+    rowScope: "row",
+    // render: (text) => <a>{text}</a>,
   },
   {
     title: "主日",
@@ -51,7 +53,14 @@ const columns = [
     title: "周六",
     dataIndex: "saturday",
     key: "saturday",
-    render: (text) => <TimePicker defaultValue={dayjs(text)} format={format} />,
+    render: (text) => {
+      console.log(text, typeof text);
+      typeof text === "number" ? (
+        <a>{text}</a>
+      ) : (
+        <TimePicker defaultValue={dayjs(text)} format={format} />
+      );
+    },
   },
   {
     title: "Tags",
@@ -109,10 +118,31 @@ const data = [
   },
 ];
 
+const tracking = [
+  {
+    topic: "就寢時間",
+    monday: 10,
+    tuesday: 10,
+    wednesday: 10,
+    thursday: 10,
+    friday: 10,
+    saturday: 10,
+    sunday: 10,
+    tags: ["loser"],
+  },
+];
+
 const TrackingTable = () => {
   return (
     <>
       <Table columns={columns} dataSource={data} pagination={false} bordered />
+      <Table
+        columns={columns}
+        dataSource={tracking}
+        pagination={false}
+        showHeader={false}
+        bordered
+      />
     </>
   );
 };
