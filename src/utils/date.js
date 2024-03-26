@@ -19,7 +19,7 @@ const WeeklyBase2String = (base) => {
 };
 
 const FormatDate = (date) => {
-  const weekday = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+  const weekday = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   return (
     date.getFullYear() +
     "/" +
