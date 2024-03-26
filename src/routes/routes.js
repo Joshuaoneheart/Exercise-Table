@@ -57,6 +57,7 @@ const routes = [
   { path: "/profile", exact: true, name: "Profile", component: Profile },
   { path: "/GFList", exact: true, name: "GFList", component: GFList },
   { path: "/GF/:id", exact: true, name: "GF", component: GF },
+  
   {
     path: "/announcementList",
     exact: true,

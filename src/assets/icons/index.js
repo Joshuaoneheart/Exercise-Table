@@ -30,6 +30,7 @@ import {
 } from "@coreui/icons";
 import { cifUs, cifBr, cifIn, cifFr, cifEs, cifPl } from "@coreui/icons";
 import {
+  cilAlarm,
   cilAlignCenter,
   cilAlignLeft,
   cilAlignRight,
@@ -154,6 +155,7 @@ export const icons = Object.assign(
     cilArrowRight,
     cilArrowTop,
     cilAsterisk,
+    cilAlarm,
     cilBan,
     cilBasket,
     cilBell,

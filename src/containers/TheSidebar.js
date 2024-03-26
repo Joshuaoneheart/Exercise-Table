@@ -117,6 +117,12 @@ const TheSidebar = () => {
         icon: "cil-user",
       },
       {
+        _tag: "CSidebarNavItem",
+        name: "時間表",
+        to: "/schedule",
+        icon: "cil-alarm",
+      },
+      {
         _tag: "CSidebarNavTitle",
         _children: ["表單"],
       },
