@@ -440,6 +440,17 @@ const TrackingTable = ({ isChangeable, default_data, account_id }) => {
                 <CCol xs="4" md="2">
                   {isChangeable ? (
                     <InputNumber
+                      onChange={(v) => {
+                        let res = {};
+                        res["運動時數"] = v;
+                        DB.OnDemandUpdate(
+                          "/accounts/" +
+                            account_id +
+                            "/schedule/" +
+                            GetWeeklyBase(),
+                          res
+                        );
+                      }}
                       defaultValue={
                         default_data
                           ? default_data["運動時數"]
