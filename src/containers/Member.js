@@ -8,12 +8,13 @@ import {
 } from "@coreui/react";
 import { CChartLine } from "@coreui/react-chartjs";
 import { loading } from "components";
-import { WeeklyBase2String } from "utils/date";
+import { GetWeeklyBase, WeeklyBase2String } from "utils/date";
 import { DB } from "db/firebase";
 import { useParams } from "react-router-dom/cjs/react-router-dom.min";
 import { useEffect, useState } from "react";
 import { GetProblems, SummaryScore } from "utils/problem";
 import { GetSemesterData } from "utils/account";
+import TrackingTable from "components/TrackingTable";
 
 const RenderLineChart = ({ data }) => {
   let labels = [];
@@ -150,16 +151,22 @@ const Member = () => {
   const { id } = useParams();
   const [data, setData] = useState(null);
   const [account, setAccount] = useState(null);
+  const [schedule, setSchedule] = useState(null);
   useEffect(() => {
     const GetData = async () => {
       const semester = await DB.getByUrl("/info/semester");
       let res = await DB.getByUrl("/accounts/" + id);
       setAccount(res);
       setData(await GetSemesterData(id, semester));
+      setSchedule(
+        await DB.getByUrl(
+          "/accounts/" + id + "/schedule/" + (GetWeeklyBase() - 1)
+        )
+      );
     };
     GetData();
   }, [id]);
-  if (data === null || account === null) return loading;
+  if (data === null || account === null || schedule === null) return loading;
   return (
     <CRow>
       <CCol>
@@ -171,6 +178,13 @@ const Member = () => {
             </CRow>
             <CRow style={{ overflowX: "scroll", flexWrap: "nowrap" }}>
               <MemberTable data={data} id={id} />
+            </CRow>
+            <CRow>
+              <TrackingTable
+                default_data={schedule}
+                isChangeable={false}
+                account_id={account.id}
+              />
             </CRow>
           </CCardBody>
         </CCard>
