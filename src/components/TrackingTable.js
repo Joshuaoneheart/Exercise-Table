@@ -66,8 +66,7 @@ const TrackingTable = ({ isChangeable, default_data, account_id }) => {
                   defaultValue={text}
                   onChange={(v) => {
                     let res = {};
-                    res[record.topic] = {};
-                    res[record.topic].sunday = v;
+                    res[record.topic + ".sunday"] = v;
                     DB.OnDemandUpdate(
                       "/accounts/" +
                         account_id +
@@ -85,8 +84,7 @@ const TrackingTable = ({ isChangeable, default_data, account_id }) => {
                 defaultValue={dayjs(text, format)}
                 onChange={(v) => {
                   let res = {};
-                  res[record.topic] = {};
-                  res[record.topic].sunday = v.format(format);
+                  res[record.topic + ".sunday"] = v.format(format);
                   DB.OnDemandUpdate(
                     "/accounts/" + account_id + "/schedule/" + GetWeeklyBase(),
                     res
@@ -118,8 +116,7 @@ const TrackingTable = ({ isChangeable, default_data, account_id }) => {
                   defaultValue={text}
                   onChange={(v) => {
                     let res = {};
-                    res[record.topic] = {};
-                    res[record.topic].monday = v;
+                    res[record.topic + ".monday"] = v;
                     DB.OnDemandUpdate(
                       "/accounts/" +
                         account_id +
@@ -138,8 +135,7 @@ const TrackingTable = ({ isChangeable, default_data, account_id }) => {
                 defaultValue={dayjs(text, format)}
                 onChange={(v) => {
                   let res = {};
-                  res[record.topic] = {};
-                  res[record.topic].monday = v.format(format);
+                  res[record.topic + ".monday"] = v.format(format);
                   DB.OnDemandUpdate(
                     "/accounts/" + account_id + "/schedule/" + GetWeeklyBase(),
                     res
@@ -171,8 +167,7 @@ const TrackingTable = ({ isChangeable, default_data, account_id }) => {
                   defaultValue={text}
                   onChange={(v) => {
                     let res = {};
-                    res[record.topic] = {};
-                    res[record.topic].tuesday = v;
+                    res[record.topic + ".tuesday"] = v;
                     DB.OnDemandUpdate(
                       "/accounts/" +
                         account_id +
@@ -191,7 +186,7 @@ const TrackingTable = ({ isChangeable, default_data, account_id }) => {
                 onChange={(v) => {
                   let res = {};
                   res[record.topic] = {};
-                  res[record.topic].tuesday = v.format(format);
+                  res[record.topic + ".tuesday"] = v.format(format);
                   DB.OnDemandUpdate(
                     "/accounts/" + account_id + "/schedule/" + GetWeeklyBase(),
                     res
@@ -223,8 +218,7 @@ const TrackingTable = ({ isChangeable, default_data, account_id }) => {
                   defaultValue={text}
                   onChange={(v) => {
                     let res = {};
-                    res[record.topic] = {};
-                    res[record.topic].wednesday = v;
+                    res[record.topic + ".wednesday"] = v;
                     DB.OnDemandUpdate(
                       "/accounts/" +
                         account_id +
@@ -242,8 +236,7 @@ const TrackingTable = ({ isChangeable, default_data, account_id }) => {
                 defaultValue={dayjs(text, format)}
                 onChange={(v) => {
                   let res = {};
-                  res[record.topic] = {};
-                  res[record.topic].wednesday = v.format(format);
+                  res[record.topic + ".wednesday"] = v.format(format);
                   DB.OnDemandUpdate(
                     "/accounts/" + account_id + "/schedule/" + GetWeeklyBase(),
                     res
@@ -275,8 +268,7 @@ const TrackingTable = ({ isChangeable, default_data, account_id }) => {
                   defaultValue={text}
                   onChange={(v) => {
                     let res = {};
-                    res[record.topic] = {};
-                    res[record.topic].thursday = v;
+                    res[record.topic + ".thursday"] = v;
                     DB.OnDemandUpdate(
                       "/accounts/" +
                         account_id +
@@ -294,8 +286,7 @@ const TrackingTable = ({ isChangeable, default_data, account_id }) => {
                 defaultValue={dayjs(text, format)}
                 onChange={(v) => {
                   let res = {};
-                  res[record.topic] = {};
-                  res[record.topic].thursday = v.format(format);
+                  res[record.topic + ".thursday"] = v.format(format);
                   DB.OnDemandUpdate(
                     "/accounts/" + account_id + "/schedule/" + GetWeeklyBase(),
                     res
@@ -327,8 +318,7 @@ const TrackingTable = ({ isChangeable, default_data, account_id }) => {
                   defaultValue={text}
                   onChange={(v) => {
                     let res = {};
-                    res[record.topic] = {};
-                    res[record.topic].friday = v;
+                    res[record.topic + ".friday"] = v;
                     DB.OnDemandUpdate(
                       "/accounts/" +
                         account_id +
@@ -346,8 +336,7 @@ const TrackingTable = ({ isChangeable, default_data, account_id }) => {
                 defaultValue={dayjs(text, format)}
                 onChange={(v) => {
                   let res = {};
-                  res[record.topic] = {};
-                  res[record.topic].friday = v.format(format);
+                  res[record.topic + ".friday"] = v.format(format);
                   DB.OnDemandUpdate(
                     "/accounts/" + account_id + "/schedule/" + GetWeeklyBase(),
                     res
@@ -379,8 +368,7 @@ const TrackingTable = ({ isChangeable, default_data, account_id }) => {
                   defaultValue={text}
                   onChange={(v) => {
                     let res = {};
-                    res[record.topic] = {};
-                    res[record.topic].saturday = v;
+                    res[record.topic + ".saturday"] = v;
                     DB.OnDemandUpdate(
                       "/accounts/" +
                         account_id +
@@ -398,8 +386,7 @@ const TrackingTable = ({ isChangeable, default_data, account_id }) => {
                 defaultValue={dayjs(text, format)}
                 onChange={(v) => {
                   let res = {};
-                  res[record.topic] = {};
-                  res[record.topic].saturday = v.format(format);
+                  res[record.topic + ".saturday"] = v.format(format);
                   DB.OnDemandUpdate(
                     "/accounts/" + account_id + "/schedule/" + GetWeeklyBase(),
                     res
