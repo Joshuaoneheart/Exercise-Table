@@ -51,12 +51,6 @@ const TheSidebar = () => {
         icon: "cil-bar-chart",
       },
       {
-        _tag: "CSidebarNavItem",
-        name: "Habit Tracking",
-        to: "/habitTracker",
-        icon: "cil-bar-chart",
-      },
-      {
         _tag: "CSidebarNavTitle",
         _children: ["管理功能"],
       },
@@ -121,6 +115,12 @@ const TheSidebar = () => {
         name: "個人",
         to: "/member/" + account.id,
         icon: "cil-user",
+      },
+      {
+        _tag: "CSidebarNavItem",
+        name: "時間表",
+        to: "/schedule",
+        icon: "cil-alarm",
       },
       {
         _tag: "CSidebarNavTitle",

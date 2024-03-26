@@ -164,10 +164,14 @@ const SignedIn = (props) => {
               }
               if (GF_data)
                 for (let [k, v] of Object.entries(GF_data)) {
+                  if(k === "week_base") continue;
                   for (let GF_id of v) {
-                    if (!GF_account_map[GF_id].includes(account_data[j].id))
-                      GF_account_map[GF_id].push(account_data[j].id);
-                    GF_stats[GF_id][k]++;
+                    let id;
+                    if(typeof GF_id === "string") id = GF_id;
+                    else id = GF_id.id;
+                    if (!GF_account_map[id].includes(account_data[j].id))
+                      GF_account_map[id].push(account_data[j].id);
+                    GF_stats[id][k]++;
                   }
                 }
             }
