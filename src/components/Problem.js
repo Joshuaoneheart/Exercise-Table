@@ -7,8 +7,10 @@ import {
   CRow,
 } from "@coreui/react";
 import { InputNumber } from "antd";
+import { DB, firebase } from "db/firebase";
+import { GetWeeklyBase } from "utils/date";
 
-const Problem = ({ data, default_data }) => {
+const Problem = ({ data, default_data, account_id, calculateScore }) => {
   var frame = [];
   var option_style = { color: "#000000", fontSize: "20px" };
   var title_style = { color: "#636f83" };
@@ -21,6 +23,18 @@ const Problem = ({ data, default_data }) => {
           max={data.max}
           min={0}
           defaultValue={default_data ? default_data.ans : 0}
+          onChange={async (v) => {
+            if (account_id) {
+              let tmp = {};
+              tmp[data.id + ".ans"] = v;
+              tmp[data.id + ".score"] = v * parseInt(data.score[0]);
+              await DB.OnDemandUpdate(
+                "/accounts/" + account_id + "/data/" + GetWeeklyBase(),
+                tmp
+              );
+              calculateScore();
+            }
+          }}
         />
       );
       break;
@@ -73,6 +87,28 @@ const Problem = ({ data, default_data }) => {
                   option in default_data &&
                   default_data[option].ans.includes(suboption)
                 }
+                onChange={async function (option, data, e) {
+                  if (account_id) {
+                    if (e.target.checked) {
+                      let tmp = {};
+                      tmp[data.id + "." + option + ".ans"] =
+                        firebase.firestore.FieldValue.arrayUnion(suboption);
+                      await DB.OnDemandUpdate(
+                        "/accounts/" + account_id + "/data/" + GetWeeklyBase(),
+                        tmp
+                      );
+                    } else {
+                      let tmp = {};
+                      tmp[data.id + "." + option + ".ans"] =
+                        firebase.firestore.FieldValue.arrayRemove(suboption);
+                      await DB.OnDemandUpdate(
+                        "/accounts/" + account_id + "/data/" + GetWeeklyBase(),
+                        tmp
+                      );
+                    }
+                    calculateScore();
+                  }
+                }.bind(null, option, data)}
               />
             </CCol>
           );
@@ -135,6 +171,17 @@ const Problem = ({ data, default_data }) => {
                   suboption in default_data &&
                   default_data[suboption].ans === option
                 }
+                onChange={async function (suboption, data, e) {
+                  if (account_id) {
+                    let tmp = {};
+                    tmp[data.id + "." + suboption + ".ans"] = e.target.value;
+                    await DB.OnDemandUpdate(
+                      "/accounts/" + account_id + "/data/" + GetWeeklyBase(),
+                      tmp
+                    );
+                    calculateScore();
+                  }
+                }.bind(null, suboption, data)}
               />
             </CCol>
           );
@@ -160,6 +207,17 @@ const Problem = ({ data, default_data }) => {
               value={option}
               style={button_style}
               defaultChecked={default_data && default_data.ans === option}
+              onChange={async function (data, e) {
+                if (account_id) {
+                  let tmp = {};
+                  tmp[data.id + ".ans"] = e.target.value;
+                  await DB.OnDemandUpdate(
+                    "/accounts/" + account_id + "/data/" + GetWeeklyBase(),
+                    tmp
+                  );
+                  calculateScore();
+                }
+              }.bind(null, data)}
             />
             <CLabel
               variant="checkbox"
@@ -184,6 +242,28 @@ const Problem = ({ data, default_data }) => {
               defaultChecked={
                 default_data && default_data.ans.includes(options[i])
               }
+              onChange={async (e) => {
+                if (account_id) {
+                  if (e.target.checked) {
+                    let tmp = {};
+                    tmp[data.id + ".ans"] =
+                      firebase.firestore.FieldValue.arrayUnion(options[i]);
+                    await DB.OnDemandUpdate(
+                      "/accounts/" + account_id + "/data/" + GetWeeklyBase(),
+                      tmp
+                    );
+                  } else {
+                    let tmp = {};
+                    tmp[data.id + ".ans"] =
+                      firebase.firestore.FieldValue.arrayRemove(options[i]);
+                    await DB.OnDemandUpdate(
+                      "/accounts/" + account_id + "/data/" + GetWeeklyBase(),
+                      tmp
+                    );
+                  }
+                  calculateScore();
+                }
+              }}
             />
             <CLabel
               variant="checkbox"
