@@ -4,7 +4,7 @@ import Form from "components/Form";
 const ReviewForm = () => {
   return (
     <CRow>
-      <Form is_footer={false} />
+      <Form />
     </CRow>
   );
 };

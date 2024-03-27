@@ -17,7 +17,7 @@ const GatherProblemsBySection = (d) => {
   return data;
 };
 
-const Form = ({ is_footer, default_data, account }) => {
+const Form = ({ default_data, account }) => {
   return (
     <FirestoreCollection path="/form/">
       {/* 
@@ -39,8 +39,6 @@ const Form = ({ is_footer, default_data, account }) => {
             <CCol>
               <DataTabs
                 data={data}
-                metadata={d}
-                is_footer={is_footer}
                 default_data={default_data}
                 account={account}
               />
