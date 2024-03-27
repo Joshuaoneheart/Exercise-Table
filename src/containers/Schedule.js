@@ -14,7 +14,7 @@ const Schedule = () => {
       let data = await DB.getByUrl(
         "/accounts/" + account.id + "/schedule/" + GetWeeklyBase()
       );
-      setDefaultData(data);
+      setDefaultData(data ? data : {});
     };
     GetData();
   }, [account.id]);
