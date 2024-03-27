@@ -42,6 +42,14 @@ const TheHeaderDropdown = (props) => {
             <CDropdownItem
               tag={CLink}
               className="c-subheader-nav-link"
+              to="/users"
+            >
+              <CIcon name="cil-people" className="mfe-2" />
+              Users
+            </CDropdownItem>
+            <CDropdownItem
+              tag={CLink}
+              className="c-subheader-nav-link"
               to="/settings"
             >
               <CIcon name="cil-settings" className="mfe-2" />

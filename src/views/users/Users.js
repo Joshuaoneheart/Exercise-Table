@@ -13,6 +13,7 @@ import { useState } from "react";
 
 import { FirestoreCollection } from "@react-firebase/firestore";
 import { loading } from "components";
+import { DB } from "db/firebase";
 
 const getBadge = (status) => {
   switch (status) {
@@ -38,7 +39,7 @@ const Users = () => {
       newDetails.splice(position, 1);
     } else {
       newDetails = [...details, index];
-    }
+    } 
     setDetails(newDetails);
   };
 
@@ -112,13 +113,17 @@ const Users = () => {
                               <p className="text-muted">
                                 User since {item.registered}
                               </p>
-                              {item.is_active ? (
-                                <CButton size="sm" color="danger">
-                                  Unbind Account
+                              {item.status === "Active" ? (
+                                <CButton size="sm" color="danger" onClick={async () => {
+                                  await DB.updateByUrl("/accounts/" + item.id, {"status": "Pending"})
+                                }}>
+                                  Deactivate
                                 </CButton>
                               ) : (
-                                <CButton size="sm" color="info">
-                                  Bind Account
+                                <CButton onClick={async () => {
+                                  await DB.updateByUrl("/accounts/" + item.id, {"status": "Active"})
+                                }} size="sm" color="info">
+                                  Activate
                                 </CButton>
                               )}
                             </CCardBody>
