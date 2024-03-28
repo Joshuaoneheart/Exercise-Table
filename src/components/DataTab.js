@@ -13,14 +13,37 @@ import {
   CTabPane,
   CTabs,
 } from "@coreui/react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Problem from "./Problem";
 import { DB } from "db/firebase";
 import { GetWeeklyBase } from "utils/date";
+import loading from "./loading";
 
 const DataTabs = ({ data, account, default_data }) => {
   const [section, setSection] = useState(0);
+  const [GF, setGF] = useState(null);
+  const [GF_data, setGFData] = useState(null);
+  useEffect(() => {
+    const GetGF = async () => {
+      const docs = await DB.getByUrl("/GF");
+      let tmp = [];
+      docs.forEach((doc) => {
+        if (!account || doc.data().gender === account.gender)
+          tmp.push(Object.assign(doc.data(), { id: doc.id }));
+      });
+      setGF(tmp);
+      if (account) {
+        setGFData(
+          await DB.getByUrl(
+            "/accounts/" + account.id + "/GF/" + GetWeeklyBase()
+          )
+        );
+      }
+    };
+    GetGF();
+  }, [account]);
   var form = useRef();
+  if (GF === null) return loading;
   var tabs = [];
   var tabpanes = [];
   const calculateScore = async () => {
@@ -107,6 +130,8 @@ const DataTabs = ({ data, account, default_data }) => {
           account_id={account ? account.id : null}
           name={data.value[i].id}
           data={problem}
+          GF={GF}
+          GF_data={GF_data}
           default_data={
             default_data && default_data.value
               ? default_data.value[problem.id]

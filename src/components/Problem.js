@@ -1,6 +1,7 @@
 import {
   CCol,
   CFormGroup,
+  CInput,
   CInputCheckbox,
   CInputRadio,
   CLabel,
@@ -9,13 +10,232 @@ import {
 import { InputNumber } from "antd";
 import { DB, firebase } from "db/firebase";
 import { GetWeeklyBase } from "utils/date";
+import Select from "react-select";
+import { useEffect, useState } from "react";
 
-const Problem = ({ data, default_data, account_id, calculateScore }) => {
+const GF_Select = ({ GF, default_data, account_id, title, note }) => {
+  let id_to_v = {};
+  for (let i = 0; i < GF.length; i++) {
+    id_to_v[GF[i].id] =
+      i +
+      "|" +
+      GF[i].id +
+      "|" +
+      GF[i].name +
+      "|" +
+      GF[i].school +
+      "|" +
+      GF[i].department +
+      "|" +
+      GF[i].grade +
+      "|" +
+      GF[i].type +
+      "|" +
+      GF[i].note;
+  }
+  const [options, setOptions] = useState(
+    default_data
+      ? default_data.map((x) => {
+          if (typeof x === "string")
+            return {
+              value: id_to_v[x],
+              label: (
+                <span style={{ whiteSpace: "pre" }}>
+                  <b>{id_to_v[x].split("|")[2]}</b>
+                </span>
+              ),
+            };
+          else
+            return {
+              value: id_to_v[x.id],
+              label: (
+                <span style={{ whiteSpace: "pre" }}>
+                  <b>{id_to_v[x.id].split("|")[2]}</b>
+                </span>
+              ),
+            };
+        })
+      : []
+  );
+  let default_note = {};
+  if (default_data) {
+    for (let x of default_data) {
+      if (typeof x !== "string") default_note[x.id] = x.note;
+    }
+  }
+  const [notes, setNotes] = useState(default_note);
+  useEffect(() => {
+    if (default_data) {
+      setOptions(
+        default_data.map((x) => {
+          if (typeof x === "string")
+            return {
+              value: id_to_v[x],
+              label: (
+                <span style={{ whiteSpace: "pre" }}>
+                  <b>{id_to_v[x].split("|")[2]}</b>
+                </span>
+              ),
+            };
+          else
+            return {
+              value: id_to_v[x.id],
+              label: (
+                <span style={{ whiteSpace: "pre" }}>
+                  <b>{id_to_v[x.id].split("|")[2]}</b>
+                </span>
+              ),
+            };
+        })
+      );
+      let tmp = {};
+      for (let x of default_data) {
+        if (typeof x !== "string") tmp[x.id] = x.note;
+      }
+      setNotes(tmp);
+    }
+  }, [default_data]);
+
+  let GF_options = [];
+  for (let i = 0; i < GF.length; i++) {
+    if (!(default_data && default_data.includes(GF[i].id)))
+      GF_options.push({
+        value: id_to_v[GF[i].id],
+        label: (
+          <span style={{ whiteSpace: "pre" }}>
+            <b>{GF[i].name}</b>{" "}
+            <span>
+              {"      " +
+                GF[i].school +
+                " " +
+                GF[i].department +
+                " " +
+                GF[i].grade +
+                " " +
+                GF[i].type +
+                " " +
+                GF[i].note +
+                " "}
+            </span>
+          </span>
+        ),
+      });
+  }
+  return (
+    <>
+      <CFormGroup>
+        <Select
+          value={options}
+          defaultValue={options}
+          isMulti
+          isSearchable
+          autoFocus
+          options={GF_options}
+          defaultMenuIsOpen={false}
+          menuPortalTarget={document.body}
+          styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
+          onChange={(v) => {
+            setOptions(
+              v.map((x) => {
+                x.label = (
+                  <span style={{ whiteSpace: "pre" }}>
+                    <b>{x.value.split("|")[2]}</b>
+                  </span>
+                );
+                return x;
+              })
+            );
+            if (account_id) {
+              let tmp = {};
+              tmp[title] = v.map((x) => {
+                if (x.value.split("|")[1] in notes)
+                  return {
+                    id: x.value.split("|")[1],
+                    note: notes[x.value.split("|")[1]],
+                  };
+                else return x.value.split("|")[1];
+              });
+              DB.OnDemandUpdate(
+                "/accounts/" + account_id + "/GF/" + GetWeeklyBase(),
+                tmp
+              );
+            }
+          }}
+        />
+      </CFormGroup>
+      {note &&
+        options.map((x, i) => {
+          return (
+            <CRow
+              key={i}
+              className="align-items-center"
+              style={{ marginBottom: "10px" }}
+            >
+              <CCol xs="3" md="2">
+                <CLabel>{x.value.split("|")[2]}</CLabel>
+              </CCol>
+              <CCol xs="9" md="10">
+                <CInput
+                  defaultValue={
+                    notes[x.value.split("|")[1]]
+                      ? notes[x.value.split("|")[1]]
+                      : ""
+                  }
+                  onChange={(e) => {
+                    let new_notes = Object.assign({}, notes);
+                    new_notes[x.value.split("|")[1]] = e.target.value;
+                    let tmp = {};
+                    tmp[title] = Array.from(
+                      options.map((x) => {
+                        if (x.value.split("|")[1] in new_notes)
+                          return {
+                            id: x.value.split("|")[1],
+                            note: new_notes[x.value.split("|")[1]],
+                          };
+                        else return x.value.split("|")[1];
+                      })
+                    );
+                    setNotes(new_notes);
+                    DB.OnDemandUpdate(
+                      "/accounts/" + account_id + "/GF/" + GetWeeklyBase(),
+                      tmp
+                    );
+                  }}
+                />
+              </CCol>
+            </CRow>
+          );
+        })}
+    </>
+  );
+};
+
+const Problem = ({
+  data,
+  default_data,
+  GF_data,
+  account_id,
+  calculateScore,
+  GF,
+}) => {
   var frame = [];
   var option_style = { color: "#000000", fontSize: "20px" };
   var title_style = { color: "#636f83" };
   var button_style = { height: "20px", width: "20px" };
   switch (data.type) {
+    case "GF":
+      frame.push(
+        <GF_Select
+          GF={GF}
+          default_data={
+            GF_data && GF_data[data.title] ? GF_data[data.title] : null
+          }
+          account_id={account_id}
+          title={data.title}
+          note={data.note}
+        />
+      );
+      break;
     case "Number":
       frame.push(
         <InputNumber
@@ -57,8 +277,8 @@ const Problem = ({ data, default_data, account_id, calculateScore }) => {
         );
       }
       let suboptions = data["子選項"];
-      for (let j = 0; j < suboptions.length; j++) {
-        let suboption = suboptions[j];
+      for (let i = 0; i < suboptions.length; i++) {
+        let suboption = suboptions[i];
         let subframe = [];
         subframe.push(
           <CCol xs="4" md="2" style={option_style}>
@@ -70,7 +290,7 @@ const Problem = ({ data, default_data, account_id, calculateScore }) => {
             <CCol
               xs="4"
               md="2"
-              key={j}
+              key={i}
               style={{
                 display: "flex",
                 alignItems: "center",
@@ -141,8 +361,8 @@ const Problem = ({ data, default_data, account_id, calculateScore }) => {
         );
       }
       suboptions = data["子選項"];
-      for (let j = 0; j < suboptions.length; j++) {
-        let suboption = suboptions[j];
+      for (let i = 0; i < suboptions.length; i++) {
+        let suboption = suboptions[i];
         var subframe = [];
         subframe.push(
           <CCol xs="4" md="2" style={option_style}>
@@ -154,7 +374,7 @@ const Problem = ({ data, default_data, account_id, calculateScore }) => {
             <CCol
               xs="4"
               md="2"
-              key={j}
+              key={i}
               style={{
                 display: "flex",
                 alignItems: "center",
@@ -283,7 +503,9 @@ const Problem = ({ data, default_data, account_id, calculateScore }) => {
       <CFormGroup style={{ marginBottom: "25px" }}>
         <h4 style={title_style}>{data.title}</h4>
         <hr />
-        <CCol style={{ overflowX: "scroll" }}>{frame}</CCol>
+        <CCol style={{ overflowX: "scroll", overflowY: "visible" }}>
+          {frame}
+        </CCol>
       </CFormGroup>
     </>
   );

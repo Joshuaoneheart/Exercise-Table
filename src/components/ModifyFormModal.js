@@ -18,6 +18,7 @@ import {
   GridFields,
   MultiGridFields,
   NumberFields,
+  GFFields,
 } from "./ProblemField";
 import { useEffect, useRef, useState } from "react";
 
@@ -100,7 +101,9 @@ const AddModal = ({ show, data, setData, sections, setSections, setModal }) => {
         if (["MultiChoice", "Grid", "MultiGrid"].includes(tmp["type"]))
           tmp["選項"] = [];
         let i = 0;
-        if (tmp["type"] === "Number") {
+        if (tmp["type"] === "GF")
+          tmp["note"] = form.current.elements["note"].checked;
+        if (["Number", "GF"].includes(tmp["type"])) {
           tmp["max"] = form.current.elements["max0"].value;
         }
         while (form.current.elements["score" + i]) {
@@ -141,6 +144,7 @@ const AddModal = ({ show, data, setData, sections, setSections, setModal }) => {
     Grid: <GridFields />,
     MultiGrid: <MultiGridFields />,
     Number: <NumberFields />,
+    GF: <GFFields />,
   };
   return (
     <CModal
@@ -193,6 +197,7 @@ const AddModal = ({ show, data, setData, sections, setSections, setModal }) => {
                     <option value="Grid">單選網格題</option>
                     <option value="MultiGrid">多選網格題</option>
                     <option value="Number">數字題</option>
+                    <option value="GF">牧養對象題</option>
                   </CSelect>
                 </CCol>
               </CFormGroup>
@@ -304,7 +309,9 @@ const ModifyModal = ({ show, data, setData, setModal }) => {
     tmp["title"] = form.current.elements.title.value;
     tmp["type"] = form.current.elements.type.value;
     tmp["score"] = [];
-    if (tmp["type"] === "Number") {
+    if (tmp["type"] === "GF")
+      tmp["note"] = form.current.elements["note"].checked;
+    if (["Number", "GF"].includes(tmp["type"])) {
       tmp["max"] = form.current.elements["max0"].value;
     }
     if (["MultiChoice", "Grid", "MultiGrid"].includes(tmp["type"]))
@@ -346,6 +353,7 @@ const ModifyModal = ({ show, data, setData, setModal }) => {
     Grid: <GridFields data={data.value[show]} />,
     MultiGrid: <MultiGridFields data={data.value[show]} />,
     Number: <NumberFields data={data.value[show]} />,
+    GF: <GFFields data={data.value[show]} />,
   };
   return (
     <CModal
@@ -396,6 +404,7 @@ const ModifyModal = ({ show, data, setData, setModal }) => {
                   <option value="Grid">單選網格題</option>
                   <option value="MultiGrid">多選網格題</option>
                   <option value="Number">數字題</option>
+                  <option value="GF">牧養對象題</option>
                 </CSelect>
               </CCol>
             </CFormGroup>
