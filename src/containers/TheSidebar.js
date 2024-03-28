@@ -134,9 +134,9 @@ const TheSidebar = () => {
       },
       {
         _tag: "CSidebarNavItem",
-        name: "牧養對象邀約",
-        to: "/GFform",
-        icon: "cil-happy",
+        name: "福音朋友列表",
+        to: "/GFList",
+        icon: "cil-list",
       },
       {
         _tag: "CSidebarNavDivider",

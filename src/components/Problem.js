@@ -13,7 +13,14 @@ import { GetWeeklyBase } from "utils/date";
 import Select from "react-select";
 import { useEffect, useState } from "react";
 
-const GF_Select = ({ GF, default_data, account_id, title, note }) => {
+const GFSelect = ({
+  GF,
+  default_data,
+  account_id,
+  title,
+  note,
+  calculateScore,
+}) => {
   let id_to_v = {};
   for (let i = 0; i < GF.length; i++) {
     id_to_v[GF[i].id] =
@@ -66,6 +73,25 @@ const GF_Select = ({ GF, default_data, account_id, title, note }) => {
   const [notes, setNotes] = useState(default_note);
   useEffect(() => {
     if (default_data) {
+      let id_to_v = {};
+      for (let i = 0; i < GF.length; i++) {
+        id_to_v[GF[i].id] =
+          i +
+          "|" +
+          GF[i].id +
+          "|" +
+          GF[i].name +
+          "|" +
+          GF[i].school +
+          "|" +
+          GF[i].department +
+          "|" +
+          GF[i].grade +
+          "|" +
+          GF[i].type +
+          "|" +
+          GF[i].note;
+      }
       setOptions(
         default_data.map((x) => {
           if (typeof x === "string")
@@ -94,7 +120,7 @@ const GF_Select = ({ GF, default_data, account_id, title, note }) => {
       }
       setNotes(tmp);
     }
-  }, [default_data]);
+  }, [default_data, GF]);
 
   let GF_options = [];
   for (let i = 0; i < GF.length; i++) {
@@ -134,7 +160,7 @@ const GF_Select = ({ GF, default_data, account_id, title, note }) => {
           defaultMenuIsOpen={false}
           menuPortalTarget={document.body}
           styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
-          onChange={(v) => {
+          onChange={async (v) => {
             setOptions(
               v.map((x) => {
                 x.label = (
@@ -155,10 +181,11 @@ const GF_Select = ({ GF, default_data, account_id, title, note }) => {
                   };
                 else return x.value.split("|")[1];
               });
-              DB.OnDemandUpdate(
+              await DB.OnDemandUpdate(
                 "/accounts/" + account_id + "/GF/" + GetWeeklyBase(),
                 tmp
               );
+              calculateScore();
             }
           }}
         />
@@ -225,7 +252,7 @@ const Problem = ({
   switch (data.type) {
     case "GF":
       frame.push(
-        <GF_Select
+        <GFSelect
           GF={GF}
           default_data={
             GF_data && GF_data[data.title] ? GF_data[data.title] : null
@@ -233,6 +260,7 @@ const Problem = ({
           account_id={account_id}
           title={data.title}
           note={data.note}
+          calculateScore={calculateScore}
         />
       );
       break;

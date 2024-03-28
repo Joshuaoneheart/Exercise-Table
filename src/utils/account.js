@@ -13,6 +13,24 @@ const GetSemesterData = async (id, semester) => {
     data.value.push(doc.data());
     data.ids.push(doc.id);
   });
+  const GF_doc = await firebase
+    .firestore()
+    .collection("accounts")
+    .doc(id)
+    .collection("GF")
+    .where("week_base", ">=", GetWeeklyBaseFromTime(semester.start.toDate()))
+    .get();
+  await GF_doc.forEach((doc) => {
+    if (data.ids.indexOf(doc.id) !== -1)
+      data.value[data.ids.indexOf(doc.id)] = Object.assign(
+        data.value[data.ids.indexOf(doc.id)],
+        doc.data()
+      );
+    else {
+      data.value.push(doc.data());
+      data.ids.push(doc.id);
+    }
+  });
   return data;
 };
 

@@ -35,6 +35,10 @@ const AddGFModal = ({ data, account, show, setData, setModal }) => {
     value: "大一",
     label: <span style={{ whiteSpace: "pre" }}>大一</span>,
   });
+  const [gender, setGender] = useState({
+    value: "男",
+    label: <span style={{ whiteSpace: "pre" }}>男</span>,
+  });
   const [type, setType] = useState({
     value: "福音朋友",
     label: <span style={{ whiteSpace: "pre" }}>福音朋友</span>,
@@ -49,7 +53,8 @@ const AddGFModal = ({ data, account, show, setData, setModal }) => {
     tmp["school"] = school.value;
     tmp["department"] = department.value;
     tmp["grade"] = grade.value;
-    tmp["gender"] = account.gender;
+    if (account.role !== "Admin") tmp["gender"] = account.gender;
+    else tmp["gender"] = gender.value;
     tmp["type"] = type.value;
     tmp["note"] = form.current.elements.note.value;
     let res = await firebase.firestore().collection("GF").add(tmp);
@@ -174,6 +179,32 @@ const AddGFModal = ({ data, account, show, setData, setModal }) => {
               />
             </CCol>
           </CFormGroup>
+          {account.role === "Admin" && (
+            <CFormGroup row inline>
+              <CCol md="3">
+                <CLabel>性別</CLabel>
+              </CCol>
+              <CCol xs="12" md="9">
+                <Select
+                  value={gender}
+                  isSearchable
+                  options={[
+                    {
+                      value: "男",
+                      label: <span style={{ whiteSpace: "pre" }}>男</span>,
+                    },
+                    {
+                      value: "女",
+                      label: <span style={{ whiteSpace: "pre" }}>女</span>,
+                    },
+                  ]}
+                  onChange={(v) => {
+                    setGender(v);
+                  }}
+                />
+              </CCol>
+            </CFormGroup>
+          )}
           <CFormGroup row inline>
             <CCol md="3">
               <CLabel>身份</CLabel>

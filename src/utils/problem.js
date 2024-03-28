@@ -41,6 +41,11 @@ const SummaryScore = async (data, problems, id) => {
       } else if (problem.type === "MultiChoice") items[i][problem.id] = "";
       else if (problem.type === "Number" || problem.type === "MultiAnswer")
         items[i][problem.id] = 0;
+      if (problem.type === "GF") items[i][problem.id] = 0;
+      if (problem.type === "GF" && problem.title in data.value[i]) {
+        console.log(data.value[i][problem.title]);
+        items[i][problem.id] = data.value[i][problem.title].length;
+      }
       if (!(problem.id in data.value[i])) continue;
       if (problem.type === "MultiChoice") {
         items[i][problem.id] = data.value[i][problem.id].ans;

@@ -51,6 +51,9 @@ const DataTabs = ({ data, account, default_data }) => {
       let form_data = await DB.getByUrl(
         "/accounts/" + account.id + "/data/" + GetWeeklyBase()
       );
+      let GF_data = await DB.getByUrl(
+        "/accounts/" + account.id + "/GF/" + GetWeeklyBase()
+      );
       var v = { scores: 0 };
       for (let i = 0; i < data.sections.length; i++) {
         v[data.sections[i]] = 0;
@@ -59,6 +62,11 @@ const DataTabs = ({ data, account, default_data }) => {
           if (!form_data[problem.id]) continue;
           let score = 0;
           switch (problem.type) {
+            case "GF":
+              score =
+                parseInt(problem.score) *
+                Math.min(GF_data[problem.title].length, problem.max);
+              break;
             case "Number":
               score =
                 parseInt(problem.score) * parseInt(form_data[problem.id].ans);
