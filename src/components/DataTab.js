@@ -13,20 +13,46 @@ import {
   CTabPane,
   CTabs,
 } from "@coreui/react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Problem from "./Problem";
 import { DB } from "db/firebase";
 import { GetWeeklyBase } from "utils/date";
+import loading from "./loading";
 
 const DataTabs = ({ data, account, default_data }) => {
   const [section, setSection] = useState(0);
+  const [GF, setGF] = useState(null);
+  const [GF_data, setGFData] = useState(null);
+  useEffect(() => {
+    const GetGF = async () => {
+      const docs = await DB.getByUrl("/GF");
+      let tmp = [];
+      docs.forEach((doc) => {
+        if (!account || doc.data().gender === account.gender)
+          tmp.push(Object.assign(doc.data(), { id: doc.id }));
+      });
+      setGF(tmp);
+      if (account) {
+        setGFData(
+          await DB.getByUrl(
+            "/accounts/" + account.id + "/GF/" + GetWeeklyBase()
+          )
+        );
+      }
+    };
+    GetGF();
+  }, [account]);
   var form = useRef();
+  if (GF === null) return loading;
   var tabs = [];
   var tabpanes = [];
   const calculateScore = async () => {
     if (account) {
       let form_data = await DB.getByUrl(
         "/accounts/" + account.id + "/data/" + GetWeeklyBase()
+      );
+      let GF_data = await DB.getByUrl(
+        "/accounts/" + account.id + "/GF/" + GetWeeklyBase()
       );
       var v = { scores: 0 };
       for (let i = 0; i < data.sections.length; i++) {
@@ -36,6 +62,11 @@ const DataTabs = ({ data, account, default_data }) => {
           if (!form_data[problem.id]) continue;
           let score = 0;
           switch (problem.type) {
+            case "GF":
+              score =
+                parseInt(problem.score) *
+                Math.min(GF_data[problem.title].length, problem.max);
+              break;
             case "Number":
               score =
                 parseInt(problem.score) * parseInt(form_data[problem.id].ans);
@@ -107,6 +138,8 @@ const DataTabs = ({ data, account, default_data }) => {
           account_id={account ? account.id : null}
           name={data.value[i].id}
           data={problem}
+          GF={GF}
+          GF_data={GF_data}
           default_data={
             default_data && default_data.value
               ? default_data.value[problem.id]

@@ -138,7 +138,7 @@ const MemberList = () => {
       <CCol>
         <CCard>
           <CCardHeader>個人操練情形</CCardHeader>
-          <MemberListBody />;
+          <MemberListBody />
         </CCard>
       </CCol>
     </CRow>

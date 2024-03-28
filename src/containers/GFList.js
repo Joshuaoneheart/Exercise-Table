@@ -11,10 +11,12 @@ import {
 import { FirestoreCollection } from "@react-firebase/firestore";
 import { loading } from "components";
 import AddGFModal from "components/AddGFModal";
-import { useState, useEffect } from "react";
+import { AccountContext } from "hooks/context";
+import { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 const GFListCard = ({ data }) => {
   const [addModal, setAddModal] = useState(false);
+  const account = useContext(AccountContext);
   const [d, setD] = useState(data);
   const fields = [
     { key: "name", label: "姓名", _style: { width: "7%" } },
@@ -60,6 +62,7 @@ const GFListCard = ({ data }) => {
           show={addModal}
           setModal={setAddModal}
           data={d}
+          account={account}
           setData={setD}
         />
         <CDataTable
@@ -88,6 +91,7 @@ const GFListCard = ({ data }) => {
   );
 };
 const GFList = () => {
+  const account = useContext(AccountContext);
   return (
     <CRow>
       <CCol>
@@ -96,10 +100,15 @@ const GFList = () => {
             if (d.isLoading) return loading;
             if (d && d.value) {
               // add "id" to data
+              const data = [];
               for (var i = 0; i < d.value.length; i++) {
-                d.value[i]["id"] = d.ids[i];
+                if (
+                  account.role === "Admin" ||
+                  account.gender === d.value[i].gender
+                )
+                  data.push(d.value[i], { id: d.ids[i] });
               }
-              return <GFListCard data={d.value} />;
+              return <GFListCard data={data} />;
             } else return null;
           }}
         </FirestoreCollection>

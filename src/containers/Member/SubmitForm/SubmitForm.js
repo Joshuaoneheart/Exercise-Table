@@ -18,7 +18,7 @@ const SubmitForm = () => {
         {(default_data) => {
           if (default_data.isLoading) return loading;
           return (
-            <Form default_data={default_data} is_footer={true} account={account}/>
+            <Form default_data={default_data} account={account}/>
           );
         }}
       </FirestoreDocument>

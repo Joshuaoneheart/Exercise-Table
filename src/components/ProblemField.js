@@ -1,7 +1,15 @@
 import CIcon from "@coreui/icons-react";
-import { CButton, CCol, CFormGroup, CInput, CLabel, CRow } from "@coreui/react";
+import {
+  CButton,
+  CCol,
+  CFormGroup,
+  CInput,
+  CInputCheckbox,
+  CLabel,
+  CRow,
+} from "@coreui/react";
 import { useEffect, useState } from "react";
-import {InputNumber} from "antd"
+import { InputNumber } from "antd";
 
 const MultiChoiceFields = ({ data }) => {
   var [optionCnt, setOptionCnt] = useState(1);
@@ -434,30 +442,98 @@ const MultiGridFields = ({ data }) => {
   );
 };
 
-const NumberFields = ({ data }) => { return (<CRow>
-    <CCol xs="9" md="10">
-      <CFormGroup row inline>
-        <CCol md="3">
-          <CLabel>上限</CLabel>
-        </CCol>
-        <CCol md="7" xs="7" style={{ marginLeft: "1vw" }}>
-          <CRow><InputNumber min={0} name="max0" defaultValue={data? data.max: 0}/></CRow>
-        </CCol>
-      </CFormGroup>
-      <CFormGroup row inline>
-        <CCol md="3">
-          <CLabel>分數</CLabel>
-        </CCol>
-        <CCol md="7" xs="7" style={{ marginLeft: "1vw" }}>
-          <CRow><InputNumber name="score0" min={0} defaultValue={data? data.score: 0}/></CRow>
-        </CCol>
-      </CFormGroup>
-    </CCol>
-  </CRow>);};
+const NumberFields = ({ data }) => {
+  return (
+    <CRow>
+      <CCol xs="9" md="10">
+        <CFormGroup row inline>
+          <CCol md="3">
+            <CLabel>上限</CLabel>
+          </CCol>
+          <CCol md="7" xs="7" style={{ marginLeft: "1vw" }}>
+            <CRow>
+              <InputNumber
+                min={0}
+                name="max0"
+                defaultValue={data ? data.max : 0}
+              />
+            </CRow>
+          </CCol>
+        </CFormGroup>
+        <CFormGroup row inline>
+          <CCol md="3">
+            <CLabel>分數</CLabel>
+          </CCol>
+          <CCol md="7" xs="7" style={{ marginLeft: "1vw" }}>
+            <CRow>
+              <InputNumber
+                name="score0"
+                min={0}
+                defaultValue={data ? data.score : 0}
+              />
+            </CRow>
+          </CCol>
+        </CFormGroup>
+      </CCol>
+    </CRow>
+  );
+};
+
+const GFFields = ({ data }) => {
+  return (
+    <CRow>
+      <CCol xs="9" md="10">
+        <CFormGroup row inline>
+          <CCol md="3">
+            <CLabel>備註</CLabel>
+          </CCol>
+          <CCol md="7" xs="7" style={{ marginLeft: "1vw" }}>
+            <CRow>
+              <CInputCheckbox
+                style={{ width: "20px", height: "20px" }}
+                name="note"
+                defaultChecked={data ? data.note : false}
+              />
+            </CRow>
+          </CCol>
+        </CFormGroup>
+        <CFormGroup row inline>
+          <CCol md="3">
+            <CLabel>上限</CLabel>
+          </CCol>
+          <CCol md="7" xs="7" style={{ marginLeft: "1vw" }}>
+            <CRow>
+              <InputNumber
+                min={0}
+                name="max0"
+                defaultValue={data ? data.max : 0}
+              />
+            </CRow>
+          </CCol>
+        </CFormGroup>
+        <CFormGroup row inline>
+          <CCol md="3">
+            <CLabel>分數</CLabel>
+          </CCol>
+          <CCol md="7" xs="7" style={{ marginLeft: "1vw" }}>
+            <CRow>
+              <InputNumber
+                name="score0"
+                min={0}
+                defaultValue={data ? data.score : 0}
+              />
+            </CRow>
+          </CCol>
+        </CFormGroup>
+      </CCol>
+    </CRow>
+  );
+};
 export {
   MultiChoiceFields,
   MultiAnswerFields,
   GridFields,
   MultiGridFields,
   NumberFields,
+  GFFields,
 };

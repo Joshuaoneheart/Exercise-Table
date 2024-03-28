@@ -25,7 +25,7 @@ const Form = lazy(() => import("../containers/Admin/ReviewForm/ReviewForm"));
 const Dashboard = lazy(() => import("../views/dashboard/Dashboard"));
 const Users = lazy(() => import("../views/users/Users"));
 const GF = lazy(() => import("../containers/GF"));
-const GFList = lazy(() => import("../containers/Admin/GFList/GFList"));
+const GFList = lazy(() => import("../containers/GFList"));
 const AnnouncementList = lazy(() => import("../containers/AnnouncementList"));
 const Announcement = lazy(() => import("../containers/Announcement"));
 const Summary = lazy(() => import("../containers/Admin/Summary/Summary"));
