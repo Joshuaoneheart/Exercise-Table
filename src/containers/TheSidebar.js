@@ -80,7 +80,7 @@ const TheSidebar = () => {
       },
       {
         _tag: "CSidebarNavItem",
-        name: "福音朋友列表",
+        name: "牧養對象列表",
         to: "/GFList",
         icon: "cil-list",
       },
@@ -118,9 +118,9 @@ const TheSidebar = () => {
       },
       {
         _tag: "CSidebarNavItem",
-        name: "時間表",
-        to: "/schedule",
-        icon: "cil-alarm",
+        name: "牧養對象列表",
+        to: "/GFList",
+        icon: "cil-list",
       },
       {
         _tag: "CSidebarNavTitle",
@@ -134,9 +134,9 @@ const TheSidebar = () => {
       },
       {
         _tag: "CSidebarNavItem",
-        name: "福音朋友列表",
-        to: "/GFList",
-        icon: "cil-list",
+        name: "時間表",
+        to: "/schedule",
+        icon: "cil-alarm",
       },
       {
         _tag: "CSidebarNavDivider",
