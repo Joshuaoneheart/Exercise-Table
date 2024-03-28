@@ -4,7 +4,7 @@ const GetProblems = async () => {
   let docs = await DB.getByUrl("/form");
   let problems = [];
   await docs.forEach((doc) => {
-    problems.push(Object.assign(doc.data(), {id: doc.id}));
+    problems.push(Object.assign(doc.data(), { id: doc.id }));
   });
   return problems;
 };
@@ -30,8 +30,6 @@ const SummaryScore = async (data, problems, id) => {
       score: 0,
     });
     for (let problem of problems) {
-      items[i][problem.id] = 0;
-      if (!(problem.section in items[i])) items[i][problem.section] = 0;
       if (problem.type === "Grid") {
         for (let suboption of problem["子選項"]) {
           items[i][problem.id + "-" + suboption] = "";
@@ -44,28 +42,15 @@ const SummaryScore = async (data, problems, id) => {
       else if (problem.type === "Number" || problem.type === "MultiAnswer")
         items[i][problem.id] = 0;
       if (!(problem.id in data.value[i])) continue;
-      let score = 0;
       if (problem.type === "MultiChoice") {
         items[i][problem.id] = data.value[i][problem.id].ans;
-        score = parseInt(
-          problem.score[problem["選項"].indexOf(data.value[i][problem.id].ans)]
-        );
       } else if (problem.type === "MultiAnswer") {
         items[i][problem.id] = data.value[i][problem.id].ans.length;
-        score =
-          parseInt(problem.score[0]) * data.value[i][problem.id].ans.length;
       } else if (problem.type === "Grid") {
         for (let suboption of problem["子選項"]) {
           if (suboption in data.value[i][problem.id]) {
             items[i][problem.id + "-" + suboption] =
               data.value[i][problem.id][suboption].ans;
-            score += parseInt(
-              problem.score[
-                problem["選項"].indexOf(
-                  data.value[i][problem.id][suboption].ans
-                )
-              ]
-            );
           }
         }
       } else if (problem.type === "MultiGrid") {
@@ -73,32 +58,18 @@ const SummaryScore = async (data, problems, id) => {
           if (option in data.value[i][problem.id]) {
             items[i][problem.id + "-" + option] =
               data.value[i][problem.id][option].ans.length;
-            score +=
-              parseInt(problem.score[problem["選項"].indexOf(option)]) *
-              data.value[i][problem.id][option].ans.length;
           }
         }
       } else if (problem.type === "Number") {
         items[i][problem.id] = data.value[i][problem.id].ans;
-		console.log(data.value[i][problem.id].ans)
-        score +=
-          parseInt(problem.score[0]) * parseInt(data.value[i][problem.id].ans);
       }
-      items[i][problem.section] += score;
-      items[i].score += score;
     }
-    if (
-      data.value[i].scores !== items[i].score ||
-      data.value[i]["召會生活操練"] !== items[i]["召會生活操練"] ||
-      data.value[i]["神人生活操練"] !== items[i]["神人生活操練"] ||
-      data.value[i]["福音牧養操練"] !== items[i]["福音牧養操練"]
-    )
-      await DB.updateByUrl("/accounts/" + id + "/data/" + data.ids[i], {
-        scores: items[i].score,
-        召會生活操練: items[i]["召會生活操練"] ? items[i]["召會生活操練"] : 0,
-        神人生活操練: items[i]["神人生活操練"] ? items[i]["神人生活操練"] : 0,
-        福音牧養操練: items[i]["福音牧養操練"] ? items[i]["福音牧養操練"] : 0,
-      });
+
+    items[i].score = data.value[i].scores;
+    items[i]["召會生活操練"] = data.value[i]["召會生活操練"];
+    items[i]["神人生活操練"] = data.value[i]["神人生活操練"];
+    items[i]["福音牧養操練"] = data.value[i]["福音牧養操練"];
+
     if (parseInt(data.ids[i]) !== GetWeeklyBase()) {
       result.total_score += items[i].score;
       if ("召會生活操練" in items[i])
