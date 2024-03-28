@@ -106,8 +106,9 @@ const GFList = () => {
                   account.role === "Admin" ||
                   account.gender === d.value[i].gender
                 )
-                  data.push(d.value[i], { id: d.ids[i] });
+                  data.push(Object.assign(d.value[i], { id: d.ids[i] }));
               }
+              console.log(data);
               return <GFListCard data={data} />;
             } else return null;
           }}
