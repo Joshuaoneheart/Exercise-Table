@@ -60,7 +60,7 @@ const DataTabs = ({ data, account, default_data }) => {
         v[data.sections[i]] = 0;
         for (var j = 0; j < data.value[i].length; j++) {
           let problem = data.value[i][j];
-          if (!form_data[problem.id]) continue;
+          if (!form_data[problem.id] && !GF_data[problem.title]) continue;
           if (problem.id === "0it0L8KlnfUVO1i4VUqi")
             lord_table = form_data[problem.id].ans === "有";
           let score = 0;
