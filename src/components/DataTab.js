@@ -55,11 +55,14 @@ const DataTabs = ({ data, account, default_data }) => {
         "/accounts/" + account.id + "/GF/" + GetWeeklyBase()
       );
       var v = { scores: 0 };
+      let lord_table = 0;
       for (let i = 0; i < data.sections.length; i++) {
         v[data.sections[i]] = 0;
         for (var j = 0; j < data.value[i].length; j++) {
           let problem = data.value[i][j];
           if (!form_data[problem.id]) continue;
+          if (problem.id === "0it0L8KlnfUVO1i4VUqi")
+            lord_table = form_data[problem.id].ans === "有";
           let score = 0;
           switch (problem.type) {
             case "GF":
@@ -116,6 +119,13 @@ const DataTabs = ({ data, account, default_data }) => {
         "/accounts/" + account.id + "/data/" + GetWeeklyBase(),
         v
       );
+      await DB.updateByUrl("/accounts/" + account.id, {
+        score: v.scores,
+        cur_召會生活操練: v["召會生活操練"] ? v["召會生活操練"] : 0,
+        cur_神人生活操練: v["神人生活操練"] ? v["神人生活操練"] : 0,
+        cur_福音牧養操練: v["福音牧養操練"] ? v["福音牧養操練"] : 0,
+        cur_lord_table: lord_table,
+      });
     }
   };
   for (var i = 0; i < data.sections.length; i++) {
