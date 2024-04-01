@@ -141,7 +141,9 @@ const SignedIn = (props) => {
                 if (!("lord_table" in account_data[j]))
                   account_data[j].lord_table = 0;
                 account_data[j].lord_table +=
-                  data[lord_table_id].ans === "有" ? 1 : 0;
+                  data[lord_table_id] && data[lord_table_id].ans === "有"
+                    ? 1
+                    : 0;
                 if (data.scores) account_data[j].total_score += data.scores;
                 for (let section of problems.sections) {
                   if (!(section in account_data[j]))
@@ -158,16 +160,18 @@ const SignedIn = (props) => {
                   } else {
                     group_score[account_data[j].group] += data.scores;
                     group_lord_table[account_data[j].group] +=
-                      data[lord_table_id].ans === "有" ? 1 : 0;
+                      data[lord_table_id] && data[lord_table_id].ans === "有"
+                        ? 1
+                        : 0;
                   }
                 }
               }
               if (GF_data)
                 for (let [k, v] of Object.entries(GF_data)) {
-                  if(k === "week_base") continue;
+                  if (k === "week_base") continue;
                   for (let GF_id of v) {
                     let id;
-                    if(typeof GF_id === "string") id = GF_id;
+                    if (typeof GF_id === "string") id = GF_id;
                     else id = GF_id.id;
                     if (!GF_account_map[id].includes(account_data[j].id))
                       GF_account_map[id].push(account_data[j].id);
@@ -186,14 +190,15 @@ const SignedIn = (props) => {
               );
           }
           for (let [group_id, score] of Object.entries(group_score)) {
-            await firebase
-              .firestore()
-              .collection("group")
-              .doc(group_id)
-              .update({
-                table: group_lord_table[group_id],
-                score,
-              });
+            if (group_id)
+              await firebase
+                .firestore()
+                .collection("group")
+                .doc(group_id)
+                .update({
+                  table: group_lord_table[group_id],
+                  score,
+                });
           }
           for (let i = 0; i < account_data.length; i++) {
             let data = await DB.getByUrl(
@@ -291,8 +296,8 @@ const App = () => {
                     {({ isSignedIn, user, providerId }) => {
                       if (
                         isSignedIn &&
-                        !user.emailVerified
-                         && user.email !== "admin@hall19.com"
+                        !user.emailVerified &&
+                        user.email !== "admin@hall19.com"
                       ) {
                         DB.signOut();
                         alert("信箱未驗證");
