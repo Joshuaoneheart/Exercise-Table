@@ -65,18 +65,18 @@ const DataTabs = ({ data, account, default_data }) => {
           let score = 0;
           switch (problem.type) {
             case "GF":
-              if (!GF_data[problem.title]) continue;
+              if (!GF_data || GF_data[problem.title]) continue;
               score =
                 parseInt(problem.score) *
                 Math.min(GF_data[problem.title].length, problem.max);
               break;
             case "Number":
-              if (!form_data[problem.id]) continue;
+              if (!form_data || !form_data[problem.id]) continue;
               score =
                 parseInt(problem.score) * parseInt(form_data[problem.id].ans);
               break;
             case "MultiGrid":
-              if (!form_data[problem.id]) continue;
+              if (!form_data || !form_data[problem.id]) continue;
               let options = problem["選項"];
               for (let k = 0; k < options.length; k++) {
                 if (form_data[problem.id][options[k]])
@@ -86,7 +86,7 @@ const DataTabs = ({ data, account, default_data }) => {
               }
               break;
             case "Grid":
-              if (!form_data[problem.id]) continue;
+              if (!form_data || !form_data[problem.id]) continue;
               let suboptions = problem["子選項"];
               for (let k = 0; k < suboptions.length; k++) {
                 if (form_data[problem.id][suboptions[k]])
@@ -100,7 +100,7 @@ const DataTabs = ({ data, account, default_data }) => {
               }
               break;
             case "MultiChoice":
-              if (!form_data[problem.id]) continue;
+              if (!form_data || !form_data[problem.id]) continue;
               score = parseInt(
                 problem.score[
                   problem["選項"].indexOf(form_data[problem.id].ans)
@@ -108,7 +108,7 @@ const DataTabs = ({ data, account, default_data }) => {
               );
               break;
             case "MultiAnswer":
-              if (!form_data[problem.id]) continue;
+              if (!form_data || !form_data[problem.id]) continue;
               score =
                 parseInt(problem.score) * form_data[problem.id].ans.length;
               break;

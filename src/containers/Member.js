@@ -128,6 +128,7 @@ const MemberTable = ({ data, id }) => {
           _style: { minWidth: "100px", flexWrap: "nowrap" },
         }
       );
+      console.log(data);
       let { items, result } = await SummaryScore(data, problems, id);
       items = items.reverse();
       await DB.updateByUrl("/accounts/" + id, result);
