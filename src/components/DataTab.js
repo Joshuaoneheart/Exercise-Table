@@ -65,7 +65,7 @@ const DataTabs = ({ data, account, default_data }) => {
           let score = 0;
           switch (problem.type) {
             case "GF":
-              if (!GF_data || GF_data[problem.title]) continue;
+              if (!GF_data || !GF_data[problem.title]) continue;
               score =
                 parseInt(problem.score) *
                 Math.min(GF_data[problem.title].length, problem.max);
