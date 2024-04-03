@@ -181,6 +181,7 @@ const GFSelect = ({
                   };
                 else return x.value.split("|")[1];
               });
+              tmp.week_base = GetWeeklyBase();
               await DB.OnDemandUpdate(
                 "/accounts/" + account_id + "/GF/" + GetWeeklyBase(),
                 tmp
@@ -223,6 +224,7 @@ const GFSelect = ({
                       })
                     );
                     setNotes(new_notes);
+                    tmp.week_base = GetWeeklyBase();
                     DB.OnDemandUpdate(
                       "/accounts/" + account_id + "/GF/" + GetWeeklyBase(),
                       tmp
