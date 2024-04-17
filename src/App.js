@@ -151,12 +151,14 @@ const SignedIn = (props) => {
                   if (!data[section]) continue;
                   account_data[j][section] += data[section];
                 }
-                if (i === GetWeeklyBase() - 1) {
+                if (i === GetWeeklyBase() - 1 && account_data[j].group) {
                   //統計活力組總分與上週主日情形
                   if (!(account_data[j].group in group_score)) {
                     group_score[account_data[j].group] = data.scores;
                     group_lord_table[account_data[j].group] =
-                      data[lord_table_id].ans === "有" ? 1 : 0;
+                      data[lord_table_id] && data[lord_table_id].ans === "有"
+                        ? 1
+                        : 0;
                   } else {
                     group_score[account_data[j].group] += data.scores;
                     group_lord_table[account_data[j].group] +=
@@ -222,7 +224,7 @@ const SignedIn = (props) => {
               tmp["cur_福音牧養操練"] = data["福音牧養操練"]
                 ? data["福音牧養操練"]
                 : 0;
-              tmp["cur_lord_table"] = data[lord_table_id].ans === "有" ? 1 : 0;
+              tmp["cur_lord_table"] = data[lord_table_id] && data[lord_table_id].ans === "有" ? 1 : 0;
             }
             for (let section of problems.sections) {
               if (account_data[i][section])
