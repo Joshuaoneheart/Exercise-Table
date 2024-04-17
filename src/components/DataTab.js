@@ -18,11 +18,13 @@ import Problem from "./Problem";
 import { DB } from "db/firebase";
 import { GetWeeklyBase } from "utils/date";
 import loading from "./loading";
+import { message } from "antd";
 
 const DataTabs = ({ data, account, default_data }) => {
   const [section, setSection] = useState(0);
   const [GF, setGF] = useState(null);
   const [GF_data, setGFData] = useState(null);
+  const [api, ContextHolder] = message.useMessage();
   useEffect(() => {
     const GetGF = async () => {
       const docs = await DB.getByUrl("/GF");
@@ -48,6 +50,14 @@ const DataTabs = ({ data, account, default_data }) => {
   var tabpanes = [];
   const calculateScore = async () => {
     if (account) {
+      api
+        .open({
+          type: "loading",
+          content: "儲存中",
+          duration: 0,
+          key: "saving",
+        })
+        .then(() => message.success("儲存成功", 1.5));
       let form_data = await DB.getByUrl(
         "/accounts/" + account.id + "/data/" + GetWeeklyBase()
       );
@@ -131,6 +141,7 @@ const DataTabs = ({ data, account, default_data }) => {
         cur_福音牧養操練: v["福音牧養操練"] ? v["福音牧養操練"] : 0,
         cur_lord_table: lord_table,
       });
+      api.destroy("saving");
     }
   };
   for (var i = 0; i < data.sections.length; i++) {
@@ -168,6 +179,7 @@ const DataTabs = ({ data, account, default_data }) => {
   }
   return (
     <CCard>
+      {ContextHolder}
       <CCardHeader>
         <CRow className="align-items-center">
           <CCol style={{ fontSize: "30px" }}>表單</CCol>
