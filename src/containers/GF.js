@@ -76,18 +76,26 @@ const GFCardBody = ({ init_data }) => {
                 家聚會: [],
                 小排: [],
               };
-            if (doc.data()["主日聚會"].includes(tmp.id))
+            if (
+              doc.data()["主日聚會"] &&
+              doc.data()["主日聚會"].includes(tmp.id)
+            )
               data_by_week[parseInt(doc.id)]["主日聚會"].push(shepherd);
-            for (let d of doc.data()["家聚會"]) {
-              if ((typeof d === "string" && d === tmp.id) || d.id === tmp.id) {
-                data_by_week[parseInt(doc.id)]["家聚會"].push({
-                  id: shepherd,
-                  note: d.note,
-                });
-                break;
+
+            if (doc.data()["家聚會"])
+              for (let d of doc.data()["家聚會"]) {
+                if (
+                  (typeof d === "string" && d === tmp.id) ||
+                  d.id === tmp.id
+                ) {
+                  data_by_week[parseInt(doc.id)]["家聚會"].push({
+                    id: shepherd,
+                    note: d.note,
+                  });
+                  break;
+                }
               }
-            }
-            if (doc.data()["小排"].includes(tmp.id))
+            if (doc.data()["小排"] && doc.data()["小排"].includes(tmp.id))
               data_by_week[parseInt(doc.id)]["小排"].push(shepherd);
           });
       }
