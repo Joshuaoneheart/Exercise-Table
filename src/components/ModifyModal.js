@@ -13,6 +13,7 @@ import {
   CSelect,
 } from "@coreui/react";
 import { useRef } from "react";
+import { message } from "antd";
 
 /* format of show
   {
@@ -140,10 +141,10 @@ const DeleteModal = ({
       case "group":
         if (group_members[show.index - 1].length !== 0) {
           if (page === "group") {
-            alert("活力組內尚有住戶，請將所有住戶刪除後再刪除活力組");
+            message.error("活力組內尚有住戶，請將所有住戶刪除後再刪除活力組");
           }
           if (page === "residence")
-            alert("住處內尚有住戶，請將所有住戶刪除後再刪除住處");
+            message.error("住處內尚有住戶，請將所有住戶刪除後再刪除住處");
           break;
         }
         groups.deleteGroup(show.id);

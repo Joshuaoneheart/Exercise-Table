@@ -1,4 +1,5 @@
 import CIcon from "@coreui/icons-react";
+import { message } from "antd";
 import {
   CButton,
   CCard,
@@ -27,7 +28,7 @@ const Login = (props) => {
         username.current.value,
         password.current.value
       )
-      .catch((error) => window.alert("Error : " + error.message));
+      .catch((error) => message.error(error.message, 1.5));
   };
   return (
     <div className="c-app c-default-layout flex-row align-items-center">

@@ -27,6 +27,7 @@ import {
 } from "components/ModifyFormModal";
 import { firebase } from "db/firebase";
 import { useState } from "react";
+import { message } from "antd";
 
 const ModifyListGroupItem = ({
   index,
@@ -258,7 +259,7 @@ const ModifyCard = ({ default_data }) => {
                               setData(data);
                             });
                         } catch (error) {
-                          alert(error.message);
+                          message.error(error.message);
                         }
                       } else if (problem.id === "deleted") {
                         try {
@@ -268,7 +269,7 @@ const ModifyCard = ({ default_data }) => {
                             .doc(problem.old_id)
                             .delete();
                         } catch (error) {
-                          alert(error.message);
+                          message.error(error.message);
                         }
                       } else {
                         var path = pathPrefix + problem.id + "/";
@@ -281,10 +282,10 @@ const ModifyCard = ({ default_data }) => {
                     }
                     commit()
                       .then(() => {
-                        alert("儲存完成");
+                        message.success("儲存完成");
                       })
                       .catch((error) => {
-                        alert(error);
+                        message.error(error);
                       });
                   }}
                 >

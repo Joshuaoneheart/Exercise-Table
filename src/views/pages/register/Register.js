@@ -1,4 +1,5 @@
 import CIcon from "@coreui/icons-react";
+import { message } from "antd";
 import {
   CButton,
   CCard,
@@ -15,7 +16,7 @@ import {
   CRow,
 } from "@coreui/react";
 import { FirebaseAuthConsumer } from "@react-firebase/auth";
-import { DB } from "db/firebase";
+import { firebase, DB } from "db/firebase";
 import Account from "Models/Account";
 import Select from "react-select";
 import React, { useEffect, useState } from "react";
@@ -212,7 +213,7 @@ const Register = (props) => {
                                   register_form.current.elements.email.value
                                 )
                               ) {
-                                alert(
+                                message.error(
                                   "請使用非台大或台科大的學校信箱進行註冊，因台大或台科大信箱會擋驗證信"
                                 );
                                 return;
@@ -237,11 +238,7 @@ const Register = (props) => {
                                         register_form.current.elements.email
                                           .value,
                                       registered:
-                                        date.getFullYear() +
-                                        "/" +
-                                        (date.getMonth() + 1) +
-                                        "/" +
-                                        date.getDate(),
+                                        firebase.firestore.FieldValue.serverTimestamp(),
                                       role: "Member",
                                       status: "Pending",
                                       gender
@@ -252,7 +249,7 @@ const Register = (props) => {
                                     .auth()
                                     .currentUser.sendEmailVerification();
                                   await account.save(true);
-                                  alert("成功創建帳戶");
+                                  message.success("成功創建帳戶");
                                   await DB.signOut();
                                   window.location =
                                     window.location.href.replace(
@@ -261,7 +258,7 @@ const Register = (props) => {
                                     );
                                 })
                                 .catch((error) => {
-                                  alert(error.message);
+                                  message.error(error.message);
                                   event.target.disabled = false;
                                 });
                             }
