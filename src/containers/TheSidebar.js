@@ -15,6 +15,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Brand } from "components";
 import { AccountContext } from "hooks/context";
 import { history } from "utils/history";
+import { message } from "antd";
 
 var error_num = 0;
 
@@ -23,7 +24,7 @@ const TheSidebar = () => {
   const show = useSelector((state) => state.sidebarShow);
   var account = useContext(AccountContext);
   if (account == null) error_num++;
-  if (account == null && error_num >= 3) alert("連線錯誤");
+  if (account == null && error_num >= 3) message.error("連線錯誤");
   if (!account) return null;
   var navigation;
   if (account.is_admin)
@@ -166,7 +167,7 @@ const TheSidebar = () => {
           const not_implemented = [];
           for (let n of not_implemented)
             if (event.target.href.includes(n)) {
-              alert("此功能尚未開放");
+              message.error("此功能尚未開放");
               history.push("/");
               break;
             }

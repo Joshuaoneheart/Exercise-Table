@@ -1,20 +1,20 @@
 import {
-	CBadge,
-	CButton,
-	CCard,
-	CCardBody,
-	CCardHeader,
-	CCol,
-	CCollapse,
-	CDataTable,
-	CRow
+  CBadge,
+  CButton,
+  CCard,
+  CCardBody,
+  CCardHeader,
+  CCol,
+  CCollapse,
+  CDataTable,
+  CRow
 } from "@coreui/react";
 import { useState } from "react";
 
 import { FirestoreCollection } from "@react-firebase/firestore";
 import { loading } from "components";
 import { DB } from "db/firebase";
-
+import { FormatDate } from "utils/date";
 const getBadge = (status) => {
   switch (status) {
     case "Active":
@@ -39,7 +39,7 @@ const Users = () => {
       newDetails.splice(position, 1);
     } else {
       newDetails = [...details, index];
-    } 
+    }
     setDetails(newDetails);
   };
 
@@ -81,6 +81,17 @@ const Users = () => {
                     pagination
                     itemsPerPage={10}
                     scopedSlots={{
+                      registered: (item) => {
+                        let D
+                        if (typeof item.registered === "string") {
+                          let textSplit = item.registered.split('/')
+                          D = new Date(parseInt(textSplit[0]), parseInt(textSplit[1]) - 1, parseInt(textSplit[2]))
+                        }
+                        else {
+                          D = item.registered.toDate()
+                        }
+                        return <td><p style={{ fontFamily: "Space Mono, monospace", margin: "0" }}>{FormatDate(D)}</p></td>
+                      },
                       status: (item) => (
                         <td>
                           <CBadge color={getBadge(item.status)}>
@@ -115,13 +126,13 @@ const Users = () => {
                               </p>
                               {item.status === "Active" ? (
                                 <CButton size="sm" color="danger" onClick={async () => {
-                                  await DB.updateByUrl("/accounts/" + item.id, {"status": "Pending"})
+                                  await DB.updateByUrl("/accounts/" + item.id, { "status": "Pending" })
                                 }}>
                                   Deactivate
                                 </CButton>
                               ) : (
                                 <CButton onClick={async () => {
-                                  await DB.updateByUrl("/accounts/" + item.id, {"status": "Active"})
+                                  await DB.updateByUrl("/accounts/" + item.id, { "status": "Active" })
                                 }} size="sm" color="info">
                                   Activate
                                 </CButton>

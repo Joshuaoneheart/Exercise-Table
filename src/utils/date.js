@@ -13,19 +13,21 @@ const GetWeeklyBaseFromTime = (date) => {
 const WeeklyBase2String = (base) => {
   var end = new Date((base + 1) * 7 * 86400000 + BaseDate - 1);
   var start = new Date(base * 7 * 86400000 + BaseDate);
-  return `${start.getMonth() + 1}/${start.getDate()}-${
-    end.getMonth() + 1
-  }/${end.getDate()}`;
+  return `${start.getMonth() + 1}/${start.getDate()}-${end.getMonth() + 1
+    }/${end.getDate()}`;
 };
 
 const FormatDate = (date) => {
   const weekday = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  let m = date.getMonth() + 1, d = date.getDate()
+  if (m < 10) m = `0${m}`
+  if (d < 10) d = `0${d}`
   return (
     date.getFullYear() +
     "/" +
-    (date.getMonth() + 1) +
+    (m) +
     "/" +
-    date.getDate() +
+    d +
     "(" +
     weekday[date.getDay()] +
     ")" +

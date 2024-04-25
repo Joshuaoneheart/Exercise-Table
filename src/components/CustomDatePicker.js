@@ -1,4 +1,4 @@
-import { Button, DatePicker, Input, Space } from "antd";
+import { Button, DatePicker, Input, Space, message } from "antd";
 import locale from "antd/es/date-picker/locale/zh_TW";
 import dayjs from "dayjs";
 import "dayjs/locale/zh-tw";
@@ -82,7 +82,7 @@ const CustomDatePicker = () => {
       await DB.updateByUrl("/info/counter", {
         week_counter: GetWeeklyBaseFromTime(semesterStart.toDate()),
       });
-      alert("變更完成");
+      message.success("變更完成");
     }
   };
 

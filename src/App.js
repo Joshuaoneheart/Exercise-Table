@@ -325,7 +325,7 @@ const App = () => {
                         user.email !== "admin@hall19.com"
                       ) {
                         DB.signOut();
-                        alert("信箱未驗證");
+                        message.error("信箱未驗證");
                       }
                       if (
                         isSignedIn &&

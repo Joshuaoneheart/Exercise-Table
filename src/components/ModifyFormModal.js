@@ -21,6 +21,7 @@ import {
   GFFields,
 } from "./ProblemField";
 import { useEffect, useRef, useState } from "react";
+import { message } from "antd";
 
 const ProblemFormatChecking = (problem) => {
   const is_numeric = (s) => {
@@ -39,20 +40,20 @@ const ProblemFormatChecking = (problem) => {
     case "Grid":
       // 分數與選項數量需匹配（以分號隔開）
       if (options.length !== scores.length) {
-        alert("分數與選項數量需相同");
+        message.error("分數與選項數量需相同");
         return false;
       }
 
       // 分數以分號區隔後須為數字
       if (!scores.every(is_numeric)) {
-        alert("分數須皆為數字");
+        message.error("分數須皆為數字");
         return false;
       }
 
       // 子選項不可同名
       if (suboptions) {
         if (!suboptions.every(is_unique)) {
-          alert("子選項不可同名");
+          message.error("子選項不可同名");
           return false;
         }
       }
@@ -61,13 +62,13 @@ const ProblemFormatChecking = (problem) => {
     case "MultiAnswer":
       // 複選分數為單一數字
       if (!is_numeric(problem["score"])) {
-        alert("分數須為單一數字");
+        message.error("分數須為單一數字");
         return false;
       }
 
       // 子選項不可同名
       if (!suboptions.every(is_unique)) {
-        alert("子選項不可同名");
+        message.error("子選項不可同名");
         return false;
       }
       break;
@@ -263,7 +264,7 @@ const DeleteModal = ({
         break;
       case "group":
         if (group_members[show.index].length !== 0) {
-          alert("區塊內尚有問題，請將所有問題刪除後再刪除區塊");
+          message.error("區塊內尚有問題，請將所有問題刪除後再刪除區塊");
           break;
         }
         groups.splice(show.index, 1);

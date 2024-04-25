@@ -17,6 +17,7 @@ import Select from "react-select";
 import { useState } from "react";
 import ModifyListGroupItem from "./ModifyListGroupItem";
 import { AddModal, DeleteModal, TransferModal } from "./ModifyModal";
+import { message } from "antd";
 /*
 format of page
 string(group or residence)
@@ -191,7 +192,7 @@ const ModifyCard = ({ default_data, page, title, map }) => {
               var check = window.confirm("確定儲存修改嗎？");
               if (!check) return;
               await groups.save(page);
-              alert("儲存完成");
+              message.success("儲存完成");
             }}
           >
             儲存變更

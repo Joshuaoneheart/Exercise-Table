@@ -18,6 +18,7 @@ import { ContentState, EditorState, convertToRaw } from "draft-js";
 import { Editor } from "react-draft-wysiwyg";
 import draftToHtml from "draftjs-to-html";
 import htmlToDraft from "html-to-draftjs";
+import { message } from "antd";
 import "../../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 
 const ModifyAnnouncementModal = ({
@@ -52,11 +53,11 @@ const ModifyAnnouncementModal = ({
     tmp["posted_by"] = account.id;
     await DB.updateByUrl("/announcement/" + id, tmp)
       .then(() => {
-        alert("編輯完成");
+        message.success("編輯完成");
         setData(tmp);
       })
       .catch((error) => {
-        alert(error.message);
+        message.error(error.message);
       });
     setModal(false);
   };

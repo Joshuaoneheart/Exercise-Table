@@ -17,6 +17,7 @@ import { useRef, useState } from "react";
 import { EditorState, convertToRaw } from "draft-js";
 import { Editor } from "react-draft-wysiwyg";
 import draftToHtml from "draftjs-to-html";
+import { message } from "antd";
 import "../../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 
 const AddAnnouncementModal = ({ data, show, account, setData, setModal }) => {
@@ -32,18 +33,18 @@ const AddAnnouncementModal = ({ data, show, account, setData, setModal }) => {
     tmp["content"] = draftToHtml(convertToRaw(editorState.getCurrentContent()));
     tmp["top"] = form.current.elements.top.checked ? 1 : 0;
     tmp["posted_by"] = account.id;
-    tmp["timestamp"] = new Date();
+    tmp["timestamp"] = firebase.firestore.FieldValue.serverTimestamp();
     cur_data.push(tmp);
     await firebase
       .firestore()
       .collection("announcement")
       .add(tmp)
       .then(() => {
-        alert("新增完成");
+        message.success("新增完成");
         setData(cur_data);
       })
       .catch((error) => {
-        alert(error.message);
+        message.error(error.message);
       });
     setModal(false);
   };
