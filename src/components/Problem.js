@@ -337,7 +337,7 @@ const Problem = ({
                   option in default_data &&
                   default_data[option].ans.includes(suboption)
                 }
-                onChange={async function (option, data, e) {
+                onChange={async (option, data, e) => {
                   if (account_id) {
                     if (e.target.checked) {
                       let tmp = {};
@@ -358,7 +358,7 @@ const Problem = ({
                     }
                     calculateScore();
                   }
-                }.bind(null, option, data)}
+                }}
               />
             </CCol>
           );
@@ -421,7 +421,7 @@ const Problem = ({
                   suboption in default_data &&
                   default_data[suboption].ans === option
                 }
-                onChange={async function (suboption, data, e) {
+                onChange={async (e) => {
                   if (account_id) {
                     let tmp = {};
                     tmp[data.id + "." + suboption + ".ans"] = e.target.value;
@@ -431,7 +431,7 @@ const Problem = ({
                     );
                     calculateScore();
                   }
-                }.bind(null, suboption, data)}
+                }}
               />
             </CCol>
           );
@@ -457,7 +457,7 @@ const Problem = ({
               value={option}
               style={button_style}
               defaultChecked={default_data && default_data.ans === option}
-              onChange={async function (data, e) {
+              onChange={async (e) => {
                 if (account_id) {
                   let tmp = {};
                   tmp[data.id + ".ans"] = e.target.value;
@@ -467,7 +467,7 @@ const Problem = ({
                   );
                   calculateScore();
                 }
-              }.bind(null, data)}
+              }}
             />
             <CLabel
               variant="checkbox"
