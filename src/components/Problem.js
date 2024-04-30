@@ -337,7 +337,7 @@ const Problem = ({
                   option in default_data &&
                   default_data[option].ans.includes(suboption)
                 }
-                onChange={async (option, data, e) => {
+                onChange={async (e) => {
                   if (account_id) {
                     if (e.target.checked) {
                       let tmp = {};
