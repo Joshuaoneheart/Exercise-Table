@@ -13,7 +13,7 @@ import { loading } from "components";
 import AddGFModal from "components/AddGFModal";
 import { AccountContext } from "hooks/context";
 import { useState, useEffect, useContext } from "react";
-import { Link } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 const GFListCard = ({ data }) => {
   const [addModal, setAddModal] = useState(false);
   const account = useContext(AccountContext);
@@ -25,18 +25,12 @@ const GFListCard = ({ data }) => {
     { key: "grade", label: "年級", _style: { width: "7%" } },
     { key: "type", label: "身份", _style: { width: "7%" } },
     { key: "note", label: "備註", _style: { width: "50%" } },
-    {
-      key: "show_details",
-      label: "",
-      _style: { width: "1%" },
-      sorter: false,
-      filter: false,
-    },
   ];
+  const history = useHistory();
   useEffect(() => {
     setD(data);
   }, [data]);
-
+  
   return (
     <CCard>
       <CCardHeader>
@@ -74,16 +68,9 @@ const GFListCard = ({ data }) => {
           hover
           sorter
           pagination
-          scopedSlots={{
-            show_details: (item) => {
-              return (
-                <td>
-                  <Link to={"/GF/" + item.id}>
-                    <CIcon name="cil-info" />
-                  </Link>
-                </td>
-              );
-            },
+          clickableRows
+          onRowClick={(item) => {
+            history.push(`/GF/${item.id}`)
           }}
         />
       </CCardBody>
@@ -108,7 +95,6 @@ const GFList = () => {
                 )
                   data.push(Object.assign(d.value[i], { id: d.ids[i] }));
               }
-              console.log(data);
               return <GFListCard data={data} />;
             } else return null;
           }}

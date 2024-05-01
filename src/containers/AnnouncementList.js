@@ -13,12 +13,13 @@ import { loading } from "components";
 import AddAnnouncementModal from "components/AddAnnouncementModal";
 import { AccountContext } from "hooks/context";
 import { useContext, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import { GetAccountsMap } from "utils/account";
 import { FormatDate } from "utils/date";
+import { useHistory } from "react-router-dom";
 const AnnouncementListBody = ({ data, account, addModal, setAddModal }) => {
   const [announcements, setAnnouncements] = useState(data);
   const [accountsMap, setAccountsMap] = useState(null);
+  const history = useHistory();
   useEffect(() => {
     let FetchAccountsMap = async () => {
       setAccountsMap(await GetAccountsMap(true));
@@ -36,13 +37,6 @@ const AnnouncementListBody = ({ data, account, addModal, setAddModal }) => {
     { key: "content", label: "內容預覽", _style: { width: "50%" } },
     {
       key: "top",
-      label: "",
-      _style: { width: "1%" },
-      sorter: false,
-      filter: false,
-    },
-    {
-      key: "show_details",
       label: "",
       _style: { width: "1%" },
       sorter: false,
@@ -70,6 +64,10 @@ const AnnouncementListBody = ({ data, account, addModal, setAddModal }) => {
         hover
         sorter
         pagination
+        clickableRows
+        onRowClick={(item) => {
+          history.push(`/Announcement/${item.id}`)
+        }}
         scopedSlots={{
           top: (item) => {
             return <td></td>;
@@ -92,15 +90,6 @@ const AnnouncementListBody = ({ data, account, addModal, setAddModal }) => {
             return (
               <td>
                 <div dangerouslySetInnerHTML={{ __html: tmp }} />
-              </td>
-            );
-          },
-          show_details: (item) => {
-            return (
-              <td>
-                <Link to={"/Announcement/" + item.id}>
-                  <CIcon name="cil-info" />
-                </Link>
               </td>
             );
           },

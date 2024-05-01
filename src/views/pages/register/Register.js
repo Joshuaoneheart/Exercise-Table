@@ -227,7 +227,6 @@ const Register = (props) => {
                                   register_form.current.elements.password.value
                                 )
                                 .then(async (user_data) => {
-                                  var date = new Date();
                                   let account = new Account(
                                     {
                                       id: user_data.user.uid,

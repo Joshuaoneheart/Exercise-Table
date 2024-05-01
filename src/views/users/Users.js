@@ -29,6 +29,19 @@ const getBadge = (status) => {
       return "primary";
   }
 };
+
+const registFormat = (item) => {
+  let D
+  if (typeof item.registered === "string") {
+    let textSplit = item.registered.split('/')
+    D = new Date(parseInt(textSplit[0]), parseInt(textSplit[1]) - 1, parseInt(textSplit[2]))
+  }
+  else {
+    D = item.registered.toDate()
+  }
+  return FormatDate(D)
+}
+
 const Users = () => {
   const [details, setDetails] = useState([]);
 
@@ -82,15 +95,7 @@ const Users = () => {
                     itemsPerPage={10}
                     scopedSlots={{
                       registered: (item) => {
-                        let D
-                        if (typeof item.registered === "string") {
-                          let textSplit = item.registered.split('/')
-                          D = new Date(parseInt(textSplit[0]), parseInt(textSplit[1]) - 1, parseInt(textSplit[2]))
-                        }
-                        else {
-                          D = item.registered.toDate()
-                        }
-                        return <td><p style={{ fontFamily: "Space Mono, monospace", margin: "0" }}>{FormatDate(D)}</p></td>
+                        return <td><p style={{ fontFamily: "Space Mono, monospace", margin: "0" }}>{registFormat(item)}</p></td>
                       },
                       status: (item) => (
                         <td>
@@ -122,7 +127,7 @@ const Users = () => {
                             <CCardBody>
                               <h4>{item.email}</h4>
                               <p className="text-muted">
-                                User since {item.registered}
+                                User since {registFormat(item)}
                               </p>
                               {item.status === "Active" ? (
                                 <CButton size="sm" color="danger" onClick={async () => {
