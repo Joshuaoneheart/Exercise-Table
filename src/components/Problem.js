@@ -248,9 +248,9 @@ const Problem = ({
   GF,
 }) => {
   var frame = [];
-  var option_style = { color: "#000000", fontSize: "20px" };
-  var title_style = { color: "#636f83" };
-  var button_style = { height: "20px", width: "20px" };
+  var option_style = { color: "#000000", fontSize: "16px" };
+  var title_style = { color: "#636f83", fontSize: "22px" };
+  var button_style = { height: "20px", width: "16px" };
   switch (data.type) {
     case "GF":
       frame.push(
