@@ -337,7 +337,7 @@ const Problem = ({
                   option in default_data &&
                   default_data[option].ans.includes(suboption)
                 }
-                onChange={async function (e, account_id, suboption, option, data){
+                onChange={async function (account_id, suboption, option, data, e){
                   if (account_id) {
                     if (e.target.checked) {
                       let tmp = {};
@@ -421,7 +421,7 @@ const Problem = ({
                   suboption in default_data &&
                   default_data[suboption].ans === option
                 }
-                onChange={async function (e, account_id, suboption, data){
+                onChange={async function (account_id, suboption, data, e){
                   if (account_id) {
                     let tmp = {};
                     tmp[data.id + "." + suboption + ".ans"] = e.target.value;
@@ -457,7 +457,7 @@ const Problem = ({
               value={option}
               style={button_style}
               defaultChecked={default_data && default_data.ans === option}
-              onChange={async function(e, account_id, data){
+              onChange={async function(account_id, data, e){
                 if (account_id) {
                   let tmp = {};
                   tmp[data.id + ".ans"] = e.target.value;
