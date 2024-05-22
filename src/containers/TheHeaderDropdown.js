@@ -10,9 +10,12 @@ import {
 import { DB } from "db/firebase";
 import { AccountContext } from "hooks/context";
 import { useContext } from "react";
+import { useTranslation } from "react-i18next";
+import i18n from "i18n";
 
 const TheHeaderDropdown = (props) => {
   var account = useContext(AccountContext);
+  const { t, i18n: i18next } = useTranslation("translation", { i18n })
   if (!account) return null;
   return (
     <CDropdown inNav className="c-header-nav-items mx-2" direction="down">
@@ -35,7 +38,7 @@ const TheHeaderDropdown = (props) => {
           to="/profile"
         >
           <CIcon name="cil-user" className="mfe-2" />
-          Profile
+          {t("Profile")}
         </CDropdownItem>
         {account.role === "Admin" && (
           <>
@@ -45,7 +48,7 @@ const TheHeaderDropdown = (props) => {
               to="/users"
             >
               <CIcon name="cil-people" className="mfe-2" />
-              Users
+              {t("Users")}
             </CDropdownItem>
             <CDropdownItem
               tag={CLink}
@@ -53,14 +56,27 @@ const TheHeaderDropdown = (props) => {
               to="/settings"
             >
               <CIcon name="cil-settings" className="mfe-2" />
-              Settings
+              {t("Settings")}
             </CDropdownItem>
           </>
         )}
+        <CDropdownItem
+          className="c-subheader-nav-link"
+          onClick={() => {
+            if (i18next.language === "zh-tw")
+              i18next.changeLanguage("en")
+            else
+              i18next.changeLanguage("zh-tw")
+          }}
+        >
+          {i18next.language !== "zh-tw" ?
+            <CIcon name="cif-tw" className="mfe-2" /> : <CIcon name="cif-us" className="mfe-2" />}
+          {t("language")}
+        </CDropdownItem>
         <CDropdownItem divider />
         <CDropdownItem onClick={async () => DB.signOut()}>
           <CIcon name="cil-account-logout" className="mfe-2" />
-          Logout
+          {t("Logout")}
         </CDropdownItem>
       </CDropdownMenu>
     </CDropdown>

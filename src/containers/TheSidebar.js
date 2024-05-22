@@ -16,10 +16,13 @@ import { Brand } from "components";
 import { AccountContext } from "hooks/context";
 import { history } from "utils/history";
 import { message } from "antd";
+import { useTranslation } from "react-i18next";
+import i18n from "i18n"
 
 var error_num = 0;
 
 const TheSidebar = () => {
+  const { t } = useTranslation("translation", { i18n })
   const dispatch = useDispatch();
   const show = useSelector((state) => state.sidebarShow);
   var account = useContext(AccountContext);
@@ -31,63 +34,63 @@ const TheSidebar = () => {
     navigation = [
       {
         _tag: "CSidebarNavItem",
-        name: "公告",
+        name: t("公告"),
         to: "/announcementList",
         icon: "cil-bell",
       },
       {
         _tag: "CSidebarNavTitle",
-        _children: ["操練情形查詢"],
+        _children: [t("操練情形查詢")],
       },
       {
         _tag: "CSidebarNavItem",
-        name: "個人",
+        name: t("個人"),
         to: "/memberList",
         icon: "cil-user",
       },
       {
         _tag: "CSidebarNavItem",
-        name: "活力組",
+        name: t("活力組"),
         to: "/biblegroupList",
         icon: "cil-bar-chart",
       },
       {
         _tag: "CSidebarNavTitle",
-        _children: ["管理功能"],
+        _children: [t("管理功能")],
       },
       {
         _tag: "CSidebarNavItem",
-        name: "住戶管理",
+        name: t("住戶管理"),
         to: "/modifyresidence",
         icon: "cil-house",
       },
       {
         _tag: "CSidebarNavItem",
-        name: "活力組管理",
+        name: t("活力組管理"),
         to: "/modifygroup",
         icon: "cil-group",
       },
       {
         _tag: "CSidebarNavItem",
-        name: "修改表單",
+        name: t("修改表單"),
         to: "/modifyform",
         icon: "cil-pencil",
       },
       {
         _tag: "CSidebarNavItem",
-        name: "表單預覽",
+        name: t("表單預覽"),
         to: "/form",
         icon: "cil-spreadsheet",
       },
       {
         _tag: "CSidebarNavItem",
-        name: "牧養對象列表",
+        name: t("牧養對象列表"),
         to: "/GFList",
         icon: "cil-list",
       },
       {
         _tag: "CSidebarNavItem",
-        name: "學期結算",
+        name: t("學期結算"),
         to: "/summary",
         icon: "cil-calculator",
       },
@@ -103,39 +106,39 @@ const TheSidebar = () => {
     navigation = [
       {
         _tag: "CSidebarNavItem",
-        name: "公告",
+        name: t("公告"),
         to: "/announcementList",
         icon: "cil-bell",
       },
       {
         _tag: "CSidebarNavTitle",
-        _children: ["操練情形查詢"],
+        _children: [t("操練情形查詢")],
       },
       {
         _tag: "CSidebarNavItem",
-        name: "個人",
+        name: t("個人"),
         to: "/member/" + account.id,
         icon: "cil-user",
       },
       {
         _tag: "CSidebarNavItem",
-        name: "牧養對象列表",
+        name: t("牧養對象列表"),
         to: "/GFList",
         icon: "cil-list",
       },
       {
         _tag: "CSidebarNavTitle",
-        _children: ["表單"],
+        _children: [t("表單")],
       },
       {
         _tag: "CSidebarNavItem",
         to: "/form",
-        name: "操練表填寫",
+        name: t("操練表填寫"),
         icon: "cil-spreadsheet",
       },
       {
         _tag: "CSidebarNavItem",
-        name: "時間表",
+        name: t("時間表"),
         to: "/schedule",
         icon: "cil-alarm",
       },
