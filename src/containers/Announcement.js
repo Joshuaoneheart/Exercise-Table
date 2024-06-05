@@ -22,6 +22,8 @@ import { AccountContext } from "hooks/context";
 import ModifyAnnouncementModal from "components/ModifyAnnouncementModal";
 import { GetAccountsMap } from "utils/account";
 import { FormatDate } from "utils/date";
+import { useTranslation } from "react-i18next";
+import i18n from "i18n"
 const CommentList = ({ comments, accountsMap }) => {
   return comments.map((x) => (
     <>
@@ -38,6 +40,7 @@ const CommentList = ({ comments, accountsMap }) => {
   ));
 };
 const AnnouncementCard = ({ init_data, id }) => {
+  const { t } = useTranslation("translation", { i18n })
   const account = useContext(AccountContext);
   const [data, setData] = useState(init_data);
   const [comment, setComment] = useState("");
@@ -87,7 +90,7 @@ const AnnouncementCard = ({ init_data, id }) => {
         />
         <CRow>
           <CCol xs="10" md="11">
-            公告
+            {t("公告")}
           </CCol>
           {data && account.id === data.posted_by && (
             <CCol xs="1" md="1">
@@ -113,13 +116,13 @@ const AnnouncementCard = ({ init_data, id }) => {
             <div width="20%">
               <CRow>
                 <CCol lg="3">
-                  <b>發佈人</b>
+                  <b>{t("發佈人")}</b>
                 </CCol>
                 <CCol>{accountsMap[data.posted_by]}</CCol>
               </CRow>
               <CRow>
                 <CCol lg="3">
-                  <b>發布時間</b>
+                  <b>{t("發布時間")}</b>
                 </CCol>
                 <CCol>
                   {data &&
@@ -131,7 +134,7 @@ const AnnouncementCard = ({ init_data, id }) => {
               </CRow>
               <CRow>
                 <CCol lg="3">
-                  <b>內容</b>
+                  <b>{t("內容")}</b>
                 </CCol>
                 <CCol>
                   <div
@@ -159,7 +162,7 @@ const AnnouncementCard = ({ init_data, id }) => {
                         color: "aaaaaa",
                       }}
                     >
-                      已讀{" "}
+                      {t("已讀")}{" "}
                       {data.checked
                         ? data.checked.split(";").filter((x) => accountsMap[x])
                             .length

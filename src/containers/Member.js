@@ -15,6 +15,8 @@ import { useEffect, useState } from "react";
 import { GetProblems, SummaryScore } from "utils/problem";
 import { GetSemesterData } from "utils/account";
 import TrackingTable from "components/TrackingTable";
+import { useTranslation } from "react-i18next";
+import i18n from "i18n";
 
 const RenderLineChart = ({ data }) => {
   let labels = [];
@@ -70,6 +72,7 @@ const RenderLineChart = ({ data }) => {
 };
 
 const MemberTable = ({ data, id }) => {
+  const { t } = useTranslation("translation", { i18n })
   const [items, setItems] = useState(null);
   const [columns, setColumns] = useState(null);
   useEffect(() => {
@@ -87,7 +90,7 @@ const MemberTable = ({ data, id }) => {
           for (let suboption of problem["子選項"]) {
             columns.push({
               key: problem.id + "-" + suboption,
-              label: problem.title + "-" + suboption,
+              label: t(problem.title + "-" + suboption),
               _style: { minWidth: "100px", flexWrap: "nowrap" },
             });
           }
@@ -95,36 +98,36 @@ const MemberTable = ({ data, id }) => {
           for (let option of problem["選項"]) {
             columns.push({
               key: problem.id + "-" + option,
-              label: problem.title + "-" + option,
+              label: t(problem.title + "-" + option),
               _style: { minWidth: "100px", flexWrap: "nowrap" },
             });
           }
         } else
           columns.push({
             key: problem.id,
-            label: problem.title,
+            label: t(problem.title),
             _style: { minWidth: "100px", flexWrap: "nowrap" },
           });
       }
       columns.push(
         {
           key: "召會生活操練",
-          label: "召會生活操練",
+          label: t("召會生活操練"),
           _style: { minWidth: "100px", flexWrap: "nowrap" },
         },
         {
           key: "神人生活操練",
-          label: "神人生活操練",
+          label: t("神人生活操練"),
           _style: { minWidth: "100px", flexWrap: "nowrap" },
         },
         {
           key: "福音牧養操練",
-          label: "福音牧養操練",
+          label: t("福音牧養操練"),
           _style: { minWidth: "100px", flexWrap: "nowrap" },
         },
         {
           key: "score",
-          label: "總分",
+          label: t("總分"),
           _style: { minWidth: "100px", flexWrap: "nowrap" },
         }
       );
@@ -148,6 +151,7 @@ const MemberTable = ({ data, id }) => {
 };
 
 const Member = () => {
+  const { t } = useTranslation("translation", { i18n })
   const { id } = useParams();
   const [data, setData] = useState(null);
   const [account, setAccount] = useState(null);
@@ -171,7 +175,7 @@ const Member = () => {
     <CRow>
       <CCol>
         <CCard>
-          <CCardHeader>個人操練情況查詢-{account.displayName}</CCardHeader>
+          <CCardHeader>{t("個人操練情況查詢")}-{account.displayName}</CCardHeader>
           <CCardBody>
             <CRow>
               <RenderLineChart data={data} />

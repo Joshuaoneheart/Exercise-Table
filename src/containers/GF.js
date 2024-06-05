@@ -23,8 +23,11 @@ import { DB, firebase } from "db/firebase";
 import ModifyGFModal from "components/ModifyGFModal";
 import CIcon from "@coreui/icons-react";
 import { GetAccountsMap } from "utils/account";
+import { useTranslation } from "react-i18next";
+import i18n from "i18n";
 
 const GFCardBody = ({ init_data }) => {
+  const { t } = useTranslation("translation", { i18n })
   const [modifyModal, setModifyModal] = useState(false);
   const [data, setData] = useState(init_data);
   const [accountsMap, setAccountsMap] = useState(null);
@@ -117,17 +120,17 @@ const GFCardBody = ({ init_data }) => {
     },
     {
       key: "主日聚會",
-      label: "主日聚會",
+      label: t("主日聚會"),
       _style: { minWidth: "100px", flexWrap: "nowrap" },
     },
     {
       key: "家聚會",
-      label: "家聚會",
+      label: t("家聚會"),
       _style: { minWidth: "100px", flexWrap: "nowrap" },
     },
     {
       key: "小排",
-      label: "小排",
+      label: t("小排"),
       _style: { minWidth: "100px", flexWrap: "nowrap" },
     },
   ];
@@ -162,31 +165,31 @@ const GFCardBody = ({ init_data }) => {
           <div width="20%">
             <CRow>
               <CCol lg="3">
-                <b>學校</b>
+                <b>{t("學校")}</b>
               </CCol>
               <CCol>{data.school}</CCol>
             </CRow>
             <CRow>
               <CCol lg="3">
-                <b>科系</b>
+                <b>{t("科系")}</b>
               </CCol>
               <CCol>{data.department}</CCol>
             </CRow>
             <CRow>
               <CCol lg="3">
-                <b>年級</b>
+                <b>{t("年級")}</b>
               </CCol>
               <CCol>{data.grade}</CCol>
             </CRow>
             <CRow>
               <CCol lg="3">
-                <b>身份</b>
+                <b>{t("身份")}</b>
               </CCol>
               <CCol>{data.type}</CCol>
             </CRow>
             <CRow>
               <CCol lg="3">
-                <b>牧養人</b>
+                <b>{t("牧養人")}</b>
               </CCol>
               <CCol>
                 {data.shepherd &&
@@ -195,25 +198,25 @@ const GFCardBody = ({ init_data }) => {
             </CRow>
             <CRow>
               <CCol lg="3">
-                <b>累計主日聚會</b>
+                <b>{t("累計主日聚會")}</b>
               </CCol>
               <CCol>{data["主日聚會"] && data["主日聚會"]}</CCol>
             </CRow>
             <CRow>
               <CCol lg="3">
-                <b>累計家聚會</b>
+                <b>{t("累計家聚會")}</b>
               </CCol>
               <CCol>{data["家聚會"] && data["家聚會"]}</CCol>
             </CRow>
             <CRow>
               <CCol lg="3">
-                <b>累計小排</b>
+                <b>{t("累計小排")}</b>
               </CCol>
               <CCol>{data["小排"] && data["小排"]}</CCol>
             </CRow>
             <CRow>
               <CCol lg="3">
-                <b>備註</b>
+                <b>{t("備註")}</b>
               </CCol>
               <CCol>{data.note}</CCol>
             </CRow>
@@ -273,12 +276,13 @@ const GFCardBody = ({ init_data }) => {
   );
 };
 const GF = () => {
+  const { t } = useTranslation("translation", { i18n })
   let { id } = useParams();
   return (
     <CRow>
       <CCol>
         <CCard>
-          <CCardHeader>福音朋友資料</CCardHeader>
+          <CCardHeader>{t("福音朋友資料")}</CCardHeader>
 
           <FirestoreDocument path={"/GF/" + id}>
             {(d) => {

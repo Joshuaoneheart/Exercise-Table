@@ -65,8 +65,8 @@ const Summary = () => {
       }
       setTotalNum(
         GetWeeklyBaseFromTime(semester.end.toDate()) -
-          GetWeeklyBaseFromTime(semester.start.toDate()) +
-          1
+        GetWeeklyBaseFromTime(semester.start.toDate()) +
+        1
       );
       setProblems(problems);
       setRaw(tmp);
@@ -103,7 +103,19 @@ const Summary = () => {
           ),
         });
       }
-    } else
+    } else if (problem.type === "GF") {
+      options.push({
+        id: problem.id,
+        data: problem,
+        value: problem.title,
+        label: (
+          <span style={{ whiteSpace: "pre" }}>
+            邀約福音朋友 - {problem.title}
+          </span>
+        ),
+      });
+    }
+    else
       options.push({
         id: problem.id,
         data: problem,
@@ -139,7 +151,44 @@ const Summary = () => {
           />
         </CCol>
       );
-    } else if (conditions[i].data) {
+    } else if (conditions[i].data && conditions[i].data.type === "GF") {
+      choice_select = (
+        <>
+          <CCol>
+            <CLabel style={{ width: "100%" }}>次條件</CLabel>
+            <Select
+              options={[
+                {
+                  value: ">=",
+                  label: <span style={{ whiteSpace: "pre" }}>{">="}</span>,
+                },
+                {
+                  value: "<=",
+                  label: <span style={{ whiteSpace: "pre" }}>{"<="}</span>,
+                },
+              ]}
+              onChange={(v) => {
+                let tmp = Array.from(conditions);
+                tmp[i].small_c = v.value;
+                setConditions(tmp);
+              }}
+            />
+          </CCol>
+          <CCol xs="4" md="2">
+            <CLabel style={{ width: "100%" }}>幾次</CLabel>
+            <InputNumber
+              min={0}
+              onChange={(v) => {
+                let tmp = Array.from(conditions);
+                tmp[i].small_c_n = v;
+                setConditions(tmp);
+              }}
+            />
+          </CCol>
+        </>
+      );
+    }
+    else if (conditions[i].data) {
       choice_select = (
         <>
           <CCol>
