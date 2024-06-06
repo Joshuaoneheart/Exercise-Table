@@ -12,6 +12,8 @@ import { DB, firebase } from "db/firebase";
 import { GetWeeklyBase } from "utils/date";
 import Select from "react-select";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import i18n from "i18n"
 
 const GFSelect = ({
   GF,
@@ -247,10 +249,11 @@ const Problem = ({
   calculateScore,
   GF,
 }) => {
+  const { t } = useTranslation("translation", { i18n })
   var frame = [];
-  var option_style = { color: "#000000", fontSize: "20px" };
-  var title_style = { color: "#636f83" };
-  var button_style = { height: "20px", width: "20px" };
+  var option_style = { color: "#000000", fontSize: "16px" };
+  var title_style = { color: "#636f83", fontSize: "22px" };
+  var button_style = { height: "20px", width: "16px" };
   switch (data.type) {
     case "GF":
       frame.push(
@@ -302,7 +305,7 @@ const Problem = ({
             key={i}
             style={Object.assign({}, option_style, { textAlign: "center" })}
           >
-            {option}
+            {t(option)}
           </CCol>
         );
       }
@@ -312,7 +315,7 @@ const Problem = ({
         let subframe = [];
         subframe.push(
           <CCol xs="4" md="2" style={option_style}>
-            {suboption}
+            {t(suboption)}
           </CCol>
         );
         for (var option of options) {
@@ -386,7 +389,7 @@ const Problem = ({
             key={i}
             style={Object.assign({}, option_style, { textAlign: "center" })}
           >
-            {option}
+            {t(option)}
           </CCol>
         );
       }
@@ -396,7 +399,7 @@ const Problem = ({
         var subframe = [];
         subframe.push(
           <CCol xs="4" md="2" style={option_style}>
-            {suboption}
+            {t(suboption)}
           </CCol>
         );
         for (option of options) {
@@ -473,7 +476,7 @@ const Problem = ({
               variant="checkbox"
               style={Object.assign({}, option_style, { marginLeft: "10px" })}
             >
-              {option}
+              {t(option)}
             </CLabel>
           </CFormGroup>
         );
@@ -519,7 +522,7 @@ const Problem = ({
               variant="checkbox"
               style={Object.assign({}, option_style, { marginLeft: "10px" })}
             >
-              {options[i]}
+              {t(options[i])}
             </CLabel>
           </CFormGroup>
         );
@@ -531,7 +534,7 @@ const Problem = ({
   return (
     <>
       <CFormGroup style={{ marginBottom: "25px" }}>
-        <h4 style={title_style}>{data.title}</h4>
+        <h4 style={title_style}>{t(data.title)}</h4>
         <hr />
         <CCol style={{ overflowX: "scroll", overflowY: "visible" }}>
           {frame}

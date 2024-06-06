@@ -19,8 +19,11 @@ import { DB } from "db/firebase";
 import { GetWeeklyBase } from "utils/date";
 import loading from "./loading";
 import { message } from "antd";
+import { useTranslation } from "react-i18next";
+import i18n from "i18n"
 
 const DataTabs = ({ data, account, default_data }) => {
+  const { t } = useTranslation("translation", { i18n })
   const [section, setSection] = useState(0);
   const [GF, setGF] = useState(null);
   const [GF_data, setGFData] = useState(null);
@@ -152,7 +155,7 @@ const DataTabs = ({ data, account, default_data }) => {
           setSection(i);
         }.bind(null, i)}
       >
-        {data.sections[i]}
+        {t(data.sections[i])}
       </CDropdownItem>
     );
     var tabContents = [];
@@ -182,11 +185,11 @@ const DataTabs = ({ data, account, default_data }) => {
       {ContextHolder}
       <CCardHeader>
         <CRow className="align-items-center">
-          <CCol style={{ fontSize: "30px" }}>表單</CCol>
+          <CCol style={{ fontSize: "30px" }}>{t("表單")}</CCol>
           <CCol align="end">
             <CDropdown>
               <CDropdownToggle color="info">
-                {data.sections[section]}
+                {t(data.sections[section])}
               </CDropdownToggle>
               <CDropdownMenu>{tabs}</CDropdownMenu>
             </CDropdown>

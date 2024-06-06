@@ -20,6 +20,8 @@ import draftToHtml from "draftjs-to-html";
 import htmlToDraft from "html-to-draftjs";
 import { message } from "antd";
 import "../../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+import { useTranslation } from "react-i18next";
+import i18n from "i18n"
 
 const ModifyAnnouncementModal = ({
   data,
@@ -29,6 +31,7 @@ const ModifyAnnouncementModal = ({
   setModal,
   id,
 }) => {
+  const { t } = useTranslation("translation", { i18n })
   var form = useRef();
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   useEffect(() => {
@@ -70,7 +73,7 @@ const ModifyAnnouncementModal = ({
       }}
     >
       <CModalHeader closeButton>
-        <CModalTitle>編輯公告</CModalTitle>
+        <CModalTitle>{t("編輯公告")}</CModalTitle>
       </CModalHeader>
       <CModalBody>
         <CForm
@@ -85,7 +88,7 @@ const ModifyAnnouncementModal = ({
         >
           <CFormGroup row inline>
             <CCol md="3">
-              <CLabel>主題</CLabel>
+              <CLabel>{t("主題")}</CLabel>
             </CCol>
             <CCol xs="12" md="9">
               <CInput defaultValue={data.title} name="title" required />
@@ -93,7 +96,7 @@ const ModifyAnnouncementModal = ({
           </CFormGroup>
           <CFormGroup row inline>
             <CCol md="3">
-              <CLabel>內容</CLabel>
+              <CLabel>{t("內容")}</CLabel>
             </CCol>
             <CCol xs="12" md="9">
               <div
@@ -117,7 +120,7 @@ const ModifyAnnouncementModal = ({
           </CFormGroup>
           <CFormGroup row inline>
             <CCol md="3">
-              <CLabel>置頂</CLabel>
+              <CLabel>{t("置頂")}</CLabel>
             </CCol>
             <CCol xs="12" md="9">
               <CInputCheckbox
@@ -131,7 +134,7 @@ const ModifyAnnouncementModal = ({
       </CModalBody>
       <CModalFooter>
         <CButton color="primary" onClick={writeData}>
-          儲存
+          {t("儲存")}
         </CButton>{" "}
         <CButton
           color="secondary"
@@ -139,7 +142,7 @@ const ModifyAnnouncementModal = ({
             setModal(false);
           }}
         >
-          取消
+          {t("取消")}
         </CButton>
       </CModalFooter>
     </CModal>

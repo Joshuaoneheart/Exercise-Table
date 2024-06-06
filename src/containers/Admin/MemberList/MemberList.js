@@ -11,47 +11,50 @@ import CIcon from "@coreui/icons-react";
 import { useEffect, useState } from "react";
 import { firebase, DB } from "db/firebase";
 import { GetWeeklyBase } from "utils/date";
+import { useTranslation } from "react-i18next";
+import i18n from "i18n"
 const MemberListBody = () => {
+  const { t } = useTranslation("translation", { i18n })
   const [data, setData] = useState([]);
   const fields = [
     {
       key: "displayName",
-      label: "姓名",
+      label: t("姓名"),
       _style: { width: "25px", flexWrap: "nowrap" },
     },
     {
       key: "group",
-      label: "活力組",
+      label: t("活力組"),
       _style: { width: "50px", flexWrap: "nowrap" },
     },
     {
       key: "submit",
-      label: "本週已交",
+      label: t("本週已交"),
       _style: { width: "25px", flexWrap: "nowrap" },
     },
     {
       key: "lord_table",
-      label: "累計主日聚會",
+      label: t("累計主日聚會"),
       _style: { width: "100px", flexWrap: "nowrap" },
     },
     {
       key: "神人生活操練",
-      label: "累計神人生活操練",
+      label: t("累計神人生活操練"),
       _style: { width: "100px", flexWrap: "nowrap" },
     },
     {
       key: "福音牧養操練",
-      label: "累計福音牧養操練",
+      label: t("累計福音牧養操練"),
       _style: { width: "100px", flexWrap: "nowrap" },
     },
     {
       key: "召會生活操練",
-      label: "累計召會生活操練",
+      label: t("累計召會生活操練"),
       _style: { width: "100px", flexWrap: "nowrap" },
     },
     {
       key: "total_score",
-      label: "累計總分",
+      label: t("累計總分"),
       _style: { width: "50px", flexWrap: "nowrap" },
     },
     {
@@ -133,11 +136,12 @@ const MemberListBody = () => {
 };
 
 const MemberList = () => {
+  const { t } = useTranslation("translation", { i18n })
   return (
     <CRow>
       <CCol>
         <CCard>
-          <CCardHeader>個人操練情形</CCardHeader>
+          <CCardHeader>{t("個人操練情形")}</CCardHeader>
           <MemberListBody />
         </CCard>
       </CCol>

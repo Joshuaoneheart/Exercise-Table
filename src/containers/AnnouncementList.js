@@ -16,7 +16,10 @@ import { useContext, useEffect, useState } from "react";
 import { GetAccountsMap } from "utils/account";
 import { FormatDate } from "utils/date";
 import { useHistory } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import i18n from "i18n"
 const AnnouncementListBody = ({ data, account, addModal, setAddModal }) => {
+  const { t } = useTranslation("translation", { i18n })
   const [announcements, setAnnouncements] = useState(data);
   const [accountsMap, setAccountsMap] = useState(null);
   const history = useHistory();
@@ -31,10 +34,10 @@ const AnnouncementListBody = ({ data, account, addModal, setAddModal }) => {
   }, [data]);
   if (accountsMap === null) return loading;
   const fields = [
-    { key: "title", label: "主題", _style: { width: "7%" } },
-    { key: "timestamp", label: "發佈時間", _style: { width: "20%" } },
-    { key: "posted_by", label: "發佈人", _style: { width: "7%" } },
-    { key: "content", label: "內容預覽", _style: { width: "50%" } },
+    { key: "title", label: t("主題"), _style: { width: "7%" } },
+    { key: "timestamp", label: t("發佈時間"), _style: { width: "20%" } },
+    { key: "posted_by", label: t("發佈人"), _style: { width: "7%" } },
+    { key: "content", label: t("內容預覽"), _style: { width: "50%" } },
     {
       key: "top",
       label: "",
@@ -99,6 +102,7 @@ const AnnouncementListBody = ({ data, account, addModal, setAddModal }) => {
   );
 };
 const AnnouncementList = () => {
+  const { t } = useTranslation("translation", { i18n })
   const account = useContext(AccountContext);
   const [addModal, setAddModal] = useState(false);
   return (
@@ -108,7 +112,7 @@ const AnnouncementList = () => {
           <CCardHeader>
             <CRow>
               <CCol xs="10" md="11">
-                公告
+                {t("公告")}
               </CCol>
               {account.role === "Admin" && (
                 <CCol xs="1" md="1">
