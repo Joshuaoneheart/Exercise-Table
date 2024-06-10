@@ -38,7 +38,7 @@ const TheHeaderDropdown = (props) => {
           to="/profile"
         >
           <CIcon name="cil-user" className="mfe-2" />
-          {t("Profile")}
+          {t("個人檔案")}
         </CDropdownItem>
         {account.role === "Admin" && (
           <>
@@ -48,7 +48,7 @@ const TheHeaderDropdown = (props) => {
               to="/users"
             >
               <CIcon name="cil-people" className="mfe-2" />
-              {t("Users")}
+              {t("使用者")}
             </CDropdownItem>
             <CDropdownItem
               tag={CLink}
@@ -56,7 +56,7 @@ const TheHeaderDropdown = (props) => {
               to="/settings"
             >
               <CIcon name="cil-settings" className="mfe-2" />
-              {t("Settings")}
+              {t("設定")}
             </CDropdownItem>
           </>
         )}
@@ -71,12 +71,12 @@ const TheHeaderDropdown = (props) => {
         >
           {i18next.language !== "zh-tw" ?
             <CIcon name="cif-tw" className="mfe-2" /> : <CIcon name="cif-us" className="mfe-2" />}
-          {t("language")}
+          {t("English")}
         </CDropdownItem>
         <CDropdownItem divider />
         <CDropdownItem onClick={async () => DB.signOut()}>
           <CIcon name="cil-account-logout" className="mfe-2" />
-          {t("Logout")}
+          {t("登出")}
         </CDropdownItem>
       </CDropdownMenu>
     </CDropdown>
