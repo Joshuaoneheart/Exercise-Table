@@ -8,6 +8,7 @@ const GetSemesterData = async (id, semester) => {
     .doc(id)
     .collection("data")
     .where("week_base", ">=", GetWeeklyBaseFromTime(semester.start.toDate()))
+    .where("week_base", "<=", GetWeeklyBaseFromTime(semester.end.toDate()))
     .get();
   await tmp.forEach((doc) => {
     data.value.push(doc.data());
@@ -19,6 +20,7 @@ const GetSemesterData = async (id, semester) => {
     .doc(id)
     .collection("GF")
     .where("week_base", ">=", GetWeeklyBaseFromTime(semester.start.toDate()))
+    .where("week_base", "<=", GetWeeklyBaseFromTime(semester.end.toDate()))
     .get();
   await GF_doc.forEach((doc) => {
     if (data.ids.indexOf(doc.id) !== -1)
