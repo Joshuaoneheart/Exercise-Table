@@ -144,6 +144,7 @@ const MemberTable = ({ data, id }) => {
     <CDataTable
       style={{ flexWrap: "nowrap" }}
       pagination
+      itemsPerPage={20}
       fields={columns}
       items={items}
     />
