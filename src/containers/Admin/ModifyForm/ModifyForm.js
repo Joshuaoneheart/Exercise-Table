@@ -100,7 +100,6 @@ const ModifyCard = ({ default_data, form_id }) => {
   for (let i = 0; i < sections.length; i++) section_members.push([]);
   for (var i = 0; i < data.length; i++) {
     //assign id to data
-    if (data[i].id === "deleted") continue;
     if (!sections.includes(data[i].section)) {
       sections.push(data[i].section);
       section_members.push([]);
@@ -274,12 +273,6 @@ const ModifyCard = ({ default_data, form_id }) => {
                         data[i].id = d.id;
                         setData(data);
                       });
-                  } else if (problem.id === "deleted") {
-                    await firebase
-                      .firestore()
-                      .collection("form")
-                      .doc(problem.old_id)
-                      .delete();
                   } else {
                     var path = pathPrefix + problem.id;
                     await DB.updateByUrl(path, problem);

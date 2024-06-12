@@ -26,7 +26,6 @@ const ImportProblemModal = ({ form_id, show, data, setModal, setData }) => {
     setData([...data, new_problem]);
     message.success("匯入成功");
     setModal(false);
-    setOptions(null);
     setProblem(null);
   };
   useEffect(() => {
@@ -43,7 +42,7 @@ const ImportProblemModal = ({ form_id, show, data, setModal, setData }) => {
           })
       );
     };
-    if (options === null) GetOptions();
+    GetOptions();
   }, [form_id, data, options]);
   if (!show) {
     return null;
