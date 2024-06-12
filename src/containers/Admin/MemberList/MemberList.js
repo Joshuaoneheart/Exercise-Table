@@ -6,18 +6,19 @@ import {
   CCardHeader,
   CDataTable,
 } from "@coreui/react";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { firebase, DB } from "db/firebase";
 import { GetWeeklyBase } from "utils/date";
 import { useHistory } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import i18n from "i18n";
-import useSemester from "hooks/semester";
+import SemesterContext from "hooks/semester";
+import { IsCurrentSemester } from "utils/semester";
 const MemberListBody = () => {
   const { t } = useTranslation("translation", { i18n });
-  const { semester, isCurrentSemester } = useSemester();
+  const { semester } = useContext(SemesterContext);
   const [data, setData] = useState([]);
-  const history = useHistory()
+  const history = useHistory();
   useEffect(() => {
     let FetchMember = async () => {
       let groupMap = {};
@@ -43,7 +44,7 @@ const MemberListBody = () => {
               item[semester.name + "|福音牧養操練"] = 0;
             if (!item[semester.name + "|lord_table"])
               item[semester.name + "|lord_table"] = 0;
-            if (isCurrentSemester()) {
+            if (IsCurrentSemester(semester)) {
               if (item.score)
                 item[semester.name + "|total_score"] += item.score;
               if (item["cur_召會生活操練"])
@@ -128,7 +129,7 @@ const MemberListBody = () => {
         sorter
         pagination
         onRowClick={(item) => {
-          history.push(`/member/${item.id}`)
+          history.push(`/member/${item.id}`);
         }}
       />
     </CCardBody>

@@ -4,7 +4,7 @@ import { FirestoreCollection } from "@react-firebase/firestore";
 import Groups from "Models/Groups";
 import { loading } from "components";
 import { DB } from "db/firebase";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom/cjs/react-router-dom.min";
 import {
   GetWeeklyBase,
@@ -12,7 +12,7 @@ import {
   WeeklyBase2String,
 } from "utils/date";
 import Select from "react-select";
-import useSemester from "hooks/semester";
+import SemesterContext from "hooks/semester";
 
 const colors = [
   "rgba(255,99,132,1)",
@@ -392,7 +392,7 @@ const ProblemStatistic = ({
 // May need to add the necessary hooks
 const StatisticCard = ({ group_id, groups, accountsMap }) => {
   groups.groupBy("group");
-  const { semester } = useSemester();
+  const { semester } = useContext(SemesterContext);
   const [week_base, setWeekBase] = useState({
     id: GetWeeklyBase(),
     value: WeeklyBase2String(GetWeeklyBase()),

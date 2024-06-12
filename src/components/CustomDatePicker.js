@@ -3,7 +3,8 @@ import locale from "antd/es/date-picker/locale/zh_TW";
 import dayjs from "dayjs";
 import "dayjs/locale/zh-tw";
 import { DB, firebase } from "db/firebase";
-import { useState } from "react";
+import SemesterContext from "hooks/semester";
+import { useContext, useState } from "react";
 import { GetWeeklyBaseFromTime } from "utils/date";
 
 const { RangePicker } = DatePicker;
@@ -13,7 +14,7 @@ const CustomDatePicker = ({ startTime }) => {
   const [semesterStart, setSemesterStart] = useState(dayjs(new Date()));
   const [semesterEnd, setSemesterEnd] = useState(dayjs(new Date()));
   const [semesterName, setSemesterName] = useState("");
-
+  const { setSemesters } = useContext(SemesterContext);
   const onChange = (value, dateString) => {
     if (value) {
       setSemesterStart(value[0]);
@@ -26,9 +27,7 @@ const CustomDatePicker = ({ startTime }) => {
     // Implement logic to save semester date into the database
     // You may have to add a confirm block for better UX
     // Validation for semester Name/ID should also be done here
-    let check = window.confirm(
-      "設定學期資料將會清空以往累計成績以及在學期外之時間無法填寫操練表，確定執行此操作嗎？"
-    );
+    let check = window.confirm("確定新增學期嗎？");
     if (check) {
       // backup previous semester data, backup prefix "$|$"
       await DB.updateByUrl("/info/semester", {
@@ -41,6 +40,7 @@ const CustomDatePicker = ({ startTime }) => {
       await DB.updateByUrl("/info/counter", {
         week_counter: GetWeeklyBaseFromTime(semesterStart.toDate()),
       });
+      setSemesters(null);
       message.success("變更完成");
     }
   };

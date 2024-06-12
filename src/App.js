@@ -15,7 +15,8 @@ import { history } from "utils/history";
 import { GetWeeklyBase } from "utils/date";
 import { GF_GRADE_NEXT } from "const/GF";
 import { message } from "antd";
-import useSemester from "hooks/semester";
+import SemesterContext from "hooks/semester";
+import { GetSemesterByWeeklyBase } from "utils/semester";
 // Containers
 const TheLayout = lazy(() => import("containers/TheLayout"));
 
@@ -43,9 +44,9 @@ const SignedIn = (props) => {
   var [account, setAccount] = useState(null);
   const [api, ContextHolder] = message.useMessage();
   const [hasUpdate, setUpdate] = useState(false);
-  const { semesters, getSemesterByWeeklyBase } = useSemester();
+  const [semester, setSemester] = useState(null);
+  const [semesters, setSemesters] = useState(null);
   // fetch account data
-
   useEffect(() => {
     // fetch server data
     let FetchAccount = async () => {
@@ -58,6 +59,23 @@ const SignedIn = (props) => {
     };
     FetchAccount();
   }, [account, props]);
+  useEffect(() => {
+    if (semesters === null) {
+      const getSemester = async () => {
+        const data = await DB.getByUrl("/info/semester");
+        setSemesters(data.semesters);
+        let current = new Date();
+        let tmp = null;
+        for (let s of data.semesters) {
+          if (current < s.start.toDate()) break;
+          tmp = s;
+          if (current <= s.end.toDate() && current >= s.start.toDate()) break;
+        }
+        setSemester(tmp);
+      };
+      getSemester();
+    }
+  }, [semesters]);
   useEffect(() => {
     if (account && !hasUpdate) {
       api
@@ -136,7 +154,7 @@ const SignedIn = (props) => {
               GF_stats[GF_data[i].id] = {};
             }
             for (let i = counter.week_counter; i < GetWeeklyBase(); i++) {
-              const semester = getSemesterByWeeklyBase(i);
+              const semester = GetSemesterByWeeklyBase(i, semesters);
               if (!semester) continue;
               for (let i = 0; i < GF_data.length; i++) {
                 if (!(semester.name + "|主日聚會" in GF_stats[GF_data[i].id]))
@@ -267,8 +285,12 @@ const SignedIn = (props) => {
     account.id = props.user.uid;
     return (
       <AccountContext.Provider value={account}>
-        {ContextHolder}
-        <TheLayout firebase={firebase} />
+        <SemesterContext.Provider
+          value={{ semester, setSemester, semesters, setSemesters }}
+        >
+          {ContextHolder}
+          <TheLayout firebase={firebase} />
+        </SemesterContext.Provider>
       </AccountContext.Provider>
     );
   } else return loading;

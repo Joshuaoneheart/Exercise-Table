@@ -13,7 +13,7 @@ import {
   CDataTable,
   CLink,
 } from "@coreui/react";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   GetWeeklyBase,
   GetWeeklyBaseFromTime,
@@ -25,7 +25,7 @@ import CIcon from "@coreui/icons-react";
 import { GetAccountsMap } from "utils/account";
 import { useTranslation } from "react-i18next";
 import i18n from "i18n";
-import useSemester from "hooks/semester";
+import SemesterContext from "hooks/semester";
 
 const GFCardBody = ({ init_data }) => {
   const { t } = useTranslation("translation", { i18n });
@@ -33,7 +33,7 @@ const GFCardBody = ({ init_data }) => {
   const [data, setData] = useState(init_data);
   const [accountsMap, setAccountsMap] = useState(null);
   const [tableData, setTableData] = useState(null);
-  const { semester } = useSemester();
+  const { semester } = useContext(SemesterContext);
   useEffect(() => {
     let getData = async () => {
       let accountsMap = await GetAccountsMap();

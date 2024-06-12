@@ -1,4 +1,4 @@
-import { React, useState } from "react";
+import { React, useContext, useEffect, useState } from "react";
 import {
   CCard,
   CCardBody,
@@ -20,6 +20,8 @@ import XLSX from "xlsx";
 import CustomDatePicker from "components/CustomDatePicker";
 import useSemester from "hooks/semester";
 import Select from "react-select";
+import SemesterContext from "hooks/semester";
+import { GetLastSemester } from "utils/semester";
 
 class Workbook {
   constructor() {
@@ -232,7 +234,7 @@ const DownloadCard = () => {
   );
 };
 const SemesterSetting = () => {
-  const { semester, semesters, getLastSemester, setSemester } = useSemester();
+  const { semester, semesters, setSemester } = useContext(SemesterContext);
   const [activeSemester, setActiveSemester] = useState(semester);
   let options = [];
   if (semesters) {
@@ -243,21 +245,29 @@ const SemesterSetting = () => {
       });
     }
   }
+  useEffect(() => {
+    setActiveSemester(semester);
+  }, [semester]);
+  if (!activeSemester) return null;
   return (
     <>
       <div style={{ width: "450px" }}>
         <Select
-          value={activeSemester}
+          value={{
+            value: activeSemester,
+            label: (
+              <span style={{ whiteSpace: "pre" }}>{activeSemester.name}</span>
+            ),
+          }}
           isSearchable
           onChange={(v) => {
-            setSemester(v);
-            setActiveSemester(v);
+            setSemester(v.value);
           }}
           options={options}
         />
       </div>
       <br />
-      <CustomDatePicker startTime={getLastSemester()?.end.toDate()} />
+      <CustomDatePicker startTime={GetLastSemester(semesters)?.end.toDate()} />
     </>
   );
 };

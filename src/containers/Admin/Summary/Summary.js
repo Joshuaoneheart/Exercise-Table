@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { GetAccountsMap, GetSemesterData } from "utils/account";
 import { GetProblems, SummaryScore } from "utils/problem";
 import { DataFrame } from "pandas-js";
@@ -17,14 +17,14 @@ import {
 } from "@coreui/react";
 import { GetWeeklyBaseFromTime, WeeklyBase2String } from "utils/date";
 import { InputNumber } from "antd";
-import useSemester from "hooks/semester";
+import SemesterContext from "hooks/semester";
 
 const Summary = () => {
   const [raw, setRaw] = useState(null);
   const [problems, setProblems] = useState(null);
   const [total_num, setTotalNum] = useState(0);
   const [conditions, setConditions] = useState([]);
-  const { semester } = useSemester();
+  const { semester } = useContext(SemesterContext);
   useEffect(() => {
     const getRaw = async () => {
       let tmp = [];
