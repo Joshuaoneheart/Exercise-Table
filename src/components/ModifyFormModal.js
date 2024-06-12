@@ -125,8 +125,8 @@ const AddModal = ({ show, data, setData, sections, setSections, setModal }) => {
         tmp["section"] = sections[show.index];
         tmp["id"] = "new";
         if (!ProblemFormatChecking(tmp)) return;
-        data.value.push(tmp);
-        setData(Object.assign({}, data));
+        data.push(tmp);
+        setData(Array.from(data));
         setModal(null);
         setType("MultiChoice");
         break;
@@ -258,8 +258,8 @@ const DeleteModal = ({
   var deleteData = () => {
     switch (show.type) {
       case "problem":
-        data.value[show.index].old_id = `${data.value[show.index].id}`;
-        data.value[show.index].id = "deleted";
+        data[show.index].old_id = `${data[show.index].id}`;
+        data[show.index].id = "deleted";
         setData(data);
         break;
       case "group":
@@ -333,28 +333,28 @@ const ModifyModal = ({ show, data, setData, setModal }) => {
         i++;
       }
     }
-    tmp["id"] = data.value[show].id;
-    tmp["section"] = data.value[show].section;
+    tmp["id"] = data[show].id;
+    tmp["section"] = data[show].section;
     if (!ProblemFormatChecking(tmp)) return;
-    data.value[show] = tmp;
-    setData(Object.assign({}, data));
+    data[show] = tmp;
+    setData(Array.from(data));
     setType("MultiChoice");
     setModal(null);
   };
 
   useEffect(() => {
     if (show !== null) {
-      setType(data.value[show].type);
+      setType(data[show].type);
     }
   }, [show, data]);
   if (show === null) return null;
   const fields = {
-    MultiChoice: <MultiChoiceFields data={data.value[show]} />,
-    MultiAnswer: <MultiAnswerFields data={data.value[show]} />,
-    Grid: <GridFields data={data.value[show]} />,
-    MultiGrid: <MultiGridFields data={data.value[show]} />,
-    Number: <NumberFields data={data.value[show]} />,
-    GF: <GFFields data={data.value[show]} />,
+    MultiChoice: <MultiChoiceFields data={data[show]} />,
+    MultiAnswer: <MultiAnswerFields data={data[show]} />,
+    Grid: <GridFields data={data[show]} />,
+    MultiGrid: <MultiGridFields data={data[show]} />,
+    Number: <NumberFields data={data[show]} />,
+    GF: <GFFields data={data[show]} />,
   };
   return (
     <CModal
@@ -383,7 +383,7 @@ const ModifyModal = ({ show, data, setData, setModal }) => {
                 <CLabel>標題</CLabel>
               </CCol>
               <CCol xs="9" md="9">
-                <CInput name="title" defaultValue={data.value[show]["title"]} />
+                <CInput name="title" defaultValue={data[show]["title"]} />
               </CCol>
             </CFormGroup>
             <CFormGroup row inline>
@@ -398,7 +398,7 @@ const ModifyModal = ({ show, data, setData, setModal }) => {
                     }
                   }.bind(null, type, setType)}
                   name="type"
-                  defaultValue={data.value[show]["type"]}
+                  defaultValue={data[show]["type"]}
                 >
                   <option value="MultiChoice">單選題</option>
                   <option value="MultiAnswer">多選題</option>
@@ -429,16 +429,14 @@ const TransferModal = ({ show, data, setData, sections, setModal }) => {
   let form = useRef();
   if (show === null) return null;
   const writeData = () => {
-    let new_data = Object.assign({}, data);
-    new_data.value[show].section =
-      sections[form.current.elements.section.value];
-    setData(Object.assign({}, new_data));
+    let new_data = Array.from(data);
+    new_data[show].section = sections[form.current.elements.section.value];
+    setData(new_data);
     setModal(null);
   };
   let section_options = [];
   for (let i = 0; i < sections.length; i++) {
-    if (sections[i] !== data.value[show].section) {
-      console.log(i);
+    if (sections[i] !== data[show].section) {
       section_options.push(
         <option value={i} key={i}>
           {sections[i]}

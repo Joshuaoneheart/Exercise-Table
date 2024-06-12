@@ -1,5 +1,4 @@
 import { CCol } from "@coreui/react";
-import { FirestoreCollection } from "@react-firebase/firestore";
 import DataTabs from "./DataTab";
 import loading from "./loading";
 import { useEffect, useState } from "react";
