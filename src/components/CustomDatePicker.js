@@ -2,12 +2,12 @@ import { Button, DatePicker, Input, Space, message } from "antd";
 import locale from "antd/es/date-picker/locale/zh_TW";
 import dayjs from "dayjs";
 import "dayjs/locale/zh-tw";
-import { DB } from "db/firebase";
+import { DB, firebase } from "db/firebase";
 import { useState } from "react";
 import { GetWeeklyBaseFromTime } from "utils/date";
 
 const { RangePicker } = DatePicker;
-const CustomDatePicker = () => {
+const CustomDatePicker = ({ startTime }) => {
   // make sure that the props are dayjs complient.
   // https://day.js.org/docs/en/parse/parse
   const [semesterStart, setSemesterStart] = useState(dayjs(new Date()));
@@ -31,53 +31,12 @@ const CustomDatePicker = () => {
     );
     if (check) {
       // backup previous semester data, backup prefix "$|$"
-      let prev = await DB.getByUrl("/info/semester");
-      let accounts = await DB.getByUrl("/accounts");
-      await accounts.forEach((doc) => {
-        let tmp = {};
-        tmp["$|$" + prev.name + "|lord_table"] = doc.data().lord_table
-          ? doc.data().lord_table
-          : 0;
-        tmp["$|$" + prev.name + "|total_score"] = doc.data().total_score
-          ? doc.data().total_score
-          : 0;
-        tmp["$|$" + prev.name + "|召會生活操練"] = doc.data()["召會生活操練"]
-          ? doc.data()["召會生活操練"]
-          : 0;
-        tmp["$|$" + prev.name + "|福音牧養操練"] = doc.data()["福音牧養操練"]
-          ? doc.data()["福音牧養操練"]
-          : 0;
-        tmp["$|$" + prev.name + "|神人生活操練"] = doc.data()["神人生活操練"]
-          ? doc.data()["神人生活操練"]
-          : 0;
-        tmp.total_score = 0;
-        tmp.lord_table = 0;
-        tmp["召會生活操練"] = 0;
-        tmp["福音牧養操練"] = 0;
-        tmp["神人生活操練"] = 0;
-        DB.updateByUrl("/accounts/" + doc.id, tmp);
-      });
-      let GFs = await DB.getByUrl("/GF");
-      await GFs.forEach((doc) => {
-        let tmp = {};
-        tmp["$|$" + prev.name + "|主日聚會"] = doc.data()["主日聚會"]
-          ? doc.data()["主日聚會"]
-          : 0;
-        tmp["$|$" + prev.name + "|家聚會"] = doc.data()["家聚會"]
-          ? doc.data()["家聚會"]
-          : 0;
-        tmp["$|$" + prev.name + "|小排"] = doc.data()["小排"]
-          ? doc.data()["家聚會"]
-          : 0;
-        tmp["主日聚會"] = 0;
-        tmp["家聚會"] = 0;
-        tmp["小排"] = 0;
-        DB.updateByUrl("/GF/" + doc.id, tmp);
-      });
       await DB.updateByUrl("/info/semester", {
-        start: semesterStart.toDate(),
-        end: semesterEnd.toDate(),
-        name: semesterName,
+        semesters: firebase.firestore.FieldValue.arrayUnion({
+          start: semesterStart.toDate(),
+          end: semesterEnd.toDate(),
+          name: semesterName,
+        }),
       });
       await DB.updateByUrl("/info/counter", {
         week_counter: GetWeeklyBaseFromTime(semesterStart.toDate()),
@@ -85,7 +44,6 @@ const CustomDatePicker = () => {
       message.success("變更完成");
     }
   };
-
   return (
     <>
       <Space>
@@ -101,6 +59,10 @@ const CustomDatePicker = () => {
           />
           <RangePicker
             locale={locale}
+            disabledDate={(current) => {
+              if (!startTime) return true;
+              return current && dayjs(startTime) > current;
+            }}
             id={{
               start: "startInput",
               end: "endInput",
@@ -110,7 +72,7 @@ const CustomDatePicker = () => {
             size="small"
           />
           <Button onClick={submitDate} type="primary">
-            儲存
+            新增學期
           </Button>
         </Space.Compact>
       </Space>

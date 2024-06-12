@@ -17,8 +17,6 @@ const BibleGroupListBody = ({ data }) => {
   const fields = [
     { key: "name", label: "名稱", _style: { width: "7%" } },
     { key: "member", label: "成員", _style: { width: "40%" } },
-    { key: "table", label: "上週主日聚會", _style: { width: "20%" } },
-    { key: "score", label: "上週總分", _style: { width: "20%" } },
     {
       key: "show_details",
       label: "",

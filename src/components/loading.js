@@ -1,7 +1,7 @@
 const loading = (
   <div style={{ display: "flex", width: "100%", height: "100%", justifyContent: "center", alignItems: "center" }}>
-    <div class="spinner-grow" role="status">
-      <span class="visually-hidden"></span>
+    <div className="spinner-grow" role="status">
+      <span className="visually-hidden"></span>
     </div>
   </div>
 );

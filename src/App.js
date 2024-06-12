@@ -15,6 +15,7 @@ import { history } from "utils/history";
 import { GetWeeklyBase } from "utils/date";
 import { GF_GRADE_NEXT } from "const/GF";
 import { message } from "antd";
+import useSemester from "hooks/semester";
 // Containers
 const TheLayout = lazy(() => import("containers/TheLayout"));
 
@@ -42,6 +43,7 @@ const SignedIn = (props) => {
   var [account, setAccount] = useState(null);
   const [api, ContextHolder] = message.useMessage();
   const [hasUpdate, setUpdate] = useState(false);
+  const { semesters, getSemesterByWeeklyBase } = useSemester();
   // fetch account data
 
   useEffect(() => {
@@ -68,7 +70,7 @@ const SignedIn = (props) => {
         .then(() => message.success("更新成功", 1.5));
       const UpdateData = async () => {
         let counter = await DB.getByUrl("/info/counter");
-        if (!counter) return;
+        if (!counter || !semesters) return;
         let this_year_pass = false;
         const now_year = new Date().getFullYear();
         if (
@@ -114,8 +116,6 @@ const SignedIn = (props) => {
               problems.value.push(doc.data());
               problems.ids.push(doc.id);
             });
-            let group_score = {};
-            let group_lord_table = {};
             let account_data = [];
             let GF_data = [];
             let GF_account_map = {};
@@ -125,10 +125,6 @@ const SignedIn = (props) => {
             problems = GatherProblemsBySection(problems);
             await accounts.forEach((doc) => {
               account_data.push(Object.assign(doc.data(), { id: doc.id }));
-              if (doc.data().group) {
-                group_lord_table[doc.data().group] = 0;
-                group_score[doc.data().group] = 0;
-              }
             });
             await GFs.forEach((doc) => {
               GF_data.push(Object.assign(doc.data(), { id: doc.id }));
@@ -137,13 +133,30 @@ const SignedIn = (props) => {
               GF_account_map[GF_data[i].id] = GF_data[i].shepherd
                 ? GF_data[i].shepherd
                 : [];
-              GF_stats[GF_data[i].id] = {
-                主日聚會: GF_data[i]["主日聚會"] ? GF_data[i]["主日聚會"] : 0,
-                家聚會: GF_data[i]["家聚會"] ? GF_data[i]["家聚會"] : 0,
-                小排: GF_data[i]["小排"] ? GF_data[i]["小排"] : 0,
-              };
+              GF_stats[GF_data[i].id] = {};
             }
             for (let i = counter.week_counter; i < GetWeeklyBase(); i++) {
+              const semester = getSemesterByWeeklyBase(i);
+              if (!semester) continue;
+              for (let i = 0; i < GF_data.length; i++) {
+                if (!(semester.name + "|主日聚會" in GF_stats[GF_data[i].id]))
+                  GF_stats[GF_data[i].id][semester.name + "|主日聚會"] =
+                    GF_data[i][semester.name + "|主日聚會"]
+                      ? GF_data[i][semester.name + "|主日聚會"]
+                      : 0;
+                if (!(semester.name + "|家聚會" in GF_stats[GF_data[i].id]))
+                  GF_stats[GF_data[i].id][semester.name + "|家聚會"] = GF_data[
+                    i
+                  ][semester.name + "|家聚會"]
+                    ? GF_data[i][semester.name + "|家聚會"]
+                    : 0;
+                if (!(semester.name + "|小排" in GF_stats[GF_data[i].id]))
+                  GF_stats[GF_data[i].id][semester.name + "|小排"] = GF_data[i][
+                    semester.name + "|小排"
+                  ]
+                    ? GF_data[i][semester.name + "|小排"]
+                    : 0;
+              }
               for (let j = 0; j < account_data.length; j++) {
                 let GF_data = await DB.getByUrl(
                   "/accounts/" + account_data[j].id + "/GF/" + i
@@ -152,36 +165,23 @@ const SignedIn = (props) => {
                   "/accounts/" + account_data[j].id + "/data/" + i
                 );
                 if (data) {
-                  if (!("total_score" in account_data[j]))
-                    account_data[j].total_score = 0;
-                  if (!("lord_table" in account_data[j]))
-                    account_data[j].lord_table = 0;
-                  account_data[j].lord_table +=
+                  if (!(semester.name + "|total_score" in account_data[j]))
+                    account_data[j][semester.name + "|total_score"] = 0;
+                  if (!(semester.name + "|lord_table" in account_data[j]))
+                    account_data[j][semester.name + "|lord_table"] = 0;
+                  account_data[j][semester.name + "|lord_table"] +=
                     data[lord_table_id] && data[lord_table_id].ans === "有"
                       ? 1
                       : 0;
-                  if (data.scores) account_data[j].total_score += data.scores;
+                  if (data.scores)
+                    account_data[j][semester.name + "|total_score"] +=
+                      data.scores;
                   for (let section of problems.sections) {
-                    if (!(section in account_data[j]))
-                      account_data[j][section] = 0;
+                    if (!(semester.name + "|" + section in account_data[j]))
+                      account_data[j][semester.name + "|" + section] = 0;
                     if (!data[section]) continue;
-                    account_data[j][section] += data[section];
-                  }
-                  if (i === GetWeeklyBase() - 1 && account_data[j].group) {
-                    //統計活力組總分與上週主日情形
-                    if (!(account_data[j].group in group_score)) {
-                      group_score[account_data[j].group] = data.scores;
-                      group_lord_table[account_data[j].group] =
-                        data[lord_table_id] && data[lord_table_id].ans === "有"
-                          ? 1
-                          : 0;
-                    } else {
-                      group_score[account_data[j].group] += data.scores;
-                      group_lord_table[account_data[j].group] +=
-                        data[lord_table_id] && data[lord_table_id].ans === "有"
-                          ? 1
-                          : 0;
-                    }
+                    account_data[j][semester.name + "|" + section] +=
+                      data[section];
                   }
                 }
                 if (GF_data)
@@ -193,7 +193,7 @@ const SignedIn = (props) => {
                       else id = GF_id.id;
                       if (!GF_account_map[id].includes(account_data[j].id))
                         GF_account_map[id].push(account_data[j].id);
-                      GF_stats[id][k]++;
+                      GF_stats[id][semester.name + "|" + k]++;
                     }
                   }
               }
@@ -206,17 +206,6 @@ const SignedIn = (props) => {
                 .update(
                   Object.assign({ shepherd: GF_account_map[GF_id] }, stats)
                 );
-            }
-            for (let [group_id, score] of Object.entries(group_score)) {
-              if (group_id)
-                await firebase
-                  .firestore()
-                  .collection("group")
-                  .doc(group_id)
-                  .update({
-                    table: group_lord_table[group_id],
-                    score,
-                  });
             }
             for (let i = 0; i < account_data.length; i++) {
               let data = await DB.getByUrl(
@@ -245,14 +234,13 @@ const SignedIn = (props) => {
                     ? 1
                     : 0;
               }
-              for (let section of problems.sections) {
-                if (account_data[i][section])
-                  tmp[section] = account_data[i][section];
+              for (let [k, v] of Object.entries(account_data[i])) {
+                for (let section of problems.sections) {
+                  if (k.includes(section)) tmp[k] = v;
+                }
+                if (k.includes("lord_table") || k.includes("total_score"))
+                  tmp[k] = v;
               }
-              if (account_data[i].total_score)
-                tmp.total_score = account_data[i].total_score;
-              if (account_data[i].lord_table)
-                tmp.lord_table = account_data[i].lord_table;
               await firebase
                 .firestore()
                 .collection("accounts")

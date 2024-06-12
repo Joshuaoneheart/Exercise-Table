@@ -17,6 +17,7 @@ import { GetSemesterData } from "utils/account";
 import TrackingTable from "components/TrackingTable";
 import { useTranslation } from "react-i18next";
 import i18n from "i18n";
+import useSemester from "hooks/semester";
 
 const RenderLineChart = ({ data }) => {
   let labels = [];
@@ -72,7 +73,7 @@ const RenderLineChart = ({ data }) => {
 };
 
 const MemberTable = ({ data, id }) => {
-  const { t } = useTranslation("translation", { i18n })
+  const { t } = useTranslation("translation", { i18n });
   const [items, setItems] = useState(null);
   const [columns, setColumns] = useState(null);
   useEffect(() => {
@@ -138,7 +139,7 @@ const MemberTable = ({ data, id }) => {
       setColumns(columns);
     };
     GetProblemData();
-  }, [id, data]);
+  }, [id, data, t]);
   if (items === null) return loading;
   return (
     <CDataTable
@@ -152,14 +153,14 @@ const MemberTable = ({ data, id }) => {
 };
 
 const Member = () => {
-  const { t } = useTranslation("translation", { i18n })
+  const { t } = useTranslation("translation", { i18n });
   const { id } = useParams();
   const [data, setData] = useState(null);
   const [account, setAccount] = useState(null);
   const [schedule, setSchedule] = useState(null);
+  const { semester } = useSemester();
   useEffect(() => {
     const GetData = async () => {
-      const semester = await DB.getByUrl("/info/semester");
       let res = await DB.getByUrl("/accounts/" + id);
       setAccount(res);
       setData(await GetSemesterData(id, semester));
@@ -169,14 +170,16 @@ const Member = () => {
         )
       );
     };
-    GetData();
-  }, [id]);
+    if (semester) GetData();
+  }, [id, semester]);
   if (data === null || account === null || schedule === null) return loading;
   return (
     <CRow>
       <CCol>
         <CCard>
-          <CCardHeader>{t("個人操練情況查詢")}-{account.displayName}</CCardHeader>
+          <CCardHeader>
+            {t("個人操練情況查詢")}-{account.displayName}
+          </CCardHeader>
           <CCardBody>
             <CRow>
               <RenderLineChart data={data} />
