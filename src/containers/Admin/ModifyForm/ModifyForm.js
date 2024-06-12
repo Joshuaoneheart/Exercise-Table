@@ -100,7 +100,6 @@ const ModifyCard = ({ default_data, form_id }) => {
   for (let i = 0; i < sections.length; i++) section_members.push([]);
   for (var i = 0; i < data.length; i++) {
     //assign id to data
-    if (data[i].id === "deleted") continue;
     if (!sections.includes(data[i].section)) {
       sections.push(data[i].section);
       section_members.push([]);
@@ -245,6 +244,10 @@ const ModifyCard = ({ default_data, form_id }) => {
             variant="outline"
             color="dark"
             onClick={function (activeTab) {
+              if (sections.length === 0) {
+                window.alert("請先新增區塊");
+                return;
+              }
               setAddModal({ type: "problem", title: "問題", index: activeTab });
             }.bind(null, activeTab)}
           >
@@ -254,13 +257,13 @@ const ModifyCard = ({ default_data, form_id }) => {
             variant="outline"
             color="primary"
             onClick={async () => {
-              var check = window.confirm("確定儲存修改嗎？");
-              if (!check) return;
-              var pathPrefix = "/form/";
-              for (let i = 0; i < data.length; i++) {
-                let problem = data[i];
-                if (problem.id === "new") {
-                  try {
+              try {
+                var check = window.confirm("確定儲存修改嗎？");
+                if (!check) return;
+                var pathPrefix = "/form/";
+                for (let i = 0; i < data.length; i++) {
+                  let problem = data[i];
+                  if (problem.id === "new") {
                     delete problem.id;
                     await firebase
                       .firestore()
@@ -270,28 +273,18 @@ const ModifyCard = ({ default_data, form_id }) => {
                         data[i].id = d.id;
                         setData(data);
                       });
-                  } catch (error) {
-                    message.error(error.message);
+                  } else {
+                    var path = pathPrefix + problem.id;
+                    await DB.updateByUrl(path, problem);
                   }
-                } else if (problem.id === "deleted") {
-                  try {
-                    await firebase
-                      .firestore()
-                      .collection("form")
-                      .doc(problem.old_id)
-                      .delete();
-                  } catch (error) {
-                    message.error(error.message);
-                  }
-                } else {
-                  var path = pathPrefix + problem.id;
-                  await DB.updateByUrl(path, problem);
                 }
+                await DB.updateByUrl(`/forms/${form_id}`, {
+                  problems: data.map((x) => x.id),
+                });
+                message.success("儲存完成");
+              } catch (error) {
+                message.error(error.message);
               }
-              await DB.updateByUrl(`/forms/${form_id}`, {
-                problems: data.map((x) => x.id),
-              });
-              message.success("儲存完成");
             }}
           >
             儲存變更

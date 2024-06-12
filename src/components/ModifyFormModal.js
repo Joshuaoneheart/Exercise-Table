@@ -258,9 +258,8 @@ const DeleteModal = ({
   var deleteData = () => {
     switch (show.type) {
       case "problem":
-        data[show.index].old_id = `${data[show.index].id}`;
-        data[show.index].id = "deleted";
-        setData(data);
+        data.splice(show.index, 1);
+        setData(Array.from(data));
         break;
       case "group":
         if (group_members[show.index].length !== 0) {

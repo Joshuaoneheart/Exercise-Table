@@ -11,13 +11,13 @@ import { loading } from "components";
 import { GetWeeklyBase, WeeklyBase2String } from "utils/date";
 import { DB } from "db/firebase";
 import { useParams } from "react-router-dom/cjs/react-router-dom.min";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { GetProblems, SummaryScore } from "utils/problem";
 import { GetSemesterData } from "utils/account";
 import TrackingTable from "components/TrackingTable";
 import { useTranslation } from "react-i18next";
 import i18n from "i18n";
-import useSemester from "hooks/semester";
+import SemesterContext from "hooks/semester";
 
 const RenderLineChart = ({ data }) => {
   let labels = [];
@@ -158,7 +158,7 @@ const Member = () => {
   const [data, setData] = useState(null);
   const [account, setAccount] = useState(null);
   const [schedule, setSchedule] = useState(null);
-  const { semester } = useSemester();
+  const { semester } = useContext(SemesterContext);
   useEffect(() => {
     const GetData = async () => {
       let res = await DB.getByUrl("/accounts/" + id);
