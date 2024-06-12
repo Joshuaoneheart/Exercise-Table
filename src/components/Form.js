@@ -2,51 +2,41 @@ import { CCol } from "@coreui/react";
 import { FirestoreCollection } from "@react-firebase/firestore";
 import DataTabs from "./DataTab";
 import loading from "./loading";
+import { useEffect, useState } from "react";
+import { DB } from "db/firebase";
+import { GetProblems } from "utils/problem";
 
 const GatherProblemsBySection = (d) => {
   var data = { value: [], sections: [] };
-  for (var i = 0; i < d.value.length; i++) {
+  for (var i = 0; i < d.length; i++) {
     // assign unique id to problem
-    d.value[i].id = d.ids[i];
-    if (!data.sections.includes(d.value[i].section)) {
-      data.sections.push(d.value[i].section);
+    if (!data.sections.includes(d[i].section)) {
+      data.sections.push(d[i].section);
       data.value.push([]);
     }
-    data.value[data.sections.indexOf(d.value[i].section)].push(d.value[i]);
+    data.value[data.sections.indexOf(d[i].section)].push(d[i]);
   }
   return data;
 };
 
 const Form = ({ default_data, account }) => {
+  const [problems, setProblems] = useState(null);
+  useEffect(() => {
+    const GetData = async () => {
+      const { id } = await DB.getByUrl("/info/form");
+      setProblems(await GetProblems(id, true));
+    };
+    if (problems === null) GetData();
+  });
+  if (problems === null) return loading;
   return (
-    <FirestoreCollection path="/form/">
-      {/* 
-            receiving form data from Firebase
-            format of d.value
-            {
-                score: separated by ';',
-                section: name of section in which the problem belongs,
-                title: title of the problem,
-                type: one of MultiChoice, MultiAnswer and Grid,
-                選項: separated by ';'
-            }
-         */}
-      {(d) => {
-        if (d.isLoading) return loading;
-        if (d && d.value) {
-          var data = GatherProblemsBySection(d);
-          return (
-            <CCol>
-              <DataTabs
-                data={data}
-                default_data={default_data}
-                account={account}
-              />
-            </CCol>
-          );
-        } else return null;
-      }}
-    </FirestoreCollection>
+    <CCol>
+      <DataTabs
+        data={GatherProblemsBySection(problems)}
+        default_data={default_data}
+        account={account}
+      />
+    </CCol>
   );
 };
 

@@ -13,10 +13,7 @@ import {
   CTabContent,
   CTabPane,
 } from "@coreui/react";
-import {
-  FirestoreBatchedWrite,
-  FirestoreCollection,
-} from "@react-firebase/firestore";
+import { FirestoreBatchedWrite } from "@react-firebase/firestore";
 import Select from "react-select";
 import { loading } from "components";
 import {
@@ -26,8 +23,10 @@ import {
   TransferModal,
 } from "components/ModifyFormModal";
 import { firebase } from "db/firebase";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { message } from "antd";
+import { useParams } from "react-router-dom/cjs/react-router-dom.min";
+import { GetProblems } from "utils/problem";
 
 const ModifyListGroupItem = ({
   index,
@@ -98,16 +97,16 @@ const ModifyCard = ({ default_data }) => {
   var titles = [];
   var section_members = [];
   for (let i = 0; i < sections.length; i++) section_members.push([]);
-  for (var i = 0; i < data.value.length; i++) {
+  for (var i = 0; i < data.length; i++) {
     //assign id to data
-    if (data.value[i].id === "deleted") continue;
-    if (!sections.includes(data.value[i].section)) {
-      sections.push(data.value[i].section);
+    if (data[i].id === "deleted") continue;
+    if (!sections.includes(data[i].section)) {
+      sections.push(data[i].section);
       section_members.push([]);
     }
-    section_members[sections.indexOf(data.value[i].section)].push(
+    section_members[sections.indexOf(data[i].section)].push(
       <ModifyListGroupItem
-        name={data.value[i].title}
+        name={data[i].title}
         index={i}
         setModifyModal={setModifyModal}
         setDeleteModal={setDeleteModal}
@@ -245,17 +244,17 @@ const ModifyCard = ({ default_data }) => {
                     var check = window.confirm("確定儲存修改嗎？");
                     if (!check) return;
                     var pathPrefix = "/form/";
-                    for (let i = 0; i < data.value.length; i++) {
-                      let problem = data.value[i];
+                    for (let i = 0; i < data.length; i++) {
+                      let problem = data[i];
                       if (problem.id === "new") {
                         try {
-						  delete problem.id
+                          delete problem.id;
                           await firebase
                             .firestore()
                             .collection("form")
                             .add(problem)
                             .then((d) => {
-                              data.value[i].id = d.id;
+                              data[i].id = d.id;
                               setData(data);
                             });
                         } catch (error) {
@@ -301,21 +300,21 @@ const ModifyCard = ({ default_data }) => {
 };
 
 const ModifyForm = () => {
+  const { id } = useParams();
+  const [problems, setProblems] = useState(null);
+  useEffect(() => {
+    const GetData = async () => {
+      setProblems(await GetProblems(id, true));
+    };
+    if (problems === null) GetData();
+  });
+  if (problems === null) return loading;
   return (
     <>
       <CRow>
-        <FirestoreCollection path="/form/">
-          {(d) => {
-            if (d && d.value) {
-              for (let i = 0; i < d.ids.length; i++) d.value[i].id = d.ids[i];
-              return (
-                <CCol>
-                  <ModifyCard default_data={d} />
-                </CCol>
-              );
-            } else return loading;
-          }}
-        </FirestoreCollection>
+        <CCol>
+          <ModifyCard default_data={problems} />
+        </CCol>
       </CRow>
     </>
   );
