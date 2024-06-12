@@ -18,7 +18,6 @@ import { GetWeeklyBase, WeeklyBase2String } from "utils/date";
 import FileSaver from "file-saver";
 import XLSX from "xlsx";
 import CustomDatePicker from "components/CustomDatePicker";
-import useSemester from "hooks/semester";
 import Select from "react-select";
 import SemesterContext from "hooks/semester";
 import { GetLastSemester } from "utils/semester";
