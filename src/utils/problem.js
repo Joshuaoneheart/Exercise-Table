@@ -1,11 +1,16 @@
 import { DB } from "db/firebase";
 import { GetWeeklyBase, WeeklyBase2String } from "./date";
-const GetProblems = async () => {
+const GetProblems = async (form_id, is_filter) => {
   let docs = await DB.getByUrl("/form");
   let problems = [];
   await docs.forEach((doc) => {
     problems.push(Object.assign(doc.data(), { id: doc.id }));
   });
+  if (is_filter) {
+    let currentForm = await DB.getByUrl(`/forms/${form_id}`);
+    problems = problems.filter((x) => currentForm.problems.includes(x.id));
+  }
+
   return problems;
 };
 

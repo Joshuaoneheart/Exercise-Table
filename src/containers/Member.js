@@ -78,7 +78,7 @@ const MemberTable = ({ data, id }) => {
   const [columns, setColumns] = useState(null);
   useEffect(() => {
     const GetProblemData = async () => {
-      let problems = await GetProblems();
+      let problems = await GetProblems(null, false);
       let columns = [
         {
           key: "week_base",

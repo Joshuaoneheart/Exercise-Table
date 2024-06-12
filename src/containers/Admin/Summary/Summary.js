@@ -29,7 +29,7 @@ const Summary = () => {
     const getRaw = async () => {
       let tmp = [];
       let accountsMap = await GetAccountsMap();
-      let problems = await GetProblems();
+      let problems = await GetProblems(null, false);
       // generate empty row
       for (let id of Object.keys(accountsMap)) {
         let weeks = await GetSemesterData(id, semester);

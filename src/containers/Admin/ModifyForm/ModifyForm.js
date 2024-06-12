@@ -13,10 +13,6 @@ import {
   CTabContent,
   CTabPane,
 } from "@coreui/react";
-import {
-  FirestoreBatchedWrite,
-  FirestoreCollection,
-} from "@react-firebase/firestore";
 import Select from "react-select";
 import { loading } from "components";
 import {
@@ -25,9 +21,12 @@ import {
   ModifyModal,
   TransferModal,
 } from "components/ModifyFormModal";
-import { firebase } from "db/firebase";
-import { useState } from "react";
+import { firebase, DB } from "db/firebase";
+import { useEffect, useState } from "react";
 import { message } from "antd";
+import { useParams } from "react-router-dom/cjs/react-router-dom.min";
+import { GetProblems } from "utils/problem";
+import ImportProblemModal from "components/ImportProblemModal";
 
 const ModifyListGroupItem = ({
   index,
@@ -84,12 +83,13 @@ const ModifyListGroupItem = ({
     </CListGroupItem>
   );
 };
-const ModifyCard = ({ default_data }) => {
+const ModifyCard = ({ default_data, form_id }) => {
   const [data, setData] = useState(default_data);
   var [activeTab, setActiveTab] = useState(0);
   const [modifyModal, setModifyModal] = useState(null);
   const [deleteModal, setDeleteModal] = useState(null);
   const [addModal, setAddModal] = useState(null);
+  const [importModal, setImportModal] = useState(false);
   const [transferModal, setTransferModal] = useState(null);
   var [sections, setSections] = useState([]);
   if (sections.length <= activeTab)
@@ -98,16 +98,16 @@ const ModifyCard = ({ default_data }) => {
   var titles = [];
   var section_members = [];
   for (let i = 0; i < sections.length; i++) section_members.push([]);
-  for (var i = 0; i < data.value.length; i++) {
+  for (var i = 0; i < data.length; i++) {
     //assign id to data
-    if (data.value[i].id === "deleted") continue;
-    if (!sections.includes(data.value[i].section)) {
-      sections.push(data.value[i].section);
+    if (data[i].id === "deleted") continue;
+    if (!sections.includes(data[i].section)) {
+      sections.push(data[i].section);
       section_members.push([]);
     }
-    section_members[sections.indexOf(data.value[i].section)].push(
+    section_members[sections.indexOf(data[i].section)].push(
       <ModifyListGroupItem
-        name={data.value[i].title}
+        name={data[i].title}
         index={i}
         setModifyModal={setModifyModal}
         setDeleteModal={setDeleteModal}
@@ -192,6 +192,13 @@ const ModifyCard = ({ default_data }) => {
             <CTabContent>{contents}</CTabContent>
           </CCol>
         </CRow>
+        <ImportProblemModal
+          setData={setData}
+          show={importModal}
+          form_id={form_id}
+          setModal={setImportModal}
+          data={data}
+        />
         <ModifyModal
           data={data}
           setData={setData}
@@ -227,6 +234,14 @@ const ModifyCard = ({ default_data }) => {
       <CCardFooter align="right">
         <CButtonGroup>
           <CButton
+            color="dark"
+            onClick={() => {
+              setImportModal(true);
+            }}
+          >
+            匯入問題
+          </CButton>
+          <CButton
             variant="outline"
             color="dark"
             onClick={function (activeTab) {
@@ -235,65 +250,52 @@ const ModifyCard = ({ default_data }) => {
           >
             新增問題
           </CButton>
-          <FirestoreBatchedWrite>
-            {({ addMutationToBatch, commit }) => {
-              return (
-                <CButton
-                  variant="outline"
-                  color="primary"
-                  onClick={async () => {
-                    var check = window.confirm("確定儲存修改嗎？");
-                    if (!check) return;
-                    var pathPrefix = "/form/";
-                    for (let i = 0; i < data.value.length; i++) {
-                      let problem = data.value[i];
-                      if (problem.id === "new") {
-                        try {
-						  delete problem.id
-                          await firebase
-                            .firestore()
-                            .collection("form")
-                            .add(problem)
-                            .then((d) => {
-                              data.value[i].id = d.id;
-                              setData(data);
-                            });
-                        } catch (error) {
-                          message.error(error.message);
-                        }
-                      } else if (problem.id === "deleted") {
-                        try {
-                          await firebase
-                            .firestore()
-                            .collection("form")
-                            .doc(problem.old_id)
-                            .delete();
-                        } catch (error) {
-                          message.error(error.message);
-                        }
-                      } else {
-                        var path = pathPrefix + problem.id + "/";
-                        addMutationToBatch({
-                          path,
-                          value: problem,
-                          type: "update",
-                        });
-                      }
-                    }
-                    commit()
-                      .then(() => {
-                        message.success("儲存完成");
-                      })
-                      .catch((error) => {
-                        message.error(error);
+          <CButton
+            variant="outline"
+            color="primary"
+            onClick={async () => {
+              var check = window.confirm("確定儲存修改嗎？");
+              if (!check) return;
+              var pathPrefix = "/form/";
+              for (let i = 0; i < data.length; i++) {
+                let problem = data[i];
+                if (problem.id === "new") {
+                  try {
+                    delete problem.id;
+                    await firebase
+                      .firestore()
+                      .collection("form")
+                      .add(problem)
+                      .then((d) => {
+                        data[i].id = d.id;
+                        setData(data);
                       });
-                  }}
-                >
-                  儲存變更
-                </CButton>
-              );
+                  } catch (error) {
+                    message.error(error.message);
+                  }
+                } else if (problem.id === "deleted") {
+                  try {
+                    await firebase
+                      .firestore()
+                      .collection("form")
+                      .doc(problem.old_id)
+                      .delete();
+                  } catch (error) {
+                    message.error(error.message);
+                  }
+                } else {
+                  var path = pathPrefix + problem.id;
+                  await DB.updateByUrl(path, problem);
+                }
+              }
+              await DB.updateByUrl(`/forms/${form_id}`, {
+                problems: data.map((x) => x.id),
+              });
+              message.success("儲存完成");
             }}
-          </FirestoreBatchedWrite>
+          >
+            儲存變更
+          </CButton>
         </CButtonGroup>
       </CCardFooter>
     </CCard>
@@ -301,21 +303,21 @@ const ModifyCard = ({ default_data }) => {
 };
 
 const ModifyForm = () => {
+  const { id } = useParams();
+  const [problems, setProblems] = useState(null);
+  useEffect(() => {
+    const GetData = async () => {
+      setProblems(await GetProblems(id, true));
+    };
+    if (problems === null) GetData();
+  });
+  if (problems === null) return loading;
   return (
     <>
       <CRow>
-        <FirestoreCollection path="/form/">
-          {(d) => {
-            if (d && d.value) {
-              for (let i = 0; i < d.ids.length; i++) d.value[i].id = d.ids[i];
-              return (
-                <CCol>
-                  <ModifyCard default_data={d} />
-                </CCol>
-              );
-            } else return loading;
-          }}
-        </FirestoreCollection>
+        <CCol>
+          <ModifyCard default_data={problems} form_id={id} />
+        </CCol>
       </CRow>
     </>
   );

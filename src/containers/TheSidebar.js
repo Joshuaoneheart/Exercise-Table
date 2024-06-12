@@ -73,7 +73,7 @@ const TheSidebar = () => {
       {
         _tag: "CSidebarNavItem",
         name: t("修改表單"),
-        to: "/modifyform",
+        to: "/formList",
         icon: "cil-pencil",
       },
       {
