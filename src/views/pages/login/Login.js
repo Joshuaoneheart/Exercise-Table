@@ -13,10 +13,58 @@ import {
   CInputGroupText,
   CLink,
   CRow,
+  CLabel,
+  CModal,
+  CModalBody,
+  CModalFooter,
+  CModalHeader,
+  CModalTitle,
 } from "@coreui/react";
-import React from "react";
+import { firebase } from "db/firebase"
+import React, { useState } from "react";
+
+const ForgetPasswdModal = ({ show, setModal }) => {
+  const [email, setEmail] = useState("")
+  const submit = async () => {
+    try {
+      await firebase.auth().sendPasswordResetEmail(email);
+      message.success("重置密碼信已寄出")
+    } catch (e) {
+      message.error(e.message)
+    }
+  }
+  return (
+    <CModal
+      show={show}
+      size="lg"
+      onClose={() => {
+        setModal(false);
+      }}
+    >
+      <CModalHeader closeButton>
+        <CModalTitle>{"忘記密碼"}</CModalTitle>
+      </CModalHeader>
+      <CModalBody><CRow><CCol md="3">
+        <CLabel>{"請輸入電子郵件"}</CLabel>
+      </CCol>
+        <CCol xs="12" md="9">
+          <CInput required onChange={(e) => {
+            setEmail(e.target.value)
+          }} />
+        </CCol></CRow>
+        <br />
+        <CModalFooter>
+          <CButton variant="outline"
+            onClick={() => {
+              submit()
+            }}
+            color="dark">送出</CButton>
+        </CModalFooter>
+      </CModalBody></CModal>)
+}
 
 const Login = (props) => {
+  const [modal, setModal] = useState(false)
   var username = React.useRef();
   var password = React.useRef();
   let login = () => {
@@ -32,6 +80,7 @@ const Login = (props) => {
   };
   return (
     <div className="c-app c-default-layout flex-row align-items-center">
+      <ForgetPasswdModal show={modal} setModal={setModal} />
       <CContainer>
         <CCol>
           <CRow className="justify-content-center">
@@ -90,6 +139,12 @@ const Login = (props) => {
                         <CButton color="primary">Register</CButton>
                       </CLink>
                     </CCol>
+                  </CRow>
+                  <br />
+                  <CRow>
+                    <CLink onClick={() => { setModal(true) }}>
+                      Forget password
+                    </CLink>
                   </CRow>
                 </CForm>
               </CCardBody>
