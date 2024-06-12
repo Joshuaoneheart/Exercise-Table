@@ -5,7 +5,7 @@ import {
   CDropdownMenu,
   CDropdownToggle,
   CImg,
-  CLink
+  CLink,
 } from "@coreui/react";
 import { DB } from "db/firebase";
 import { AccountContext } from "hooks/context";
@@ -15,7 +15,7 @@ import i18n from "i18n";
 
 const TheHeaderDropdown = (props) => {
   var account = useContext(AccountContext);
-  const { t, i18n: i18next } = useTranslation("translation", { i18n })
+  const { t, i18n: i18next } = useTranslation("translation", { i18n });
   if (!account) return null;
   return (
     <CDropdown inNav className="c-header-nav-items mx-2" direction="down">
@@ -63,14 +63,15 @@ const TheHeaderDropdown = (props) => {
         <CDropdownItem
           className="c-subheader-nav-link"
           onClick={() => {
-            if (i18next.language === "zh-tw")
-              i18next.changeLanguage("en")
-            else
-              i18next.changeLanguage("zh-tw")
+            if (i18next.language === "zh-tw") i18next.changeLanguage("en");
+            else i18next.changeLanguage("zh-tw");
           }}
         >
-          {i18next.language !== "zh-tw" ?
-            <CIcon name="cif-tw" className="mfe-2" /> : <CIcon name="cif-us" className="mfe-2" />}
+          {i18next.language !== "zh-tw" ? (
+            <CIcon name="cif-tw" className="mfe-2" />
+          ) : (
+            <CIcon name="cif-us" className="mfe-2" />
+          )}
           {t("English")}
         </CDropdownItem>
         <CDropdownItem divider />

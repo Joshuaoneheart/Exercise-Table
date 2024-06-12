@@ -1,4 +1,4 @@
-import { React } from "react";
+import { React, useContext, useEffect, useState } from "react";
 import {
   CCard,
   CCardBody,
@@ -18,6 +18,10 @@ import { GetWeeklyBase, WeeklyBase2String } from "utils/date";
 import FileSaver from "file-saver";
 import XLSX from "xlsx";
 import CustomDatePicker from "components/CustomDatePicker";
+import useSemester from "hooks/semester";
+import Select from "react-select";
+import SemesterContext from "hooks/semester";
+import { GetLastSemester } from "utils/semester";
 
 class Workbook {
   constructor() {
@@ -229,27 +233,56 @@ const DownloadCard = () => {
     </CCard>
   );
 };
-
+const SemesterSetting = () => {
+  const { semester, semesters, setSemester } = useContext(SemesterContext);
+  const [activeSemester, setActiveSemester] = useState(semester);
+  let options = [];
+  if (semesters) {
+    for (let s of semesters) {
+      options.push({
+        value: s,
+        label: <span style={{ whiteSpace: "pre" }}>{s.name}</span>,
+      });
+    }
+  }
+  useEffect(() => {
+    setActiveSemester(semester);
+  }, [semester]);
+  if (!activeSemester) return null;
+  return (
+    <>
+      <div style={{ width: "450px" }}>
+        <Select
+          value={{
+            value: activeSemester,
+            label: (
+              <span style={{ whiteSpace: "pre" }}>{activeSemester.name}</span>
+            ),
+          }}
+          isSearchable
+          onChange={(v) => {
+            setSemester(v.value);
+          }}
+          options={options}
+        />
+      </div>
+      <br />
+      <CustomDatePicker startTime={GetLastSemester(semesters)?.end.toDate()} />
+    </>
+  );
+};
 const Settings = () => {
   return (
     <>
-      {/* <CCard> */}
-      {/*   <CCardHeader> */}
-      {/*     <CCol> */}
-      {/*       <CRow className="align-items-center">接受表單回應</CRow> */}
-      {/*     </CCol> */}
-      {/*   </CCardHeader> */}
-      {/*   <ModifyCard /> */}
-      {/* </CCard> */}
       <DownloadCard />
       <CCard>
         <CCardHeader>
           <CCol>
-            <CRow className="align-items-center">學期時間設定</CRow>
+            <CRow className="align-items-center">學期設定</CRow>
           </CCol>
         </CCardHeader>
         <CCardBody>
-          <CustomDatePicker />
+          <SemesterSetting />
         </CCardBody>
       </CCard>
     </>

@@ -13,7 +13,7 @@ import {
   CDataTable,
   CLink,
 } from "@coreui/react";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   GetWeeklyBase,
   GetWeeklyBaseFromTime,
@@ -25,13 +25,15 @@ import CIcon from "@coreui/icons-react";
 import { GetAccountsMap } from "utils/account";
 import { useTranslation } from "react-i18next";
 import i18n from "i18n";
+import SemesterContext from "hooks/semester";
 
 const GFCardBody = ({ init_data }) => {
-  const { t } = useTranslation("translation", { i18n })
+  const { t } = useTranslation("translation", { i18n });
   const [modifyModal, setModifyModal] = useState(false);
   const [data, setData] = useState(init_data);
   const [accountsMap, setAccountsMap] = useState(null);
   const [tableData, setTableData] = useState(null);
+  const { semester } = useContext(SemesterContext);
   useEffect(() => {
     let getData = async () => {
       let accountsMap = await GetAccountsMap();
@@ -56,7 +58,6 @@ const GFCardBody = ({ init_data }) => {
           }
       }
       setData(tmp);
-      let semester = await DB.getByUrl("/info/semester");
       let data_by_week = {};
       for (let shepherd of tmp.shepherd) {
         let docs = await firebase
@@ -75,15 +76,17 @@ const GFCardBody = ({ init_data }) => {
             if (!(parseInt(doc.id) in data_by_week))
               data_by_week[parseInt(doc.id)] = {
                 week: parseInt(doc.id),
-                主日聚會: [],
-                家聚會: [],
-                小排: [],
               };
+            data_by_week[parseInt(doc.id)][semester.name + "|主日聚會"] = [];
+            data_by_week[parseInt(doc.id)][semester.name + "|家聚會"] = [];
+            data_by_week[parseInt(doc.id)][semester.name + "|小排"] = [];
             if (
               doc.data()["主日聚會"] &&
               doc.data()["主日聚會"].includes(tmp.id)
             )
-              data_by_week[parseInt(doc.id)]["主日聚會"].push(shepherd);
+              data_by_week[parseInt(doc.id)][semester.name + "|主日聚會"].push(
+                shepherd
+              );
 
             if (doc.data()["家聚會"])
               for (let d of doc.data()["家聚會"]) {
@@ -91,7 +94,9 @@ const GFCardBody = ({ init_data }) => {
                   (typeof d === "string" && d === tmp.id) ||
                   d.id === tmp.id
                 ) {
-                  data_by_week[parseInt(doc.id)]["家聚會"].push({
+                  data_by_week[parseInt(doc.id)][
+                    semester.name + "|家聚會"
+                  ].push({
                     id: shepherd,
                     note: d.note,
                   });
@@ -99,7 +104,9 @@ const GFCardBody = ({ init_data }) => {
                 }
               }
             if (doc.data()["小排"] && doc.data()["小排"].includes(tmp.id))
-              data_by_week[parseInt(doc.id)]["小排"].push(shepherd);
+              data_by_week[parseInt(doc.id)][semester.name + "|小排"].push(
+                shepherd
+              );
           });
       }
       let data = [];
@@ -109,8 +116,8 @@ const GFCardBody = ({ init_data }) => {
       data.sort((x) => -x.week);
       setTableData(data);
     };
-    getData(init_data);
-  }, [init_data]);
+    if (semester) getData(init_data);
+  }, [init_data, semester]);
   if (accountsMap === null) return loading;
   let columns = [
     {
@@ -200,19 +207,27 @@ const GFCardBody = ({ init_data }) => {
               <CCol lg="3">
                 <b>{t("累計主日聚會")}</b>
               </CCol>
-              <CCol>{data["主日聚會"] && data["主日聚會"]}</CCol>
+              <CCol>
+                {data[semester.name + "|主日聚會"] &&
+                  data[semester.name + "|主日聚會"]}
+              </CCol>
             </CRow>
             <CRow>
               <CCol lg="3">
                 <b>{t("累計家聚會")}</b>
               </CCol>
-              <CCol>{data["家聚會"] && data["家聚會"]}</CCol>
+              <CCol>
+                {data[semester.name + "|家聚會"] &&
+                  data[semester.name + "|家聚會"]}
+              </CCol>
             </CRow>
             <CRow>
               <CCol lg="3">
                 <b>{t("累計小排")}</b>
               </CCol>
-              <CCol>{data["小排"] && data["小排"]}</CCol>
+              <CCol>
+                {data[semester.name + "|小排"] && data[semester.name + "|小排"]}
+              </CCol>
             </CRow>
             <CRow>
               <CCol lg="3">
@@ -235,7 +250,7 @@ const GFCardBody = ({ init_data }) => {
           主日聚會: (item) => {
             return (
               <td>
-                {item["主日聚會"]
+                {item[semester.name + "|主日聚會"]
                   .map((x) => accountsMap[x])
                   .filter((x) => x)
                   .join(",")}
@@ -245,7 +260,7 @@ const GFCardBody = ({ init_data }) => {
           家聚會: (item) => {
             let tmp = [];
             let i = 0;
-            for (let d of item["家聚會"]) {
+            for (let d of item[semester.name + "|家聚會"]) {
               if (i !== 0) tmp.push(",");
               if (typeof d === "string" && accountsMap[d])
                 tmp.push(accountsMap[d]);
@@ -263,7 +278,7 @@ const GFCardBody = ({ init_data }) => {
           小排: (item) => {
             return (
               <td>
-                {item["小排"]
+                {item[semester.name + "|小排"]
                   .map((x) => accountsMap[x])
                   .filter((x) => x)
                   .join(",")}
@@ -276,7 +291,7 @@ const GFCardBody = ({ init_data }) => {
   );
 };
 const GF = () => {
-  const { t } = useTranslation("translation", { i18n })
+  const { t } = useTranslation("translation", { i18n });
   let { id } = useParams();
   return (
     <CRow>

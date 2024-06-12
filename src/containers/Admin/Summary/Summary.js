@@ -1,5 +1,4 @@
-import { DB } from "db/firebase";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { GetAccountsMap, GetSemesterData } from "utils/account";
 import { GetProblems, SummaryScore } from "utils/problem";
 import { DataFrame } from "pandas-js";
@@ -18,17 +17,18 @@ import {
 } from "@coreui/react";
 import { GetWeeklyBaseFromTime, WeeklyBase2String } from "utils/date";
 import { InputNumber } from "antd";
+import SemesterContext from "hooks/semester";
 
 const Summary = () => {
   const [raw, setRaw] = useState(null);
   const [problems, setProblems] = useState(null);
   const [total_num, setTotalNum] = useState(0);
   const [conditions, setConditions] = useState([]);
+  const { semester } = useContext(SemesterContext);
   useEffect(() => {
     const getRaw = async () => {
       let tmp = [];
       let accountsMap = await GetAccountsMap();
-      let semester = await DB.getByUrl("/info/semester");
       let problems = await GetProblems();
       // generate empty row
       for (let id of Object.keys(accountsMap)) {
@@ -65,14 +65,14 @@ const Summary = () => {
       }
       setTotalNum(
         GetWeeklyBaseFromTime(semester.end.toDate()) -
-        GetWeeklyBaseFromTime(semester.start.toDate()) +
-        1
+          GetWeeklyBaseFromTime(semester.start.toDate()) +
+          1
       );
       setProblems(problems);
       setRaw(tmp);
     };
-    getRaw();
-  }, []);
+    if (semester) getRaw();
+  }, [semester]);
   if (raw === null || problems === null) return loading;
   let list_items = [];
   let options = [];
@@ -114,8 +114,7 @@ const Summary = () => {
           </span>
         ),
       });
-    }
-    else
+    } else
       options.push({
         id: problem.id,
         data: problem,
@@ -187,8 +186,7 @@ const Summary = () => {
           </CCol>
         </>
       );
-    }
-    else if (conditions[i].data) {
+    } else if (conditions[i].data) {
       choice_select = (
         <>
           <CCol>

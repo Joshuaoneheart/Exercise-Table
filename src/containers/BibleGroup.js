@@ -4,10 +4,15 @@ import { FirestoreCollection } from "@react-firebase/firestore";
 import Groups from "Models/Groups";
 import { loading } from "components";
 import { DB } from "db/firebase";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom/cjs/react-router-dom.min";
-import { GetWeeklyBase, WeeklyBase2String } from "utils/date";
+import {
+  GetWeeklyBase,
+  GetWeeklyBaseFromTime,
+  WeeklyBase2String,
+} from "utils/date";
 import Select from "react-select";
+import SemesterContext from "hooks/semester";
 
 const colors = [
   "rgba(255,99,132,1)",
@@ -387,6 +392,7 @@ const ProblemStatistic = ({
 // May need to add the necessary hooks
 const StatisticCard = ({ group_id, groups, accountsMap }) => {
   groups.groupBy("group");
+  const { semester } = useContext(SemesterContext);
   const [week_base, setWeekBase] = useState({
     id: GetWeeklyBase(),
     value: WeeklyBase2String(GetWeeklyBase()),
@@ -396,8 +402,39 @@ const StatisticCard = ({ group_id, groups, accountsMap }) => {
       </span>
     ),
   });
+  useEffect(() => {
+    if (semester)
+      setWeekBase({
+        id: Math.min(
+          GetWeeklyBase(),
+          GetWeeklyBaseFromTime(semester.end.toDate())
+        ),
+        value: WeeklyBase2String(
+          Math.min(
+            GetWeeklyBase(),
+            GetWeeklyBaseFromTime(semester.end.toDate())
+          )
+        ),
+        label: (
+          <span style={{ whiteSpace: "pre" }}>
+            {WeeklyBase2String(
+              Math.min(
+                GetWeeklyBase(),
+                GetWeeklyBaseFromTime(semester.end.toDate())
+              )
+            )}
+          </span>
+        ),
+      });
+  }, [semester]);
+  if (!semester) return null;
   let week_bases = [];
-  for (let i = 127; i <= GetWeeklyBase(); i++) {
+  for (
+    let i = GetWeeklyBaseFromTime(semester.start.toDate());
+    i <=
+    Math.min(GetWeeklyBase(), GetWeeklyBaseFromTime(semester.end.toDate()));
+    i++
+  ) {
     week_bases.push({
       id: i,
       value: WeeklyBase2String(i),
@@ -410,7 +447,7 @@ const StatisticCard = ({ group_id, groups, accountsMap }) => {
       <CCardHeader>
         <CRow className="align-items-center">
           <CCol xs="4" md="7" lg="7" xl="8">
-            活力組操練情形
+            活力組操練情形-{groups.list[groups.indexOf(group_id)].name}
           </CCol>
           <CCol>
             <Select
