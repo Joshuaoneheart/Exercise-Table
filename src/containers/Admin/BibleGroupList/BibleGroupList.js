@@ -6,24 +6,17 @@ import {
   CCardHeader,
   CDataTable,
 } from "@coreui/react";
-import { Link } from "react-router-dom";
 import { FirestoreCollection } from "@react-firebase/firestore";
 import { firebase } from "db/firebase";
 import { useEffect, useState } from "react";
-import CIcon from "@coreui/icons-react";
 import { loading } from "components";
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 const BibleGroupListBody = ({ data }) => {
   const [member, setMember] = useState({});
+  const history = useHistory()
   const fields = [
     { key: "name", label: "名稱", _style: { width: "7%" } },
     { key: "member", label: "成員", _style: { width: "40%" } },
-    {
-      key: "show_details",
-      label: "",
-      _style: { width: "1%" },
-      sorter: false,
-      filter: false,
-    },
   ];
   useEffect(() => {
     let FetchMember = async () => {
@@ -56,19 +49,13 @@ const BibleGroupListBody = ({ data }) => {
         hover
         sorter
         pagination
+        onRowClick={(item) => {
+          history.push(`/biblegroup/${item.id}`);
+        }}
         scopedSlots={{
           member: (item) => {
             if (!(item.id in member)) return <td></td>;
             return <td>{member[item.id].join(",")}</td>;
-          },
-          show_details: (item) => {
-            return (
-              <td>
-                <Link to={"/biblegroup/" + item.id}>
-                  <CIcon name="cil-info" />
-                </Link>
-              </td>
-            );
           },
         }}
       />

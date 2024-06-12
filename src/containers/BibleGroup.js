@@ -410,7 +410,7 @@ const StatisticCard = ({ group_id, groups, accountsMap }) => {
       <CCardHeader>
         <CRow className="align-items-center">
           <CCol xs="4" md="7" lg="7" xl="8">
-            活力組操練情形
+            活力組操練情形-{groups.list[groups.indexOf(group_id)].name}
           </CCol>
           <CCol>
             <Select

@@ -6,11 +6,10 @@ import {
   CCardHeader,
   CDataTable,
 } from "@coreui/react";
-import { Link } from "react-router-dom";
-import CIcon from "@coreui/icons-react";
 import { useEffect, useState } from "react";
 import { firebase, DB } from "db/firebase";
 import { GetWeeklyBase } from "utils/date";
+import { useHistory } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import i18n from "i18n";
 import useSemester from "hooks/semester";
@@ -18,6 +17,7 @@ const MemberListBody = () => {
   const { t } = useTranslation("translation", { i18n });
   const { semester, isCurrentSemester } = useSemester();
   const [data, setData] = useState([]);
+  const history = useHistory()
   useEffect(() => {
     let FetchMember = async () => {
       let groupMap = {};
@@ -115,13 +115,6 @@ const MemberListBody = () => {
       label: t("累計總分"),
       _style: { width: "50px", flexWrap: "nowrap" },
     },
-    {
-      key: "show_details",
-      label: "",
-      _style: { width: "1%" },
-      sorter: false,
-      filter: false,
-    },
   ];
   return (
     <CCardBody>
@@ -134,16 +127,8 @@ const MemberListBody = () => {
         hover
         sorter
         pagination
-        scopedSlots={{
-          show_details: (item) => {
-            return (
-              <td>
-                <Link to={"/member/" + item.id}>
-                  <CIcon name="cil-info" />
-                </Link>
-              </td>
-            );
-          },
+        onRowClick={(item) => {
+          history.push(`/member/${item.id}`)
         }}
       />
     </CCardBody>
