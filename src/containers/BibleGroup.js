@@ -6,8 +6,13 @@ import { loading } from "components";
 import { DB } from "db/firebase";
 import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom/cjs/react-router-dom.min";
-import { GetWeeklyBase, WeeklyBase2String } from "utils/date";
+import {
+  GetWeeklyBase,
+  GetWeeklyBaseFromTime,
+  WeeklyBase2String,
+} from "utils/date";
 import Select from "react-select";
+import useSemester from "hooks/semester";
 
 const colors = [
   "rgba(255,99,132,1)",
@@ -387,6 +392,7 @@ const ProblemStatistic = ({
 // May need to add the necessary hooks
 const StatisticCard = ({ group_id, groups, accountsMap }) => {
   groups.groupBy("group");
+  const { semester } = useSemester();
   const [week_base, setWeekBase] = useState({
     id: GetWeeklyBase(),
     value: WeeklyBase2String(GetWeeklyBase()),
@@ -396,8 +402,39 @@ const StatisticCard = ({ group_id, groups, accountsMap }) => {
       </span>
     ),
   });
+  useEffect(() => {
+    if (semester)
+      setWeekBase({
+        id: Math.min(
+          GetWeeklyBase(),
+          GetWeeklyBaseFromTime(semester.end.toDate())
+        ),
+        value: WeeklyBase2String(
+          Math.min(
+            GetWeeklyBase(),
+            GetWeeklyBaseFromTime(semester.end.toDate())
+          )
+        ),
+        label: (
+          <span style={{ whiteSpace: "pre" }}>
+            {WeeklyBase2String(
+              Math.min(
+                GetWeeklyBase(),
+                GetWeeklyBaseFromTime(semester.end.toDate())
+              )
+            )}
+          </span>
+        ),
+      });
+  }, [semester]);
+  if (!semester) return null;
   let week_bases = [];
-  for (let i = 127; i <= GetWeeklyBase(); i++) {
+  for (
+    let i = GetWeeklyBaseFromTime(semester.start.toDate());
+    i <=
+    Math.min(GetWeeklyBase(), GetWeeklyBaseFromTime(semester.end.toDate()));
+    i++
+  ) {
     week_bases.push({
       id: i,
       value: WeeklyBase2String(i),
