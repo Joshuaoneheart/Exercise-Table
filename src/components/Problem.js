@@ -13,7 +13,7 @@ import { GetWeeklyBase } from "utils/date";
 import Select from "react-select";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import i18n from "i18n"
+import i18n from "i18n";
 
 const GFSelect = ({
   GF,
@@ -249,7 +249,7 @@ const Problem = ({
   calculateScore,
   GF,
 }) => {
-  const { t } = useTranslation("translation", { i18n })
+  const { t } = useTranslation("translation", { i18n });
   var frame = [];
   var option_style = { color: "#000000", fontSize: "16px" };
   var title_style = { color: "#636f83", fontSize: "22px" };
@@ -279,8 +279,8 @@ const Problem = ({
           onChange={async (v) => {
             if (account_id) {
               let tmp = {};
-              tmp[data.id + ".ans"] = v;
-              tmp[data.id + ".score"] = v * parseInt(data.score[0]);
+              tmp[[data.id + ".ans"]] = v;
+              tmp[[data.id + ".score"]] = v * parseInt(data.score[0]);
               await DB.OnDemandUpdate(
                 "/accounts/" + account_id + "/data/" + GetWeeklyBase(),
                 tmp
@@ -340,11 +340,17 @@ const Problem = ({
                   option in default_data &&
                   default_data[option].ans.includes(suboption)
                 }
-                onChange={async function (account_id, suboption, option, data, e){
+                onChange={async function (
+                  account_id,
+                  suboption,
+                  option,
+                  data,
+                  e
+                ) {
                   if (account_id) {
                     if (e.target.checked) {
                       let tmp = {};
-                      tmp[data.id + "." + option + ".ans"] =
+                      tmp[[data.id + "." + option + ".ans"]] =
                         firebase.firestore.FieldValue.arrayUnion(suboption);
                       await DB.OnDemandUpdate(
                         "/accounts/" + account_id + "/data/" + GetWeeklyBase(),
@@ -352,7 +358,7 @@ const Problem = ({
                       );
                     } else {
                       let tmp = {};
-                      tmp[data.id + "." + option + ".ans"] =
+                      tmp[[data.id + "." + option + ".ans"]] =
                         firebase.firestore.FieldValue.arrayRemove(suboption);
                       await DB.OnDemandUpdate(
                         "/accounts/" + account_id + "/data/" + GetWeeklyBase(),
@@ -424,10 +430,10 @@ const Problem = ({
                   suboption in default_data &&
                   default_data[suboption].ans === option
                 }
-                onChange={async function (account_id, suboption, data, e){
+                onChange={async function (account_id, suboption, data, e) {
                   if (account_id) {
                     let tmp = {};
-                    tmp[data.id + "." + suboption + ".ans"] = e.target.value;
+                    tmp[[data.id + "." + suboption + ".ans"]] = e.target.value;
                     await DB.OnDemandUpdate(
                       "/accounts/" + account_id + "/data/" + GetWeeklyBase(),
                       tmp
@@ -460,10 +466,10 @@ const Problem = ({
               value={option}
               style={button_style}
               defaultChecked={default_data && default_data.ans === option}
-              onChange={async function(account_id, data, e){
+              onChange={async function (account_id, data, e) {
                 if (account_id) {
                   let tmp = {};
-                  tmp[data.id + ".ans"] = e.target.value;
+                  tmp[[data.id + ".ans"]] = e.target.value;
                   await DB.OnDemandUpdate(
                     "/accounts/" + account_id + "/data/" + GetWeeklyBase(),
                     tmp
@@ -499,7 +505,7 @@ const Problem = ({
                 if (account_id) {
                   if (e.target.checked) {
                     let tmp = {};
-                    tmp[data.id + ".ans"] =
+                    tmp[[data.id + ".ans"]] =
                       firebase.firestore.FieldValue.arrayUnion(options[i]);
                     await DB.OnDemandUpdate(
                       "/accounts/" + account_id + "/data/" + GetWeeklyBase(),
@@ -507,7 +513,7 @@ const Problem = ({
                     );
                   } else {
                     let tmp = {};
-                    tmp[data.id + ".ans"] =
+                    tmp[[data.id + ".ans"]] =
                       firebase.firestore.FieldValue.arrayRemove(options[i]);
                     await DB.OnDemandUpdate(
                       "/accounts/" + account_id + "/data/" + GetWeeklyBase(),
