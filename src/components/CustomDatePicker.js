@@ -5,7 +5,7 @@ import "dayjs/locale/zh-tw";
 import { DB, firebase } from "db/firebase";
 import SemesterContext from "hooks/semester";
 import { useContext, useState } from "react";
-import { GetWeeklyBaseFromTime } from "utils/date";
+import { GetWeeklyBase, GetWeeklyBaseFromTime } from "utils/date";
 
 const { RangePicker } = DatePicker;
 const CustomDatePicker = ({ startTime }) => {
@@ -38,7 +38,7 @@ const CustomDatePicker = ({ startTime }) => {
         }),
       });
       await DB.updateByUrl("/info/counter", {
-        week_counter: GetWeeklyBaseFromTime(semesterStart.toDate()),
+        week_counter: Math.min(GetWeeklyBaseFromTime(semesterStart.toDate()), GetWeeklyBase()),
       });
       setSemesters(null);
       message.success("變更完成");
