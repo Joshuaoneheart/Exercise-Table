@@ -54,10 +54,9 @@ const SignedIn = (props) => {
         let tmp = new Account({ id: props.user.uid });
         await tmp.fetch();
         if (tmp.status === "Pending") {
-          message.error("經過後台驗證後才會開通帳戶，請稍等")
+          message.error("經過後台驗證後才會開通帳戶，請稍等");
           DB.signOut();
-        }
-        setAccount(tmp);
+        } else setAccount(tmp);
       }
     };
     FetchAccount();
