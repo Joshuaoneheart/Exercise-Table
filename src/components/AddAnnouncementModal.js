@@ -34,13 +34,14 @@ const AddAnnouncementModal = ({ data, show, account, setData, setModal }) => {
     tmp["top"] = form.current.elements.top.checked ? 1 : 0;
     tmp["posted_by"] = account.id;
     tmp["timestamp"] = firebase.firestore.FieldValue.serverTimestamp();
-    cur_data.push(tmp);
     await firebase
       .firestore()
       .collection("announcement")
       .add(tmp)
-      .then(() => {
+      .then((d) => {
         message.success("新增完成");
+        tmp["timestamp"] = new Date();
+        cur_data.push(tmp);
         setData(cur_data);
       })
       .catch((error) => {

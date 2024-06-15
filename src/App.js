@@ -53,14 +53,17 @@ const SignedIn = (props) => {
       if (!account && props.user) {
         let tmp = new Account({ id: props.user.uid });
         await tmp.fetch();
-        if (tmp.status === "Pending") DB.signOut();
+        if (tmp.status === "Pending") {
+          message.error("經過後台驗證後才會開通帳戶，請稍等")
+          DB.signOut();
+        }
         setAccount(tmp);
       }
     };
     FetchAccount();
   }, [account, props]);
   useEffect(() => {
-    if (semesters === null) {
+    if (semesters === null && account) {
       const getSemester = async () => {
         const data = await DB.getByUrl("/info/semester");
         setSemesters(data.semesters);
@@ -75,7 +78,7 @@ const SignedIn = (props) => {
       };
       getSemester();
     }
-  }, [semesters]);
+  }, [semesters, account]);
   useEffect(() => {
     if (account && !hasUpdate) {
       api
