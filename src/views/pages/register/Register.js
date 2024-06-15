@@ -142,20 +142,20 @@ const Register = (props) => {
                           defaultValue={{
                             value: "男",
                             label: (
-                              <span style={{ whiteSpace: "pre" }}>男</span>
+                              <span style={{ whiteSpace: "pre" }}>弟兄</span>
                             ),
                           }}
                           options={[
                             {
                               value: "男",
                               label: (
-                                <span style={{ whiteSpace: "pre" }}>男</span>
+                                <span style={{ whiteSpace: "pre" }}>弟兄</span>
                               ),
                             },
                             {
                               value: "女",
                               label: (
-                                <span style={{ whiteSpace: "pre" }}>女</span>
+                                <span style={{ whiteSpace: "pre" }}>姊妹</span>
                               ),
                             },
                           ]}
