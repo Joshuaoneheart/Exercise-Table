@@ -32,9 +32,9 @@ const FormatDate = (date) => {
     weekday[date.getDay()] +
     ")" +
     " " +
-    date.getHours() +
+    (date.getHours() >= 10 ? date.getHours() : "0" + date.getHours()) +
     ":" +
-    (date.getMinutes() > 10 ? date.getMinutes() : "0" + date.getMinutes())
+    (date.getMinutes() >= 10 ? date.getMinutes() : "0" + date.getMinutes())
   );
 };
 
