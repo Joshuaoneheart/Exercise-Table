@@ -17,12 +17,13 @@ import { GetAccountsMap } from "utils/account";
 import { FormatDate } from "utils/date";
 import { useHistory } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import i18n from "i18n"
+import i18n from "i18n";
 const AnnouncementListBody = ({ data, account, addModal, setAddModal }) => {
-  const { t } = useTranslation("translation", { i18n })
+  const { t } = useTranslation("translation", { i18n });
   const [announcements, setAnnouncements] = useState(data);
   const [accountsMap, setAccountsMap] = useState(null);
   const history = useHistory();
+  data = data.reverse();
   useEffect(() => {
     let FetchAccountsMap = async () => {
       setAccountsMap(await GetAccountsMap(true));
@@ -69,7 +70,7 @@ const AnnouncementListBody = ({ data, account, addModal, setAddModal }) => {
         pagination
         clickableRows
         onRowClick={(item) => {
-          history.push(`/Announcement/${item.id}`)
+          history.push(`/Announcement/${item.id}`);
         }}
         scopedSlots={{
           top: (item) => {
@@ -102,7 +103,7 @@ const AnnouncementListBody = ({ data, account, addModal, setAddModal }) => {
   );
 };
 const AnnouncementList = () => {
-  const { t } = useTranslation("translation", { i18n })
+  const { t } = useTranslation("translation", { i18n });
   const account = useContext(AccountContext);
   const [addModal, setAddModal] = useState(false);
   return (

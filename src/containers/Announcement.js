@@ -195,11 +195,6 @@ const AnnouncementCard = ({ init_data, id }) => {
               onChange={(e) => {
                 setComment(e.target.value);
               }}
-              onKeyUp={(event) => {
-                if (event.key === "Enter") {
-                  addComment();
-                }
-              }}
             />
           </CCol>
           <CButton variant="outline" color="primary" onClick={addComment}>
