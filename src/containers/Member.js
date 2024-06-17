@@ -86,7 +86,15 @@ const MemberTable = ({ data, id }) => {
           _style: { minWidth: "100px", flexWrap: "nowrap" },
         },
       ];
+
+      let { items, result, problem_used } = await SummaryScore(
+        data,
+        problems,
+        id
+      );
+      items = items.reverse();
       for (let problem of problems) {
+        if (problem_used[problem.id] === 0) continue;
         if (problem.type === "Grid") {
           for (let suboption of problem["子選項"]) {
             columns.push({
@@ -132,8 +140,6 @@ const MemberTable = ({ data, id }) => {
           _style: { minWidth: "100px", flexWrap: "nowrap" },
         }
       );
-      let { items, result } = await SummaryScore(data, problems, id);
-      items = items.reverse();
       await DB.updateByUrl("/accounts/" + id, result);
       setItems(items);
       setColumns(columns);

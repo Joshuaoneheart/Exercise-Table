@@ -98,7 +98,10 @@ class Firebase {
     try {
       let doc = await db.get();
       if (doc.exists) this.updateByUrl(url, data);
-      else this.setByUrl(url, data);
+      else {
+        await this.setByUrl(url, { Test: 0 });
+        this.updateByUrl(url, data);
+      }
     } catch (e) {
       alert(e.message);
     }
