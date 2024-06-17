@@ -1,10 +1,12 @@
 import { CCard, CCardBody, CCardHeader, CCol, CRow } from "@coreui/react";
 import { AccountContext } from "hooks/context";
 import { useContext } from "react";
+import { registFormat } from "utils/date";
 
 const ModifyCard = () => {
   var account = useContext(AccountContext);
   if (!account) return null;
+  
   return (
     <CCardBody>
       <CRow>
@@ -34,7 +36,7 @@ const ModifyCard = () => {
               <CCol lg="3">
                 <b>Registered</b>
               </CCol>
-              <CCol>{account.registered}</CCol>
+              <CCol>{registFormat(account)}</CCol>
             </CRow>
           </div>
         </CCol>
@@ -42,6 +44,8 @@ const ModifyCard = () => {
     </CCardBody>
   );
 };
+
+
 
 const Profile = () => {
   return (

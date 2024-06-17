@@ -14,7 +14,7 @@ import { useState } from "react";
 import { FirestoreCollection } from "@react-firebase/firestore";
 import { loading } from "components";
 import { DB } from "db/firebase";
-import { FormatDate } from "utils/date";
+import { registFormat } from "utils/date";
 const getBadge = (status) => {
   switch (status) {
     case "Active":
@@ -30,17 +30,6 @@ const getBadge = (status) => {
   }
 };
 
-const registFormat = (item) => {
-  let D
-  if (typeof item.registered === "string") {
-    let textSplit = item.registered.split('/')
-    D = new Date(parseInt(textSplit[0]), parseInt(textSplit[1]) - 1, parseInt(textSplit[2]))
-  }
-  else {
-    D = item.registered.toDate()
-  }
-  return FormatDate(D)
-}
 
 const Users = () => {
   const [details, setDetails] = useState([]);

@@ -38,10 +38,23 @@ const FormatDate = (date) => {
   );
 };
 
+const registFormat = (item) => {
+  let D
+  if (typeof item.registered === "string") {
+    let textSplit = item.registered.split('/')
+    D = new Date(parseInt(textSplit[0]), parseInt(textSplit[1]) - 1, parseInt(textSplit[2]))
+  }
+  else {
+    D = item.registered.toDate()
+  }
+  return FormatDate(D)
+}
+
 export {
   BaseDate,
   GetWeeklyBase,
   WeeklyBase2String,
   GetWeeklyBaseFromTime,
   FormatDate,
+  registFormat
 };
