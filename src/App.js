@@ -227,17 +227,24 @@ const SignedIn = (props) => {
                   Object.assign({ shepherd: GF_account_map[GF_id] }, stats)
                 );
             }
+            // Get current week data
+            let tmp = {};
             for (let i = 0; i < account_data.length; i++) {
               let data = await DB.getByUrl(
                 "/accounts/" + account_data[i].id + "/data/" + GetWeeklyBase()
               );
-              let tmp = {
-                score: 0,
-                cur_召會生活操練: 0,
-                cur_神人生活操練: 0,
-                cur_福音牧養操練: 0,
-                cur_lord_table: 0,
-              };
+              for (let [k, v] of Object.entries(account_data[i])) {
+                for (let section of problems.sections) {
+                  if (k.includes(section)) tmp[k] = v;
+                }
+                if (k.includes("lord_table") || k.includes("total_score"))
+                  tmp[k] = v;
+              }
+              tmp["score"] = 0;
+              tmp["cur_召會生活操練"] = 0;
+              tmp["cur_神人生活操練"] = 0;
+              tmp["cur_福音牧養操練"] = 0;
+              tmp["cur_lord_table"] = 0;
               if (data) {
                 tmp.score = data.scores ? data.scores : 0;
                 tmp["cur_召會生活操練"] = data["召會生活操練"]
@@ -253,13 +260,6 @@ const SignedIn = (props) => {
                   data[lord_table_id] && data[lord_table_id].ans === "有"
                     ? 1
                     : 0;
-              }
-              for (let [k, v] of Object.entries(account_data[i])) {
-                for (let section of problems.sections) {
-                  if (k.includes(section)) tmp[k] = v;
-                }
-                if (k.includes("lord_table") || k.includes("total_score"))
-                  tmp[k] = v;
               }
               await firebase
                 .firestore()
