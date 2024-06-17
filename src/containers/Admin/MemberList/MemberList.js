@@ -63,11 +63,9 @@ const MemberListBody = () => {
             tmp[tmp.length - 1].group = groupMap[tmp[tmp.length - 1].group];
           });
         });
+      let { submitted } = await DB.getByUrl("/info/week");
       for (let i = 0; i < tmp.length; i++) {
-        let cur = await DB.getByUrl(
-          "/accounts/" + tmp[i].id + "/data/" + GetWeeklyBase()
-        );
-        if (cur) tmp[i].submit = "是";
+        if (submitted.includes(tmp[i].id)) tmp[i].submit = "是";
         else tmp[i].submit = "否";
       }
       setData(tmp);
