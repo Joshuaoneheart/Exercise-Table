@@ -43,72 +43,76 @@ const GFCardBody = ({ init_data }) => {
         let GF_data = await DB.getByUrl(
           "/accounts/" + Object.keys(accountsMap)[i] + "/GF/" + GetWeeklyBase()
         );
-        if (GF_data)
+
+        if (GF_data) {
           for (let [k, v] of Object.entries(GF_data)) {
             if (k === "week_base") continue;
-            for (let GF_id of v) {
-              if (GF_id === init_data.id || GF_id.id === init_data.id) {
-                if (!tmp.shepherd) tmp.shepherd = [];
-                if (!tmp.shepherd.includes(Object.keys(accountsMap)[i]))
-                  tmp.shepherd.push(Object.keys(accountsMap)[i]);
-                if (!tmp[k]) tmp[k] = 0;
-                tmp[k]++;
+            if (Array.isArray(v))
+              for (let GF_id of v) {
+                if (GF_id === init_data.id || GF_id.id === init_data.id) {
+                  if (!tmp.shepherd) tmp.shepherd = [];
+                  if (!tmp.shepherd.includes(Object.keys(accountsMap)[i]))
+                    tmp.shepherd.push(Object.keys(accountsMap)[i]);
+                  if (!tmp[k]) tmp[k] = 0;
+                  tmp[k]++;
+                }
               }
-            }
           }
+        }
       }
       setData(tmp);
       let data_by_week = {};
-      for (let shepherd of tmp.shepherd) {
-        let docs = await firebase
-          .firestore()
-          .collection("accounts")
-          .doc(shepherd)
-          .collection("GF")
-          .where(
-            "week_base",
-            ">=",
-            GetWeeklyBaseFromTime(semester.start.toDate())
-          )
-          .get();
-        if (docs)
-          await docs.forEach((doc) => {
-            if (!(parseInt(doc.id) in data_by_week))
-              data_by_week[parseInt(doc.id)] = {
-                week: parseInt(doc.id),
-              };
-            data_by_week[parseInt(doc.id)][semester.name + "|主日聚會"] = [];
-            data_by_week[parseInt(doc.id)][semester.name + "|家聚會"] = [];
-            data_by_week[parseInt(doc.id)][semester.name + "|小排"] = [];
-            if (
-              doc.data()["主日聚會"] &&
-              doc.data()["主日聚會"].includes(tmp.id)
+      if (tmp.shepherd)
+        for (let shepherd of tmp.shepherd) {
+          let docs = await firebase
+            .firestore()
+            .collection("accounts")
+            .doc(shepherd)
+            .collection("GF")
+            .where(
+              "week_base",
+              ">=",
+              GetWeeklyBaseFromTime(semester.start.toDate())
             )
-              data_by_week[parseInt(doc.id)][semester.name + "|主日聚會"].push(
-                shepherd
-              );
+            .get();
+          if (docs)
+            await docs.forEach((doc) => {
+              if (!(parseInt(doc.id) in data_by_week))
+                data_by_week[parseInt(doc.id)] = {
+                  week: parseInt(doc.id),
+                };
+              data_by_week[parseInt(doc.id)][semester.name + "|主日聚會"] = [];
+              data_by_week[parseInt(doc.id)][semester.name + "|家聚會"] = [];
+              data_by_week[parseInt(doc.id)][semester.name + "|小排"] = [];
+              if (
+                doc.data()["主日聚會"] &&
+                doc.data()["主日聚會"].includes(tmp.id)
+              )
+                data_by_week[parseInt(doc.id)][semester.name + "|主日聚會"].push(
+                  shepherd
+                );
 
-            if (doc.data()["家聚會"])
-              for (let d of doc.data()["家聚會"]) {
-                if (
-                  (typeof d === "string" && d === tmp.id) ||
-                  d.id === tmp.id
-                ) {
-                  data_by_week[parseInt(doc.id)][
-                    semester.name + "|家聚會"
-                  ].push({
-                    id: shepherd,
-                    note: d.note,
-                  });
-                  break;
+              if (doc.data()["家聚會"])
+                for (let d of doc.data()["家聚會"]) {
+                  if (
+                    (typeof d === "string" && d === tmp.id) ||
+                    d.id === tmp.id
+                  ) {
+                    data_by_week[parseInt(doc.id)][
+                      semester.name + "|家聚會"
+                    ].push({
+                      id: shepherd,
+                      note: d.note,
+                    });
+                    break;
+                  }
                 }
-              }
-            if (doc.data()["小排"] && doc.data()["小排"].includes(tmp.id))
-              data_by_week[parseInt(doc.id)][semester.name + "|小排"].push(
-                shepherd
-              );
-          });
-      }
+              if (doc.data()["小排"] && doc.data()["小排"].includes(tmp.id))
+                data_by_week[parseInt(doc.id)][semester.name + "|小排"].push(
+                  shepherd
+                );
+            });
+        }
       let data = [];
       for (let v of Object.values(data_by_week)) {
         data.push(v);
