@@ -15,15 +15,15 @@ import {
 } from "@coreui/react";
 import { useEffect, useRef, useState } from "react";
 import Problem from "./Problem";
-import { DB } from "db/firebase";
+import { DB, firebase } from "db/firebase";
 import { GetWeeklyBase } from "utils/date";
 import loading from "./loading";
 import { message } from "antd";
 import { useTranslation } from "react-i18next";
-import i18n from "i18n"
+import i18n from "i18n";
 
 const DataTabs = ({ data, account, default_data }) => {
-  const { t } = useTranslation("translation", { i18n })
+  const { t } = useTranslation("translation", { i18n });
   const [section, setSection] = useState(0);
   const [GF, setGF] = useState(null);
   const [GF_data, setGFData] = useState(null);
@@ -137,6 +137,9 @@ const DataTabs = ({ data, account, default_data }) => {
         "/accounts/" + account.id + "/data/" + GetWeeklyBase(),
         v
       );
+      await DB.updateByUrl("/info/week", {
+        submitted: firebase.firestore.FieldValue.arrayUnion(account.id),
+      });
       await DB.updateByUrl("/accounts/" + account.id, {
         score: v.scores,
         cur_召會生活操練: v["召會生活操練"] ? v["召會生活操練"] : 0,
