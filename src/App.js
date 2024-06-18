@@ -21,8 +21,8 @@ import { GetSemesterByWeeklyBase } from "utils/semester";
 const TheLayout = lazy(() => import("containers/TheLayout"));
 
 // Pages
-const Login = lazy(() => import("views/pages/login/Login"));
-const Register = lazy(() => import("views/pages/register/Register"));
+const Login = lazy(() => import("containers/Login"));
+const Register = lazy(() => import("containers/Register"));
 const Page404 = lazy(() => import("views/pages/page404/Page404"));
 const Page500 = lazy(() => import("views/pages/page500/Page500"));
 

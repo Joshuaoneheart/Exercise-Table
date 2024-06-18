@@ -21,7 +21,7 @@ const FormListBody = ({ data }) => {
   const fields = [
     { key: "name", label: "名稱", _style: { width: "90%" } },
     { key: "use", label: "", _style: { width: "5%" }, filter: false },
-    { key: "delete", label: "", _style: { width: "5%" }, filter: false  },
+    { key: "delete", label: "", _style: { width: "5%" }, filter: false },
   ];
   useEffect(() => {
     const GetCurrentForm = async () => {

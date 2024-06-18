@@ -2,7 +2,7 @@ import { lazy } from "react";
 
 //Members
 const Members = lazy(() => import("../containers/Member"));
-const Profile = lazy(() => import("../containers/Member/Profile/Profile"));
+const Profile = lazy(() => import("../containers/Profile"));
 const Form = lazy(() => import("../containers/Member/SubmitForm/SubmitForm"));
 const GF = lazy(() => import("../containers/GF"));
 const AnnouncementList = lazy(() => import("../containers/AnnouncementList"));
