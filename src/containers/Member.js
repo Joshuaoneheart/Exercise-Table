@@ -87,36 +87,15 @@ const MemberTable = ({ data, id }) => {
         },
       ];
 
-      let { items, result, problem_used } = await SummaryScore(
-        data,
-        problems,
-        id
-      );
+      let { items, result, column_keys, column_labels } =
+        await SummaryScore(data, problems, id);
       items = items.reverse();
-      for (let problem of problems) {
-        if (problem_used[problem.id] === 0) continue;
-        if (problem.type === "Grid") {
-          for (let suboption of problem["子選項"]) {
-            columns.push({
-              key: problem.id + "-" + suboption,
-              label: t(problem.title + "-" + suboption),
-              _style: { minWidth: "100px", flexWrap: "nowrap" },
-            });
-          }
-        } else if (problem.type === "MultiGrid") {
-          for (let option of problem["選項"]) {
-            columns.push({
-              key: problem.id + "-" + option,
-              label: t(problem.title + "-" + option),
-              _style: { minWidth: "100px", flexWrap: "nowrap" },
-            });
-          }
-        } else
-          columns.push({
-            key: problem.id,
-            label: t(problem.title),
-            _style: { minWidth: "100px", flexWrap: "nowrap" },
-          });
+      for (let i = 0; i < column_keys.length; i++) {
+        columns.push({
+          key: column_keys[i],
+          label: t(column_labels[i]),
+          _style: { minWidth: "100px", flexWrap: "nowrap" },
+        });
       }
       columns.push(
         {

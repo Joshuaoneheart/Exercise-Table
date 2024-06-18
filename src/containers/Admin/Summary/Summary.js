@@ -24,16 +24,24 @@ const Summary = () => {
   const [problems, setProblems] = useState(null);
   const [total_num, setTotalNum] = useState(0);
   const [conditions, setConditions] = useState([]);
+  const [options, setOptions] = useState([]);
   const { semester } = useContext(SemesterContext);
   useEffect(() => {
     const getRaw = async () => {
       let tmp = [];
       let accountsMap = await GetAccountsMap();
       let problems = await GetProblems(null, false);
+      let all_column_keys = [];
+      let all_column_labels = [];
+      let all_column_problems = [];
       // generate empty row
       for (let id of Object.keys(accountsMap)) {
         let weeks = await GetSemesterData(id, semester);
-        let { items, result } = await SummaryScore(weeks, problems, id);
+        let { items, result, column_keys, column_labels, column_problems } =
+          await SummaryScore(weeks, problems, id);
+        all_column_keys = [...all_column_keys, ...column_keys];
+        all_column_labels = [...all_column_labels, ...column_labels];
+        all_column_problems = [...all_column_problems, ...column_problems];
         let df = new DataFrame(items);
         let week = null;
         if (df.columns.includes("week_base")) week = df.get("week_base");
@@ -70,58 +78,26 @@ const Summary = () => {
       );
       setProblems(problems);
       setRaw(tmp);
+      let tmp_options = [];
+      let used = new Set();
+      for (let i = 0; i < all_column_keys.length; i++) {
+        if (used.has(all_column_keys[i])) continue;
+        used.add(all_column_keys[i]);
+        tmp_options.push({
+          id: all_column_keys[i],
+          data: all_column_problems[i],
+          value: all_column_labels[i],
+          label: (
+            <span style={{ whiteSpace: "pre" }}>{all_column_labels[i]}</span>
+          ),
+        });
+      }
+      setOptions(tmp_options);
     };
     if (semester) getRaw();
   }, [semester]);
   if (raw === null || problems === null) return loading;
   let list_items = [];
-  let options = [];
-  for (let problem of problems) {
-    if (problem.type === "Grid") {
-      for (let suboption of problem["子選項"]) {
-        options.push({
-          id: problem.id + "-" + suboption,
-          data: problem,
-          value: problem.title + "-" + suboption,
-          label: (
-            <span style={{ whiteSpace: "pre" }}>
-              {problem.title + "-" + suboption}
-            </span>
-          ),
-        });
-      }
-    } else if (problem.type === "MultiGrid") {
-      for (let option of problem["選項"]) {
-        options.push({
-          id: problem.id + "-" + option,
-          data: problem,
-          value: problem.title + "-" + option,
-          label: (
-            <span style={{ whiteSpace: "pre" }}>
-              {problem.title + "-" + option}
-            </span>
-          ),
-        });
-      }
-    } else if (problem.type === "GF") {
-      options.push({
-        id: problem.id,
-        data: problem,
-        value: problem.title,
-        label: (
-          <span style={{ whiteSpace: "pre" }}>
-            邀約福音朋友 - {problem.title}
-          </span>
-        ),
-      });
-    } else
-      options.push({
-        id: problem.id,
-        data: problem,
-        value: problem.title,
-        label: <span style={{ whiteSpace: "pre" }}>{problem.title}</span>,
-      });
-  }
   for (let i = 0; i < conditions.length; i++) {
     if (i !== 0) list_items.push(<hr />);
     let choice_select = null;
