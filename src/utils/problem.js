@@ -116,7 +116,7 @@ const SummaryScore = async (data, problems, id) => {
   for (let problem of problems) {
     for (let i = 0; i < items.length; i++) {
       if (problem_used[problem.id] === 0) {
-        for (let [k, v] of Object.entries(items[i])) {
+        for (let k of Object.keys(items[i])) {
           if (k.includes(problem.id)) delete items[i][k];
         }
       }
