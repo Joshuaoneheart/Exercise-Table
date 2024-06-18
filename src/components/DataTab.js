@@ -3,15 +3,8 @@ import {
   CCardBody,
   CCardHeader,
   CCol,
-  CDropdown,
-  CDropdownItem,
-  CDropdownMenu,
-  CDropdownToggle,
   CForm,
   CRow,
-  CTabContent,
-  CTabPane,
-  CTabs,
 } from "@coreui/react";
 import { useEffect, useRef, useState } from "react";
 import Problem from "./Problem";
@@ -24,7 +17,6 @@ import i18n from "i18n";
 
 const DataTabs = ({ data, account, default_data }) => {
   const { t } = useTranslation("translation", { i18n });
-  const [section, setSection] = useState(0);
   const [GF, setGF] = useState(null);
   const [GF_data, setGFData] = useState(null);
   const [api, ContextHolder] = message.useMessage();
@@ -151,20 +143,10 @@ const DataTabs = ({ data, account, default_data }) => {
     }
   };
   for (var i = 0; i < data.sections.length; i++) {
-    tabs.push(
-      <CDropdownItem
-        key={i}
-        onClick={function (i) {
-          setSection(i);
-        }.bind(null, i)}
-      >
-        {t(data.sections[i])}
-      </CDropdownItem>
-    );
-    var tabContents = [];
+    var contents = [];
     for (var j = 0; j < data.value[i].length; j++) {
       var problem = data.value[i][j];
-      tabContents.push(
+      contents.push(
         <Problem
           calculateScore={calculateScore}
           account_id={account ? account.id : null}
@@ -181,7 +163,7 @@ const DataTabs = ({ data, account, default_data }) => {
         />
       );
     }
-    tabpanes.push(<CTabPane key={i}>{tabContents}</CTabPane>);
+    tabpanes.push(contents);
   }
   return (
     <CCard>
@@ -191,14 +173,6 @@ const DataTabs = ({ data, account, default_data }) => {
           <CCol style={{ fontSize: "30px" }}>
             {t("表單")} - {WeeklyBase2String(GetWeeklyBase())}
           </CCol>
-          <CCol align="end">
-            <CDropdown>
-              <CDropdownToggle color="info">
-                {t(data.sections[section])}
-              </CDropdownToggle>
-              <CDropdownMenu>{tabs}</CDropdownMenu>
-            </CDropdown>
-          </CCol>
         </CRow>
       </CCardHeader>
       <CCardBody>
@@ -207,10 +181,7 @@ const DataTabs = ({ data, account, default_data }) => {
           onSubmit={(e) => {
             e.preventDefault();
           }}
-        >
-          <CTabs activeTab={section}>
-            <CTabContent>{tabpanes}</CTabContent>
-          </CTabs>
+        >{tabpanes.map((x, i)=> <><h2>{data.sections[i]}</h2> <hr />{x}</>)}
         </CForm>
       </CCardBody>
     </CCard>
