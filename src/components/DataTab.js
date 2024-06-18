@@ -16,7 +16,7 @@ import {
 import { useEffect, useRef, useState } from "react";
 import Problem from "./Problem";
 import { DB, firebase } from "db/firebase";
-import { GetWeeklyBase } from "utils/date";
+import { GetWeeklyBase, WeeklyBase2String } from "utils/date";
 import loading from "./loading";
 import { message } from "antd";
 import { useTranslation } from "react-i18next";
@@ -188,7 +188,9 @@ const DataTabs = ({ data, account, default_data }) => {
       {ContextHolder}
       <CCardHeader>
         <CRow className="align-items-center">
-          <CCol style={{ fontSize: "30px" }}>{t("表單")}</CCol>
+          <CCol style={{ fontSize: "30px" }}>
+            {t("表單")} - {WeeklyBase2String(GetWeeklyBase())}
+          </CCol>
           <CCol align="end">
             <CDropdown>
               <CDropdownToggle color="info">
