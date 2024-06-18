@@ -23,8 +23,6 @@ const TheLayout = lazy(() => import("containers/TheLayout"));
 // Pages
 const Login = lazy(() => import("containers/Login"));
 const Register = lazy(() => import("containers/Register"));
-const Page404 = lazy(() => import("views/pages/page404/Page404"));
-const Page500 = lazy(() => import("views/pages/page500/Page500"));
 
 const GatherProblemsBySection = (d) => {
   var data = { value: [], sections: [] };
@@ -311,18 +309,6 @@ const App = () => {
               render={(props) => {
                 return <Register firebase={firebase} {...props} />;
               }}
-            />
-            <Route
-              exact
-              path="/404"
-              name="Page 404"
-              render={(props) => <Page404 {...props} />}
-            />
-            <Route
-              exact
-              path="/500"
-              name="Page 500"
-              render={(props) => <Page500 {...props} />}
             />
             <Route
               path="/"
