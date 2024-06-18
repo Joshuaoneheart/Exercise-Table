@@ -228,8 +228,8 @@ const SignedIn = (props) => {
                 );
             }
             // Get current week data
-            let tmp = {};
             for (let i = 0; i < account_data.length; i++) {
+              let tmp = {};
               let data = await DB.getByUrl(
                 "/accounts/" + account_data[i].id + "/data/" + GetWeeklyBase()
               );

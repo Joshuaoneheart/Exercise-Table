@@ -74,6 +74,11 @@ const GFCardBody = ({ init_data }) => {
               ">=",
               GetWeeklyBaseFromTime(semester.start.toDate())
             )
+            .where(
+              "week_base",
+              "<=",
+              GetWeeklyBaseFromTime(semester.end.toDate())
+            )
             .get();
           if (docs)
             await docs.forEach((doc) => {
@@ -88,9 +93,9 @@ const GFCardBody = ({ init_data }) => {
                 doc.data()["主日聚會"] &&
                 doc.data()["主日聚會"].includes(tmp.id)
               )
-                data_by_week[parseInt(doc.id)][semester.name + "|主日聚會"].push(
-                  shepherd
-                );
+                data_by_week[parseInt(doc.id)][
+                  semester.name + "|主日聚會"
+                ].push(shepherd);
 
               if (doc.data()["家聚會"])
                 for (let d of doc.data()["家聚會"]) {
