@@ -9,7 +9,6 @@ import {
 } from "@coreui/react";
 import { InputNumber } from "antd";
 import { DB, firebase } from "db/firebase";
-import { GetWeeklyBase } from "utils/date";
 import Select from "react-select";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -22,6 +21,7 @@ const GFSelect = ({
   title,
   note,
   calculateScore,
+  week
 }) => {
   let id_to_v = {};
   for (let i = 0; i < GF.length; i++) {
@@ -183,9 +183,9 @@ const GFSelect = ({
                   };
                 else return x.value.split("|")[1];
               });
-              tmp.week_base = GetWeeklyBase();
+              tmp.week_base = week;
               await DB.OnDemandUpdate(
-                "/accounts/" + account_id + "/GF/" + GetWeeklyBase(),
+                "/accounts/" + account_id + "/GF/" + week,
                 tmp
               );
               calculateScore();
@@ -226,9 +226,9 @@ const GFSelect = ({
                       })
                     );
                     setNotes(new_notes);
-                    tmp.week_base = GetWeeklyBase();
+                    tmp.week_base = week;
                     DB.OnDemandUpdate(
-                      "/accounts/" + account_id + "/GF/" + GetWeeklyBase(),
+                      "/accounts/" + account_id + "/GF/" + week,
                       tmp
                     );
                   }}
@@ -247,6 +247,7 @@ const Problem = ({
   GF_data,
   account_id,
   calculateScore,
+  week,
   GF,
 }) => {
   const { t } = useTranslation("translation", { i18n });
@@ -265,6 +266,7 @@ const Problem = ({
           account_id={account_id}
           title={data.title}
           note={data.note}
+          week={week}
           calculateScore={calculateScore}
         />
       );
@@ -282,7 +284,7 @@ const Problem = ({
               tmp[[data.id + ".ans"]] = v;
               tmp[[data.id + ".score"]] = v * parseInt(data.score[0]);
               await DB.OnDemandUpdate(
-                "/accounts/" + account_id + "/data/" + GetWeeklyBase(),
+                "/accounts/" + account_id + "/data/" + week,
                 tmp
               );
               calculateScore();
@@ -353,7 +355,7 @@ const Problem = ({
                       tmp[[data.id + "." + option + ".ans"]] =
                         firebase.firestore.FieldValue.arrayUnion(suboption);
                       await DB.OnDemandUpdate(
-                        "/accounts/" + account_id + "/data/" + GetWeeklyBase(),
+                        "/accounts/" + account_id + "/data/" + week,
                         tmp
                       );
                     } else {
@@ -361,7 +363,7 @@ const Problem = ({
                       tmp[[data.id + "." + option + ".ans"]] =
                         firebase.firestore.FieldValue.arrayRemove(suboption);
                       await DB.OnDemandUpdate(
-                        "/accounts/" + account_id + "/data/" + GetWeeklyBase(),
+                        "/accounts/" + account_id + "/data/" + week,
                         tmp
                       );
                     }
@@ -435,7 +437,7 @@ const Problem = ({
                     let tmp = {};
                     tmp[[data.id + "." + suboption + ".ans"]] = e.target.value;
                     await DB.OnDemandUpdate(
-                      "/accounts/" + account_id + "/data/" + GetWeeklyBase(),
+                      "/accounts/" + account_id + "/data/" + week,
                       tmp
                     );
                     calculateScore();
@@ -471,7 +473,7 @@ const Problem = ({
                   let tmp = {};
                   tmp[[data.id + ".ans"]] = e.target.value;
                   await DB.OnDemandUpdate(
-                    "/accounts/" + account_id + "/data/" + GetWeeklyBase(),
+                    "/accounts/" + account_id + "/data/" + week,
                     tmp
                   );
                   calculateScore();
@@ -508,7 +510,7 @@ const Problem = ({
                     tmp[[data.id + ".ans"]] =
                       firebase.firestore.FieldValue.arrayUnion(options[i]);
                     await DB.OnDemandUpdate(
-                      "/accounts/" + account_id + "/data/" + GetWeeklyBase(),
+                      "/accounts/" + account_id + "/data/" + week,
                       tmp
                     );
                   } else {
@@ -516,7 +518,7 @@ const Problem = ({
                     tmp[[data.id + ".ans"]] =
                       firebase.firestore.FieldValue.arrayRemove(options[i]);
                     await DB.OnDemandUpdate(
-                      "/accounts/" + account_id + "/data/" + GetWeeklyBase(),
+                      "/accounts/" + account_id + "/data/" + week,
                       tmp
                     );
                   }

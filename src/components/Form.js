@@ -18,8 +18,9 @@ const GatherProblemsBySection = (d) => {
   return data;
 };
 
-const Form = ({ default_data, account }) => {
+const Form = ({ default_data, account, thisWeek, setThisWeek }) => {
   const [problems, setProblems] = useState(null);
+  const [refresh, setRefresh] = useState(false);
   useEffect(() => {
     const GetData = async () => {
       const { id } = await DB.getByUrl("/info/form");
@@ -27,14 +28,18 @@ const Form = ({ default_data, account }) => {
     };
     if (problems === null) GetData();
   });
+  useEffect(() => setRefresh(true), [thisWeek])
+  useEffect(() => setRefresh(false), [refresh])
   if (problems === null) return loading;
   return (
     <CCol>
-      <DataTabs
+      {!refresh && <DataTabs
         data={GatherProblemsBySection(problems)}
         default_data={default_data}
         account={account}
-      />
+        thisWeek={thisWeek}
+        setThisWeek={setThisWeek}
+      />}
     </CCol>
   );
 };

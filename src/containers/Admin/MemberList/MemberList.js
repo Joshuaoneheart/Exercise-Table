@@ -8,12 +8,11 @@ import {
 } from "@coreui/react";
 import { useContext, useEffect, useState } from "react";
 import { firebase, DB } from "db/firebase";
-import { GetWeeklyBase } from "utils/date";
 import { useHistory } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import i18n from "i18n";
 import SemesterContext from "hooks/semester";
-import { IsCurrentSemester } from "utils/semester";
+import { GetWeeklyBaseFromTime } from "utils/date";
 const MemberListBody = () => {
   const { t } = useTranslation("translation", { i18n });
   const { semester } = useContext(SemesterContext);
@@ -34,30 +33,25 @@ const MemberListBody = () => {
         .then((snapshot) => {
           snapshot.forEach((doc) => {
             let item = Object.assign({}, doc.data());
-            if (!item[semester.name + "|total_score"])
-              item[semester.name + "|total_score"] = 0;
-            if (!item[semester.name + "|召會生活操練"])
-              item[semester.name + "|召會生活操練"] = 0;
-            if (!item[semester.name + "|神人生活操練"])
-              item[semester.name + "|神人生活操練"] = 0;
-            if (!item[semester.name + "|福音牧養操練"])
-              item[semester.name + "|福音牧養操練"] = 0;
-            if (!item[semester.name + "|lord_table"])
-              item[semester.name + "|lord_table"] = 0;
-            if (IsCurrentSemester(semester)) {
-              if (item.score)
-                item[semester.name + "|total_score"] += item.score;
-              if (item["cur_召會生活操練"])
-                item[semester.name + "|召會生活操練"] +=
-                  item["cur_召會生活操練"];
-              if (item["cur_神人生活操練"])
-                item[semester.name + "|神人生活操練"] +=
-                  item["cur_神人生活操練"];
-              if (item["cur_福音牧養操練"])
-                item[semester.name + "|福音牧養操練"] +=
-                  item["cur_福音牧養操練"];
-              if (item.cur_lord_table)
-                item[semester.name + "|lord_table"] += item.cur_lord_table;
+            item["score"] = 0;
+            item["召會生活操練"] = 0;
+            item["神人生活操練"] = 0;
+            item["福音牧養操練"] = 0;
+            item["lord_table"] = 0;
+            for (
+              let i = GetWeeklyBaseFromTime(semester.start.toDate());
+              i <= GetWeeklyBaseFromTime(semester.end.toDate());
+              i++
+            ) {
+              if (i + "_召會生活操練" in item)
+                item["召會生活操練"] += item[i + "_召會生活操練"];
+              if (i + "_神人生活操練" in item)
+                item["神人生活操練"] += item[i + "_神人生活操練"];
+              if (i + "_福音牧養操練" in item)
+                item["福音牧養操練"] += item[i + "_福音牧養操練"];
+              if (i + "_score" in item) item["score"] += item[i + "_score"];
+              if (i + "_lord_table" in item)
+                item["lord_table"] += item[i + "_lord_table"];
             }
             tmp.push(Object.assign({ id: doc.id }, item));
             tmp[tmp.length - 1].group = groupMap[tmp[tmp.length - 1].group];
@@ -90,27 +84,27 @@ const MemberListBody = () => {
       _style: { width: "25px", flexWrap: "nowrap" },
     },
     {
-      key: semester.name + "|lord_table",
+      key: "lord_table",
       label: t("累計主日聚會"),
       _style: { width: "100px", flexWrap: "nowrap" },
     },
     {
-      key: semester.name + "|神人生活操練",
+      key: "神人生活操練",
       label: t("累計神人生活操練"),
       _style: { width: "100px", flexWrap: "nowrap" },
     },
     {
-      key: semester.name + "|福音牧養操練",
+      key: "福音牧養操練",
       label: t("累計福音牧養操練"),
       _style: { width: "100px", flexWrap: "nowrap" },
     },
     {
-      key: semester.name + "|召會生活操練",
+      key: "召會生活操練",
       label: t("累計召會生活操練"),
       _style: { width: "100px", flexWrap: "nowrap" },
     },
     {
-      key: semester.name + "|total_score",
+      key: "score",
       label: t("累計總分"),
       _style: { width: "50px", flexWrap: "nowrap" },
     },

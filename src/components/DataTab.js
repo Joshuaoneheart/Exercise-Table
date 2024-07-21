@@ -3,15 +3,9 @@ import {
   CCardBody,
   CCardHeader,
   CCol,
-  CDropdown,
-  CDropdownItem,
-  CDropdownMenu,
-  CDropdownToggle,
   CForm,
   CRow,
-  CTabContent,
-  CTabPane,
-  CTabs,
+  CButton,
 } from "@coreui/react";
 import { useEffect, useRef, useState } from "react";
 import Problem from "./Problem";
@@ -22,9 +16,8 @@ import { message } from "antd";
 import { useTranslation } from "react-i18next";
 import i18n from "i18n";
 
-const DataTabs = ({ data, account, default_data }) => {
+const DataTabs = ({ data, account, default_data, thisWeek, setThisWeek }) => {
   const { t } = useTranslation("translation", { i18n });
-  const [section, setSection] = useState(0);
   const [GF, setGF] = useState(null);
   const [GF_data, setGFData] = useState(null);
   const [api, ContextHolder] = message.useMessage();
@@ -40,7 +33,10 @@ const DataTabs = ({ data, account, default_data }) => {
       if (account) {
         setGFData(
           await DB.getByUrl(
-            "/accounts/" + account.id + "/GF/" + GetWeeklyBase()
+            "/accounts/" +
+              account.id +
+              "/GF/" +
+              (thisWeek ? GetWeeklyBase() : GetWeeklyBase() - 1)
           )
         );
       }
@@ -49,7 +45,6 @@ const DataTabs = ({ data, account, default_data }) => {
   }, [account]);
   var form = useRef();
   if (GF === null) return loading;
-  var tabs = [];
   var tabpanes = [];
   const calculateScore = async () => {
     if (account) {
@@ -62,10 +57,16 @@ const DataTabs = ({ data, account, default_data }) => {
         })
         .then(() => message.success("儲存成功", 1.5));
       let form_data = await DB.getByUrl(
-        "/accounts/" + account.id + "/data/" + GetWeeklyBase()
+        "/accounts/" +
+          account.id +
+          "/data/" +
+          (thisWeek ? GetWeeklyBase() : GetWeeklyBase() - 1)
       );
       let GF_data = await DB.getByUrl(
-        "/accounts/" + account.id + "/GF/" + GetWeeklyBase()
+        "/accounts/" +
+          account.id +
+          "/GF/" +
+          (thisWeek ? GetWeeklyBase() : GetWeeklyBase() - 1)
       );
       var v = { scores: 0 };
       let lord_table = 0;
@@ -132,44 +133,46 @@ const DataTabs = ({ data, account, default_data }) => {
           v.scores += score;
         }
       }
-      v.week_base = GetWeeklyBase();
+      v.week_base = thisWeek ? GetWeeklyBase() : GetWeeklyBase() - 1;
       await DB.updateByUrl(
-        "/accounts/" + account.id + "/data/" + GetWeeklyBase(),
+        "/accounts/" +
+          account.id +
+          "/data/" +
+          (thisWeek ? GetWeeklyBase() : GetWeeklyBase() - 1),
         v
       );
       await DB.updateByUrl("/info/week", {
         submitted: firebase.firestore.FieldValue.arrayUnion(account.id),
       });
-      await DB.updateByUrl("/accounts/" + account.id, {
-        score: v.scores,
-        cur_召會生活操練: v["召會生活操練"] ? v["召會生活操練"] : 0,
-        cur_神人生活操練: v["神人生活操練"] ? v["神人生活操練"] : 0,
-        cur_福音牧養操練: v["福音牧養操練"] ? v["福音牧養操練"] : 0,
-        cur_lord_table: lord_table,
-      });
+      let tmp = {};
+      tmp[(thisWeek ? GetWeeklyBase() : GetWeeklyBase() - 1) + "_score"] =
+        v.scores;
+      tmp[
+        (thisWeek ? GetWeeklyBase() : GetWeeklyBase() - 1) + "_召會生活操練"
+      ] = v["召會生活操練"] ? v["召會生活操練"] : 0;
+      tmp[
+        (thisWeek ? GetWeeklyBase() : GetWeeklyBase() - 1) + "_神人生活操練"
+      ] = v["神人生活操練"] ? v["神人生活操練"] : 0;
+      tmp[
+        (thisWeek ? GetWeeklyBase() : GetWeeklyBase() - 1) + "_福音牧養操練"
+      ] = v["福音牧養操練"] ? v["福音牧養操練"] : 0;
+      tmp[(thisWeek ? GetWeeklyBase() : GetWeeklyBase() - 1) + "_lord_table"] =
+        lord_table;
+      await DB.updateByUrl("/accounts/" + account.id, tmp);
       api.destroy("saving");
     }
   };
   for (var i = 0; i < data.sections.length; i++) {
-    tabs.push(
-      <CDropdownItem
-        key={i}
-        onClick={function (i) {
-          setSection(i);
-        }.bind(null, i)}
-      >
-        {t(data.sections[i])}
-      </CDropdownItem>
-    );
-    var tabContents = [];
+    var contents = [];
     for (var j = 0; j < data.value[i].length; j++) {
       var problem = data.value[i][j];
-      tabContents.push(
+      contents.push(
         <Problem
           calculateScore={calculateScore}
           account_id={account ? account.id : null}
           name={data.value[i].id}
           data={problem}
+          week={thisWeek ? GetWeeklyBase() : GetWeeklyBase() - 1}
           GF={GF}
           GF_data={GF_data}
           default_data={
@@ -181,23 +184,44 @@ const DataTabs = ({ data, account, default_data }) => {
         />
       );
     }
-    tabpanes.push(<CTabPane key={i}>{tabContents}</CTabPane>);
+    tabpanes.push(contents);
   }
   return (
     <CCard>
       {ContextHolder}
       <CCardHeader>
-        <CRow className="align-items-center">
+        <CRow>
           <CCol style={{ fontSize: "30px" }}>
-            {t("表單")} - {WeeklyBase2String(GetWeeklyBase())}
+            {t("表單")} -{" "}
+            {WeeklyBase2String(
+              thisWeek ? GetWeeklyBase() : GetWeeklyBase() - 1
+            )}
           </CCol>
-          <CCol align="end">
-            <CDropdown>
-              <CDropdownToggle color="info">
-                {t(data.sections[section])}
-              </CDropdownToggle>
-              <CDropdownMenu>{tabs}</CDropdownMenu>
-            </CDropdown>
+        </CRow>
+        <CRow style={{ marginTop: "10px" }} className="align-items-center">
+          <CCol>
+            <CRow
+              className="align-items-center"
+              style={{ justifyContent: "center" }}
+            >
+              <CButton
+                className="week-button"
+                variant="outline"
+                active={!thisWeek}
+                onClick={() => setThisWeek(false)}
+              >
+                {t("上週")}
+              </CButton>
+              <CButton
+                className="week-button"
+                style={{ marginLeft: "10px" }}
+                variant="outline"
+                active={thisWeek}
+                onClick={() => setThisWeek(true)}
+              >
+                {t("本週")}
+              </CButton>
+            </CRow>
           </CCol>
         </CRow>
       </CCardHeader>
@@ -208,9 +232,12 @@ const DataTabs = ({ data, account, default_data }) => {
             e.preventDefault();
           }}
         >
-          <CTabs activeTab={section}>
-            <CTabContent>{tabpanes}</CTabContent>
-          </CTabs>
+          {tabpanes.map((x, i) => (
+            <>
+              <h2>{t(data.sections[i])}</h2> <hr />
+              {x}
+            </>
+          ))}
         </CForm>
       </CCardBody>
     </CCard>

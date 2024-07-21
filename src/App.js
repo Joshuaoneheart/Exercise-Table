@@ -16,29 +16,12 @@ import { GetWeeklyBase } from "utils/date";
 import { GF_GRADE_NEXT } from "const/GF";
 import { message } from "antd";
 import SemesterContext from "hooks/semester";
-import { GetSemesterByWeeklyBase } from "utils/semester";
 // Containers
 const TheLayout = lazy(() => import("containers/TheLayout"));
 
 // Pages
-const Login = lazy(() => import("views/pages/login/Login"));
-const Register = lazy(() => import("views/pages/register/Register"));
-const Page404 = lazy(() => import("views/pages/page404/Page404"));
-const Page500 = lazy(() => import("views/pages/page500/Page500"));
-
-const GatherProblemsBySection = (d) => {
-  var data = { value: [], sections: [] };
-  for (var i = 0; i < d.value.length; i++) {
-    // assign unique id to problem
-    d.value[i].id = d.ids[i];
-    if (!data.sections.includes(d.value[i].section)) {
-      data.sections.push(d.value[i].section);
-      data.value.push([]);
-    }
-    data.value[data.sections.indexOf(d.value[i].section)].push(d.value[i]);
-  }
-  return data;
-};
+const Login = lazy(() => import("containers/Login"));
+const Register = lazy(() => import("containers/Register"));
 
 const SignedIn = (props) => {
   var [account, setAccount] = useState(null);
@@ -128,146 +111,6 @@ const SignedIn = (props) => {
               });
             }
           }
-          if (GetWeeklyBase() !== counter.week_counter) {
-            let problem_docs = await DB.getByUrl("/form");
-            let accounts = await DB.getByUrl("/accounts");
-            let problems = { value: [], ids: [] };
-            await problem_docs.forEach((doc) => {
-              problems.value.push(doc.data());
-              problems.ids.push(doc.id);
-            });
-            let account_data = [];
-            let GF_data = [];
-            let GF_account_map = {};
-            let GF_stats = {};
-            const lord_table_id = "0it0L8KlnfUVO1i4VUqi";
-            // Get sections
-            problems = GatherProblemsBySection(problems);
-            await accounts.forEach((doc) => {
-              account_data.push(Object.assign(doc.data(), { id: doc.id }));
-            });
-            await GFs.forEach((doc) => {
-              GF_data.push(Object.assign(doc.data(), { id: doc.id }));
-            });
-            for (let i = 0; i < GF_data.length; i++) {
-              GF_account_map[GF_data[i].id] = GF_data[i].shepherd
-                ? GF_data[i].shepherd
-                : [];
-              GF_stats[GF_data[i].id] = {};
-            }
-            for (let i = counter.week_counter; i < GetWeeklyBase(); i++) {
-              const semester = GetSemesterByWeeklyBase(i, semesters);
-              if (!semester) continue;
-              for (let i = 0; i < GF_data.length; i++) {
-                if (!(semester.name + "|主日聚會" in GF_stats[GF_data[i].id]))
-                  GF_stats[GF_data[i].id][semester.name + "|主日聚會"] =
-                    GF_data[i][semester.name + "|主日聚會"]
-                      ? GF_data[i][semester.name + "|主日聚會"]
-                      : 0;
-                if (!(semester.name + "|家聚會" in GF_stats[GF_data[i].id]))
-                  GF_stats[GF_data[i].id][semester.name + "|家聚會"] = GF_data[
-                    i
-                  ][semester.name + "|家聚會"]
-                    ? GF_data[i][semester.name + "|家聚會"]
-                    : 0;
-                if (!(semester.name + "|小排" in GF_stats[GF_data[i].id]))
-                  GF_stats[GF_data[i].id][semester.name + "|小排"] = GF_data[i][
-                    semester.name + "|小排"
-                  ]
-                    ? GF_data[i][semester.name + "|小排"]
-                    : 0;
-              }
-              for (let j = 0; j < account_data.length; j++) {
-                let GF_data = await DB.getByUrl(
-                  "/accounts/" + account_data[j].id + "/GF/" + i
-                );
-                let data = await DB.getByUrl(
-                  "/accounts/" + account_data[j].id + "/data/" + i
-                );
-                if (data) {
-                  if (!(semester.name + "|total_score" in account_data[j]))
-                    account_data[j][semester.name + "|total_score"] = 0;
-                  if (!(semester.name + "|lord_table" in account_data[j]))
-                    account_data[j][semester.name + "|lord_table"] = 0;
-                  account_data[j][semester.name + "|lord_table"] +=
-                    data[lord_table_id] && data[lord_table_id].ans === "有"
-                      ? 1
-                      : 0;
-                  if (data.scores)
-                    account_data[j][semester.name + "|total_score"] +=
-                      data.scores;
-                  for (let section of problems.sections) {
-                    if (!(semester.name + "|" + section in account_data[j]))
-                      account_data[j][semester.name + "|" + section] = 0;
-                    if (!data[section]) continue;
-                    account_data[j][semester.name + "|" + section] +=
-                      data[section];
-                  }
-                }
-                if (GF_data)
-                  for (let [k, v] of Object.entries(GF_data)) {
-                    if (k === "week_base") continue;
-                    for (let GF_id of v) {
-                      let id;
-                      if (typeof GF_id === "string") id = GF_id;
-                      else id = GF_id.id;
-                      if (!GF_account_map[id].includes(account_data[j].id))
-                        GF_account_map[id].push(account_data[j].id);
-                      GF_stats[id][semester.name + "|" + k]++;
-                    }
-                  }
-              }
-            }
-            for (let [GF_id, stats] of Object.entries(GF_stats)) {
-              await firebase
-                .firestore()
-                .collection("GF")
-                .doc(GF_id)
-                .update(
-                  Object.assign({ shepherd: GF_account_map[GF_id] }, stats)
-                );
-            }
-            // Get current week data
-            for (let i = 0; i < account_data.length; i++) {
-              let tmp = {};
-              let data = await DB.getByUrl(
-                "/accounts/" + account_data[i].id + "/data/" + GetWeeklyBase()
-              );
-              for (let [k, v] of Object.entries(account_data[i])) {
-                for (let section of problems.sections) {
-                  if (k.includes(section)) tmp[k] = v;
-                }
-                if (k.includes("lord_table") || k.includes("total_score"))
-                  tmp[k] = v;
-              }
-              tmp["score"] = 0;
-              tmp["cur_召會生活操練"] = 0;
-              tmp["cur_神人生活操練"] = 0;
-              tmp["cur_福音牧養操練"] = 0;
-              tmp["cur_lord_table"] = 0;
-              if (data) {
-                tmp.score = data.scores ? data.scores : 0;
-                tmp["cur_召會生活操練"] = data["召會生活操練"]
-                  ? data["召會生活操練"]
-                  : 0;
-                tmp["cur_神人生活操練"] = data["神人生活操練"]
-                  ? data["神人生活操練"]
-                  : 0;
-                tmp["cur_福音牧養操練"] = data["福音牧養操練"]
-                  ? data["福音牧養操練"]
-                  : 0;
-                tmp["cur_lord_table"] =
-                  data[lord_table_id] && data[lord_table_id].ans === "有"
-                    ? 1
-                    : 0;
-              }
-              await firebase
-                .firestore()
-                .collection("accounts")
-                .doc(account_data[i].id)
-                .update(tmp);
-            }
-          }
         }
         await firebase
           .firestore()
@@ -311,18 +154,6 @@ const App = () => {
               render={(props) => {
                 return <Register firebase={firebase} {...props} />;
               }}
-            />
-            <Route
-              exact
-              path="/404"
-              name="Page 404"
-              render={(props) => <Page404 {...props} />}
-            />
-            <Route
-              exact
-              path="/500"
-              name="Page 500"
-              render={(props) => <Page500 {...props} />}
             />
             <Route
               path="/"

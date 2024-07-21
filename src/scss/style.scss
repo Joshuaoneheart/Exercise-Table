@@ -10,3 +10,19 @@
 
 // If you want to add something do it here
 @import "custom";
+
+.week-button {
+     width: 45%; 
+     height: 35px;
+     border-color: #3c4b64 !important;
+     color: #3c4b64 !important;
+}
+
+.week-button.active {
+    background-color: #3c4b64 !important;
+    color: #ffffff !important;
+}
+
+.week-button:focus {
+    box-shadow:  0 0 0 0.2rem rgba(60, 75, 100, 0.25) !important;
+}

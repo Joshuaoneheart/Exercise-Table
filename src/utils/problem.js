@@ -30,58 +30,65 @@ const SummaryScore = async (data, problems, id) => {
   };
   const lord_table_id = "0it0L8KlnfUVO1i4VUqi";
   // record if the problem is used in this semester
-  let problem_used = {};
-  for (let problem of problems) {
-    problem_used[problem.id] = 0;
-  }
+  let column_keys = [];
+  let column_labels = [];
+  let column_problems = [];
   for (let i = 0; i < data.value.length; i++) {
     items.push({
       week_base: WeeklyBase2String(parseInt(data.ids[i])),
       score: 0,
     });
     for (let problem of problems) {
-      if (problem.type === "Grid") {
-        for (let suboption of problem["子選項"]) {
-          items[i][problem.id + "-" + suboption] = "";
-        }
-      } else if (problem.type === "MultiGrid") {
-        for (let option of problem["選項"]) {
-          items[i][problem.id + "-" + option] = 0;
-        }
-      } else if (problem.type === "MultiChoice") items[i][problem.id] = "";
-      else if (problem.type === "Number" || problem.type === "MultiAnswer")
-        items[i][problem.id] = 0;
-      if (problem.type === "GF") items[i][problem.id] = 0;
       if (problem.type === "GF" && problem.title in data.value[i]) {
-        problem_used[problem.id] += 1;
         items[i][problem.id] = data.value[i][problem.title].length;
+        if (!column_keys.includes(problem.id)) {
+          column_keys.push(problem.id);
+          column_labels.push("邀約 - " + problem.title);
+          column_problems.push(problem);
+        }
       }
       if (!(problem.id in data.value[i])) continue;
       if (problem.type === "MultiChoice") {
         items[i][problem.id] = data.value[i][problem.id].ans;
-        problem_used[problem.id] += 1;
+        if (!column_keys.includes(problem.id)) {
+          column_keys.push(problem.id);
+          column_labels.push(problem.title);
+          column_problems.push(problem);
+        }
       } else if (problem.type === "MultiAnswer") {
         items[i][problem.id] = data.value[i][problem.id].ans.length;
-        problem_used[problem.id] += 1;
+        if (!column_keys.includes(problem.id)) {
+          column_keys.push(problem.id);
+          column_labels.push(problem.title);
+          column_problems.push(problem);
+        }
       } else if (problem.type === "Grid") {
-        problem_used[problem.id] += 1;
-        for (let suboption of problem["子選項"]) {
-          if (suboption in data.value[i][problem.id]) {
-            items[i][problem.id + "-" + suboption] =
-              data.value[i][problem.id][suboption].ans;
-          }
+        for (let suboption of Object.keys(data.value[i][problem.id])) {
+          if (!column_keys.includes(problem.id + " - " + suboption)) {
+            column_keys.push(problem.id + " - " + suboption);
+            column_labels.push(problem.title + " - " + suboption);
+          column_problems.push(problem);
+        }
+          items[i][problem.id + " - " + suboption] =
+            data.value[i][problem.id][suboption].ans;
         }
       } else if (problem.type === "MultiGrid") {
-        problem_used[problem.id] += 1;
-        for (let option of problem["選項"]) {
-          if (option in data.value[i][problem.id]) {
-            items[i][problem.id + "-" + option] =
-              data.value[i][problem.id][option].ans.length;
+        for (let option of Object.keys(data.value[i][problem.id])) {
+          if (!column_keys.includes(problem.id + " - " + option)) {
+            column_keys.push(problem.id + " - " + option);
+            column_labels.push(problem.title + " - " + option);
+          column_problems.push(problem);
           }
+          items[i][problem.id + " - " + option] =
+            data.value[i][problem.id][option].ans.length;
         }
       } else if (problem.type === "Number") {
-        problem_used[problem.id] += 1;
         items[i][problem.id] = data.value[i][problem.id].ans;
+        if (!column_keys.includes(problem.id)) {
+          column_keys.push(problem.id);
+          column_labels.push(problem.title);
+          column_problems.push(problem);
+        }
       }
     }
     items[i].score = data.value[i].scores;
@@ -112,16 +119,11 @@ const SummaryScore = async (data, problems, id) => {
           data.value[i][lord_table_id].ans === "有" ? 1 : 0;
     }
   }
-
-  for (let problem of problems) {
-    for (let i = 0; i < items.length; i++) {
-      if (problem_used[problem.id] === 0) {
-        for (let k of Object.keys(items[i])) {
-          if (k.includes(problem.id)) delete items[i][k];
-        }
-      }
+  for (let item of items) {
+    for (let column of column_keys) {
+      if (item[column] === undefined) item[column] = "";
     }
   }
-  return { items, result, problem_used };
+  return { items, result, column_keys, column_labels, column_problems };
 };
 export { SummaryScore, GetProblems };

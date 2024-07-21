@@ -15,11 +15,9 @@ import {
 } from "@coreui/react";
 import { useContext, useEffect, useState } from "react";
 import {
-  GetWeeklyBase,
-  GetWeeklyBaseFromTime,
-  WeeklyBase2String,
+  WeeklyBase2YearString,
 } from "utils/date";
-import { DB, firebase } from "db/firebase";
+import { firebase } from "db/firebase";
 import ModifyGFModal from "components/ModifyGFModal";
 import CIcon from "@coreui/icons-react";
 import { GetAccountsMap } from "utils/account";
@@ -39,85 +37,64 @@ const GFCardBody = ({ init_data }) => {
       let accountsMap = await GetAccountsMap();
       setAccountsMap(accountsMap);
       let tmp = Object.assign({}, init_data);
-      for (let i = 0; i < Object.keys(accountsMap).length; i++) {
-        let GF_data = await DB.getByUrl(
-          "/accounts/" + Object.keys(accountsMap)[i] + "/GF/" + GetWeeklyBase()
-        );
-
-        if (GF_data) {
-          for (let [k, v] of Object.entries(GF_data)) {
-            if (k === "week_base") continue;
-            if (Array.isArray(v))
-              for (let GF_id of v) {
-                if (GF_id === init_data.id || GF_id.id === init_data.id) {
-                  if (!tmp.shepherd) tmp.shepherd = [];
-                  if (!tmp.shepherd.includes(Object.keys(accountsMap)[i]))
-                    tmp.shepherd.push(Object.keys(accountsMap)[i]);
-                  if (!tmp[k]) tmp[k] = 0;
-                  tmp[k]++;
-                }
-              }
+      let shepherd = [];
+      let data_by_week = {};
+      let home_meeting = 0;
+      let group_meeting = 0;
+      let lord_table = 0;
+      const GF_data = await firebase.firestore().collectionGroup("GF").get();
+      for (let doc of GF_data.docs) {
+        if (doc.ref.path.split("/")[0] !== "accounts") continue;
+        let shepherd_id = doc.ref.path.split("/")[1];
+        let doc_data = doc.data();
+        if (!(parseInt(doc.id) in data_by_week))
+          data_by_week[parseInt(doc.id)] = {
+            week: parseInt(doc.id),
+            主日聚會: [],
+            小排: [],
+            家聚會: [],
+          };
+        if (
+          doc_data["主日聚會"] &&
+          doc_data["主日聚會"].includes(init_data.id)
+        ) {
+          lord_table++;
+          data_by_week[doc.id]["主日聚會"].push(shepherd_id);
+          shepherd.push(shepherd_id);
+        } else if (
+          doc_data["小排"] &&
+          doc_data["小排"].includes(init_data.id)
+        ) {
+          group_meeting++;
+          data_by_week[doc.id]["小排"].push(shepherd_id);
+          shepherd.push(shepherd_id);
+        } else if (
+          doc_data["家聚會"] &&
+          doc_data["家聚會"].includes(init_data.id)
+        ) {
+          home_meeting++;
+          data_by_week[doc.id]["家聚會"].push(shepherd_id);
+          shepherd.push(shepherd_id);
+        } else {
+          if (!doc_data["家聚會"]) continue;
+          for (let tmp of doc_data["家聚會"]) {
+            if (typeof tmp !== "string" && tmp.id === init_data.id) {
+              home_meeting++;
+              data_by_week[doc.id]["家聚會"].push({
+                id: shepherd_id,
+                note: tmp.note,
+              });
+              shepherd.push(shepherd_id);
+            }
           }
         }
       }
+      // make shepherd unique
+      tmp.shepherd = [...new Set(shepherd)];
+      tmp["主日聚會"] = lord_table;
+      tmp["小排"] = group_meeting;
+      tmp["家聚會"] = home_meeting;
       setData(tmp);
-      let data_by_week = {};
-      if (tmp.shepherd)
-        for (let shepherd of tmp.shepherd) {
-          let docs = await firebase
-            .firestore()
-            .collection("accounts")
-            .doc(shepherd)
-            .collection("GF")
-            .where(
-              "week_base",
-              ">=",
-              GetWeeklyBaseFromTime(semester.start.toDate())
-            )
-            .where(
-              "week_base",
-              "<=",
-              GetWeeklyBaseFromTime(semester.end.toDate())
-            )
-            .get();
-          if (docs)
-            await docs.forEach((doc) => {
-              if (!(parseInt(doc.id) in data_by_week))
-                data_by_week[parseInt(doc.id)] = {
-                  week: parseInt(doc.id),
-                };
-              data_by_week[parseInt(doc.id)][semester.name + "|主日聚會"] = [];
-              data_by_week[parseInt(doc.id)][semester.name + "|家聚會"] = [];
-              data_by_week[parseInt(doc.id)][semester.name + "|小排"] = [];
-              if (
-                doc.data()["主日聚會"] &&
-                doc.data()["主日聚會"].includes(tmp.id)
-              )
-                data_by_week[parseInt(doc.id)][
-                  semester.name + "|主日聚會"
-                ].push(shepherd);
-
-              if (doc.data()["家聚會"])
-                for (let d of doc.data()["家聚會"]) {
-                  if (
-                    (typeof d === "string" && d === tmp.id) ||
-                    d.id === tmp.id
-                  ) {
-                    data_by_week[parseInt(doc.id)][
-                      semester.name + "|家聚會"
-                    ].push({
-                      id: shepherd,
-                      note: d.note,
-                    });
-                    break;
-                  }
-                }
-              if (doc.data()["小排"] && doc.data()["小排"].includes(tmp.id))
-                data_by_week[parseInt(doc.id)][semester.name + "|小排"].push(
-                  shepherd
-                );
-            });
-        }
       let data = [];
       for (let v of Object.values(data_by_week)) {
         data.push(v);
@@ -216,27 +193,19 @@ const GFCardBody = ({ init_data }) => {
               <CCol lg="3">
                 <b>{t("累計主日聚會")}</b>
               </CCol>
-              <CCol>
-                {data[semester.name + "|主日聚會"] &&
-                  data[semester.name + "|主日聚會"]}
-              </CCol>
+              <CCol>{data["主日聚會"] && data["主日聚會"]}</CCol>
             </CRow>
             <CRow>
               <CCol lg="3">
                 <b>{t("累計家聚會")}</b>
               </CCol>
-              <CCol>
-                {data[semester.name + "|家聚會"] &&
-                  data[semester.name + "|家聚會"]}
-              </CCol>
+              <CCol>{data["家聚會"] && data["家聚會"]}</CCol>
             </CRow>
             <CRow>
               <CCol lg="3">
                 <b>{t("累計小排")}</b>
               </CCol>
-              <CCol>
-                {data[semester.name + "|小排"] && data[semester.name + "|小排"]}
-              </CCol>
+              <CCol>{data["小排"] && data["小排"]}</CCol>
             </CRow>
             <CRow>
               <CCol lg="3">
@@ -254,12 +223,12 @@ const GFCardBody = ({ init_data }) => {
         items={tableData}
         scopedSlots={{
           week: (item) => {
-            return <td>{WeeklyBase2String(item.week)}</td>;
+            return <td>{WeeklyBase2YearString(item.week)}</td>;
           },
           主日聚會: (item) => {
             return (
               <td>
-                {item[semester.name + "|主日聚會"]
+                {item["主日聚會"]
                   .map((x) => accountsMap[x])
                   .filter((x) => x)
                   .join(",")}
@@ -269,7 +238,7 @@ const GFCardBody = ({ init_data }) => {
           家聚會: (item) => {
             let tmp = [];
             let i = 0;
-            for (let d of item[semester.name + "|家聚會"]) {
+            for (let d of item["家聚會"]) {
               if (i !== 0) tmp.push(",");
               if (typeof d === "string" && accountsMap[d])
                 tmp.push(accountsMap[d]);
@@ -287,7 +256,7 @@ const GFCardBody = ({ init_data }) => {
           小排: (item) => {
             return (
               <td>
-                {item[semester.name + "|小排"]
+                {item["小排"]
                   .map((x) => accountsMap[x])
                   .filter((x) => x)
                   .join(",")}

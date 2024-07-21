@@ -22,11 +22,10 @@ const BibleGroupList = lazy(() =>
   import("../containers/Admin/BibleGroupList/BibleGroupList")
 );
 
-const Profile = lazy(() => import("../containers/Admin/Profile/Profile"));
+const Profile = lazy(() => import("../containers/Profile"));
 const Settings = lazy(() => import("../containers/Admin/Settings/Settings"));
 const Form = lazy(() => import("../containers/Admin/ReviewForm/ReviewForm"));
-const Dashboard = lazy(() => import("../views/dashboard/Dashboard"));
-const Users = lazy(() => import("../views/users/Users"));
+const Users = lazy(() => import("../containers/Admin/Users/Users"));
 const GF = lazy(() => import("../containers/GF"));
 const GFList = lazy(() => import("../containers/GFList"));
 const AnnouncementList = lazy(() => import("../containers/AnnouncementList"));
@@ -35,7 +34,6 @@ const Summary = lazy(() => import("../containers/Admin/Summary/Summary"));
 
 const routes = [
   { path: "/", exact: true, name: "Home", component: AnnouncementList },
-  { path: "/dashboard", name: "Dashboard", component: Dashboard },
   { path: "/users", exact: true, name: "Users", component: Users },
   {
     path: "/modifyresidence",
