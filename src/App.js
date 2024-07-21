@@ -16,27 +16,12 @@ import { GetWeeklyBase } from "utils/date";
 import { GF_GRADE_NEXT } from "const/GF";
 import { message } from "antd";
 import SemesterContext from "hooks/semester";
-import { GetSemesterByWeeklyBase } from "utils/semester";
 // Containers
 const TheLayout = lazy(() => import("containers/TheLayout"));
 
 // Pages
 const Login = lazy(() => import("containers/Login"));
 const Register = lazy(() => import("containers/Register"));
-
-const GatherProblemsBySection = (d) => {
-  var data = { value: [], sections: [] };
-  for (var i = 0; i < d.value.length; i++) {
-    // assign unique id to problem
-    d.value[i].id = d.ids[i];
-    if (!data.sections.includes(d.value[i].section)) {
-      data.sections.push(d.value[i].section);
-      data.value.push([]);
-    }
-    data.value[data.sections.indexOf(d.value[i].section)].push(d.value[i]);
-  }
-  return data;
-};
 
 const SignedIn = (props) => {
   var [account, setAccount] = useState(null);

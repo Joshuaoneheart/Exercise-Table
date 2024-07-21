@@ -42,7 +42,6 @@ const DataTabs = ({ data, account, default_data, thisWeek, setThisWeek }) => {
   }, [account]);
   var form = useRef();
   if (GF === null) return loading;
-  var tabs = [];
   var tabpanes = [];
   const calculateScore = async () => {
     if (account) {

@@ -121,7 +121,7 @@ const SummaryScore = async (data, problems, id) => {
   }
   for (let item of items) {
     for (let column of column_keys) {
-      if (item[column] == undefined) item[column] = "";
+      if (item[column] === undefined) item[column] = "";
     }
   }
   return { items, result, column_keys, column_labels, column_problems };
