@@ -39,27 +39,21 @@ const GFCardBody = ({ init_data }) => {
       let accountsMap = await GetAccountsMap();
       setAccountsMap(accountsMap);
       let tmp = Object.assign({}, init_data);
-      for (let i = 0; i < Object.keys(accountsMap).length; i++) {
-        let GF_data = await DB.getByUrl(
-          "/accounts/" + Object.keys(accountsMap)[i] + "/GF/" + GetWeeklyBase()
-        );
-
-        if (GF_data) {
-          for (let [k, v] of Object.entries(GF_data)) {
-            if (k === "week_base") continue;
-            if (Array.isArray(v))
-              for (let GF_id of v) {
-                if (GF_id === init_data.id || GF_id.id === init_data.id) {
-                  if (!tmp.shepherd) tmp.shepherd = [];
-                  if (!tmp.shepherd.includes(Object.keys(accountsMap)[i]))
-                    tmp.shepherd.push(Object.keys(accountsMap)[i]);
-                  if (!tmp[k]) tmp[k] = 0;
-                  tmp[k]++;
-                }
-              }
+      let shepherd = []
+      const GF_data = await firebase.firestore().collectionGroup("GF").get()
+      for (let doc of GF_data.docs) {
+        if (doc.ref.path.split("/")[0] !== "accounts") continue;
+        let id = doc.ref.path.split("/")[1]
+        let doc_data = doc.data()
+        if ((doc_data["主日聚會"] && doc_data["主日聚會"].includes(init_data.id)) || (doc_data["小排"] && doc_data["小排"].includes(init_data.id)) || (doc_data["家聚會"] && doc_data["家聚會"].includes(init_data.id))) shepherd.push(id)
+        else {
+          if (!doc_data["家聚會"]) continue;
+          for (let tmp of doc_data["家聚會"]) {
+            if (typeof tmp !== "string" && tmp.id === init_data.id) shepherd.push(id);
           }
         }
       }
+      tmp.shepherd = [...new Set(shepherd)]
       setData(tmp);
       let data_by_week = {};
       if (tmp.shepherd)

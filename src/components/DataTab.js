@@ -127,19 +127,19 @@ const DataTabs = ({ data, account, default_data, thisWeek, setThisWeek }) => {
       }
       v.week_base = thisWeek ? GetWeeklyBase() : GetWeeklyBase() - 1;
       await DB.updateByUrl(
-        "/accounts/" + account.id + "/data/" + thisWeek ? GetWeeklyBase() : GetWeeklyBase() - 1),
+        "/accounts/" + account.id + "/data/" + (thisWeek ? GetWeeklyBase() : GetWeeklyBase() - 1),
         v
       );
       await DB.updateByUrl("/info/week", {
         submitted: firebase.firestore.FieldValue.arrayUnion(account.id),
       });
-      await DB.updateByUrl("/accounts/" + account.id, {
-        score: v.scores,
-        cur_召會生活操練: v["召會生活操練"] ? v["召會生活操練"] : 0,
-        cur_神人生活操練: v["神人生活操練"] ? v["神人生活操練"] : 0,
-        cur_福音牧養操練: v["福音牧養操練"] ? v["福音牧養操練"] : 0,
-        cur_lord_table: lord_table,
-      });
+      let tmp = {};
+      tmp[(thisWeek ? GetWeeklyBase() : GetWeeklyBase() - 1) + "_score"] = v.scores;
+      tmp[(thisWeek ? GetWeeklyBase() : GetWeeklyBase() - 1) + "_召會生活操練"] = v["召會生活操練"] ? v["召會生活操練"] : 0;
+      tmp[(thisWeek ? GetWeeklyBase() : GetWeeklyBase() - 1) + "_神人生活操練"] = v["神人生活操練"] ? v["神人生活操練"] : 0;
+      tmp[(thisWeek ? GetWeeklyBase() : GetWeeklyBase() - 1) + "_福音牧養操練"] = v["福音牧養操練"] ? v["福音牧養操練"] : 0;
+      tmp[(thisWeek ? GetWeeklyBase() : GetWeeklyBase() - 1) + "_lord_table"] = lord_table;
+      await DB.updateByUrl("/accounts/" + account.id, tmp);
       api.destroy("saving");
     }
   };
