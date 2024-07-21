@@ -5,6 +5,7 @@ import {
   CCol,
   CForm,
   CRow,
+  CButton
 } from "@coreui/react";
 import { useEffect, useRef, useState } from "react";
 import Problem from "./Problem";
@@ -15,7 +16,7 @@ import { message } from "antd";
 import { useTranslation } from "react-i18next";
 import i18n from "i18n";
 
-const DataTabs = ({ data, account, default_data }) => {
+const DataTabs = ({ data, account, default_data, thisWeek, setThisWeek }) => {
   const { t } = useTranslation("translation", { i18n });
   const [GF, setGF] = useState(null);
   const [GF_data, setGFData] = useState(null);
@@ -54,10 +55,10 @@ const DataTabs = ({ data, account, default_data }) => {
         })
         .then(() => message.success("儲存成功", 1.5));
       let form_data = await DB.getByUrl(
-        "/accounts/" + account.id + "/data/" + GetWeeklyBase()
+        "/accounts/" + account.id + "/data/" + (thisWeek ? GetWeeklyBase() : GetWeeklyBase() - 1)
       );
       let GF_data = await DB.getByUrl(
-        "/accounts/" + account.id + "/GF/" + GetWeeklyBase()
+        "/accounts/" + account.id + "/GF/" + (thisWeek ? GetWeeklyBase() : GetWeeklyBase() - 1)
       );
       var v = { scores: 0 };
       let lord_table = 0;
@@ -97,9 +98,9 @@ const DataTabs = ({ data, account, default_data }) => {
                 if (form_data[problem.id][suboptions[k]])
                   score += parseInt(
                     problem.score[
-                      problem["選項"].indexOf(
-                        form_data[problem.id][suboptions[k]].ans
-                      )
+                    problem["選項"].indexOf(
+                      form_data[problem.id][suboptions[k]].ans
+                    )
                     ]
                   );
               }
@@ -108,7 +109,7 @@ const DataTabs = ({ data, account, default_data }) => {
               if (!form_data || !form_data[problem.id]) continue;
               score = parseInt(
                 problem.score[
-                  problem["選項"].indexOf(form_data[problem.id].ans)
+                problem["選項"].indexOf(form_data[problem.id].ans)
                 ]
               );
               break;
@@ -124,9 +125,9 @@ const DataTabs = ({ data, account, default_data }) => {
           v.scores += score;
         }
       }
-      v.week_base = GetWeeklyBase();
+      v.week_base = thisWeek ? GetWeeklyBase() : GetWeeklyBase() - 1;
       await DB.updateByUrl(
-        "/accounts/" + account.id + "/data/" + GetWeeklyBase(),
+        "/accounts/" + account.id + "/data/" + thisWeek ? GetWeeklyBase() : GetWeeklyBase() - 1),
         v
       );
       await DB.updateByUrl("/info/week", {
@@ -152,6 +153,7 @@ const DataTabs = ({ data, account, default_data }) => {
           account_id={account ? account.id : null}
           name={data.value[i].id}
           data={problem}
+          week={thisWeek ? GetWeeklyBase() : GetWeeklyBase() - 1}
           GF={GF}
           GF_data={GF_data}
           default_data={
@@ -169,9 +171,17 @@ const DataTabs = ({ data, account, default_data }) => {
     <CCard>
       {ContextHolder}
       <CCardHeader>
-        <CRow className="align-items-center">
+        <CRow>
           <CCol style={{ fontSize: "30px" }}>
-            {t("表單")} - {WeeklyBase2String(GetWeeklyBase())}
+            {t("表單")} - {WeeklyBase2String(thisWeek ? GetWeeklyBase() : GetWeeklyBase() - 1)}
+          </CCol>
+        </CRow>
+        <CRow style={{ marginTop: "10px" }} className="align-items-center">
+          <CCol>
+            <CRow className="align-items-center" style={{ justifyContent: "center" }}>
+              <CButton className="week-button" variant="outline" active={!thisWeek} onClick={() => setThisWeek(false)}>{t("上週")}</CButton>
+              <CButton className="week-button" style={{ marginLeft: "10px" }} variant="outline" active={thisWeek} onClick={() => setThisWeek(true)}>{t("本週")}</CButton>
+            </CRow>
           </CCol>
         </CRow>
       </CCardHeader>
@@ -181,7 +191,7 @@ const DataTabs = ({ data, account, default_data }) => {
           onSubmit={(e) => {
             e.preventDefault();
           }}
-        >{tabpanes.map((x, i)=> <><h2>{data.sections[i]}</h2> <hr />{x}</>)}
+        >{tabpanes.map((x, i) => <><h2>{t(data.sections[i])}</h2> <hr />{x}</>)}
         </CForm>
       </CCardBody>
     </CCard>

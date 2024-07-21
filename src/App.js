@@ -204,7 +204,7 @@ const SignedIn = (props) => {
                 }
                 if (GF_data)
                   for (let [k, v] of Object.entries(GF_data)) {
-                    if (k === "week_base") continue;
+                    if (k === "week_base" || k === "Test") continue;
                     for (let GF_id of v) {
                       let id;
                       if (typeof GF_id === "string") id = GF_id;

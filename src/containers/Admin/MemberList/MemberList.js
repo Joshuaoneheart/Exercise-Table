@@ -8,7 +8,6 @@ import {
 } from "@coreui/react";
 import { useContext, useEffect, useState } from "react";
 import { firebase, DB } from "db/firebase";
-import { GetWeeklyBase } from "utils/date";
 import { useHistory } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import i18n from "i18n";
