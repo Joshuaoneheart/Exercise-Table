@@ -5,7 +5,7 @@ import {
   CCol,
   CForm,
   CRow,
-  CButton
+  CButton,
 } from "@coreui/react";
 import { useEffect, useRef, useState } from "react";
 import Problem from "./Problem";
@@ -33,7 +33,10 @@ const DataTabs = ({ data, account, default_data, thisWeek, setThisWeek }) => {
       if (account) {
         setGFData(
           await DB.getByUrl(
-            "/accounts/" + account.id + "/GF/" + GetWeeklyBase()
+            "/accounts/" +
+              account.id +
+              "/GF/" +
+              (thisWeek ? GetWeeklyBase() : GetWeeklyBase() - 1)
           )
         );
       }
@@ -54,10 +57,16 @@ const DataTabs = ({ data, account, default_data, thisWeek, setThisWeek }) => {
         })
         .then(() => message.success("儲存成功", 1.5));
       let form_data = await DB.getByUrl(
-        "/accounts/" + account.id + "/data/" + (thisWeek ? GetWeeklyBase() : GetWeeklyBase() - 1)
+        "/accounts/" +
+          account.id +
+          "/data/" +
+          (thisWeek ? GetWeeklyBase() : GetWeeklyBase() - 1)
       );
       let GF_data = await DB.getByUrl(
-        "/accounts/" + account.id + "/GF/" + (thisWeek ? GetWeeklyBase() : GetWeeklyBase() - 1)
+        "/accounts/" +
+          account.id +
+          "/GF/" +
+          (thisWeek ? GetWeeklyBase() : GetWeeklyBase() - 1)
       );
       var v = { scores: 0 };
       let lord_table = 0;
@@ -97,9 +106,9 @@ const DataTabs = ({ data, account, default_data, thisWeek, setThisWeek }) => {
                 if (form_data[problem.id][suboptions[k]])
                   score += parseInt(
                     problem.score[
-                    problem["選項"].indexOf(
-                      form_data[problem.id][suboptions[k]].ans
-                    )
+                      problem["選項"].indexOf(
+                        form_data[problem.id][suboptions[k]].ans
+                      )
                     ]
                   );
               }
@@ -108,7 +117,7 @@ const DataTabs = ({ data, account, default_data, thisWeek, setThisWeek }) => {
               if (!form_data || !form_data[problem.id]) continue;
               score = parseInt(
                 problem.score[
-                problem["選項"].indexOf(form_data[problem.id].ans)
+                  problem["選項"].indexOf(form_data[problem.id].ans)
                 ]
               );
               break;
@@ -126,18 +135,29 @@ const DataTabs = ({ data, account, default_data, thisWeek, setThisWeek }) => {
       }
       v.week_base = thisWeek ? GetWeeklyBase() : GetWeeklyBase() - 1;
       await DB.updateByUrl(
-        "/accounts/" + account.id + "/data/" + (thisWeek ? GetWeeklyBase() : GetWeeklyBase() - 1),
+        "/accounts/" +
+          account.id +
+          "/data/" +
+          (thisWeek ? GetWeeklyBase() : GetWeeklyBase() - 1),
         v
       );
       await DB.updateByUrl("/info/week", {
         submitted: firebase.firestore.FieldValue.arrayUnion(account.id),
       });
       let tmp = {};
-      tmp[(thisWeek ? GetWeeklyBase() : GetWeeklyBase() - 1) + "_score"] = v.scores;
-      tmp[(thisWeek ? GetWeeklyBase() : GetWeeklyBase() - 1) + "_召會生活操練"] = v["召會生活操練"] ? v["召會生活操練"] : 0;
-      tmp[(thisWeek ? GetWeeklyBase() : GetWeeklyBase() - 1) + "_神人生活操練"] = v["神人生活操練"] ? v["神人生活操練"] : 0;
-      tmp[(thisWeek ? GetWeeklyBase() : GetWeeklyBase() - 1) + "_福音牧養操練"] = v["福音牧養操練"] ? v["福音牧養操練"] : 0;
-      tmp[(thisWeek ? GetWeeklyBase() : GetWeeklyBase() - 1) + "_lord_table"] = lord_table;
+      tmp[(thisWeek ? GetWeeklyBase() : GetWeeklyBase() - 1) + "_score"] =
+        v.scores;
+      tmp[
+        (thisWeek ? GetWeeklyBase() : GetWeeklyBase() - 1) + "_召會生活操練"
+      ] = v["召會生活操練"] ? v["召會生活操練"] : 0;
+      tmp[
+        (thisWeek ? GetWeeklyBase() : GetWeeklyBase() - 1) + "_神人生活操練"
+      ] = v["神人生活操練"] ? v["神人生活操練"] : 0;
+      tmp[
+        (thisWeek ? GetWeeklyBase() : GetWeeklyBase() - 1) + "_福音牧養操練"
+      ] = v["福音牧養操練"] ? v["福音牧養操練"] : 0;
+      tmp[(thisWeek ? GetWeeklyBase() : GetWeeklyBase() - 1) + "_lord_table"] =
+        lord_table;
       await DB.updateByUrl("/accounts/" + account.id, tmp);
       api.destroy("saving");
     }
@@ -172,14 +192,35 @@ const DataTabs = ({ data, account, default_data, thisWeek, setThisWeek }) => {
       <CCardHeader>
         <CRow>
           <CCol style={{ fontSize: "30px" }}>
-            {t("表單")} - {WeeklyBase2String(thisWeek ? GetWeeklyBase() : GetWeeklyBase() - 1)}
+            {t("表單")} -{" "}
+            {WeeklyBase2String(
+              thisWeek ? GetWeeklyBase() : GetWeeklyBase() - 1
+            )}
           </CCol>
         </CRow>
         <CRow style={{ marginTop: "10px" }} className="align-items-center">
           <CCol>
-            <CRow className="align-items-center" style={{ justifyContent: "center" }}>
-              <CButton className="week-button" variant="outline" active={!thisWeek} onClick={() => setThisWeek(false)}>{t("上週")}</CButton>
-              <CButton className="week-button" style={{ marginLeft: "10px" }} variant="outline" active={thisWeek} onClick={() => setThisWeek(true)}>{t("本週")}</CButton>
+            <CRow
+              className="align-items-center"
+              style={{ justifyContent: "center" }}
+            >
+              <CButton
+                className="week-button"
+                variant="outline"
+                active={!thisWeek}
+                onClick={() => setThisWeek(false)}
+              >
+                {t("上週")}
+              </CButton>
+              <CButton
+                className="week-button"
+                style={{ marginLeft: "10px" }}
+                variant="outline"
+                active={thisWeek}
+                onClick={() => setThisWeek(true)}
+              >
+                {t("本週")}
+              </CButton>
             </CRow>
           </CCol>
         </CRow>
@@ -190,7 +231,13 @@ const DataTabs = ({ data, account, default_data, thisWeek, setThisWeek }) => {
           onSubmit={(e) => {
             e.preventDefault();
           }}
-        >{tabpanes.map((x, i) => <><h2>{t(data.sections[i])}</h2> <hr />{x}</>)}
+        >
+          {tabpanes.map((x, i) => (
+            <>
+              <h2>{t(data.sections[i])}</h2> <hr />
+              {x}
+            </>
+          ))}
         </CForm>
       </CCardBody>
     </CCard>

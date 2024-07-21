@@ -8,7 +8,11 @@ import {
 } from "@coreui/react";
 import { CChartLine } from "@coreui/react-chartjs";
 import { loading } from "components";
-import { GetWeeklyBase, WeeklyBase2String } from "utils/date";
+import {
+  GetWeeklyBase,
+  GetWeeklyBaseFromTime,
+  WeeklyBase2String,
+} from "utils/date";
 import { DB } from "db/firebase";
 import { useParams } from "react-router-dom/cjs/react-router-dom.min";
 import { useContext, useEffect, useState } from "react";
@@ -19,17 +23,20 @@ import { useTranslation } from "react-i18next";
 import i18n from "i18n";
 import SemesterContext from "hooks/semester";
 
-const RenderLineChart = ({ data }) => {
+const RenderLineChart = ({ data, semester }) => {
   let labels = [];
   let chart_data = [];
   let ids = data.ids.map((x) => parseInt(x));
-  let lower = Math.min(...ids);
-  let upper = Math.max(...ids);
+  let lower = GetWeeklyBaseFromTime(semester.start.toDate());
+  let upper = Math.max(
+    GetWeeklyBaseFromTime(semester.start.toDate()),
+    Math.min(GetWeeklyBase(), GetWeeklyBaseFromTime(semester.end.toDate()))
+  );
   for (let i = lower; i <= upper; i++) {
     labels.push(WeeklyBase2String(i));
     if (ids.includes(i)) {
       chart_data.push(data.value[ids.indexOf(i)].scores);
-    } else chart_data.push(null);
+    } else chart_data.push(0);
   }
   const line = {
     labels,
@@ -87,8 +94,11 @@ const MemberTable = ({ data, id }) => {
         },
       ];
 
-      let { items, result, column_keys, column_labels } =
-        await SummaryScore(data, problems, id);
+      let { items, result, column_keys, column_labels } = await SummaryScore(
+        data,
+        problems,
+        id
+      );
       items = items.reverse();
       for (let i = 0; i < column_keys.length; i++) {
         columns.push({
@@ -167,7 +177,7 @@ const Member = () => {
           </CCardHeader>
           <CCardBody>
             <CRow>
-              <RenderLineChart data={data} />
+              <RenderLineChart data={data} semester={semester} />
             </CRow>
             <CRow style={{ overflowX: "scroll", flexWrap: "nowrap" }}>
               <MemberTable data={data} id={id} />
