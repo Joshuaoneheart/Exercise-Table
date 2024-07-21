@@ -42,7 +42,7 @@ const DataTabs = ({ data, account, default_data, thisWeek, setThisWeek }) => {
       }
     };
     GetGF();
-  }, [account]);
+  }, [account, thisWeek]);
   var form = useRef();
   if (GF === null) return loading;
   var tabpanes = [];
