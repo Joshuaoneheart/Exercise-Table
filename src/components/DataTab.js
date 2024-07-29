@@ -74,7 +74,7 @@ const DataTabs = ({ data, account, default_data, thisWeek, setThisWeek }) => {
         v[data.sections[i]] = 0;
         for (var j = 0; j < data.value[i].length; j++) {
           let problem = data.value[i][j];
-          if (problem.id === "0it0L8KlnfUVO1i4VUqi" && form_data[problem.id])
+          if (problem.id === "0it0L8KlnfUVO1i4VUqi" && form_data && form_data[problem.id])
             lord_table = form_data[problem.id].ans === "有";
           let score = 0;
           switch (problem.type) {
@@ -134,7 +134,7 @@ const DataTabs = ({ data, account, default_data, thisWeek, setThisWeek }) => {
         }
       }
       v.week_base = thisWeek ? GetWeeklyBase() : GetWeeklyBase() - 1;
-      await DB.updateByUrl(
+      await DB.OnDemandUpdate(
         "/accounts/" +
           account.id +
           "/data/" +
