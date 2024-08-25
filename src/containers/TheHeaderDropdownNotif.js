@@ -9,24 +9,26 @@ import {
 } from "@coreui/react";
 import CIcon from "@coreui/icons-react";
 import { AccountContext } from "hooks/context";
-import { DB } from "db/firebase";
+import { firebase } from "db/firebase";
 
 const TheHeaderDropdownNotif = () => {
   const account = useContext(AccountContext);
   const [refresh, setRefresh] = useState(false);
   const [announcements, setAnnouncements] = useState([]);
   useEffect(() => {
-    const getAnnouncement = async () => {
-      const res = await DB.getByUrl("/announcement");
-      let tmp = [];
-      await res.forEach((doc) => {
-        let data = doc.data();
-        data.id = doc.id;
-        if (!data.checked || !data.checked.split(";").includes(account.id)) tmp.push(data);
+    firebase
+      .firestore()
+      .collection("announcement")
+      .onSnapshot((querySnapshot) => {
+        let tmp = [];
+        querySnapshot.forEach((doc) => {
+          let data = doc.data();
+          data.id = doc.id;
+          if (!data.checked || !data.checked.split(";").includes(account.id))
+            tmp.push(data);
+        });
+        setAnnouncements(tmp);
       });
-      setAnnouncements(tmp);
-    };
-    getAnnouncement();
   }, [account, refresh]);
   let announcement_list = [];
   for (let i = 0; i < announcements.length; i++) {

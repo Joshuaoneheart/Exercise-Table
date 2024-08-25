@@ -3,7 +3,7 @@ import { GetAccountsMap } from "utils/account";
 import { GetProblems, SummaryScore } from "utils/problem";
 import { DataFrame } from "pandas-js";
 import { loading } from "components";
-import { firebase, DB } from "db/firebase";
+import { firebase } from "db/firebase";
 import Select from "react-select";
 import {
   CRow,
