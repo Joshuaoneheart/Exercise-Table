@@ -4,6 +4,7 @@ import loading from "./loading";
 import { useEffect, useState } from "react";
 import { DB } from "db/firebase";
 import { GetProblems } from "utils/problem";
+import Dashboard from "containers/Dashboard";
 
 const GatherProblemsBySection = (d) => {
   var data = { value: [], sections: [] };
@@ -28,18 +29,21 @@ const Form = ({ default_data, account, thisWeek, setThisWeek }) => {
     };
     if (problems === null) GetData();
   });
-  useEffect(() => setRefresh(true), [thisWeek])
-  useEffect(() => setRefresh(false), [refresh])
+  useEffect(() => setRefresh(true), [thisWeek]);
+  useEffect(() => setRefresh(false), [refresh]);
   if (problems === null) return loading;
   return (
     <CCol>
-      {!refresh && <DataTabs
-        data={GatherProblemsBySection(problems)}
-        default_data={default_data}
-        account={account}
-        thisWeek={thisWeek}
-        setThisWeek={setThisWeek}
-      />}
+      <Dashboard />
+      {!refresh && (
+        <DataTabs
+          data={GatherProblemsBySection(problems)}
+          default_data={default_data}
+          account={account}
+          thisWeek={thisWeek}
+          setThisWeek={setThisWeek}
+        />
+      )}
     </CCol>
   );
 };

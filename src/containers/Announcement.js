@@ -23,7 +23,7 @@ import ModifyAnnouncementModal from "components/ModifyAnnouncementModal";
 import { GetAccountsMap } from "utils/account";
 import { FormatDate } from "utils/date";
 import { useTranslation } from "react-i18next";
-import i18n from "i18n"
+import i18n from "i18n";
 const CommentList = ({ comments, accountsMap }) => {
   return comments.map((x) => (
     <>
@@ -40,7 +40,7 @@ const CommentList = ({ comments, accountsMap }) => {
   ));
 };
 const AnnouncementCard = ({ init_data, id }) => {
-  const { t } = useTranslation("translation", { i18n })
+  const { t } = useTranslation("translation", { i18n });
   const account = useContext(AccountContext);
   const [data, setData] = useState(init_data);
   const [comment, setComment] = useState("");
@@ -63,10 +63,13 @@ const AnnouncementCard = ({ init_data, id }) => {
   }, []);
   useEffect(() => {
     const check = async () => {
-      if (!data.checked) data.checked = account.id;
-      else if (!data.checked.split(";").includes(account.id))
+      if (!data.checked) {
+        data.checked = account.id;
+        await DB.updateByUrl("/announcement/" + id, data);
+      } else if (!data.checked.split(";").includes(account.id)) {
         data.checked += ";" + account.id;
-      await DB.updateByUrl("/announcement/" + id, data);
+        await DB.updateByUrl("/announcement/" + id, data);
+      }
     };
     if (data) check();
   }, [account, data, id]);
@@ -213,6 +216,7 @@ const Announcement = () => {
       let tmp = await DB.getByUrl("/announcement/" + id);
       setData(tmp);
     };
+    setData(null);
     FetchAnnouncement();
   }, [id]);
   return (
