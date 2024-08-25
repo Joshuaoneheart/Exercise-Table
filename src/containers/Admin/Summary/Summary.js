@@ -1,8 +1,9 @@
 import { useState, useEffect, useContext } from "react";
-import { GetAccountsMap, GetSemesterData } from "utils/account";
+import { GetAccountsMap } from "utils/account";
 import { GetProblems, SummaryScore } from "utils/problem";
 import { DataFrame } from "pandas-js";
 import { loading } from "components";
+import { firebase } from "db/firebase";
 import Select from "react-select";
 import {
   CRow,
@@ -34,11 +35,37 @@ const Summary = () => {
       let all_column_keys = [];
       let all_column_labels = [];
       let all_column_problems = [];
+      let data = await firebase.firestore().collectionGroup("data").get();
+      let GF_data = await firebase.firestore().collectionGroup("GF").get();
+      let meta = {};
+      for (let doc of data.docs) {
+        if (doc.ref.path.split("/")[0] !== "accounts") continue;
+        let id = doc.ref.path.split("/")[1];
+        let week = doc.ref.path.split("/")[3];
+        if (!(id in meta)) meta[id] = { value: [], ids: [] };
+        meta[id].value.push(doc.data());
+        meta[id].ids.push(parseInt(week));
+      }
+      for (let doc of GF_data.docs) {
+        if (doc.ref.path.split("/")[0] !== "accounts") continue;
+        let id = doc.ref.path.split("/")[1];
+        let week = doc.ref.path.split("/")[3];
+        if (!(id in meta)) meta[id] = { value: [], ids: [] };
+        if (meta[id].ids.indexOf(parseInt(week)) !== -1)
+          meta[id].value[meta[id].ids.indexOf(parseInt(week))] = Object.assign(
+            meta[id].value[meta[id].ids.indexOf(parseInt(week))],
+            doc.data()
+          );
+        else {
+          meta[id].value.push(doc.data());
+          meta[id].ids.push(parseInt(week));
+        }
+      }
       // generate empty row
       for (let id of Object.keys(accountsMap)) {
-        let weeks = await GetSemesterData(id, semester);
+        if(!meta[id]) continue;
         let { items, result, column_keys, column_labels, column_problems } =
-          await SummaryScore(weeks, problems, id);
+          await SummaryScore(meta[id], problems, id);
         all_column_keys = [...all_column_keys, ...column_keys];
         all_column_labels = [...all_column_labels, ...column_labels];
         all_column_problems = [...all_column_problems, ...column_problems];
