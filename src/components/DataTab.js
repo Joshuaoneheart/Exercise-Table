@@ -70,11 +70,22 @@ const DataTabs = ({ data, account, default_data, thisWeek, setThisWeek }) => {
       );
       var v = { scores: 0 };
       let lord_table = 0;
+      let life_study = 0;
       for (let i = 0; i < data.sections.length; i++) {
         v[data.sections[i]] = 0;
         for (var j = 0; j < data.value[i].length; j++) {
           let problem = data.value[i][j];
-          if (problem.id === "0it0L8KlnfUVO1i4VUqi" && form_data && form_data[problem.id])
+          if (
+            problem.id === "rBYQGR0oC9kiwXjkvZxS" &&
+            form_data &&
+            form_data[problem.id]
+          )
+            life_study = form_data[problem.id].ans;
+          if (
+            problem.id === "0it0L8KlnfUVO1i4VUqi" &&
+            form_data &&
+            form_data[problem.id]
+          )
             lord_table = form_data[problem.id].ans === "有";
           let score = 0;
           switch (problem.type) {
@@ -158,6 +169,8 @@ const DataTabs = ({ data, account, default_data, thisWeek, setThisWeek }) => {
       ] = v["福音牧養操練"] ? v["福音牧養操練"] : 0;
       tmp[(thisWeek ? GetWeeklyBase() : GetWeeklyBase() - 1) + "_lord_table"] =
         lord_table;
+      tmp[(thisWeek ? GetWeeklyBase() : GetWeeklyBase() - 1) + "_生命讀經"] =
+        life_study;
       await DB.updateByUrl("/accounts/" + account.id, tmp);
       api.destroy("saving");
     }

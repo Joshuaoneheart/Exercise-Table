@@ -3,7 +3,7 @@ import { GetAccountsMap } from "utils/account";
 import { GetProblems, SummaryScore } from "utils/problem";
 import { DataFrame } from "pandas-js";
 import { loading } from "components";
-import { firebase } from "db/firebase";
+import { firebase, DB } from "db/firebase";
 import Select from "react-select";
 import {
   CRow,
@@ -41,29 +41,39 @@ const Summary = () => {
       for (let doc of data.docs) {
         if (doc.ref.path.split("/")[0] !== "accounts") continue;
         let id = doc.ref.path.split("/")[1];
-        let week = doc.ref.path.split("/")[3];
+        let week = parseInt(doc.ref.path.split("/")[3]);
+        if (
+          week < GetWeeklyBaseFromTime(semester.start.toDate()) ||
+          GetWeeklyBaseFromTime(semester.end.toDate()) < week
+        )
+          continue;
         if (!(id in meta)) meta[id] = { value: [], ids: [] };
         meta[id].value.push(doc.data());
-        meta[id].ids.push(parseInt(week));
+        meta[id].ids.push(week);
       }
       for (let doc of GF_data.docs) {
         if (doc.ref.path.split("/")[0] !== "accounts") continue;
         let id = doc.ref.path.split("/")[1];
-        let week = doc.ref.path.split("/")[3];
+        let week = parseInt(doc.ref.path.split("/")[3]);
+        if (
+          week < GetWeeklyBaseFromTime(semester.start.toDate()) ||
+          GetWeeklyBaseFromTime(semester.end.toDate()) < week
+        )
+          continue;
         if (!(id in meta)) meta[id] = { value: [], ids: [] };
-        if (meta[id].ids.indexOf(parseInt(week)) !== -1)
-          meta[id].value[meta[id].ids.indexOf(parseInt(week))] = Object.assign(
-            meta[id].value[meta[id].ids.indexOf(parseInt(week))],
+        if (meta[id].ids.indexOf(week) !== -1)
+          meta[id].value[meta[id].ids.indexOf(week)] = Object.assign(
+            meta[id].value[meta[id].ids.indexOf(week)],
             doc.data()
           );
         else {
           meta[id].value.push(doc.data());
-          meta[id].ids.push(parseInt(week));
+          meta[id].ids.push(week);
         }
       }
       // generate empty row
       for (let id of Object.keys(accountsMap)) {
-        if(!meta[id]) continue;
+        if (!meta[id]) continue;
         let { items, result, column_keys, column_labels, column_problems } =
           await SummaryScore(meta[id], problems, id);
         all_column_keys = [...all_column_keys, ...column_keys];
