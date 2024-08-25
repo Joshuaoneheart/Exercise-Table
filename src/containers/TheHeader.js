@@ -16,7 +16,8 @@ import { AccountContext } from "hooks/context";
 import routes from "routes/routes";
 
 import {
-  TheHeaderDropdown
+  TheHeaderDropdown,
+  TheHeaderDropdownNotif
 } from "./index";
 
 const TheHeader = (props) => {
@@ -69,6 +70,7 @@ const TheHeader = (props) => {
       </CHeaderNav>
 
       <CHeaderNav className="px-3">
+        <TheHeaderDropdownNotif />
         <TheHeaderDropdown {...props} />
       </CHeaderNav>
 
