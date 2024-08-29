@@ -12,6 +12,7 @@ class Account {
     this.registered = props.registered;
     this.residence = props.residence;
     this.gender = props.gender;
+    this.nickname = props.nickname;
     this.role = props.role;
     this.status = props.status;
     this.is_admin = props.role === "Admin";

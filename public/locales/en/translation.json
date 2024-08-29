@@ -6,7 +6,7 @@
     "個人檔案": "Profile",
     "登入": "Log in",
     "操練表填寫": "Exercise Table",
-	"時間表": "Schedule",
+    "時間表": "Schedule",
     "公告": "Announcement",
     "操練情形查詢": "Exercising",
     "個人": "Personal",
@@ -149,7 +149,7 @@
     "累計小排": "Campus Meeting",
     "福音朋友資料": "Gospel Friend's Info",
     "探索基督徒生活": "Christian Life Exploration",
-    "核心交通":"Core Fellowship",
+    "核心交通": "Core Fellowship",
     "共同追求": "Corporate Pursuit",
     "參加行動": "Activities",
     "團體晨興": "Corporate Morning Revival",
@@ -166,5 +166,7 @@
     "第二名": "2nd Place",
     "第三名": "3rd Place",
     "第四名": "4th Place",
-    "第五名": "5th Place"
+    "第五名": "5th Place",
+    "請輸入暱稱": "Enter your nickname...",
+    "你的排名": "Your ranking"
 }
