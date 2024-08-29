@@ -1,4 +1,4 @@
-import { CCard, CCardBody, CDataTable, CRow, CCol, CInput, CBadge } from "@coreui/react";
+import { CCard, CCardBody, CDataTable, CRow, CCol, CInput } from "@coreui/react";
 import { DB } from "db/firebase";
 import { AccountContext } from "hooks/context";
 import SemesterContext from "hooks/semester";
