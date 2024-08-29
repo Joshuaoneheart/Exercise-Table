@@ -14,6 +14,7 @@ const Dashboard = () => {
   const { t } = useTranslation("translation", { i18n });
   const [ranks, setRanks] = useState([]);
   const [myRank, setMyRank] = useState(0);
+  const [myLSNum, setMyLSNum] = useState(0);
   const account = useContext(AccountContext);
   const [nickname, setNickname] = useState(account.nickname ? account.nickname : "");
   const { semester } = useContext(SemesterContext);
@@ -37,7 +38,10 @@ const Dashboard = () => {
             life_study += doc.data()[i + "_生命讀經"];
         }
         let identity = "";
-        if (doc.id === account.id) identity = t("就是你");
+        if (doc.id === account.id) {
+          identity = t("就是你");
+          setMyLSNum(life_study);
+        }
         if (doc.data()["nickname"]) identity = doc.data()["nickname"];
         tmp.push({ id: doc.id, number: life_study, identity });
       });
@@ -64,15 +68,15 @@ const Dashboard = () => {
       <CCardBody>
         <h2>{t("生命讀經排名")}</h2> <hr />
         <CRow>
-          <CCol>
-            <CInput defaultValue={account.nickname ? account.nickname : ""} style={{ width: "50%", marginBottom: "15px" }} placeholder={t("請輸入暱稱")} onChange={async (e) => {
+          <CCol lg={4} md={4} xs={6}>
+            <CInput defaultValue={account.nickname ? account.nickname : ""} style={{ width: "100%", marginBottom: "15px" }} placeholder={t("請輸入暱稱")} onChange={async (e) => {
               await DB.updateByUrl("/accounts/" + account.id, { "nickname": e.target.value });
               setNickname(e.target.value)
             }} />
           </CCol>
           <CCol>
             <CRow alignHorizontal="end" style={{ marginRight: "5px", marginTop: "5px" }}>
-              {t("你的排名")}: {myRank}
+              {t("你的排名")}: {myRank}<br/>{t("你的篇數")}: {myLSNum}
             </CRow>
           </CCol>
         </CRow>
