@@ -14,6 +14,7 @@ const Dashboard = () => {
   const { t } = useTranslation("translation", { i18n });
   const [ranks, setRanks] = useState([]);
   const [myRank, setMyRank] = useState(0);
+  const [myLSNum, setMyLSNum] = useState(0);
   const account = useContext(AccountContext);
   const [nickname, setNickname] = useState(account.nickname ? account.nickname : "");
   const { semester } = useContext(SemesterContext);
@@ -37,7 +38,10 @@ const Dashboard = () => {
             life_study += doc.data()[i + "_生命讀經"];
         }
         let identity = "";
-        if (doc.id === account.id) identity = t("就是你");
+        if (doc.id === account.id) {
+          identity = t("就是你");
+          setMyLSNum(life_study);
+        }
         if (doc.data()["nickname"]) identity = doc.data()["nickname"];
         tmp.push({ id: doc.id, number: life_study, identity });
       });
@@ -72,7 +76,7 @@ const Dashboard = () => {
           </CCol>
           <CCol>
             <CRow alignHorizontal="end" style={{ marginRight: "5px", marginTop: "5px" }}>
-              {t("你的排名")}: {myRank}
+              {t("你的排名")}: {myRank}<br/>{t("你的篇數")}: {myLSNum}
             </CRow>
           </CCol>
         </CRow>
