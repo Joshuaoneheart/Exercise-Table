@@ -68,8 +68,8 @@ const Dashboard = () => {
       <CCardBody>
         <h2>{t("生命讀經排名")}</h2> <hr />
         <CRow>
-          <CCol>
-            <CInput defaultValue={account.nickname ? account.nickname : ""} style={{ width: "50%", marginBottom: "15px" }} placeholder={t("請輸入暱稱")} onChange={async (e) => {
+          <CCol lg={4} md={4} xs={6}>
+            <CInput defaultValue={account.nickname ? account.nickname : ""} style={{ width: "100%", marginBottom: "15px" }} placeholder={t("請輸入暱稱")} onChange={async (e) => {
               await DB.updateByUrl("/accounts/" + account.id, { "nickname": e.target.value });
               setNickname(e.target.value)
             }} />
