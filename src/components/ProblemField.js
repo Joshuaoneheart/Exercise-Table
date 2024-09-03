@@ -253,7 +253,7 @@ const GridFields = ({ data }) => {
             variant="ghost"
             color="dark"
             onClick={() => {
-              if (optionCnt === 5) return;
+              if (optionCnt === 7) return;
               setOptionCnt(optionCnt + 1);
             }}
           >
