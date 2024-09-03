@@ -96,7 +96,7 @@ const Dashboard = () => {
         <CCol style={{ width: "100%", overflowX: "scroll", overflowY: "visible" }}>
           <CRow alignHorizontal="center">
             <img
-              src="https://i.ibb.co/WWTdDVH/timeline-20240722-222418.jpg"
+              src="https://i.ibb.co/y0HNCmz/IMG-0548.jpg"
               alt="timeline-20240722-222418"
               border="0"
             />
