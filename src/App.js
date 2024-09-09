@@ -74,20 +74,11 @@ const SignedIn = (props) => {
       const UpdateData = async () => {
         let counter = await DB.getByUrl("/info/counter");
         if (!counter || !semesters) return;
-        let this_year_pass = false;
+        let this_year_pass = new Date().getMonth() >= 8;
         const now_year = new Date().getFullYear();
-        if (
-          now_year !== counter.year_counter ||
-          (counter.year_counter === now_year - 1 &&
-            new Date().getMonth() >= 8) ||
-          GetWeeklyBase() !== counter.week_counter
-        ) {
+        if (now_year !== counter.year_counter) {
           let GFs = await DB.getByUrl("/GF");
-          if (
-            now_year !== counter.year_counter ||
-            (counter.year_counter === now_year - 1 &&
-              new Date().getMonth() >= 8)
-          ) {
+          if (now_year !== counter.year_counter) {
             // 更新 GF 年級
             for (let i = counter.year_counter; i < now_year - 1; i++) {
               await GFs.forEach((doc) => {
@@ -100,7 +91,6 @@ const SignedIn = (props) => {
               });
             }
             if (new Date().getMonth() >= 8) {
-              this_year_pass = true;
               await GFs.forEach((doc) => {
                 if (doc.data().grade)
                   firebase
