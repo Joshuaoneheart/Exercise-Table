@@ -15,6 +15,7 @@ const Dashboard = () => {
   const [ranks, setRanks] = useState([]);
   const [myRank, setMyRank] = useState(0);
   const [myLSNum, setMyLSNum] = useState(0);
+  const [myImage, setMyImage] = useState("");
   const account = useContext(AccountContext);
   const [nickname, setNickname] = useState(account.nickname ? account.nickname : "");
   const { semester } = useContext(SemesterContext);
@@ -24,6 +25,10 @@ const Dashboard = () => {
     { key: "identity", label: t("暱稱") },
   ];
   useEffect(() => {
+    const getImage = async () => {
+      const image = await DB.getByUrl("/info/dashboard");
+      setMyImage(image.img_url);
+    }
     const getAccounts = async () => {
       const snapshot = await DB.getByUrl("/accounts");
       let tmp = [];
@@ -61,6 +66,7 @@ const Dashboard = () => {
       setRanks(tmp.slice(0, 5).filter((x) => x.number > 10));
     };
     if (semester && account) getAccounts();
+    if (myImage === "") getImage();
   }, [account, t, semester, nickname]);
   if (!account || !semester) return null;
   return (
@@ -96,9 +102,10 @@ const Dashboard = () => {
         <CCol style={{ width: "100%", overflowX: "scroll", overflowY: "visible" }}>
           <CRow alignHorizontal="center">
             <img
-              src="https://i.ibb.co/WWTdDVH/timeline-20240722-222418.jpg"
-              alt="timeline-20240722-222418"
+              src={myImage}
+              alt="lifestudy"
               border="0"
+              style={{maxWidth: "800px"}}
             />
           </CRow>
         </CCol>
