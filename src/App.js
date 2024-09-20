@@ -77,29 +77,29 @@ const SignedIn = (props) => {
         let this_year_pass = new Date().getMonth() >= 8;
         const now_year = new Date().getFullYear();
         if (now_year !== counter.year_counter) {
-          let GFs = await DB.getByUrl("/GF");
-          if (now_year !== counter.year_counter) {
-            // 更新 GF 年級
-            for (let i = counter.year_counter; i < now_year - 1; i++) {
-              await GFs.forEach((doc) => {
-                if (doc.data().grade)
-                  firebase
-                    .firestore()
-                    .collection("GF")
-                    .doc(doc.id)
-                    .update({ grade: GF_GRADE_NEXT[doc.data().grade] });
-              });
-            }
-            if (new Date().getMonth() >= 8) {
-              await GFs.forEach((doc) => {
-                if (doc.data().grade)
-                  firebase
-                    .firestore()
-                    .collection("GF")
-                    .doc(doc.id)
-                    .update({ grade: GF_GRADE_NEXT[doc.data().grade] });
-              });
-            }
+          // 更新 GF 年級
+          let GFs = [];
+          if (counter.year_counter < now_year - 1 || this_year_pass)
+            GFs = await DB.getByUrl("/GF");
+          for (let i = counter.year_counter; i < now_year - 1; i++) {
+            await GFs.forEach((doc) => {
+              if (doc.data().grade)
+                firebase
+                  .firestore()
+                  .collection("GF")
+                  .doc(doc.id)
+                  .update({ grade: GF_GRADE_NEXT[doc.data().grade] });
+            });
+          }
+          if (this_year_pass) {
+            await GFs.forEach((doc) => {
+              if (doc.data().grade)
+                firebase
+                  .firestore()
+                  .collection("GF")
+                  .doc(doc.id)
+                  .update({ grade: GF_GRADE_NEXT[doc.data().grade] });
+            });
           }
         }
         await firebase
