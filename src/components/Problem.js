@@ -21,7 +21,7 @@ const GFSelect = ({
   title,
   note,
   calculateScore,
-  week
+  week,
 }) => {
   let id_to_v = {};
   for (let i = 0; i < GF.length; i++) {
@@ -258,7 +258,7 @@ const Problem = ({
   switch (data.type) {
     case "GF":
       frame.push(
-        <GFSelect
+        (GF && <GFSelect
           GF={GF}
           default_data={
             GF_data && GF_data[data.title] ? GF_data[data.title] : null
@@ -268,7 +268,7 @@ const Problem = ({
           note={data.note}
           week={week}
           calculateScore={calculateScore}
-        />
+        />)
       );
       break;
     case "Number":
