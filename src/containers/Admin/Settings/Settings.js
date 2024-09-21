@@ -5,65 +5,17 @@ import {
   CCardBody,
   CCardHeader,
   CCol,
-  CContainer,
-  CDropdown,
-  CDropdownItem,
-  CDropdownMenu,
-  CDropdownToggle,
   CInput,
   CRow,
 } from "@coreui/react";
 
-import CIcon from "@coreui/icons-react";
 import "firebase/firestore";
-import { DB, firebase } from "db/firebase";
-import { GetWeeklyBase, WeeklyBase2String } from "utils/date";
-import FileSaver from "file-saver";
-import XLSX from "xlsx";
+import { DB } from "db/firebase";
 import CustomDatePicker from "components/CustomDatePicker";
 import Select from "react-select";
 import SemesterContext from "hooks/semester";
 import { GetLastSemester } from "utils/semester";
 import { message } from "antd";
-
-class Workbook {
-  constructor() {
-    // 使用單例模式，產生唯一的 workbook
-    if (!(this instanceof Workbook)) return new Workbook();
-    this.SheetNames = [];
-    this.Sheets = {};
-
-    this.wopts = {
-      bookType: "xlsx",
-      bookSST: false,
-      type: "binary",
-    };
-  }
-
-  appendSheet(sheet, name = `sheet${this.SheetNames.length + 1}`) {
-    this.SheetNames = [...this.SheetNames, name];
-    this.Sheets[name] = sheet;
-  }
-
-  toBlob(option = this.wopts) {
-    // 字串轉 ArrayBuffer
-    function s2ab(s) {
-      var buf = new ArrayBuffer(s.length);
-      var view = new Uint8Array(buf);
-      for (var i = 0; i !== s.length; ++i) view[i] = s.charCodeAt(i) & 0xff;
-      return buf;
-    }
-
-    var wbout = XLSX.write(this, option);
-    var blob = new Blob([s2ab(wbout)], { type: "application/octet-stream" });
-
-    return blob;
-  }
-
-  isEmpty() {
-    return !this.SheetNames.length && JSON.stringify(this.Sheets === "{}");
-  }
-}
 
 const SemesterSetting = () => {
   const { semester, semesters, setSemester } = useContext(SemesterContext);
