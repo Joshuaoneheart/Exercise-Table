@@ -45,7 +45,8 @@ const GFSelect = ({
   const [options, setOptions] = useState(
     default_data
       ? default_data.map((x) => {
-          if (typeof x === "string")
+          if (typeof x === "string") {
+            if (!id_to_v[x]) return undefined;
             return {
               value: id_to_v[x],
               label: (
@@ -54,7 +55,8 @@ const GFSelect = ({
                 </span>
               ),
             };
-          else
+          } else {
+            if (!id_to_v[x.id]) return undefined;
             return {
               value: id_to_v[x.id],
               label: (
@@ -63,6 +65,7 @@ const GFSelect = ({
                 </span>
               ),
             };
+          }
         })
       : []
   );
@@ -96,7 +99,8 @@ const GFSelect = ({
       }
       setOptions(
         default_data.map((x) => {
-          if (typeof x === "string")
+          if (typeof x === "string") {
+            if (!id_to_v[x]) return undefined;
             return {
               value: id_to_v[x],
               label: (
@@ -105,7 +109,8 @@ const GFSelect = ({
                 </span>
               ),
             };
-          else
+          } else {
+            if (!id_to_v[x.id]) return undefined;
             return {
               value: id_to_v[x.id],
               label: (
@@ -114,6 +119,7 @@ const GFSelect = ({
                 </span>
               ),
             };
+          }
         })
       );
       let tmp = {};
@@ -195,6 +201,7 @@ const GFSelect = ({
       </CFormGroup>
       {note &&
         options.map((x, i) => {
+          if (!x) return undefined;
           return (
             <CRow
               key={i}
@@ -258,17 +265,19 @@ const Problem = ({
   switch (data.type) {
     case "GF":
       frame.push(
-        (GF && <GFSelect
-          GF={GF}
-          default_data={
-            GF_data && GF_data[data.title] ? GF_data[data.title] : null
-          }
-          account_id={account_id}
-          title={data.title}
-          note={data.note}
-          week={week}
-          calculateScore={calculateScore}
-        />)
+        GF && (
+          <GFSelect
+            GF={GF}
+            default_data={
+              GF_data && GF_data[data.title] ? GF_data[data.title] : null
+            }
+            account_id={account_id}
+            title={data.title}
+            note={data.note}
+            week={week}
+            calculateScore={calculateScore}
+          />
+        )
       );
       break;
     case "Number":
