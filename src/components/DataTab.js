@@ -248,7 +248,7 @@ const DataTabs = ({ data, account, default_data, thisWeek, setThisWeek }) => {
           {tabpanes.map((x, i) => (
             <>
               <h2>{t(data.sections[i])}</h2> <hr />
-              {x}
+              {GF && GF_data && x}
             </>
           ))}
         </CForm>
