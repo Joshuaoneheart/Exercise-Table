@@ -30,11 +30,12 @@ const Form = ({ default_data, account, thisWeek, setThisWeek }) => {
     if (problems === null) GetData();
   });
   useEffect(() => setRefresh(true), [thisWeek]);
-  useEffect(() => setRefresh(false), [refresh]);
+  useEffect(() => {
+    setRefresh(false);
+  }, [refresh]);
   if (problems === null) return loading;
   return (
     <CCol>
-      <Dashboard />
       {!refresh && (
         <DataTabs
           data={GatherProblemsBySection(problems)}

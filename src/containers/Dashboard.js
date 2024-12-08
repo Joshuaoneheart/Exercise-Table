@@ -1,14 +1,12 @@
-import { CCard, CCardBody, CDataTable, CRow, CCol, CInput } from "@coreui/react";
+import { CRow, CCol } from "@coreui/react";
 import { DB } from "db/firebase";
 import { AccountContext } from "hooks/context";
 import SemesterContext from "hooks/semester";
 import i18n from "i18n";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useHistory } from "react-router-dom";
 import { GetWeeklyBaseFromTime } from "utils/date";
-import Gold from "Images/Medal_1.png";
-import Silver from "Images/Medal_2.png";
-import Brozen from "Images/Medal_3.png";
 
 const Dashboard = () => {
   const { t } = useTranslation("translation", { i18n });
@@ -16,19 +14,19 @@ const Dashboard = () => {
   const [myRank, setMyRank] = useState(0);
   const [myLSNum, setMyLSNum] = useState(0);
   const [myImage, setMyImage] = useState("");
+  const input_ref = useRef();
   const account = useContext(AccountContext);
-  const [nickname, setNickname] = useState(account.nickname ? account.nickname : "");
+  const [isFocus, setFocus] = useState(false);
+  const [nickname, setNickname] = useState(
+    account.nickname ? account.nickname : ""
+  );
   const { semester } = useContext(SemesterContext);
-  const fields = [
-    { key: "rank", label: t("名次") },
-    { key: "number", label: t("次數") },
-    { key: "identity", label: t("暱稱") },
-  ];
+  const history = useHistory();
   useEffect(() => {
     const getImage = async () => {
       const image = await DB.getByUrl("/info/dashboard");
       setMyImage(image.img_url);
-    }
+    };
     const getAccounts = async () => {
       const snapshot = await DB.getByUrl("/accounts");
       let tmp = [];
@@ -58,59 +56,320 @@ const Dashboard = () => {
       for (let i = 0; i < tmp.length; i++) {
         if (tmp[i].id === account.id) {
           setMyRank(i + 1);
-          break
+          break;
         }
       }
-      for (let i = 0; i < 5; i++)
-        tmp[i].rank = i + 1;
+      for (let i = 0; i < 5; i++) tmp[i].rank = i + 1;
       setRanks(tmp.slice(0, 5).filter((x) => x.number > 10));
     };
     if (semester && account) getAccounts();
     if (myImage === "") getImage();
-  }, [account, t, semester, nickname]);
+  }, [account, t, semester, nickname, myImage]);
   if (!account || !semester) return null;
+  let after_3 = [
+    <div
+      key={1}
+      style={{ height: "56px", display: "flex", flexDirection: "row" }}
+    >
+      <div
+        className="primary-bold text-n-500"
+        style={{ marginTop: "18px", marginRight: "15px", marginLeft: "15px" }}
+      >
+        4
+      </div>
+      <div
+        className="secondary-medium"
+        style={{
+          marginTop: "20px",
+          width: "124.5px",
+          textOverflow: "ellipsis",
+          marginRight: "85px",
+        }}
+      >
+        --
+      </div>
+      <div className="content-medium text-n-500 after-3-badge">-- 篇</div>
+    </div>,
+    <div
+      key={2}
+      style={{ height: "56px", display: "flex", flexDirection: "row" }}
+    >
+      <div
+        className="primary-bold text-n-500"
+        style={{ marginTop: "18px", marginRight: "15px", marginLeft: "15px" }}
+      >
+        5
+      </div>
+      <div
+        className="secondary-medium"
+        style={{
+          marginTop: "20px",
+          width: "124.5px",
+          textOverflow: "ellipsis",
+          marginRight: "85px",
+        }}
+      >
+        --
+      </div>
+      <div className="content-medium text-n-500 after-3-badge">-- 篇</div>
+    </div>,
+  ];
+  for (let i = 5; i < ranks.length; i++) after_3.push(undefined);
+  for (let i = 3; i < ranks.length; i++) {
+    after_3[i - 3] = (
+      <div
+        key={i}
+        style={{ height: "56px", display: "flex", flexDirection: "row" }}
+      >
+        <div
+          className="primary-bold text-n-500"
+          style={{ marginTop: "18px", marginRight: "15px", marginLeft: "15px" }}
+        >
+          {i + 1}
+        </div>
+        <div
+          className="secondary-medium"
+          style={{
+            marginTop: "20px",
+            width: "124.5px",
+            textOverflow: "ellipsis",
+            marginRight: "85px",
+          }}
+        >
+          {ranks[i].identity}
+        </div>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            minWidth: "54px",
+          }}
+        >
+          <div className="content-medium text-n-500 after-3-badge">
+            {ranks[i].number} 篇
+          </div>
+        </div>
+      </div>
+    );
+  }
   return (
-    <CCard>
-      <CCardBody>
-        <h2>{t("生命讀經排名")}</h2> <hr />
-        <CRow>
-          <CCol lg={4} md={4} xs={6}>
-            <CInput defaultValue={account.nickname ? account.nickname : ""} style={{ width: "100%", marginBottom: "15px" }} placeholder={t("請輸入暱稱")} onChange={async (e) => {
-              await DB.updateByUrl("/accounts/" + account.id, { "nickname": e.target.value });
-              setNickname(e.target.value)
-            }} />
-          </CCol>
-          <CCol>
-            <CRow alignHorizontal="end" style={{ marginRight: "5px", marginTop: "5px" }}>
-              {t("你的排名")}: {myRank}<br/>{t("你的篇數")}: {myLSNum}
-            </CRow>
-          </CCol>
-        </CRow>
-        <CDataTable scopedSlots={{
-          "rank": (item) => {
-            if (item.rank === 1) return <td><img src={Gold} alt="第一名" style={{ width: "25px" }} /></td>;
-            if (item.rank === 2) return <td><img src={Silver} alt="第二名" style={{ width: "25px" }} /></td>;
-            if (item.rank === 3) return <td><img src={Brozen} alt="第三名" style={{ width: "25px" }} /></td>;
-            if (item.rank === 4) return <td>{t("第四名")}</td>;
-            if (item.rank === 5) return <td>{t("第五名")}</td>;
-          },
-          "number": (item) => {
-            return <td style={{ paddingLeft: "17px" }}>{item.number}</td>
-          }
-        }} items={ranks} fields={fields} itemsPerPage={5} />
-        <h2>{t("生命讀經進度")}</h2> <hr />
-        <CCol style={{ width: "100%", overflowX: "scroll", overflowY: "visible" }}>
-          <CRow alignHorizontal="center">
+    <>
+      <div
+        className="dashboard"
+      >
+        <div
+          style={{
+            marginLeft: "-15px",
+            marginRight: "-15px",
+            width: "375px",
+            backgroundImage: "url(Images/bg.png)",
+            backgroundRepeat: "no-repeat",
+            backgroundSize: "375px 307px",
+            marginBottom: "-30px",
+          }}
+        >
+          <img
+            src={process.env.PUBLIC_URL + "/Images/banner.png"}
+            alt="banner"
+            style={{
+              width: "288px",
+              height: "60px",
+              marginTop: "23px",
+              marginLeft: "46.5px",
+              marginRight: "46.5px",
+              marginBottom: "47px",
+            }}
+          />
+          <CRow>
+            <CCol
+              className="winner-badge"
+              style={{
+                marginLeft: "45px",
+                marginRight: "12px",
+              }}
+            >
+              <img
+                src={process.env.PUBLIC_URL + "/Images/medal_2.png"}
+                alt="medal_2"
+                className="winner-medal"
+              />
+              <p className="winner-name primary-bold text-dark-blue">
+                {ranks.length >= 2 ? ranks[1].identity : "--"}
+              </p>
+              <p className="winner-number content-medium text-n-500">
+                {ranks.length >= 2 ? ranks[1].number : "--"} 篇
+              </p>
+            </CCol>
+            <CCol className="winner-badge">
+              <img
+                src={process.env.PUBLIC_URL + "Images/medal_1.png"}
+                alt="medal_1"
+                className="winner-medal-large"
+              />
+              <p
+                className="winner-name primary-bold text-dark-blue"
+                style={{ marginTop: "2px " }}
+              >
+                {ranks.length >= 1 ? ranks[0].identity : "--"}
+              </p>
+              <p className="winner-number content-medium text-n-500">
+                {ranks.length >= 1 ? ranks[0].number : "--"} 篇
+              </p>
+            </CCol>
+            <CCol
+              className="winner-badge"
+              style={{
+                marginLeft: "12px",
+                marginRight: "30px",
+              }}
+            >
+              <img
+                src={process.env.PUBLIC_URL + "Images/medal_3.svg"}
+                alt="medal_3"
+                className="winner-medal"
+              />
+              <p className="winner-name primary-bold text-dark-blue">
+                {ranks.length >= 3 ? ranks[2].identity : "--"}
+              </p>
+              <p className="winner-number content-medium text-n-500">
+                {ranks.length >= 3 ? ranks[2].number : "--"} 篇
+              </p>
+            </CCol>
+          </CRow>
+          <div className="nickname-container">
+            <div className="rank heading3-bold text-primary-600">{myRank}</div>
+            <input
+              ref={input_ref}
+              onFocus={() => setFocus(true)}
+              onBlur={() => setFocus(false)}
+              defaultValue={account.nickname ? account.nickname : ""}
+              placeholder={t("請輸入暱稱")}
+              className="nickname-input primary-medium"
+              onChange={async (e) => {
+                await DB.updateByUrl("/accounts/" + account.id, {
+                  nickname: e.target.value,
+                });
+                setNickname(e.target.value);
+              }}
+            />
+            {isFocus ? (
+              <img
+                onMouseDown={(e) => {
+                  e.preventDefault();
+                  input_ref.current.value = "";
+                }}
+                src={process.env.PUBLIC_URL + "/Images/clear.png"}
+                alt="clear"
+                className="input-icon"
+              />
+            ) : (
+              <img
+                onClick={() => {
+                  input_ref.current.focus();
+                }}
+                src={process.env.PUBLIC_URL + "/Images/edit.png"}
+                alt="edit"
+                className="input-icon"
+              />
+            )}
+            <div className="LSNum content-medium text-primary-600">
+              {myLSNum} 篇
+            </div>
+          </div>
+          <div
+            style={{
+              position: "relative",
+              backgroundColor: "#FFFFFF",
+              paddingTop: "30px",
+              zIndex: 0,
+              top: "-30px",
+              left: "0px",
+              marginBottom: 0,
+            }}
+          >
+            <CCol style={{ paddingLeft: "36px", paddingRight: "36px" }}>
+              {after_3.map((x, i) => {
+                if (i + 3 !== ranks.length - 1 && x !== undefined) {
+                  return (
+                    <>
+                      {x}
+                      <hr style={{ margin: 0 }} />
+                    </>
+                  );
+                }
+                return x;
+              })}
+            </CCol>
+          </div>
+        </div>
+        <div
+          style={{
+            backgroundColor: "#FFFFFF",
+            marginTop: "8px",
+            width: "100vw",
+            paddingBottom: "48px",
+          }}
+        >
+          <p
+            className="heading2-bold"
+            style={{
+              marginLeft: "16px",
+              marginTop: "24px",
+              marginBottom: "16px",
+            }}
+          >
+            {t("生命讀經進度")}
+          </p>
+          <CCol
+            style={{
+              width: "100%",
+              overflowX: "scroll",
+              overflowY: "visible",
+              paddingLeft: "16px",
+              paddingRight: "16px",
+              alignItems: "flex-start",
+              display: "flex",
+            }}
+          >
             <img
               src={myImage}
               alt="lifestudy"
               border="0"
-              style={{maxWidth: "800px"}}
+              style={{ maxWidth: "800px" }}
             />
-          </CRow>
-        </CCol>
-      </CCardBody>
-    </CCard>
+          </CCol>
+        </div>
+      </div>
+      <div
+        style={{
+          position: "fixed",
+          height: "98px",
+          backgroundColor: "#FFFFFF",
+          width: "100%",
+          marginLeft: "-15px",
+          display: "flex",
+          justifyContent: "center",
+        }}
+      >
+        <button
+          style={{
+            marginTop: "12px",
+            backgroundColor: "#005371",
+            borderRadius: "8px",
+            height: "44px",
+            width: "343px",
+            color: "#FFFFFF",
+            border: 0
+          }}
+          onClick={() => {
+            history.push(`/form`);
+          }}
+        >
+          填寫操練表
+        </button>
+      </div>
+    </>
   );
 };
 

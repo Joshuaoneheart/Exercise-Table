@@ -50,7 +50,7 @@ const TheHeaderDropdownNotif = () => {
   return (
     <CDropdown inNav className="c-header-nav-item mx-2">
       <CDropdownToggle className="c-header-nav-link" caret={false}>
-        <CIcon name="cil-bell" />
+        <CIcon size="lg" name="cil-bell" />
         {announcements.length > 0 && (
           <CBadge shape="pill" color="danger">
             {announcements.length}

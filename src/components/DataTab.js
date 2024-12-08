@@ -24,9 +24,16 @@ import SemesterContext from "hooks/semester";
 const DataTabs = ({ data, account, default_data, thisWeek, setThisWeek }) => {
   const { t } = useTranslation("translation", { i18n });
   const [GF, setGF] = useState(null);
+  const [isLoading, setLoading] = useState(false);
   const [GF_data, setGFData] = useState(null);
   const { semester } = useContext(SemesterContext);
   const [api, ContextHolder] = message.useMessage();
+  useEffect(() => {
+    if (GF !== null) setLoading(true);
+  }, [GF]);
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [isLoading]);
   useEffect(() => {
     const GetGF = async () => {
       const docs = await DB.getByUrl("/GF");

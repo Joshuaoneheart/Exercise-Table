@@ -10,6 +10,7 @@ const ModifyGroup = lazy(() =>
 const FormList = lazy(() =>
   import("../containers/Admin/FormList/FormList")
 );
+const Dashboard = lazy(() => import("../containers/Dashboard"));
 const ModifyForm = lazy(() =>
   import("../containers/Admin/ModifyForm/ModifyForm")
 );
@@ -55,6 +56,7 @@ const routes = [
   },
   { path: "/form/:id", exact: true, name: "ModifyForm", component: ModifyForm },
   { path: "/form", exact: true, name: "Form", component: Form },
+  { path: "/dashboard", exact: true, name: "Dashboard", component: Dashboard },
   { path: "/settings", exact: true, name: "Settings", component: Settings },
   { path: "/profile", exact: true, name: "Profile", component: Profile },
   { path: "/GFList", exact: true, name: "GFList", component: GFList },

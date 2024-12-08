@@ -11,6 +11,88 @@
 // If you want to add something do it here
 @import "custom";
 
+@font-face {
+    font-family: "PingFang Regular";   /*Can be any text*/
+    src: local("PingFang Regular"),
+      url("../fonts/PingFang Regular.ttf") format("truetype");
+  }
+
+@font-face {
+font-family: "PingFang Medium";   /*Can be any text*/
+src: local("PingFang Medium"),
+    url("../fonts/PingFang Medium.ttf") format("truetype");
+}
+
+@font-face {
+font-family: "PingFang Bold";   /*Can be any text*/
+src: local("PingFang Bold"),
+    url("../fonts/PingFang Bold.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: "PingFang Semibold";
+    src: url("../fonts/PingFangTC-Semibold.otf") format("opentype");
+}
+
+.c-header {
+    height: 44px;
+    min-height: 44px;
+}
+
+.c-header-brand {
+    height: 44px;
+    min-height: 44px;
+    margin-left: calc(50vw - 118px) !important;
+
+}
+
+.c-header-toggler {
+    height: 44px;
+    min-height: 44px;
+}
+
+.c-header-nav {
+    height: 44px;
+    min-height: 44px;
+    padding-right: 2px !important; 
+    padding-left: 0 !important; 
+    width: 84px;
+}
+
+.c-header-nav-item  {
+    margin: 0 !important;
+    width: 40px;
+    display: flex;
+    justify-content: center;
+}
+
+.c-header-nav-items  {
+    margin: 0 !important;
+}
+
+.c-avatar-img {
+    width: 24px;
+}
+
+.c-avatar {
+    width: 40px;
+}
+
+.c-header-nav-link {
+    padding: 0 !important;
+}
+
+.dashboard {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: calc(100vh - 142px);
+    overflow: scroll;
+    margin-top: -32px;
+    margin-left: -15px;
+    margin-right: -15px;
+}
+
 .week-button {
      width: 45%; 
      height: 35px;
@@ -25,4 +107,204 @@
 
 .week-button:focus {
     box-shadow:  0 0 0 0.2rem rgba(60, 75, 100, 0.25) !important;
+}
+
+.winner-name {
+    margin-top: 8px;
+    margin-left: 7px;
+    margin-right: 7px;
+    margin-bottom: 0px;
+    text-align: center;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    text-overflow: ellipsis;
+    word-break: break-word;
+}
+
+.winner-badge {
+    max-width: 97px;
+    height: 134px;
+    padding-left: 0px;
+    padding-right: 0px;
+    background: linear-gradient(180deg, #ffffff 60%, transparent);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 16px 16px 0px 0px;
+}
+
+.winner-number {
+    background-color: #ffffff;
+    min-width: 47px;
+    height: 22px;
+    text-align: center;
+    margin-top: 4px;
+    border-radius: 24px;
+    padding-left: 8px;
+    padding-right: 8px;
+    padding-bottom: 2px;
+    padding-top: 2px;
+}
+
+.winner-medal {
+    margin-top: -40px;
+    width: 65px;
+    height: 80px;
+}
+
+.winner-medal-large {
+    margin-top: -45.5px;
+    width: 74px;
+    height: 91px;
+}
+
+.after-3-badge {
+    padding-top: 2px;
+    padding-bottom: 2px;
+    padding-left: 8px;
+    background-color: rgb(0 0 0 / 10%);
+    border-radius: 24px;
+    margin-top: 17px;
+    margin-bottom: 17px;
+    padding-right: 8px;
+    min-width: 47px;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.rank {
+    margin-right: 23px;
+}
+
+.nickname-input {
+    border-radius: 8px;
+    background-color: rgba(69, 74, 76, 0.1);
+    height: 40px;
+    width: 180px;
+    border: 0px;
+    padding-left: 16px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    padding-right: 30px;
+    caret-color: #FFA519;
+}
+
+.nickname-input:focus-visible {
+    outline: 0px;
+}
+
+.input-icon {
+    margin-left: -28px;
+    width: 16px;
+    height: 16px;
+}
+
+.nickname-container {
+    position: relative;
+    z-index: 1;
+    background-color: #FFFFFF;
+    margin-top: 9.5px;
+    width: 343px;
+    height: 64px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 16px;
+    margin-right: 16px;
+    border-radius: 16px;
+    box-shadow: 0px 0px 8px 0px rgb(0 0 0 / 20%);
+}
+
+.LSNum {
+    background-color: #C4E7F0;
+    border-radius: 24px;
+    padding-left: 8px;
+    padding-right: 8px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    margin-left: 35px;
+}
+
+.text-primary-600 {
+    color: #318193;
+}
+
+.text-dark-blue {
+    color: #005371;
+}
+
+.text-n-500 {
+    color: #878787;
+}
+
+.primary-regular {
+    font-family: "PingFang Regular";
+    font-size: 16px;
+    letter-spacing: 0.06em;
+    line-height: 24px;
+}
+
+.primary-medium {
+    font-family: "PingFang Medium";
+    font-size: 16px;
+    letter-spacing: 0.06em;
+    line-height: 24px;
+}
+
+.primary-bold {
+    font-family: "PingFang Bold";
+    font-size: 16px;
+    letter-spacing: 0.06em;
+    line-height: 24px;
+}
+
+.heading2-bold {
+    font-family: "PingFang Bold";
+    font-size: 20px;
+    line-height: 28px;
+    letter-spacing: 0.06em;
+}
+
+.heading3-bold {
+    font-family: "PingFang Bold";
+    font-size: 18px;
+    line-height: 28px;
+    letter-spacing: 0.06em;
+}
+
+.secondary-medium {
+    font-family: "PingFang Medium";
+    font-size: 14px;
+    letter-spacing: 0.02em;
+    line-height: 20px;
+}
+
+.content-regular {
+    font-family: "PingFang Regular";
+    font-size: 12px;
+    letter-spacing: 0;
+    line-height: 18px;
+}
+
+.content-medium {
+    font-family: "PingFang Medium";
+    font-size: 12px;
+    letter-spacing: 0;
+    line-height: 18px;
+}
+
+.content-bold {
+    font-family: "PingFang Bold";
+    font-size: 12px;
+    letter-spacing: 0;
+    line-height: 18px;
+}
+
+@media (min-width: 768px) {
+    .dashboard {
+        margin-left: -30px;
+        margin-right: -30px;
+    }
 }

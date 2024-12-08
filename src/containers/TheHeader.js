@@ -1,10 +1,9 @@
 import {
-  CBreadcrumbRouter,
   CHeader,
   CHeaderBrand,
   CHeaderNav,
   CHeaderNavItem,
-  CHeaderNavLink, CSubheader,
+  CHeaderNavLink,
   CToggler
 } from "@coreui/react";
 import { useContext } from "react";
@@ -13,7 +12,6 @@ import { useDispatch, useSelector } from "react-redux";
 // routes config
 import { Brand } from "components";
 import { AccountContext } from "hooks/context";
-import routes from "routes/routes";
 
 import {
   TheHeaderDropdown,
@@ -41,7 +39,7 @@ const TheHeader = (props) => {
   };
 
   return (
-    <CHeader withSubheader>
+    <CHeader>
       <CToggler
         inHeader
         className="ml-md-3 d-lg-none"
@@ -73,13 +71,6 @@ const TheHeader = (props) => {
         <TheHeaderDropdownNotif />
         <TheHeaderDropdown {...props} />
       </CHeaderNav>
-
-      <CSubheader className="px-3 justify-content-between">
-        <CBreadcrumbRouter
-          className="border-0 c-subheader-nav m-0 px-0 px-md-3"
-          routes={routes}
-        />
-      </CSubheader>
     </CHeader>
   );
 };

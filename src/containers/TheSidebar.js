@@ -79,7 +79,7 @@ const TheSidebar = () => {
       {
         _tag: "CSidebarNavItem",
         name: t("表單預覽"),
-        to: "/form",
+        to: "/dashboard",
         icon: "cil-spreadsheet",
       },
       {
@@ -132,7 +132,7 @@ const TheSidebar = () => {
       },
       {
         _tag: "CSidebarNavItem",
-        to: "/form",
+        to: "/dashboard",
         name: t("操練表填寫"),
         icon: "cil-spreadsheet",
       },

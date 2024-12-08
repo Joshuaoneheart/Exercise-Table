@@ -10,7 +10,6 @@ const TheLayout = (props) => {
         <div className="c-body">
           <TheContent />
         </div>
-        <TheFooter />
       </div>
     </div>
   );
