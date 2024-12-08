@@ -155,25 +155,49 @@ const Dashboard = () => {
   }
   return (
     <>
+<<<<<<< HEAD
       <div className="dashboard">
+=======
+      <div
+        className="dashboard"
+      >
+>>>>>>> bc8b9c14 (add dashboard)
         <div
           style={{
             marginLeft: "-15px",
             marginRight: "-15px",
+<<<<<<< HEAD
             paddingLeft: "calc(50% - 187.5px)",
             width: "100vw",
+=======
+            width: "375px",
+>>>>>>> bc8b9c14 (add dashboard)
             backgroundImage: "url(Images/bg.png)",
             backgroundRepeat: "no-repeat",
             backgroundSize: "375px 307px",
             marginBottom: "-30px",
+<<<<<<< HEAD
             overflow:"clip",
             backgroundPosition: "top center",
+=======
+>>>>>>> bc8b9c14 (add dashboard)
           }}
         >
           <img
             src={process.env.PUBLIC_URL + "/Images/banner.png"}
             alt="banner"
+<<<<<<< HEAD
             className="banner"
+=======
+            style={{
+              width: "288px",
+              height: "60px",
+              marginTop: "23px",
+              marginLeft: "46.5px",
+              marginRight: "46.5px",
+              marginBottom: "47px",
+            }}
+>>>>>>> bc8b9c14 (add dashboard)
           />
           <CRow>
             <CCol
@@ -280,8 +304,11 @@ const Dashboard = () => {
               top: "-30px",
               left: "0px",
               marginBottom: 0,
+<<<<<<< HEAD
               marginLeft: "calc(187.5px - 50vw)",
               paddingLeft: "calc(50vw - 187.5px)"
+=======
+>>>>>>> bc8b9c14 (add dashboard)
             }}
           >
             <CCol style={{ paddingLeft: "36px", paddingRight: "36px" }}>
@@ -290,7 +317,11 @@ const Dashboard = () => {
                   return (
                     <>
                       {x}
+<<<<<<< HEAD
                       <hr style={{ margin: 0, width: "303px" }} />
+=======
+                      <hr style={{ margin: 0 }} />
+>>>>>>> bc8b9c14 (add dashboard)
                     </>
                   );
                 }
@@ -337,7 +368,21 @@ const Dashboard = () => {
           </CCol>
         </div>
       </div>
+<<<<<<< HEAD
       <div className="dashboard-footer">
+=======
+      <div
+        style={{
+          position: "fixed",
+          height: "98px",
+          backgroundColor: "#FFFFFF",
+          width: "100%",
+          marginLeft: "-15px",
+          display: "flex",
+          justifyContent: "center",
+        }}
+      >
+>>>>>>> bc8b9c14 (add dashboard)
         <button
           style={{
             marginTop: "12px",
@@ -346,7 +391,11 @@ const Dashboard = () => {
             height: "44px",
             width: "343px",
             color: "#FFFFFF",
+<<<<<<< HEAD
             border: 0,
+=======
+            border: 0
+>>>>>>> bc8b9c14 (add dashboard)
           }}
           onClick={() => {
             history.push(`/form`);
