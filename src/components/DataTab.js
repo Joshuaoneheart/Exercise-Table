@@ -1,13 +1,5 @@
-import {
-  CCard,
-  CCardBody,
-  CCardHeader,
-  CCol,
-  CForm,
-  CRow,
-  CButton,
-} from "@coreui/react";
-import { useEffect, useRef, useState, useContext } from "react";
+import { CCol, CForm, CRow, CButton } from "@coreui/react";
+import { useEffect, useRef, useState } from "react";
 import Problem from "./Problem";
 import { DB, firebase } from "db/firebase";
 import {
@@ -213,25 +205,50 @@ const DataTabs = ({ data, account, default_data, thisWeek, setThisWeek }) => {
     tabpanes.push(contents);
   }
   return (
-    <CCard>
-      {ContextHolder}
-      <CCardHeader>
-        <CRow>
-          <CCol style={{ fontSize: "30px" }}>
-            {t("表單")} -{" "}
+    <div className="form">
+      <div
+        style={{
+          backgroundColor: "#CCEAF3",
+        }}
+      >
+        {ContextHolder}
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            paddingTop: "24px",
+            paddingLeft: "16px",
+            paddingRight: "16px",
+            marginBottom: "16px",
+          }}
+        >
+          <div className="heading2-bold" style={{ width: "50%" }}>
+            {t("操練表")}
+          </div>
+          <div
+            style={{
+              fontFamily: "PingFang Semibold",
+              fontSize: "20px",
+              lineHeight: "28px",
+              letterSpacing: "0em",
+              justifyContent: "flex-end",
+              display: "flex",
+              width: "50%",
+            }}
+          >
             {WeeklyBase2String(
               thisWeek ? GetWeeklyBase() : GetWeeklyBase() - 1
             )}
-          </CCol>
-        </CRow>
-        <CRow style={{ marginTop: "10px" }} className="align-items-center">
+          </div>
+        </div>
+        <CRow className="align-items-center">
           <CCol>
             <CRow
               className="align-items-center"
               style={{ justifyContent: "center" }}
             >
               <CButton
-                className="week-button"
+                className="week-button text-dark-blue primary-medium"
                 variant="outline"
                 active={!thisWeek}
                 onClick={() => setThisWeek(false)}
@@ -243,8 +260,8 @@ const DataTabs = ({ data, account, default_data, thisWeek, setThisWeek }) => {
                 {t("上週")}
               </CButton>
               <CButton
-                className="week-button"
-                style={{ marginLeft: "10px" }}
+                className="week-button text-dark-blue primary-medium"
+                style={{ marginLeft: "16px" }}
                 variant="outline"
                 active={thisWeek}
                 onClick={() => setThisWeek(true)}
@@ -254,23 +271,29 @@ const DataTabs = ({ data, account, default_data, thisWeek, setThisWeek }) => {
             </CRow>
           </CCol>
         </CRow>
-      </CCardHeader>
-      <CCardBody>
-        <CForm
-          innerRef={form}
-          onSubmit={(e) => {
-            e.preventDefault();
-          }}
-        >
-          {tabpanes.map((x, i) => (
-            <>
-              <h2>{t(data.sections[i])}</h2> <hr />
-              {GF && x}
-            </>
-          ))}
-        </CForm>
-      </CCardBody>
-    </CCard>
+      </div>
+      <CForm
+        innerRef={form}
+        onSubmit={(e) => {
+          e.preventDefault();
+        }}
+      >
+        {tabpanes.map((x, i) => (
+          <div
+            style={{
+              backgroundColor: "#FFFFFF",
+              paddingTop: "24px",
+              marginBottom: "8px",
+            }}
+          >
+            <p className="heading3-medium section-title">
+              {t(data.sections[i])}
+            </p>
+            {GF && x}
+          </div>
+        ))}
+      </CForm>
+    </div>
   );
 };
 

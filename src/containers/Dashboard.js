@@ -155,31 +155,25 @@ const Dashboard = () => {
   }
   return (
     <>
-      <div
-        className="dashboard"
-      >
+      <div className="dashboard">
         <div
           style={{
             marginLeft: "-15px",
             marginRight: "-15px",
-            width: "375px",
+            paddingLeft: "calc(50% - 187.5px)",
+            width: "100vw",
             backgroundImage: "url(Images/bg.png)",
             backgroundRepeat: "no-repeat",
             backgroundSize: "375px 307px",
             marginBottom: "-30px",
+            overflow:"clip",
+            backgroundPosition: "top center",
           }}
         >
           <img
             src={process.env.PUBLIC_URL + "/Images/banner.png"}
             alt="banner"
-            style={{
-              width: "288px",
-              height: "60px",
-              marginTop: "23px",
-              marginLeft: "46.5px",
-              marginRight: "46.5px",
-              marginBottom: "47px",
-            }}
+            className="banner"
           />
           <CRow>
             <CCol
@@ -286,6 +280,8 @@ const Dashboard = () => {
               top: "-30px",
               left: "0px",
               marginBottom: 0,
+              marginLeft: "calc(187.5px - 50vw)",
+              paddingLeft: "calc(50vw - 187.5px)"
             }}
           >
             <CCol style={{ paddingLeft: "36px", paddingRight: "36px" }}>
@@ -294,7 +290,7 @@ const Dashboard = () => {
                   return (
                     <>
                       {x}
-                      <hr style={{ margin: 0 }} />
+                      <hr style={{ margin: 0, width: "303px" }} />
                     </>
                   );
                 }
@@ -341,17 +337,7 @@ const Dashboard = () => {
           </CCol>
         </div>
       </div>
-      <div
-        style={{
-          position: "fixed",
-          height: "98px",
-          backgroundColor: "#FFFFFF",
-          width: "100%",
-          marginLeft: "-15px",
-          display: "flex",
-          justifyContent: "center",
-        }}
-      >
+      <div className="dashboard-footer">
         <button
           style={{
             marginTop: "12px",
@@ -360,7 +346,7 @@ const Dashboard = () => {
             height: "44px",
             width: "343px",
             color: "#FFFFFF",
-            border: 0
+            border: 0,
           }}
           onClick={() => {
             history.push(`/form`);

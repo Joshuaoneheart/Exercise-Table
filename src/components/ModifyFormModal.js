@@ -13,8 +13,6 @@ import {
   CSelect,
 } from "@coreui/react";
 import {
-  MultiAnswerFields,
-  MultiChoiceFields,
   GridFields,
   MultiGridFields,
   NumberFields,
@@ -36,7 +34,6 @@ const ProblemFormatChecking = (problem) => {
   let suboptions = problem["子選項"];
 
   switch (problem.type) {
-    case "MultiChoice":
     case "Grid":
       // 分數與選項數量需匹配（以分號隔開）
       if (options.length !== scores.length) {
@@ -59,19 +56,6 @@ const ProblemFormatChecking = (problem) => {
       }
 
       break;
-    case "MultiAnswer":
-      // 複選分數為單一數字
-      if (!is_numeric(problem["score"])) {
-        message.error("分數須為單一數字");
-        return false;
-      }
-
-      // 子選項不可同名
-      if (!suboptions.every(is_unique)) {
-        message.error("子選項不可同名");
-        return false;
-      }
-      break;
     default:
       break;
   }
@@ -87,7 +71,7 @@ format of show
 }
 */
 const AddModal = ({ show, data, setData, sections, setSections, setModal }) => {
-  var [type, setType] = useState("MultiChoice");
+  var [type, setType] = useState("Grid");
   var form = useRef();
   if (show === null) {
     return null;
@@ -99,8 +83,7 @@ const AddModal = ({ show, data, setData, sections, setSections, setModal }) => {
         tmp["title"] = form.current.elements.title.value;
         tmp["type"] = form.current.elements.type.value;
         tmp["score"] = [];
-        if (["MultiChoice", "Grid", "MultiGrid"].includes(tmp["type"]))
-          tmp["選項"] = [];
+        if (["Grid", "MultiGrid"].includes(tmp["type"])) tmp["選項"] = [];
         let i = 0;
         if (tmp["type"] === "GF")
           tmp["note"] = form.current.elements["note"].checked;
@@ -109,12 +92,12 @@ const AddModal = ({ show, data, setData, sections, setSections, setModal }) => {
         }
         while (form.current.elements["score" + i]) {
           tmp["score"].push(form.current.elements["score" + i].value);
-          if (["MultiChoice", "Grid", "MultiGrid"].includes(tmp["type"])) {
+          if (["Grid", "MultiGrid"].includes(tmp["type"])) {
             tmp["選項"].push(form.current.elements["option" + i].value);
           }
           i++;
         }
-        if (["MultiAnswer", "Grid", "MultiGrid"].includes(tmp["type"])) {
+        if (["Grid", "MultiGrid"].includes(tmp["type"])) {
           tmp["子選項"] = [];
           let i = 0;
           while (form.current.elements["suboption" + i]) {
@@ -128,7 +111,7 @@ const AddModal = ({ show, data, setData, sections, setSections, setModal }) => {
         data.push(tmp);
         setData(Array.from(data));
         setModal(null);
-        setType("MultiChoice");
+        setType("Grid");
         break;
       case "section":
         sections.push(form.current.elements.name.value);
@@ -140,8 +123,6 @@ const AddModal = ({ show, data, setData, sections, setSections, setModal }) => {
     }
   };
   const fields = {
-    MultiChoice: <MultiChoiceFields />,
-    MultiAnswer: <MultiAnswerFields />,
     Grid: <GridFields />,
     MultiGrid: <MultiGridFields />,
     Number: <NumberFields />,
@@ -152,7 +133,7 @@ const AddModal = ({ show, data, setData, sections, setSections, setModal }) => {
       show={show !== null}
       onClose={() => {
         setModal(null);
-        setType("MultiChoice");
+        setType("Grid");
       }}
     >
       <CModalHeader closeButton>
@@ -191,10 +172,8 @@ const AddModal = ({ show, data, setData, sections, setSections, setModal }) => {
                       }
                     }}
                     name="type"
-                    defaultValue="MultiChoice"
+                    defaultValue="Grid"
                   >
-                    <option value="MultiChoice">單選題</option>
-                    <option value="MultiAnswer">多選題</option>
                     <option value="Grid">單選網格題</option>
                     <option value="MultiGrid">多選網格題</option>
                     <option value="Number">數字題</option>
@@ -225,7 +204,7 @@ const AddModal = ({ show, data, setData, sections, setSections, setModal }) => {
           color="secondary"
           onClick={() => {
             setModal(null);
-            setType("MultiChoice");
+            setType("Grid");
           }}
         >
           取消
@@ -303,7 +282,7 @@ const DeleteModal = ({
 const ModifyModal = ({ show, data, setData, setModal }) => {
   var form = useRef();
   // format of type: [type name, 0 indicates the first open of modal, 1 is otherwise]
-  let [type, setType] = useState("MultiChoice");
+  let [type, setType] = useState("Grid");
   var writeData = () => {
     var tmp = {};
     tmp["title"] = form.current.elements.title.value;
@@ -314,17 +293,16 @@ const ModifyModal = ({ show, data, setData, setModal }) => {
     if (["Number", "GF"].includes(tmp["type"])) {
       tmp["max"] = form.current.elements["max0"].value;
     }
-    if (["MultiChoice", "Grid", "MultiGrid"].includes(tmp["type"]))
-      tmp["選項"] = [];
+    if (["Grid", "MultiGrid"].includes(tmp["type"])) tmp["選項"] = [];
     let i = 0;
     while (form.current.elements["score" + i]) {
       tmp["score"].push(form.current.elements["score" + i].value);
-      if (["MultiChoice", "Grid", "MultiGrid"].includes(tmp["type"])) {
+      if (["Grid", "MultiGrid"].includes(tmp["type"])) {
         tmp["選項"].push(form.current.elements["option" + i].value);
       }
       i++;
     }
-    if (["MultiAnswer", "Grid", "MultiGrid"].includes(tmp["type"])) {
+    if (["Grid", "MultiGrid"].includes(tmp["type"])) {
       tmp["子選項"] = [];
       let i = 0;
       while (form.current.elements["suboption" + i]) {
@@ -337,7 +315,7 @@ const ModifyModal = ({ show, data, setData, setModal }) => {
     if (!ProblemFormatChecking(tmp)) return;
     data[show] = tmp;
     setData(Array.from(data));
-    setType("MultiChoice");
+    setType("Grid");
     setModal(null);
   };
 
@@ -348,8 +326,6 @@ const ModifyModal = ({ show, data, setData, setModal }) => {
   }, [show, data]);
   if (show === null) return null;
   const fields = {
-    MultiChoice: <MultiChoiceFields data={data[show]} />,
-    MultiAnswer: <MultiAnswerFields data={data[show]} />,
     Grid: <GridFields data={data[show]} />,
     MultiGrid: <MultiGridFields data={data[show]} />,
     Number: <NumberFields data={data[show]} />,
@@ -399,8 +375,6 @@ const ModifyModal = ({ show, data, setData, setModal }) => {
                   name="type"
                   defaultValue={data[show]["type"]}
                 >
-                  <option value="MultiChoice">單選題</option>
-                  <option value="MultiAnswer">多選題</option>
                   <option value="Grid">單選網格題</option>
                   <option value="MultiGrid">多選網格題</option>
                   <option value="Number">數字題</option>

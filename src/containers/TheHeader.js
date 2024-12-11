@@ -7,7 +7,6 @@ import {
   CToggler
 } from "@coreui/react";
 import { useContext } from "react";
-import { useDispatch, useSelector } from "react-redux";
 
 // routes config
 import { Brand } from "components";
@@ -18,37 +17,20 @@ import {
   TheHeaderDropdownNotif
 } from "./index";
 
-const TheHeader = (props) => {
-  const dispatch = useDispatch();
-  const sidebarShow = useSelector((state) => state.sidebarShow);
+const TheHeader = ({props, setShow}) => {
   var account = useContext(AccountContext);
   if (!account) return null;
-
-  const toggleSidebar = () => {
-    const val = [true, "responsive"].includes(sidebarShow)
-      ? false
-      : "responsive";
-    dispatch({ type: "set", sidebarShow: val });
-  };
-
-  const toggleSidebarMobile = () => {
-    const val = [false, "responsive"].includes(sidebarShow)
-      ? true
-      : "responsive";
-    dispatch({ type: "set", sidebarShow: val });
-  };
-
   return (
     <CHeader>
       <CToggler
         inHeader
         className="ml-md-3 d-lg-none"
-        onClick={toggleSidebarMobile}
+        onClick={() => setShow(true)}
       />
       <CToggler
         inHeader
         className="ml-3 d-md-down-none"
-        onClick={toggleSidebar}
+        onClick={() => setShow(true)}
       />
       <CHeaderBrand className="mx-auto d-lg-none" to="/">
         <Brand />

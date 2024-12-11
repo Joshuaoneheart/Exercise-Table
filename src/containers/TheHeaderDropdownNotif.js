@@ -1,20 +1,39 @@
-import React, { useContext, useEffect, useState } from "react";
-import {
-  CBadge,
-  CDropdown,
-  CDropdownItem,
-  CDropdownMenu,
-  CDropdownToggle,
-  CLink,
-} from "@coreui/react";
+import { useContext, useRef, useEffect, useState } from "react";
+import { CBadge, CLink } from "@coreui/react";
 import CIcon from "@coreui/icons-react";
 import { AccountContext } from "hooks/context";
 import { firebase } from "db/firebase";
+function useOuterClick(callback) {
+  const callbackRef = useRef(); // initialize mutable ref, which stores callback
+  const innerRef = useRef(); // returned to client, who marks "border" element
+
+  // update cb on each render, so second useEffect has access to current value
+  useEffect(() => {
+    callbackRef.current = callback;
+  });
+
+  useEffect(() => {
+    document.addEventListener("click", handleClick);
+    return () => document.removeEventListener("click", handleClick);
+    function handleClick(e) {
+      if (
+        innerRef.current &&
+        callbackRef.current &&
+        !innerRef.current.contains(e.target)
+      )
+        callbackRef.current(e);
+    }
+  }, []); // no dependencies -> stable click listener
+
+  return innerRef; // convenience for client (doesn't need to init ref himself)
+}
 
 const TheHeaderDropdownNotif = () => {
   const account = useContext(AccountContext);
   const [refresh, setRefresh] = useState(false);
   const [announcements, setAnnouncements] = useState([]);
+  const [show, setShow] = useState(false);
+  const ref = useOuterClick(() => setShow(false));
   useEffect(() => {
     firebase
       .firestore()
@@ -33,37 +52,87 @@ const TheHeaderDropdownNotif = () => {
   let announcement_list = [];
   for (let i = 0; i < announcements.length; i++) {
     announcement_list.push(
-      <CDropdownItem
+      <li
         key={i}
-        tag={CLink}
-        to={`/Announcement/${announcements[i].id}`}
+        style={{
+          alignItems: "center",
+          textAlign: "center",
+          paddingTop: "9px",
+          paddingBottom: "9px",
+          paddingLeft: "16px",
+          paddingRight: "16px",
+        }}
         onClick={() => {
+          setShow(false);
           setRefresh((old_refresh) => {
             return !old_refresh;
           });
         }}
       >
-        <strong>{announcements[i].title}</strong>
-      </CDropdownItem>
+        <CLink
+          className="text-dark-blue"
+          to={`/Announcement/${announcements[i].id}`}
+        >
+          <strong>{announcements[i].title}</strong>
+        </CLink>
+      </li>
     );
+    if (i !== announcements.length - 1)
+      announcement_list.push(<hr style={{ margin: 0 }} />);
   }
   return (
-    <CDropdown inNav className="c-header-nav-item mx-2">
-      <CDropdownToggle className="c-header-nav-link" caret={false}>
+    <div ref={ref}>
+      <div
+        onClick={() => {
+          setShow((v) => !v);
+        }}
+        style={{
+          alignItems: "center",
+          display: "flex",
+          justifyContent: "center",
+          paddingRight: announcements.length > 0 ? "0" : "19px",
+        }}
+      >
         <CIcon size="lg" name="cil-bell" />
         {announcements.length > 0 && (
-          <CBadge shape="pill" color="danger">
+          <CBadge
+            style={{ position: "relative", right: "11px", bottom: "11px" }}
+            shape="pill"
+            color="danger"
+          >
             {announcements.length}
           </CBadge>
         )}
-      </CDropdownToggle>
-      <CDropdownMenu placement="bottom-end" className="pt-0">
-        <CDropdownItem header tag="div" className="text-center" color="light">
+      </div>
+      <ul
+        style={{
+          display: show ? "block" : "none",
+          listStyle: "none",
+          position: "fixed",
+          top: "44px",
+          right: "30px",
+          borderRadius: "8px",
+          backgroundColor: "#FFFFFF",
+          padding: 0,
+        }}
+      >
+        <li
+          style={{
+            alignItems: "center",
+            textAlign: "center",
+            paddingTop: "9px",
+            backgroundColor: "#E7E7E7",
+            paddingBottom: "9px",
+            paddingLeft: "16px",
+            paddingRight: "16px",
+            borderRadius: "8px 8px 0px 0px",
+          }}
+        >
           <strong>You have {announcements.length} notifications</strong>
-        </CDropdownItem>
+        </li>
         {announcement_list}
-      </CDropdownMenu>
-    </CDropdown>
+      </ul>
+    </div>
   );
 };
 
