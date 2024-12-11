@@ -156,36 +156,51 @@ const Dashboard = () => {
   return (
     <>
 <<<<<<< HEAD
+<<<<<<< HEAD
       <div className="dashboard">
 =======
       <div
         className="dashboard"
       >
 >>>>>>> bc8b9c14 (add dashboard)
+=======
+      <div className="dashboard">
+>>>>>>> 54b19de0 (finish sidebar, part of navbar, part of form)
         <div
           style={{
             marginLeft: "-15px",
             marginRight: "-15px",
+<<<<<<< HEAD
 <<<<<<< HEAD
             paddingLeft: "calc(50% - 187.5px)",
             width: "100vw",
 =======
             width: "375px",
 >>>>>>> bc8b9c14 (add dashboard)
+=======
+            paddingLeft: "calc(50% - 187.5px)",
+            width: "100vw",
+>>>>>>> 54b19de0 (finish sidebar, part of navbar, part of form)
             backgroundImage: "url(Images/bg.png)",
             backgroundRepeat: "no-repeat",
             backgroundSize: "375px 307px",
             marginBottom: "-30px",
 <<<<<<< HEAD
+<<<<<<< HEAD
             overflow:"clip",
             backgroundPosition: "top center",
 =======
 >>>>>>> bc8b9c14 (add dashboard)
+=======
+            overflow:"clip",
+            backgroundPosition: "top center",
+>>>>>>> 54b19de0 (finish sidebar, part of navbar, part of form)
           }}
         >
           <img
             src={process.env.PUBLIC_URL + "/Images/banner.png"}
             alt="banner"
+<<<<<<< HEAD
 <<<<<<< HEAD
             className="banner"
 =======
@@ -198,6 +213,9 @@ const Dashboard = () => {
               marginBottom: "47px",
             }}
 >>>>>>> bc8b9c14 (add dashboard)
+=======
+            className="banner"
+>>>>>>> 54b19de0 (finish sidebar, part of navbar, part of form)
           />
           <CRow>
             <CCol
@@ -305,10 +323,15 @@ const Dashboard = () => {
               left: "0px",
               marginBottom: 0,
 <<<<<<< HEAD
+<<<<<<< HEAD
               marginLeft: "calc(187.5px - 50vw)",
               paddingLeft: "calc(50vw - 187.5px)"
 =======
 >>>>>>> bc8b9c14 (add dashboard)
+=======
+              marginLeft: "calc(187.5px - 50vw)",
+              paddingLeft: "calc(50vw - 187.5px)"
+>>>>>>> 54b19de0 (finish sidebar, part of navbar, part of form)
             }}
           >
             <CCol style={{ paddingLeft: "36px", paddingRight: "36px" }}>
@@ -318,10 +341,14 @@ const Dashboard = () => {
                     <>
                       {x}
 <<<<<<< HEAD
+<<<<<<< HEAD
                       <hr style={{ margin: 0, width: "303px" }} />
 =======
                       <hr style={{ margin: 0 }} />
 >>>>>>> bc8b9c14 (add dashboard)
+=======
+                      <hr style={{ margin: 0, width: "303px" }} />
+>>>>>>> 54b19de0 (finish sidebar, part of navbar, part of form)
                     </>
                   );
                 }
@@ -369,6 +396,7 @@ const Dashboard = () => {
         </div>
       </div>
 <<<<<<< HEAD
+<<<<<<< HEAD
       <div className="dashboard-footer">
 =======
       <div
@@ -383,6 +411,9 @@ const Dashboard = () => {
         }}
       >
 >>>>>>> bc8b9c14 (add dashboard)
+=======
+      <div className="dashboard-footer">
+>>>>>>> 54b19de0 (finish sidebar, part of navbar, part of form)
         <button
           style={{
             marginTop: "12px",
@@ -392,10 +423,14 @@ const Dashboard = () => {
             width: "343px",
             color: "#FFFFFF",
 <<<<<<< HEAD
+<<<<<<< HEAD
             border: 0,
 =======
             border: 0
 >>>>>>> bc8b9c14 (add dashboard)
+=======
+            border: 0,
+>>>>>>> 54b19de0 (finish sidebar, part of navbar, part of form)
           }}
           onClick={() => {
             history.push(`/form`);
