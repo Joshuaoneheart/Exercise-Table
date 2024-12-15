@@ -98,6 +98,7 @@ const TheSidebar = ({ show, setShow }) => {
   }
   let start_page = 1;
   for (let i = 0; i < navigation.length; i++) {
+    if(typeof(navigation[i]) === "string") continue
     if (location.pathname.split("/")[1] === navigation[i].to.split("/")[1]) {
       start_page = i;
       break;
@@ -173,7 +174,11 @@ const TheSidebar = ({ show, setShow }) => {
           }}
         />
         <div
-          style={{ display: "flex", justifyContent: "center" }}
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            cursor: "default",
+          }}
           className="primary-medium text-dark-blue"
           onClick={async () => DB.signOut()}
         >

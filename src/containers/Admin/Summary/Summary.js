@@ -74,6 +74,7 @@ const Summary = () => {
       // generate empty row
       for (let id of Object.keys(accountsMap)) {
         if (!meta[id]) continue;
+        if (accountsMap[id] === "黃連謙") console.log(meta[id]);
         let { items, result, column_keys, column_labels, column_problems } =
           await SummaryScore(meta[id], problems, id);
         all_column_keys = [...all_column_keys, ...column_keys];
@@ -163,11 +164,17 @@ const Summary = () => {
           />
         </CCol>
       );
-    } else if (conditions[i].data && conditions[i].data.type === "GF") {
+    } else if (
+      conditions[i].data &&
+      (conditions[i].data.type === "GF" ||
+        conditions[i].data.type === "section")
+    ) {
       choice_select = (
         <>
           <CCol>
-            <CLabel style={{ width: "100%" }}>次條件</CLabel>
+            <CLabel style={{ width: "100%" }}>
+              {conditions[i].data.type === "section" ? "分數" : "次"}條件
+            </CLabel>
             <Select
               options={[
                 {
@@ -187,7 +194,9 @@ const Summary = () => {
             />
           </CCol>
           <CCol xs="4" md="2">
-            <CLabel style={{ width: "100%" }}>幾次</CLabel>
+            <CLabel style={{ width: "100%" }}>
+              幾{conditions[i].data.type === "section" ? "分" : "次"}
+            </CLabel>
             <InputNumber
               min={0}
               onChange={(v) => {

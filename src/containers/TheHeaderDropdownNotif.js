@@ -121,11 +121,12 @@ const TheHeaderDropdownNotif = () => {
             alignItems: "center",
             textAlign: "center",
             paddingTop: "9px",
-            backgroundColor: "#E7E7E7",
+            backgroundColor: "#E8E8E8",
             paddingBottom: "9px",
             paddingLeft: "16px",
             paddingRight: "16px",
-            borderRadius: "8px 8px 0px 0px",
+            borderRadius:
+              "8px 8px " + (announcements.length === 0 ? "8px 8px" : "0px 0px"),
           }}
         >
           <strong>You have {announcements.length} notifications</strong>
