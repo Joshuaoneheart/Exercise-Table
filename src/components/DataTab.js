@@ -7,19 +7,25 @@ import {
   CRow,
   CButton,
 } from "@coreui/react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useContext } from "react";
 import Problem from "./Problem";
 import { DB, firebase } from "db/firebase";
-import { GetWeeklyBase, WeeklyBase2String } from "utils/date";
+import {
+  GetWeeklyBase,
+  WeeklyBase2String,
+  GetWeeklyBaseFromTime,
+} from "utils/date";
 import loading from "./loading";
 import { message } from "antd";
 import { useTranslation } from "react-i18next";
 import i18n from "i18n";
+import SemesterContext from "hooks/semester";
 
 const DataTabs = ({ data, account, default_data, thisWeek, setThisWeek }) => {
   const { t } = useTranslation("translation", { i18n });
   const [GF, setGF] = useState(null);
   const [GF_data, setGFData] = useState(null);
+  const { semester } = useContext(SemesterContext);
   const [api, ContextHolder] = message.useMessage();
   useEffect(() => {
     const GetGF = async () => {
@@ -222,6 +228,10 @@ const DataTabs = ({ data, account, default_data, thisWeek, setThisWeek }) => {
                 variant="outline"
                 active={!thisWeek}
                 onClick={() => setThisWeek(false)}
+                disabled={
+                  GetWeeklyBase() - 1 ===
+                  GetWeeklyBaseFromTime(semester.end.toDate())
+                }
               >
                 {t("上週")}
               </CButton>
