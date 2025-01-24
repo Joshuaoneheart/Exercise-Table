@@ -411,7 +411,7 @@ hr {
     justify-content: space-between;
     margin-bottom: 24px;
     padding-left: 16px;
-    padding-right: 16px;
+    padding-right: 1px;
 }
 
 .GFList-topic {
@@ -420,8 +420,9 @@ hr {
 }
 
 .plus-icon {
-    width: 52px;
+    width: 72px;
     cursor: pointer;
+    margin-top: -5px;
 }
 
 .GFList-search-banner {
