@@ -1,4 +1,3 @@
-import CIcon from "@coreui/icons-react";
 import { AccountContext } from "hooks/context";
 import { useContext } from "react";
 import { useTranslation } from "react-i18next";
@@ -6,7 +5,7 @@ import i18n from "i18n";
 
 const TheHeaderDropdown = (props) => {
   var account = useContext(AccountContext);
-  const { t, i18n: i18next } = useTranslation("translation", { i18n });
+  const { i18n: i18next } = useTranslation("translation", { i18n });
   if (!account) return null;
   return (
     <div
@@ -17,9 +16,15 @@ const TheHeaderDropdown = (props) => {
       }}
     >
       {i18next.language !== "zh-tw" ? (
-        <CIcon size="lg" name="cif-tw" className="mfe-2" />
+        <img
+          src={process.env.PUBLIC_URL + "/Images/flag_US.svg"}
+          alt="flag_US"
+        />
       ) : (
-        <CIcon size="lg" name="cif-us" className="mfe-2" />
+        <img
+          src={process.env.PUBLIC_URL + "/Images/flag_TW.svg"}
+          alt="flag_TW"
+        />
       )}
     </div>
   );

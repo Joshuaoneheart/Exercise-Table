@@ -2,8 +2,6 @@ import {
   CHeader,
   CHeaderBrand,
   CHeaderNav,
-  CHeaderNavItem,
-  CHeaderNavLink,
   CToggler
 } from "@coreui/react";
 import { useContext } from "react";
@@ -37,16 +35,7 @@ const TheHeader = ({props, setShow}) => {
       </CHeaderBrand>
 
       <CHeaderNav className="d-md-down-none mr-auto">
-        {account.is_admin && (
-          <>
-            <CHeaderNavItem className="px-3">
-              <CHeaderNavLink to="/users">Users</CHeaderNavLink>
-            </CHeaderNavItem>
-            <CHeaderNavItem className="px-3">
-              <CHeaderNavLink to="/settings">Settings</CHeaderNavLink>
-            </CHeaderNavItem>
-          </>
-        )}
+
       </CHeaderNav>
 
       <CHeaderNav className="px-3">

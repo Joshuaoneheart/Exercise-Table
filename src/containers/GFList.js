@@ -1,13 +1,4 @@
-import CIcon from "@coreui/icons-react";
-import {
-  CRow,
-  CButton,
-  CCol,
-  CCard,
-  CCardHeader,
-  CCardBody,
-  CDataTable,
-} from "@coreui/react";
+import { CRow, CCol } from "@coreui/react";
 import { FirestoreCollection } from "@react-firebase/firestore";
 import { loading } from "components";
 import AddGFModal from "components/AddGFModal";
@@ -16,69 +7,104 @@ import { useState, useEffect, useContext } from "react";
 import { useHistory } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import i18n from "i18n";
+import Datatable from "components/Datatable";
+import Pagination from "components/Pagination";
+import Select from "components/Select";
+import Input from "components/Input";
 
 const GFListCard = ({ data }) => {
-  const { t } = useTranslation("translation", { i18n })
+  const { t } = useTranslation("translation", { i18n });
   const [addModal, setAddModal] = useState(false);
   const account = useContext(AccountContext);
   const [d, setD] = useState(data);
+  const [active, setActive] = useState(0);
+  const [condition, setCondition] = useState("all");
+  const [search, setSearch] = useState("");
   const fields = [
-    { key: "name", label: t("姓名"), _style: { width: "7%" } },
-    { key: "school", label: t("學校"), _style: { width: "7%" } },
-    { key: "department", label: t("科系"), _style: { width: "20%" } },
-    { key: "grade", label: t("年級"), _style: { width: "7%" } },
-    { key: "type", label: t("身份"), _style: { width: "7%" } },
-    { key: "note", label: t("備註"), _style: { width: "50%" } },
+    { key: "all", label: t("全部") },
+    { key: "name", label: t("姓名") },
+    { key: "school", label: t("學校") },
+    { key: "department", label: t("科系") },
+    { key: "grade", label: t("年級") },
+    { key: "type", label: t("身份") },
+    { key: "note", label: t("備註") },
   ];
   const history = useHistory();
   useEffect(() => {
     setD(data);
   }, [data]);
-  
+  const maxDisplay = 10;
+  let content;
+  if (condition === "all")
+    content = d.filter((x) => {
+      let qualified = false;
+      for (let i = 1; i < 7; i++)
+        qualified |= x[fields[i].key].includes(search);
+      return qualified;
+    });
+  else content = d.filter((x) => x[condition].includes(search));
   return (
-    <CCard>
-      <CCardHeader>
-        <CRow>
-          <CCol xs="10" md="11">
-            {t("牧養對象資料")}
-          </CCol>
-          <CCol xs="1" md="1">
-            <CButton
-              variant="ghost"
-              color="primary"
-              onClick={() => {
-                setAddModal(true);
-              }}
-            >
-              <CIcon name="cil-plus" />
-            </CButton>
-          </CCol>
-        </CRow>
-      </CCardHeader>
-      <CCardBody>
-        <AddGFModal
-          show={addModal}
-          setModal={setAddModal}
-          data={d}
-          account={account}
-          setData={setD}
-        />
-        <CDataTable
-          items={data}
-          fields={fields}
-          columnFilter
-          tableFilter
-          itemsPerPage={10}
-          hover
-          sorter
-          pagination
-          clickableRows
-          onRowClick={(item) => {
-            history.push(`/GF/${item.id}`)
+    <div className="GF-background">
+      <div className="GFList-banner">
+        <span className="heading2-bold GFList-topic">{t("牧養對象資料")}</span>
+        <img
+          src={process.env.PUBLIC_URL + "/Images/plus.svg"}
+          alt="新增福音朋友"
+          className="plus-icon"
+          onClick={() => {
+            setAddModal(true);
           }}
         />
-      </CCardBody>
-    </CCard>
+      </div>
+      <div className="GFList-search-banner">
+        <Select
+          options={fields}
+          onChange={(key) => {
+            setCondition(key);
+            setActive(0);
+          }}
+          width="133px"
+        />
+        <Input
+          onChange={(key) => {
+            setSearch(key);
+            setActive(0);
+          }}
+          placeholder="請輸入關鍵字"
+          style={{ width: "calc(100% - 165px)" }}
+        />
+      </div>
+      <AddGFModal
+        show={addModal}
+        setModal={setAddModal}
+        data={d}
+        account={account}
+        setData={setD}
+      />
+      {content.length !== 0 ? (
+        <>
+          <Datatable
+            fields={fields.slice(1, 7)}
+            start={active * maxDisplay}
+            maxDisplay={maxDisplay}
+            content={content}
+            onRowClick={(item) => {
+              history.push(`/GF/${item.id}`);
+            }}
+          />
+          <Pagination
+            totalPage={Math.ceil(content.length / maxDisplay)}
+            active={active}
+            setActive={setActive}
+          />
+        </>
+      ) : (
+        <div className="GFList-empty-container">
+          <img src={process.env.PUBLIC_URL + "Images/empty.svg"} alt="empty" />
+          <span className="heading3-regular">{t("暫無資料")}</span>
+        </div>
+      )}
+    </div>
   );
 };
 const GFList = () => {

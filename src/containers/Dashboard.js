@@ -72,7 +72,7 @@ const Dashboard = () => {
       style={{ height: "56px", display: "flex", flexDirection: "row" }}
     >
       <div
-        className="primary-bold text-n-500"
+        className="primary-bold after-3-num"
         style={{ marginTop: "18px", marginRight: "15px", marginLeft: "15px" }}
       >
         4
@@ -88,14 +88,14 @@ const Dashboard = () => {
       >
         --
       </div>
-      <div className="content-medium text-n-500 after-3-badge">-- 篇</div>
+      <div className="content-medium after-3-badge">-- 篇</div>
     </div>,
     <div
       key={2}
       style={{ height: "56px", display: "flex", flexDirection: "row" }}
     >
       <div
-        className="primary-bold text-n-500"
+        className="primary-bold after-3-num"
         style={{ marginTop: "18px", marginRight: "15px", marginLeft: "15px" }}
       >
         5
@@ -155,55 +155,29 @@ const Dashboard = () => {
   }
   return (
     <>
-<<<<<<< HEAD
-<<<<<<< HEAD
       <div className="dashboard">
-=======
-      <div
-        className="dashboard"
-      >
->>>>>>> bc8b9c14 (add dashboard)
-=======
-      <div className="dashboard">
->>>>>>> 54b19de0 (finish sidebar, part of navbar, part of form)
         <div
           style={{
             marginLeft: "-15px",
             marginRight: "-15px",
-<<<<<<< HEAD
-<<<<<<< HEAD
             paddingLeft: "calc(50% - 187.5px)",
             width: "100vw",
-=======
-            width: "375px",
->>>>>>> bc8b9c14 (add dashboard)
-=======
             paddingLeft: "calc(50% - 187.5px)",
             width: "100vw",
->>>>>>> 54b19de0 (finish sidebar, part of navbar, part of form)
-            backgroundImage: "url(Images/bg.png)",
+            backgroundImage: "url(Images/bg.svg)",
+            backgroundPositionX: "center",
             backgroundRepeat: "no-repeat",
-            backgroundSize: "375px 307px",
+            backgroundSize: "1280 307px",
             marginBottom: "-30px",
-<<<<<<< HEAD
-<<<<<<< HEAD
-            overflow:"clip",
+            overflow: "clip",
+            overflow: "clip",
             backgroundPosition: "top center",
-=======
->>>>>>> bc8b9c14 (add dashboard)
-=======
-            overflow:"clip",
-            backgroundPosition: "top center",
->>>>>>> 54b19de0 (finish sidebar, part of navbar, part of form)
           }}
         >
           <img
             src={process.env.PUBLIC_URL + "/Images/banner.png"}
             alt="banner"
-<<<<<<< HEAD
-<<<<<<< HEAD
             className="banner"
-=======
             style={{
               width: "288px",
               height: "60px",
@@ -212,10 +186,6 @@ const Dashboard = () => {
               marginRight: "46.5px",
               marginBottom: "47px",
             }}
->>>>>>> bc8b9c14 (add dashboard)
-=======
-            className="banner"
->>>>>>> 54b19de0 (finish sidebar, part of navbar, part of form)
           />
           <CRow>
             <CCol
@@ -230,10 +200,10 @@ const Dashboard = () => {
                 alt="medal_2"
                 className="winner-medal"
               />
-              <p className="winner-name primary-bold text-dark-blue">
+              <p className="winner-name primary-bold">
                 {ranks.length >= 2 ? ranks[1].identity : "--"}
               </p>
-              <p className="winner-number content-medium text-n-500">
+              <p className="winner-number content-medium">
                 {ranks.length >= 2 ? ranks[1].number : "--"} 篇
               </p>
             </CCol>
@@ -244,12 +214,12 @@ const Dashboard = () => {
                 className="winner-medal-large"
               />
               <p
-                className="winner-name primary-bold text-dark-blue"
+                className="winner-name primary-bold"
                 style={{ marginTop: "2px " }}
               >
                 {ranks.length >= 1 ? ranks[0].identity : "--"}
               </p>
-              <p className="winner-number content-medium text-n-500">
+              <p className="winner-number content-medium">
                 {ranks.length >= 1 ? ranks[0].number : "--"} 篇
               </p>
             </CCol>
@@ -265,16 +235,16 @@ const Dashboard = () => {
                 alt="medal_3"
                 className="winner-medal"
               />
-              <p className="winner-name primary-bold text-dark-blue">
+              <p className="winner-name primary-bold">
                 {ranks.length >= 3 ? ranks[2].identity : "--"}
               </p>
-              <p className="winner-number content-medium text-n-500">
+              <p className="winner-number content-medium">
                 {ranks.length >= 3 ? ranks[2].number : "--"} 篇
               </p>
             </CCol>
           </CRow>
           <div className="nickname-container">
-            <div className="rank heading3-bold text-primary-600">{myRank}</div>
+            <div className="rank heading3-bold">{myRank}</div>
             <input
               ref={input_ref}
               onFocus={() => setFocus(true)}
@@ -309,9 +279,7 @@ const Dashboard = () => {
                 className="input-icon"
               />
             )}
-            <div className="LSNum content-medium text-primary-600">
-              {myLSNum} 篇
-            </div>
+            <div className="LSNum content-medium">{myLSNum} 篇</div>
           </div>
           <div
             style={{
@@ -322,16 +290,8 @@ const Dashboard = () => {
               top: "-30px",
               left: "0px",
               marginBottom: 0,
-<<<<<<< HEAD
-<<<<<<< HEAD
               marginLeft: "calc(187.5px - 50vw)",
-              paddingLeft: "calc(50vw - 187.5px)"
-=======
->>>>>>> bc8b9c14 (add dashboard)
-=======
-              marginLeft: "calc(187.5px - 50vw)",
-              paddingLeft: "calc(50vw - 187.5px)"
->>>>>>> 54b19de0 (finish sidebar, part of navbar, part of form)
+              paddingLeft: "calc(50vw - 187.5px)",
             }}
           >
             <CCol style={{ paddingLeft: "36px", paddingRight: "36px" }}>
@@ -340,15 +300,7 @@ const Dashboard = () => {
                   return (
                     <>
                       {x}
-<<<<<<< HEAD
-<<<<<<< HEAD
                       <hr style={{ margin: 0, width: "303px" }} />
-=======
-                      <hr style={{ margin: 0 }} />
->>>>>>> bc8b9c14 (add dashboard)
-=======
-                      <hr style={{ margin: 0, width: "303px" }} />
->>>>>>> 54b19de0 (finish sidebar, part of navbar, part of form)
                     </>
                   );
                 }
@@ -395,49 +347,35 @@ const Dashboard = () => {
           </CCol>
         </div>
       </div>
-<<<<<<< HEAD
-<<<<<<< HEAD
       <div className="dashboard-footer">
-=======
-      <div
-        style={{
-          position: "fixed",
-          height: "98px",
-          backgroundColor: "#FFFFFF",
-          width: "100%",
-          marginLeft: "-15px",
-          display: "flex",
-          justifyContent: "center",
-        }}
-      >
->>>>>>> bc8b9c14 (add dashboard)
-=======
-      <div className="dashboard-footer">
->>>>>>> 54b19de0 (finish sidebar, part of navbar, part of form)
-        <button
+        <div
           style={{
-            marginTop: "12px",
-            backgroundColor: "#005371",
-            borderRadius: "8px",
-            height: "44px",
-            width: "343px",
-            color: "#FFFFFF",
-<<<<<<< HEAD
-<<<<<<< HEAD
-            border: 0,
-=======
-            border: 0
->>>>>>> bc8b9c14 (add dashboard)
-=======
-            border: 0,
->>>>>>> 54b19de0 (finish sidebar, part of navbar, part of form)
-          }}
-          onClick={() => {
-            history.push(`/form`);
+            position: "fixed",
+            height: "98px",
+            backgroundColor: "#FFFFFF",
+            width: "100%",
+            marginLeft: "-15px",
+            display: "flex",
+            justifyContent: "center",
           }}
         >
-          填寫操練表
-        </button>
+          <button
+            style={{
+              marginTop: "12px",
+              backgroundColor: "#005371",
+              borderRadius: "8px",
+              height: "44px",
+              width: "343px",
+              color: "#FFFFFF",
+              border: 0,
+            }}
+            onClick={() => {
+              history.push(`/form`);
+            }}
+          >
+            填寫操練表
+          </button>
+        </div>
       </div>
     </>
   );

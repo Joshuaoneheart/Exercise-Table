@@ -34,6 +34,39 @@ src: local("PingFang Bold"),
     src: url("../fonts/PingFangTC-Semibold.otf") format("opentype");
 }
 
+:root {
+    --white: #FFFFFF;
+    --dark-blue: #005371;
+    --blue: #C4E7F0;
+    --light-blue: #E8F8FC;
+    --main-blue: #008ABD;
+    --p-700: #046879;
+    --p-600: #318193;
+    --p-500: #4F9BAD;
+    --p-400: #6bb6c9;
+    --p-300: #8FD0E0;
+    --p-200: #ACCCE9;
+    --p-100: #CCEAF3;
+    --p-50: #E7F6FB;
+    --s-500: #FFA519;
+    --s-400: #FFC767;
+    --s-300: #FDE189;
+    --s-200: #FFF0C8;
+    --red: #C94549;
+    --green: #41BC72;
+    --black: #1C1F20;
+    --n-900: #1C1C1C;
+    --n-800: #363636;
+    --n-700: #525252;
+    --n-600: #6B6B6B;
+    --n-500: #878787;
+    --n-400: #A1A1A1;
+    --n-300: #BDBDBD;
+    --n-200: #E7E7E7;
+    --n-100: #F2F2F2;
+    --n-50: #F7F7F7;
+}
+
 .c-header {
     height: 44px;
     min-height: 44px;
@@ -75,21 +108,21 @@ src: local("PingFang Bold"),
     padding-left: 20px;
     margin-left: 16px;
     margin-right: 16px;
-    background-color: #FFFFFF;
+    background-color: var(--white);
     width: 208px;
     border-radius: 8px;
 }
 
 .sidebar-list-item.active  {
-    background-color: #E8F8FC;
+    background-color: var(--light-blue);
 }
 
 .sidebar-list-item:hover {
-    background-color: #E8F8FC;
+    background-color: var(--light-blue);
 }
 
 hr {
-    border-color: #E7E7E7
+    border-color: var(--n-200)
 }
 
 .c-header-nav {
@@ -137,7 +170,7 @@ hr {
 .dashboard-footer{
     position: absolute;
     height: 98px;
-    background-color: #FFFFFF;
+    background-color: var(--white);
     width: 100%;
     margin-left: -15px;
     display: flex;
@@ -149,13 +182,13 @@ hr {
      height: 44px;
      border: 0;
      border-color: #3c4b64 !important;
-     background-color: #FFFFFF;
+     background-color: var(--white);
      border-radius: 8px;
      margin-bottom: 16px;
 }
 
 .week-button.active {
-    background-color: #E8F8FC !important;
+    background-color: var(--light-blue) !important;
 }
 
 .week-button:focus {
@@ -183,6 +216,7 @@ hr {
     -webkit-box-orient: vertical;
     text-overflow: ellipsis;
     word-break: break-word;
+    color: var(--dark-blue);
 }
 
 .winner-badge {
@@ -198,6 +232,7 @@ hr {
 }
 
 .winner-number {
+    color: var(--n-500);
     background-color: #ffffff;
     min-width: 47px;
     height: 22px;
@@ -234,10 +269,16 @@ hr {
     min-width: 47px;
     text-align: center;
     white-space: nowrap;
+    color: var(--n-500);
+}
+
+.after-3-num {
+    color: var(--n-500);
 }
 
 .rank {
     margin-right: 23px;
+    color: var(--p-600);
 }
 
 .nickname-input {
@@ -250,7 +291,7 @@ hr {
     padding-top: 8px;
     padding-bottom: 8px;
     padding-right: 30px;
-    caret-color: #FFA519;
+    caret-color: var(--s-500);
 }
 
 .nickname-input:focus-visible {
@@ -280,13 +321,14 @@ hr {
 }
 
 .LSNum {
-    background-color: #C4E7F0;
+    background-color: var(--blue);
     border-radius: 24px;
     padding-left: 8px;
     padding-right: 8px;
     padding-top: 2px;
     padding-bottom: 2px;
     margin-left: 35px;
+    color: var(--p-600);
 }
 
 .section-title{
@@ -352,24 +394,225 @@ hr {
     display: flex;
     white-space: nowrap;
 }
+
+// GF-related
+.GF-background {
+    background-color: var(--light-blue);
+    margin-top: -32px;
+    margin-left: -15px;
+    margin-right: -15px;
+    padding-top: 24px;
+    min-height: 100vh;
+}
+
+.GFList-banner {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    padding-left: 16px;
+    padding-right: 16px;
+}
+
+.GFList-topic {
+    padding-top: 12px;
+    padding-bottom: 12px;
+}
+
+.plus-icon {
+    width: 52px;
+    cursor: pointer;
+}
+
+.GFList-search-banner {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    margin-bottom: 20px;
+}
+
+.input {
+    border: 0;
+    height: 48px;
+    margin-left: 8px;
+    margin-right: 16px;
+    padding-left: 16px;
+    border-radius: 8px;
+    caret-color: var(--s-500);
+    color: #000000;
+}
+
+.select {
+    outline: 0;
+    border: 0;
+    padding-left: 16px;
+    padding-right: 16px;
+    height: 48px;
+    margin-left: 16px;
+    border-radius: 8px;
+    color: #000000;
+    background-repeat: no-repeat;
+    background-position-x: calc(100% - 16px);
+    background-position-y: 12px;
+    background-color: var(--white);
+    padding-top: 12px;
+    padding-bottom: 12px;
+    -webkit-user-select: none;  
+    -moz-user-select: none;    
+    -ms-user-select: none;      
+    user-select: none;
+}
+
+.select-menu {
+    background-color: var(--white);
+    position: relative;
+    z-index: 99;
+    top: 16px;
+    left: -15px;
+    list-style: none;
+    padding-top: 8px;
+    padding-left: 0;
+    padding-bottom: 8px;
+    color: #000000;
+    border-radius: 8px;
+}
+
+.select-item {
+    text-decoration: none;
+    padding-top: 12px;
+    padding-left: 20px;
+    padding-bottom: 12px;
+    -webkit-user-select: none;  
+    -moz-user-select: none;    
+    -ms-user-select: none;      
+    user-select: none;
+}
+
+.select-item:hover {
+    background-color: var(--light-blue);;
+}
+
+.input:focus {
+    outline: 0;
+}
+
+.input::placeholder {
+    color: var(--n-300);
+}
+
+.GFList-empty-container {
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    margin-top: 124px;
+}
+
+.GFList-empty-container img {
+    margin-bottom: 8px;
+    -webkit-user-select: none;  
+    -moz-user-select: none;    
+    -ms-user-select: none;      
+    user-select: none;
+}
+
+.GFList-empty-container span {
+    -webkit-user-select: none;  
+    -moz-user-select: none;    
+    -ms-user-select: none;      
+    user-select: none;
+}
+
+.datatable {
+    width: 100%;
+    -webkit-user-select: none;  
+    -moz-user-select: none;    
+    -ms-user-select: none;      
+    user-select: none;
+}
+
+.datatable th {
+    padding-top: 8px;
+    padding-bottom: 8px;
+    padding-left: 12px;
+    color: var(--white);
+    background-color: var(--p-300);
+    min-width: 67px;
+    border: 0;
+}
+
+.datatable-container {
+    overflow-x: scroll;
+}
+
+.datatable th:first-child {
+    background-color: var(--main-blue);
+    min-width: 100px;
+}
+
+.datatable td {
+    padding-top: 11px;
+    padding-bottom: 11px;
+    padding-left: 12px;
+    padding-right: 12px;
+    border: 1px solid var(--n-200);
+    border-top: 0;
+    border-collapse: collapse;
+    white-space: nowrap;
+    background-color: var(--white);
+}
+
+.datatable tr td:first-child {
+    color: var(--main-blue);
+    text-decoration: underline;
+}
+
+.pagination {
+    margin-top: 28px;
+    margin-bottom: 0;
+    justify-content: center;
+}
+
+.pagination > li {
+    display: inline-block;
+    color: var(--main-blue);
+    background-color: transparent;
+    text-decoration: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    margin-right: 2px;
+    text-align: center;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    -webkit-user-select: none;  
+    -moz-user-select: none;    
+    -ms-user-select: none;      
+    user-select: none;
+}
+
+.pagination > li:last-child {
+    margin-right: 0;
+    padding: 0;
+}
+
+.pagination > li:first-child {
+    padding: 0;
+}
+
+.pagination > li.active {
+    display: inline-block;
+    color: var(--white);
+    background-color: var(--main-blue);
+}
+
+// Background
 .background-p-50 {
-    background-color: #E7F6FB;
+    background-color: var(--p-50);
 }
 
 .background-white {
-    background-color: #FFFFFF;
-}
-
-.text-primary-600 {
-    color: #318193;
-}
-
-.text-dark-blue {
-    color: #005371;
-}
-
-.text-n-500 {
-    color: #878787;
+    background-color: var(--white);
 }
 
 .primary-regular {
@@ -379,6 +622,7 @@ hr {
     line-height: 24px;
 }
 
+// Font
 .primary-medium {
     font-family: "PingFang Medium";
     font-size: 16px;
@@ -396,6 +640,13 @@ hr {
 .heading2-bold {
     font-family: "PingFang Bold";
     font-size: 20px;
+    line-height: 28px;
+    letter-spacing: 0.06em;
+}
+
+.heading3-regular {
+    font-family: "PingFang Regular";
+    font-size: 18px;
     line-height: 28px;
     letter-spacing: 0.06em;
 }
@@ -453,5 +704,9 @@ hr {
     .form {
         margin-left: -15px;
         margin-right: -15px;
+    }
+    .GF-background {
+        margin-left: -30px;
+        margin-right: -30px;
     }
 }

@@ -74,7 +74,6 @@ const Summary = () => {
       // generate empty row
       for (let id of Object.keys(accountsMap)) {
         if (!meta[id]) continue;
-        if (accountsMap[id] === "黃連謙") console.log(meta[id]);
         let { items, result, column_keys, column_labels, column_problems } =
           await SummaryScore(meta[id], problems, id);
         all_column_keys = [...all_column_keys, ...column_keys];
@@ -334,7 +333,17 @@ const Summary = () => {
   let items = [];
   for (let item of raw) {
     let flag = true;
-    let df = item.dataframe;
+    let df = item.dataframe; /*
+    let revival = undefined;
+    if (df.columns.includes("ogtvt8BvPJutlQ4DLCWe - 團體晨興"))
+      revival = df.get("ogtvt8BvPJutlQ4DLCWe - 團體晨興");
+    if (df.columns.includes("ogtvt8BvPJutlQ4DLCWe - 個人晨興"))
+      if (revival !== undefined)
+        revival = revival.add(df.get("ogtvt8BvPJutlQ4DLCWe - 個人晨興"));
+      else revival = df.get("ogtvt8BvPJutlQ4DLCWe - 個人晨興");
+    if (revival !== undefined && revival.filter(revival.gte(5)).length === 9) {
+      console.log(item.name);
+    }*/
     for (let condition of conditions) {
       if (!condition.active) continue;
       if (!condition.problem || !condition.data || !condition.c) continue;
@@ -362,6 +371,7 @@ const Summary = () => {
       if (df.columns.includes(condition.problem))
         problem_data = df.get(condition.problem);
       else nan_cnt = total_num;
+
       let cnt = 0;
       if (problem_data !== null) {
         if (
