@@ -1,6 +1,6 @@
 /*
 fields: {
-  key: ...,
+  value: ...,
   label: ...
 }
 */
@@ -25,10 +25,10 @@ const Datatable = ({
   for (let i = start; i < Math.min(start + maxDisplay, content.length); i++) {
     let row = [];
     for (let j = 0; j < fields.length; j++) {
-      if (fields[j].key in content[i])
+      if (fields[j].value in content[i])
         row.push(
           <td className="secondary-medium" key={`td-${i}-${j}`}>
-            {content[i][fields[j].key]}
+            {content[i][fields[j].value]}
           </td>
         );
       else row.push(<td key={`td-${i}-${j}`}></td>);

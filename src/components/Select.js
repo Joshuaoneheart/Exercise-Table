@@ -1,86 +1,93 @@
-import { useEffect, useState, useRef } from "react";
+import Select, { components } from "react-select";
 /*
 options: [{
-    key: ...,
+    value: ...,
     label: ...
 }, ...]
 */
-const Select = ({
-  options,
-  isSearchable,
-  onChange,
-  value,
-  style = {},
-  menu_style = {},
-  option_style = {},
-}) => {
-  const [key, setKey] = useState(value ? value : options[0].key);
-  const [open, setOpen] = useState(false);
-  const select = useRef();
-  let key_value = {};
-  for (let option of options) key_value[option.key] = option.label;
-  const select_style = Object.assign(
-    {
-      backgroundImage: open
-        ? "url(Images/arrow_up.svg)"
-        : "url(Images/arrow_down.svg)",
-    },
-    style
-  );
-  menu_style = Object.assign(
-    {
-      width: select.current ? select.current.offsetWidth : "0",
-      display: open ? "block" : "none",
-    },
-    menu_style
-  );
-  option_style = Object.assign(
-    { width: select.current ? select.current.offsetWidth : "0" },
-    option_style
-  );
-  useEffect(() => {
-    if (!options.some((x) => x.key === key)) setKey(options[0].key);
-  }, [options]);
-  useEffect(() => {
-    onChange(key);
-  }, [key]);
-  useEffect(() => {
-    setKey(value);
-  }, [value]);
+const DropdownIndicator = (props) => {
+  const { menuIsOpen } = props.selectProps; // Detect if the menu is open
   return (
-    <div
-      ref={select}
-      tabindex="0"
-      className="select primary-regular"
-      style={select_style}
-      onClick={() => setOpen((v) => !v)}
-      onBlur={() => setOpen(false)}
-    >
-      <span>{key_value[key]}</span>
-      <div
-        style={{
-          width: 0,
-          overflow: "visible",
-        }}
-      >
-        <ul className="select-menu" style={menu_style}>
-          {options.map((x, i) => (
-            <li
-              className="select-item"
-              key={`select-li-${i}`}
-              style={option_style}
-              onClick={(e) => {
-                e.stopPropagation();
-                setOpen(false);
-                setKey(x.key);
-              }}
-            >
-              {x.label}
-            </li>
-          ))}
-        </ul>
-      </div>
-    </div>
+    <components.DropdownIndicator {...props}>
+      <img
+        alt={menuIsOpen ? "up" : "down"}
+        src={
+          process.env.PUBLIC_URL +
+          (menuIsOpen ? "/Images/arrow_up.svg" : "/Images/arrow_down.svg")
+        }
+      />
+    </components.DropdownIndicator>
   );
 };
-export default Select;
+
+const MySelect = ({
+  options,
+  onChange,
+  value,
+  defaultValue,
+  autoFocus = false,
+  isMulti = false,
+  isSearchable = false,
+  style = {},
+  container_style = {},
+  menu_style = {},
+  option_style = {},
+  placeholder = "",
+}) => {
+  let key_value = {};
+  for (let option of options) key_value[option.value] = option.label;
+  return (
+    <Select
+      placeholder={placeholder}
+      autoFocus={autoFocus}
+      defaultValue={defaultValue}
+      isMulti={isMulti}
+      value={value}
+      options={options}
+      onChange={(v) => {
+        onChange(v);
+      }}
+      components={{
+        DropdownIndicator,
+      }}
+      menuPortalTarget={document.body}
+      classNames={{
+        control: () => "primary-regular select",
+        menu: () => "select-menu primary-regular",
+        option: () => "select-item",
+        multiValue: () => "secondary-regular",
+      }}
+      styles={{
+        menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+        container: (base) => ({ ...base, ...container_style }),
+        indicatorContainer: (base) => ({ ...base, padding: "0" }),
+        indicatorSeparator: () => ({ display: "none" }),
+        control: (base) => {
+          delete base["&:hover"];
+          delete base["boxShadow"];
+          delete base["borderColor"];
+          delete base["borderWidth"];
+          return { ...base, ...style, outline: "0", "&:hover": {} };
+        },
+        menu: (base) => ({ ...base, ...menu_style }),
+        option: (base) => {
+          delete base[":active"];
+          return {
+            ...base,
+            backgroundColor: "var(--white)",
+            color: "#000000",
+            ...option_style,
+          };
+        },
+        multiValue: (base) => ({
+          ...base,
+          paddingRight: "4px !important",
+          borderRadius: "4px",
+          paddingLeft: "8px !important",
+        })
+      }}
+      isSearchable={isSearchable}
+    />
+  );
+};
+export default MySelect;

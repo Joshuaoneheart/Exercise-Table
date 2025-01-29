@@ -1,16 +1,12 @@
-import {
-  CCol,
-  CFormGroup,
-  CInput,
-  CLabel,
-  CRow,
-} from "@coreui/react";
 import { InputNumber } from "antd";
 import { DB, firebase } from "db/firebase";
-import Select from "react-select";
+import Select from "components/Select";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import i18n from "i18n";
+import Row from "./Row";
+import Input from "./Input";
+import Col from "./Col";
 
 const GFSelect = ({
   GF,
@@ -155,25 +151,22 @@ const GFSelect = ({
   }
   return (
     <>
-      <CFormGroup>
+      <Row>
         <Select
+          container_style={{ width: "100%", marginRight: "16px" }}
+          style={{ border: "1px solid var(--n-200)" }}
+          menu_style={{ border: "1px solid var(--n-200)" }}
+          placeholder="選擇牧養對象"
           value={options}
           defaultValue={options}
-          isMulti
-          isSearchable
-          autoFocus
+          isMulti={true}
+          isSearchable={true}
+          autoFocus={true}
           options={GF_options}
-          defaultMenuIsOpen={false}
-          menuPortalTarget={document.body}
-          styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
           onChange={async (v) => {
             setOptions(
               v.map((x) => {
-                x.label = (
-                  <span style={{ whiteSpace: "pre" }}>
-                    <b>{x.value.split("|")[2]}</b>
-                  </span>
-                );
+                x.label = x.value.split("|")[2];
                 return x;
               })
             );
@@ -196,29 +189,36 @@ const GFSelect = ({
             }
           }}
         />
-      </CFormGroup>
+      </Row>
       {note &&
         options.map((x, i) => {
           if (!x) return undefined;
           return (
-            <CRow
-              key={i}
-              className="align-items-center"
-              style={{ marginBottom: "10px" }}
+            <Row
+              key={`row-${i}`}
+              className="primary-regular"
+              style={{ marginTop: "8px" }}
             >
-              <CCol xs="3" md="2">
-                <CLabel>{x.value.split("|")[2]}</CLabel>
-              </CCol>
-              <CCol xs="9" md="10">
-                <CInput
+              <Col
+                style={{
+                  width: "20%",
+                  paddingTop: "12px",
+                  paddingLeft: "16px",
+                }}
+              >
+                {x.value.split("|")[2]}
+              </Col>
+              <Col style={{ width: "calc(80% - 16px)" }}>
+                <Input
+                  style={{ width: "100%", border: "1px solid var(--n-200)" }}
                   defaultValue={
                     notes[x.value.split("|")[1]]
                       ? notes[x.value.split("|")[1]]
                       : ""
                   }
-                  onChange={(e) => {
+                  onChange={(v) => {
                     let new_notes = Object.assign({}, notes);
-                    new_notes[x.value.split("|")[1]] = e.target.value;
+                    new_notes[x.value.split("|")[1]] = v;
                     let tmp = {};
                     tmp[title] = Array.from(
                       options.map((x) => {
@@ -238,8 +238,8 @@ const GFSelect = ({
                     );
                   }}
                 />
-              </CCol>
-            </CRow>
+              </Col>
+            </Row>
           );
         })}
     </>
@@ -590,23 +590,25 @@ const Problem = ({
   }
   return (
     <>
-      <CFormGroup style={{ paddingBottom: "16px", marginBottom: 0 }}>
-        {data && data.showTitle && (
-          <p className="primary-regular problem-title">{t(data.title)}</p>
-        )}
-        <div
-          onScroll={(e) => {
-            setScrollLeft(e.target.scrollLeft);
-          }}
-          style={{
-            overflowX: "scroll",
-            overflowY: "visible",
-            marginLeft: "16px",
-          }}
-        >
-          {frame}
-        </div>
-      </CFormGroup>
+      <Row style={{ minWidth: "100%", paddingBottom: "16px", marginBottom: 0 }}>
+        <Col>
+          {data && data.showTitle && (
+            <p className="primary-regular problem-title">{t(data.title)}</p>
+          )}
+          <div
+            onScroll={(e) => {
+              setScrollLeft(e.target.scrollLeft);
+            }}
+            style={{
+              overflowX: "scroll",
+              overflowY: "visible",
+              marginLeft: "16px",
+            }}
+          >
+            {frame}
+          </div>
+        </Col>
+      </Row>
     </>
   );
 };

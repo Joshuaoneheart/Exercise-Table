@@ -41,28 +41,28 @@ const ModifyGFModal = ({ data, show, setData, setModal }) => {
     setModal(false);
   };
   let schools = GF_SCHOOL.map((x) => {
-    return { key: x, label: x };
+    return { value: x, label: x };
   });
   let departments;
   if (school === "台大") {
     departments = GF_NTU_DEPARTMENT.map((x) => {
       return {
-        key: x,
+        value: x,
         label: x,
       };
     });
   } else if (school === "台科大")
     departments = GF_NTUST_DEPARTMENT.map((x) => {
       return {
-        key: x,
+        value: x,
         label: x,
       };
     });
   let grades = GF_GRADE.map((x) => {
-    return { key: x, label: x };
+    return { value: x, label: x };
   });
   let types = GF_TYPE.map((x) => {
-    return { key: x, label: x };
+    return { value: x, label: x };
   });
   return (
     <Modal show={show} setShow={setModal} title="編輯牧養對象">
@@ -81,12 +81,12 @@ const ModifyGFModal = ({ data, show, setData, setModal }) => {
             style={{ border: "1px solid var(--n-200)" }}
             menu_style={{ border: "1px solid var(--n-200)" }}
             options={schools}
-            value={school}
+            value={{ value: school, label: school }}
             onChange={(v) => {
               setSchool(v);
+              console.log(v);
               if (v === "台大") setDepartment(GF_NTU_DEPARTMENT[0]);
-              else if (v.value === "台科大")
-                setDepartment(GF_NTUST_DEPARTMENT[0]);
+              else if (v === "台科大") setDepartment(GF_NTUST_DEPARTMENT[0]);
             }}
           />
         </Col>
@@ -95,7 +95,7 @@ const ModifyGFModal = ({ data, show, setData, setModal }) => {
         <Col>
           <span style={{ marginBottom: "4px" }}>科系</span>
           <Select
-            value={department}
+            value={{ value: department, label: department }}
             style={{ border: "1px solid var(--n-200)" }}
             menu_style={{ border: "1px solid var(--n-200)" }}
             isSearchable
@@ -110,7 +110,7 @@ const ModifyGFModal = ({ data, show, setData, setModal }) => {
         <Col>
           <span style={{ marginBottom: "4px" }}>年級</span>
           <Select
-            value={grade}
+            value={{ value: grade, label: grade }}
             style={{ border: "1px solid var(--n-200)" }}
             menu_style={{ border: "1px solid var(--n-200)" }}
             isSearchable
@@ -123,7 +123,7 @@ const ModifyGFModal = ({ data, show, setData, setModal }) => {
         <Col style={{ marginLeft: "12px" }}>
           <span style={{ marginBottom: "4px" }}>身份</span>
           <Select
-            value={type}
+            value={{ value: type, label: type }}
             style={{ border: "1px solid var(--n-200)" }}
             menu_style={{ border: "1px solid var(--n-200)" }}
             options={types}
@@ -138,18 +138,18 @@ const ModifyGFModal = ({ data, show, setData, setModal }) => {
           <Col>
             <span style={{ marginBottom: "4px" }}>性別</span>
             <Select
-              value={gender}
+              value={{ value: gender, label: gender }}
               style={{ border: "1px solid var(--n-200)" }}
               menu_style={{ border: "1px solid var(--n-200)" }}
               isSearchable
               options={[
                 {
                   label: "男",
-                  key: "男",
+                  value: "男",
                 },
                 {
                   label: "女",
-                  key: "女",
+                  value: "女",
                 },
               ]}
               onChange={(v) => {

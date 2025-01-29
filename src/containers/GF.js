@@ -140,19 +140,19 @@ const GFCard = ({ init_data }) => {
   if (accountsMap === null) return loading;
   let fields = [
     {
-      key: "week",
+      value: "week",
       label: t("日期"),
     },
     {
-      key: "主日聚會",
+      value: "主日聚會",
       label: t("主日聚會"),
     },
     {
-      key: "家聚會",
+      value: "家聚會",
       label: t("家聚會"),
     },
     {
-      key: "小排",
+      value: "小排",
       label: t("小排"),
     },
   ];
@@ -296,13 +296,14 @@ const GFCard = ({ init_data }) => {
         </Col>
         <Select
           options={years.map((x) => {
-            return { key: x, label: x };
+            return { value: x, label: x };
           })}
+          value={{ value: year, label: year }}
           onChange={(v) => {
-            setYear(v);
+            setYear(v.value);
             setActive(0);
           }}
-          style={{ width: "133px" }}
+          container_style={{ width: "133px" }}
         />
       </Row>
       {content ? (
@@ -323,38 +324,10 @@ const GFCard = ({ init_data }) => {
       ) : (
         <div></div>
       )}
-      {/*
-          主日聚會: (item) => {
-            return (
-              <td>
-                {item["主日聚會"]
-                  }
-              </td>
-            );
-          },
-          家聚會: (item) => {
-            let tmp = [];
-            let i = 0;
-            for (let d of item["家聚會"]) {
-              if (i !== 0) tmp.push(",");
-              if (typeof d === "string" && accountsMap[d])
-                tmp.push(accountsMap[d]);
-              else if (accountsMap[d.id]) {
-                tmp.push(
-                  <CTooltip key={i} placement="top" content={d.note}>
-                    <CLink>{accountsMap[d.id]}</CLink>
-                  </CTooltip>
-                );
-              }
-              i++;
-            }
-            return <td>{tmp}</td>;
-          },*/}
     </div>
   );
 };
 const GF = () => {
-  const { t } = useTranslation("translation", { i18n });
   let { id } = useParams();
   return (
     <FirestoreDocument path={"/GF/" + id}>

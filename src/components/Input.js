@@ -1,4 +1,4 @@
-const Input = ({ style, placeholder, onChange, defaultValue }) => {
+const Input = ({ style, placeholder = "", onChange, defaultValue }) => {
   return (
     <input
       defaultValue={defaultValue}

@@ -20,13 +20,13 @@ const GFListCard = ({ data }) => {
   const [condition, setCondition] = useState("all");
   const [search, setSearch] = useState("");
   const fields = [
-    { key: "all", label: t("全部") },
-    { key: "name", label: t("姓名") },
-    { key: "school", label: t("學校") },
-    { key: "department", label: t("科系") },
-    { key: "grade", label: t("年級") },
-    { key: "type", label: t("身份") },
-    { key: "note", label: t("備註") },
+    { value: "all", label: t("全部") },
+    { value: "name", label: t("姓名") },
+    { value: "school", label: t("學校") },
+    { value: "department", label: t("科系") },
+    { value: "grade", label: t("年級") },
+    { value: "type", label: t("身份") },
+    { value: "note", label: t("備註") },
   ];
   const history = useHistory();
   useEffect(() => {
@@ -38,7 +38,7 @@ const GFListCard = ({ data }) => {
     content = d.filter((x) => {
       let qualified = false;
       for (let i = 1; i < 7; i++)
-        qualified |= x[fields[i].key].includes(search);
+        qualified |= x[fields[i].value].includes(search);
       return qualified;
     });
   else content = d.filter((x) => x[condition].includes(search));
@@ -57,7 +57,7 @@ const GFListCard = ({ data }) => {
       </div>
       <div className="GFList-search-banner">
         <Select
-          style={{
+          container_style={{
             marginLeft: "16px",
             width: "133px",
           }}

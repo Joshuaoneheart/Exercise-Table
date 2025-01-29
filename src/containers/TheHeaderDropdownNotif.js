@@ -1,12 +1,10 @@
 import { useContext, useRef, useEffect, useState } from "react";
-import { CBadge, CLink } from "@coreui/react";
-import CIcon from "@coreui/icons-react";
 import { AccountContext } from "hooks/context";
 import { firebase } from "db/firebase";
+import { history } from "utils/history";
 function useOuterClick(callback) {
   const callbackRef = useRef(); // initialize mutable ref, which stores callback
   const innerRef = useRef(); // returned to client, who marks "border" element
-
   // update cb on each render, so second useEffect has access to current value
   useEffect(() => {
     callbackRef.current = callback;
@@ -62,19 +60,16 @@ const TheHeaderDropdownNotif = () => {
           paddingLeft: "16px",
           paddingRight: "16px",
         }}
+        className="primary-bold"
         onClick={() => {
           setShow(false);
           setRefresh((old_refresh) => {
             return !old_refresh;
           });
+          history.push(`/Announcement/${announcements[i].id}`);
         }}
       >
-        <CLink
-          className="text-dark-blue"
-          to={`/Announcement/${announcements[i].id}`}
-        >
-          <strong>{announcements[i].title}</strong>
-        </CLink>
+        {announcements[i].title}
       </li>
     );
     if (i !== announcements.length - 1)
@@ -90,7 +85,7 @@ const TheHeaderDropdownNotif = () => {
           alignItems: "center",
           display: "flex",
           justifyContent: "center",
-          paddingRight: announcements.length > 0 ? "0" : "19px",
+          paddingRight: "18px",
         }}
       >
         <img
@@ -128,7 +123,7 @@ const TheHeaderDropdownNotif = () => {
           display: show ? "block" : "none",
           listStyle: "none",
           position: "fixed",
-          top: "44px",
+          top: "30px",
           right: "30px",
           borderRadius: "8px",
           backgroundColor: "#FFFFFF",
