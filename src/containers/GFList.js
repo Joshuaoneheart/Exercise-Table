@@ -1,4 +1,3 @@
-import { CRow, CCol } from "@coreui/react";
 import { FirestoreCollection } from "@react-firebase/firestore";
 import { loading } from "components";
 import AddGFModal from "components/AddGFModal";
@@ -49,7 +48,7 @@ const GFListCard = ({ data }) => {
         <span className="heading2-bold GFList-topic">{t("牧養對象資料")}</span>
         <img
           src={process.env.PUBLIC_URL + "/Images/plus.svg"}
-          alt="新增福音朋友"
+          alt="新增牧養對象"
           className="plus-icon"
           onClick={() => {
             setAddModal(true);
@@ -58,20 +57,27 @@ const GFListCard = ({ data }) => {
       </div>
       <div className="GFList-search-banner">
         <Select
+          style={{
+            marginLeft: "16px",
+            width: "133px",
+          }}
           options={fields}
           onChange={(key) => {
             setCondition(key);
             setActive(0);
           }}
-          width="133px"
         />
         <Input
+          style={{
+            marginLeft: "8px",
+            marginRight: "16px",
+            width: "calc(100% - 165px)",
+          }}
           onChange={(key) => {
             setSearch(key);
             setActive(0);
           }}
           placeholder="請輸入關鍵字"
-          style={{ width: "calc(100% - 165px)" }}
         />
       </div>
       <AddGFModal
@@ -110,27 +116,23 @@ const GFListCard = ({ data }) => {
 const GFList = () => {
   const account = useContext(AccountContext);
   return (
-    <CRow>
-      <CCol>
-        <FirestoreCollection path="/GF/">
-          {(d) => {
-            if (d.isLoading) return loading;
-            if (d && d.value) {
-              // add "id" to data
-              const data = [];
-              for (var i = 0; i < d.value.length; i++) {
-                if (
-                  account.role === "Admin" ||
-                  account.gender === d.value[i].gender
-                )
-                  data.push(Object.assign(d.value[i], { id: d.ids[i] }));
-              }
-              return <GFListCard data={data} />;
-            } else return null;
-          }}
-        </FirestoreCollection>
-      </CCol>
-    </CRow>
+    <FirestoreCollection path="/GF/">
+      {(d) => {
+        if (d.isLoading) return loading;
+        if (d && d.value) {
+          // add "id" to data
+          const data = [];
+          for (var i = 0; i < d.value.length; i++) {
+            if (
+              account.role === "Admin" ||
+              account.gender === d.value[i].gender
+            )
+              data.push(Object.assign(d.value[i], { id: d.ids[i] }));
+          }
+          return <GFListCard data={data} />;
+        } else return null;
+      }}
+    </FirestoreCollection>
   );
 };
 export default GFList;

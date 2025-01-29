@@ -1,6 +1,7 @@
-const Input = ({ style, placeholder, onChange }) => {
+const Input = ({ style, placeholder, onChange, defaultValue }) => {
   return (
     <input
+      defaultValue={defaultValue}
       className="primary-regular input"
       style={style}
       placeholder={placeholder}

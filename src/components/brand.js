@@ -6,6 +6,9 @@ const Brand = (props) => {
         lineHeight: "28px",
         fontFamily: "PingFang Semibold",
         letterSpacing: "0.04em",
+        textDecoration: "none",
+        cursor: "pointer",
+        marginTop: "8px"
       }}
     >
       Exercise Table

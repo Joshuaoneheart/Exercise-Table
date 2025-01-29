@@ -208,7 +208,7 @@ const DataTabs = ({ data, account, default_data, thisWeek, setThisWeek }) => {
     <div className="form">
       <div
         style={{
-          backgroundColor: "#CCEAF3",
+          backgroundColor: "var(--p-100)",
         }}
       >
         {ContextHolder}

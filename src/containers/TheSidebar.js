@@ -98,7 +98,7 @@ const TheSidebar = ({ show, setShow }) => {
   }
   let start_page = 1;
   for (let i = 0; i < navigation.length; i++) {
-    if(typeof(navigation[i]) === "string") continue
+    if (typeof navigation[i] === "string") continue;
     if (location.pathname.split("/")[1] === navigation[i].to.split("/")[1]) {
       start_page = i;
       break;
@@ -124,7 +124,7 @@ const TheSidebar = ({ show, setShow }) => {
       ) : (
         <li
           className={
-            "primary-medium text-dark-blue sidebar-list-item " +
+            "primary-medium sidebar-list-item " +
             (active === i ? "active" : "")
           }
           onClick={() => {
@@ -138,10 +138,14 @@ const TheSidebar = ({ show, setShow }) => {
               alt={item.icon}
               style={{
                 marginRight: "16px",
+                paddingTop: "10px",
+                paddingBottom: "10px"
               }}
             />
           )}
-          {item.name}
+          <span style={{ paddingTop: "10px", paddingBottom: "10px" }}>
+            {item.name}
+          </span>
         </li>
       )
     );
@@ -186,7 +190,7 @@ const TheSidebar = ({ show, setShow }) => {
         </div>
       </div>
       <div
-        className="sidebar-shadow"
+        className="sidebar-mask"
         style={{
           display: show ? "block" : "none",
         }}

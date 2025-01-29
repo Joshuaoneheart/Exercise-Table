@@ -1,48 +1,36 @@
-import {
-  CHeader,
-  CHeaderBrand,
-  CHeaderNav,
-  CToggler
-} from "@coreui/react";
 import { useContext } from "react";
 
 // routes config
 import { Brand } from "components";
 import { AccountContext } from "hooks/context";
 
-import {
-  TheHeaderDropdown,
-  TheHeaderDropdownNotif
-} from "./index";
+import { TheHeaderDropdown } from "./index";
+import TheHeaderDropdownNotif from "./TheHeaderDropdownNotif";
 
-const TheHeader = ({props, setShow}) => {
+const TheHeader = ({ props, setShow }) => {
   var account = useContext(AccountContext);
   if (!account) return null;
   return (
-    <CHeader>
-      <CToggler
-        inHeader
-        className="ml-md-3 d-lg-none"
+    <div className="header">
+      <img
         onClick={() => setShow(true)}
+        style={{ padding: "8px" }}
+        src={process.env.PUBLIC_URL + "Images/burger.svg"}
+        alt="sidebar"
       />
-      <CToggler
-        inHeader
-        className="ml-3 d-md-down-none"
-        onClick={() => setShow(true)}
-      />
-      <CHeaderBrand className="mx-auto d-lg-none" to="/">
-        <Brand />
-      </CHeaderBrand>
-
-      <CHeaderNav className="d-md-down-none mr-auto">
-
-      </CHeaderNav>
-
-      <CHeaderNav className="px-3">
+      <Brand />
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "end",
+          paddingTop: "10px",
+          paddingRight: "16px",
+        }}
+      >
         <TheHeaderDropdownNotif />
         <TheHeaderDropdown {...props} />
-      </CHeaderNav>
-    </CHeader>
+      </div>
+    </div>
   );
 };
 

@@ -5,6 +5,10 @@ const GetWeeklyBase = () => {
   return Math.floor((now - BaseDate) / 7 / 86400000);
 };
 
+const WeeklyBase2StartDate = (base) => {
+  return new Date(base * 7 * 86400000 + BaseDate);
+}
+
 const GetWeeklyBaseFromTime = (date) => {
   var now = date.getTime();
   return Math.floor((now - BaseDate) / 7 / 86400000);
@@ -12,7 +16,7 @@ const GetWeeklyBaseFromTime = (date) => {
 
 const WeeklyBase2String = (base) => {
   var end = new Date((base + 1) * 7 * 86400000 + BaseDate - 1);
-  var start = new Date(base * 7 * 86400000 + BaseDate);
+  var start = WeeklyBase2StartDate(base)
   return `${start.getMonth() + 1}/${start.getDate()}-${
     end.getMonth() + 1
   }/${end.getDate()}`;
@@ -72,6 +76,7 @@ const registFormat = (item) => {
 
 export {
   BaseDate,
+  WeeklyBase2StartDate,
   GetWeeklyBase,
   WeeklyBase2String,
   WeeklyBase2YearString,

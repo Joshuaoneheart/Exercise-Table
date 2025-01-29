@@ -2,36 +2,30 @@ import { loading } from "components";
 import { useParams } from "react-router-dom";
 import { FirestoreDocument } from "@react-firebase/firestore";
 
-import {
-  CCol,
-  CButton,
-  CRow,
-  CCard,
-  CCardBody,
-  CCardHeader,
-  CTooltip,
-  CDataTable,
-  CLink,
-} from "@coreui/react";
 import { useContext, useEffect, useState } from "react";
-import {
-  WeeklyBase2YearString,
-} from "utils/date";
+import { WeeklyBase2StartDate, WeeklyBase2String } from "utils/date";
 import { firebase } from "db/firebase";
 import ModifyGFModal from "components/ModifyGFModal";
-import CIcon from "@coreui/icons-react";
 import { GetAccountsMap } from "utils/account";
 import { useTranslation } from "react-i18next";
 import i18n from "i18n";
 import SemesterContext from "hooks/semester";
+import Row from "components/Row";
+import Col from "components/Col";
+import Select from "components/Select";
+import Datatable from "components/Datatable";
+import Pagination from "components/Pagination";
+import Tooltip from "components/Tooltip";
 
-const GFCardBody = ({ init_data }) => {
+const GFCard = ({ init_data }) => {
   const { t } = useTranslation("translation", { i18n });
   const [modifyModal, setModifyModal] = useState(false);
   const [data, setData] = useState(init_data);
   const [accountsMap, setAccountsMap] = useState(null);
   const [tableData, setTableData] = useState(null);
   const { semester } = useContext(SemesterContext);
+  const [active, setActive] = useState(0);
+  const [year, setYear] = useState(new Date().getFullYear());
   useEffect(() => {
     let getData = async () => {
       let accountsMap = await GetAccountsMap();
@@ -49,7 +43,8 @@ const GFCardBody = ({ init_data }) => {
         let doc_data = doc.data();
         if (!(parseInt(doc.id) in data_by_week))
           data_by_week[parseInt(doc.id)] = {
-            week: parseInt(doc.id),
+            week: WeeklyBase2String(parseInt(doc.id)),
+            start_date: WeeklyBase2StartDate(parseInt(doc.id)),
             主日聚會: [],
             小排: [],
             家聚會: [],
@@ -99,139 +94,241 @@ const GFCardBody = ({ init_data }) => {
       for (let v of Object.values(data_by_week)) {
         data.push(v);
       }
-      data.sort((x) => -x.week);
+      data.sort((x) => -x.week).reverse();
+      for (let i = 0; i < data.length; i++) {
+        if (data[i]["主日聚會"] && typeof data[i]["主日聚會"] !== "string")
+          data[i]["主日聚會"] = data[i]["主日聚會"]
+            .map((x) => accountsMap[x])
+            .filter((x) => x)
+            .join(",");
+        if (data[i]["小排"] && typeof data[i]["小排"] !== "string")
+          data[i]["小排"] = data[i]["小排"]
+            .map((x) => accountsMap[x])
+            .filter((x) => x)
+            .join(",");
+        let j = 0;
+        let tmp = [];
+        if (data[i]["家聚會"]) {
+          for (let d of data[i]["家聚會"]) {
+            if (j !== 0) tmp.push(",");
+            if (typeof d === "string" && accountsMap[d])
+              tmp.push(accountsMap[d]);
+            else if (accountsMap[d.id]) {
+              tmp.push(
+                <>
+                  <Tooltip
+                    text={d.note}
+                    span_style={{
+                      whiteSpace: "nowrap",
+                      textDecoration: "underline",
+                    }}
+                  >
+                    {accountsMap[d.id]}
+                  </Tooltip>
+                </>
+              );
+            }
+            j++;
+          }
+          data[i]["家聚會"] = tmp;
+        }
+      }
       setTableData(data);
     };
     if (semester) getData(init_data);
   }, [init_data, semester]);
   if (accountsMap === null) return loading;
-  let columns = [
+  let fields = [
     {
       key: "week",
-      label: "Week",
-      _style: { minWidth: "100px", flexWrap: "nowrap" },
+      label: t("日期"),
     },
     {
       key: "主日聚會",
       label: t("主日聚會"),
-      _style: { minWidth: "100px", flexWrap: "nowrap" },
     },
     {
       key: "家聚會",
       label: t("家聚會"),
-      _style: { minWidth: "100px", flexWrap: "nowrap" },
     },
     {
       key: "小排",
       label: t("小排"),
-      _style: { minWidth: "100px", flexWrap: "nowrap" },
     },
   ];
+  const maxDisplay = 10;
+  let years = [year];
+  let content = undefined;
+  if (tableData) {
+    years = [];
+    for (let d of tableData.keys()) {
+      if (!years.includes(tableData[d].start_date.getFullYear()))
+        years.push(tableData[d].start_date.getFullYear());
+    }
+    years = years.sort().reverse();
+    content = tableData.filter((x) => x.start_date.getFullYear() === year);
+  }
   return (
-    <CCardBody>
+    <div
+      className="GF-background"
+      style={{ paddingLeft: "16px", paddingRight: "16px" }}
+    >
+      <div className="GF-banner">
+        <span className="heading2-bold">{t("牧養對象資料")}</span>
+        <img
+          src={process.env.PUBLIC_URL + "/Images/edit.svg"}
+          alt="編輯牧養對象"
+          onClick={() => {
+            setModifyModal(true);
+          }}
+          style={{
+            width: "24px",
+            height: "24px",
+            marginTop: "2px",
+            marginBottom: "2px",
+          }}
+        />
+      </div>
       <ModifyGFModal
         data={data}
         setData={setData}
         show={modifyModal}
         setModal={setModifyModal}
       />
-      <CRow>
-        <CCol style={{ fontSize: "18px" }}>
-          <CRow className="align-items-center">
-            <CCol xs="10" md="11">
-              <h3>{data.name}</h3>
-            </CCol>
-            <CCol xs="1" md="1">
-              <CButton
-                variant="outline"
-                color="primary"
-                className="end"
-                onClick={() => {
-                  setModifyModal(true);
+
+      <div className="secondary-medium">
+        <Row className="GF-row">
+          <Col>
+            <Row className="GF-item">
+              <span style={{ color: "var(--n-500)" }}>{t("姓名")}</span>
+              <span>{data.name}</span>
+            </Row>
+          </Col>
+          <Col style={{ marginLeft: "8px" }}>
+            <Row className="GF-item">
+              <span style={{ color: "var(--n-500)" }}>{t("學校")}</span>
+              <span>{data.school}</span>
+            </Row>
+          </Col>
+        </Row>
+        <Row className="GF-row">
+          <Col>
+            <Row className="GF-item">
+              <span style={{ color: "var(--n-500)" }}>{t("科系")}</span>
+              <span>{data.department}</span>
+            </Row>
+          </Col>
+        </Row>
+        <Row className="GF-row">
+          <Col>
+            <Row className="GF-item">
+              <span style={{ color: "var(--n-500)" }}>{t("年級")}</span>
+              <span>{data.grade}</span>
+            </Row>
+          </Col>
+        </Row>
+        <Row className="GF-row">
+          <Col>
+            <Row className="GF-item">
+              <span style={{ color: "var(--n-500)" }}>{t("身份")}</span>
+              <span>{data.type}</span>
+            </Row>
+          </Col>
+        </Row>
+        <Row className="GF-row">
+          <Col>
+            <Row className="GF-item" style={{ height: "max-content" }}>
+              <span style={{ color: "var(--n-500)" }}>{t("牧養人")}</span>
+              <p
+                style={{
+                  wordBreak: "break-all",
+                  width: "60%",
+                  textAlign: "end",
                 }}
               >
-                <CIcon alt="修改" name="cil-pencil" />
-              </CButton>
-            </CCol>
-          </CRow>
-          <hr />
-          <div width="20%">
-            <CRow>
-              <CCol lg="3">
-                <b>{t("學校")}</b>
-              </CCol>
-              <CCol>{data.school}</CCol>
-            </CRow>
-            <CRow>
-              <CCol lg="3">
-                <b>{t("科系")}</b>
-              </CCol>
-              <CCol>{data.department}</CCol>
-            </CRow>
-            <CRow>
-              <CCol lg="3">
-                <b>{t("年級")}</b>
-              </CCol>
-              <CCol>{data.grade}</CCol>
-            </CRow>
-            <CRow>
-              <CCol lg="3">
-                <b>{t("身份")}</b>
-              </CCol>
-              <CCol>{data.type}</CCol>
-            </CRow>
-            <CRow>
-              <CCol lg="3">
-                <b>{t("牧養人")}</b>
-              </CCol>
-              <CCol>
                 {data.shepherd &&
                   data.shepherd.map((x) => accountsMap[x]).join(",")}
-              </CCol>
-            </CRow>
-            <CRow>
-              <CCol lg="3">
-                <b>{t("累計主日聚會")}</b>
-              </CCol>
-              <CCol>{data["主日聚會"] && data["主日聚會"]}</CCol>
-            </CRow>
-            <CRow>
-              <CCol lg="3">
-                <b>{t("累計家聚會")}</b>
-              </CCol>
-              <CCol>{data["家聚會"] && data["家聚會"]}</CCol>
-            </CRow>
-            <CRow>
-              <CCol lg="3">
-                <b>{t("累計小排")}</b>
-              </CCol>
-              <CCol>{data["小排"] && data["小排"]}</CCol>
-            </CRow>
-            <CRow>
-              <CCol lg="3">
-                <b>{t("備註")}</b>
-              </CCol>
-              <CCol>{data.note}</CCol>
-            </CRow>
+              </p>
+            </Row>
+          </Col>
+        </Row>
+        <Row className="GF-row">
+          <Col>
+            <Row className="GF-item">
+              <span style={{ color: "var(--n-500)" }}>{t("備註")}</span>
+              <span>{data.note}</span>
+            </Row>
+          </Col>
+        </Row>
+      </div>
+      <div className="heading2-bold" style={{ marginBottom: "16px" }}>
+        {t("累計出席次數")}
+      </div>
+      <Row
+        className="secondary-medium"
+        style={{ justifyContent: "space-between", marginBottom: "40px" }}
+      >
+        <Col className="GF-attendance">
+          <div className="GF-attendance-top">{t("主日聚會")}</div>
+          <div className="GF-attendance-bottom">
+            {data["主日聚會"] ? data["主日聚會"] : "--"}
           </div>
-        </CCol>
-      </CRow>
-      <CDataTable
-        style={{ flexWrap: "nowrap" }}
-        pagination
-        fields={columns}
-        items={tableData}
-        scopedSlots={{
-          week: (item) => {
-            return <td>{WeeklyBase2YearString(item.week)}</td>;
-          },
+        </Col>
+        <Col className="GF-attendance">
+          <div className="GF-attendance-top">{t("家聚會")}</div>
+          <div className="GF-attendance-bottom">
+            {data["家聚會"] ? data["家聚會"] : "--"}
+          </div>
+        </Col>
+        <Col className="GF-attendance">
+          <div className="GF-attendance-top">{t("小排")}</div>
+          <div className="GF-attendance-bottom">
+            {data["小排"] ? data["小排"] : "--"}
+          </div>
+        </Col>
+      </Row>
+      <Row style={{ justifyContent: "space-between", marginBottom: "16px" }}>
+        <Col>
+          <Row className="heading3-medium">{t("牧養情況")}</Row>
+          <Row className="secondary-medium" style={{ color: "var(--n-400)" }}>
+            {t("欄位顯示邀約人名稱")}
+          </Row>
+        </Col>
+        <Select
+          options={years.map((x) => {
+            return { key: x, label: x };
+          })}
+          onChange={(v) => {
+            setYear(v);
+            setActive(0);
+          }}
+          style={{ width: "133px" }}
+        />
+      </Row>
+      {content ? (
+        <>
+          <Datatable
+            tableClassName="rounded-table"
+            fields={fields}
+            content={content}
+            maxDisplay={maxDisplay}
+            start={active * maxDisplay}
+          />
+          <Pagination
+            totalPage={Math.ceil(content.length / maxDisplay)}
+            active={active}
+            setActive={setActive}
+          />
+        </>
+      ) : (
+        <div></div>
+      )}
+      {/*
           主日聚會: (item) => {
             return (
               <td>
                 {item["主日聚會"]
-                  .map((x) => accountsMap[x])
-                  .filter((x) => x)
-                  .join(",")}
+                  }
               </td>
             );
           },
@@ -252,46 +349,22 @@ const GFCardBody = ({ init_data }) => {
               i++;
             }
             return <td>{tmp}</td>;
-          },
-          小排: (item) => {
-            return (
-              <td>
-                {item["小排"]
-                  .map((x) => accountsMap[x])
-                  .filter((x) => x)
-                  .join(",")}
-              </td>
-            );
-          },
-        }}
-      />
-    </CCardBody>
+          },*/}
+    </div>
   );
 };
 const GF = () => {
   const { t } = useTranslation("translation", { i18n });
   let { id } = useParams();
   return (
-    <CRow>
-      <CCol>
-        <CCard>
-          <CCardHeader>{t("福音朋友資料")}</CCardHeader>
-
-          <FirestoreDocument path={"/GF/" + id}>
-            {(d) => {
-              if (d && d.value) {
-                d.value.id = id;
-                return (
-                  <CCol>
-                    <GFCardBody init_data={d.value} />
-                  </CCol>
-                );
-              } else return loading;
-            }}
-          </FirestoreDocument>
-        </CCard>
-      </CCol>
-    </CRow>
+    <FirestoreDocument path={"/GF/" + id}>
+      {(d) => {
+        if (d && d.value) {
+          d.value.id = id;
+          return <GFCard init_data={d.value} />;
+        } else return loading;
+      }}
+    </FirestoreDocument>
   );
 };
 export default GF;

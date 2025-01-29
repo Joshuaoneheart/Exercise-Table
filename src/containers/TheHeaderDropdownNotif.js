@@ -93,15 +93,34 @@ const TheHeaderDropdownNotif = () => {
           paddingRight: announcements.length > 0 ? "0" : "19px",
         }}
       >
-        <CIcon size="lg" name="cil-bell" />
+        <img
+          src={process.env.PUBLIC_URL + "Images/bell.svg"}
+          alt="notification"
+        />
         {announcements.length > 0 && (
-          <CBadge
-            style={{ position: "relative", right: "11px", bottom: "11px" }}
-            shape="pill"
-            color="danger"
+          <div
+            style={{
+              width: 0,
+              overflow: "visible",
+            }}
           >
-            {announcements.length}
-          </CBadge>
+            <span
+              style={{
+                position: "relative",
+                right: "13px",
+                bottom: "11px",
+                paddingLeft: "8px",
+                paddingRight: "8px",
+                borderRadius: "8px",
+                fontSize: "12px",
+                color: "var(--white)",
+                height: "8px",
+                backgroundColor: "var(--red)",
+              }}
+            >
+              {announcements.length}
+            </span>
+          </div>
         )}
       </div>
       <ul

@@ -1,4 +1,18 @@
-const Datatable = ({ fields, content, start, maxDisplay, onRowClick }) => {
+/*
+fields: {
+  key: ...,
+  label: ...
+}
+*/
+const Datatable = ({
+  fields,
+  content,
+  start,
+  maxDisplay,
+  onRowClick,
+  tableStyle,
+  tableClassName,
+}) => {
   let titles = [];
   for (let i = 0; i < fields.length; i++) {
     titles.push(
@@ -20,14 +34,19 @@ const Datatable = ({ fields, content, start, maxDisplay, onRowClick }) => {
       else row.push(<td key={`td-${i}-${j}`}></td>);
     }
     body.push(
-      <tr onClick={() => onRowClick(content[i])} key={`tr-${i}`}>
+      <tr
+        onClick={() => {
+          if (onRowClick) onRowClick(content[i]);
+        }}
+        key={`tr-${i}`}
+      >
         {row}
       </tr>
     );
   }
   return (
     <div className="datatable-container">
-      <table className="datatable">
+      <table className={"datatable " + tableClassName} style={tableStyle}>
         <thead>
           <tr>{titles}</tr>
         </thead>
