@@ -17,7 +17,10 @@ const GFListCard = ({ data }) => {
   const account = useContext(AccountContext);
   const [d, setD] = useState(data);
   const [active, setActive] = useState(0);
-  const [condition, setCondition] = useState("all");
+  const [condition, setCondition] = useState({
+    value: "all",
+    label: t("全部"),
+  });
   const [search, setSearch] = useState("");
   const fields = [
     { value: "all", label: t("全部") },
@@ -34,14 +37,14 @@ const GFListCard = ({ data }) => {
   }, [data]);
   const maxDisplay = 10;
   let content;
-  if (condition === "all")
+  if (condition.value === "all")
     content = d.filter((x) => {
       let qualified = false;
       for (let i = 1; i < 7; i++)
         qualified |= x[fields[i].value].includes(search);
       return qualified;
     });
-  else content = d.filter((x) => x[condition].includes(search));
+  else content = d.filter((x) => x[condition.value].includes(search));
   return (
     <div className="GF-background">
       <div className="GFList-banner">
@@ -61,6 +64,7 @@ const GFListCard = ({ data }) => {
             marginLeft: "16px",
             width: "133px",
           }}
+          value={condition}
           options={fields}
           onChange={(key) => {
             setCondition(key);

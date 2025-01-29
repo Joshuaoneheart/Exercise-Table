@@ -84,9 +84,9 @@ const AddGFModal = ({ data, account, show, setData, setModal }) => {
             options={schools}
             value={{ value: school, label: school }}
             onChange={(v) => {
-              setSchool(v);
-              if (v === "台大") setDepartment(GF_NTU_DEPARTMENT[0]);
-              else if (v === "台科大") setDepartment(GF_NTUST_DEPARTMENT[0]);
+              setSchool(v.value);
+              if (v.value === "台大") setDepartment(GF_NTU_DEPARTMENT[0]);
+              else if (v.value === "台科大") setDepartment(GF_NTUST_DEPARTMENT[0]);
             }}
           />
         </Col>
@@ -101,7 +101,7 @@ const AddGFModal = ({ data, account, show, setData, setModal }) => {
             value={{ value: department, label: department }}
             options={departments}
             onChange={(v) => {
-              setDepartment(v);
+              setDepartment(v.value);
             }}
           />
         </Col>
@@ -117,7 +117,7 @@ const AddGFModal = ({ data, account, show, setData, setModal }) => {
             value={{ value: grade, label: grade }}
             options={grades}
             onChange={(v) => {
-              setGrade(v);
+              setGrade(v.value);
             }}
           />
         </Col>
@@ -129,7 +129,7 @@ const AddGFModal = ({ data, account, show, setData, setModal }) => {
             options={types}
             value={{ value: type, label: type }}
             onChange={(v) => {
-              setType(v);
+              setType(v.value);
             }}
           />
         </Col>
@@ -154,7 +154,7 @@ const AddGFModal = ({ data, account, show, setData, setModal }) => {
                 },
               ]}
               onChange={(v) => {
-                setGender(v);
+                setGender(v.value);
               }}
             />
           </Col>

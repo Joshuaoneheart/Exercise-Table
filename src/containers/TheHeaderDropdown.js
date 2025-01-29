@@ -9,7 +9,6 @@ const TheHeaderDropdown = (props) => {
   if (!account) return null;
   return (
     <div
-      className="c-subheader-nav-link"
       onClick={() => {
         if (i18next.language === "zh-tw") i18next.changeLanguage("en");
         else i18next.changeLanguage("zh-tw");

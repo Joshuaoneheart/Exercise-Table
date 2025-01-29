@@ -83,10 +83,10 @@ const ModifyGFModal = ({ data, show, setData, setModal }) => {
             options={schools}
             value={{ value: school, label: school }}
             onChange={(v) => {
-              setSchool(v);
-              console.log(v);
-              if (v === "台大") setDepartment(GF_NTU_DEPARTMENT[0]);
-              else if (v === "台科大") setDepartment(GF_NTUST_DEPARTMENT[0]);
+              setSchool(v.value);
+              if (v.value === "台大") setDepartment(GF_NTU_DEPARTMENT[0]);
+              else if (v.value === "台科大")
+                setDepartment(GF_NTUST_DEPARTMENT[0]);
             }}
           />
         </Col>
@@ -101,7 +101,7 @@ const ModifyGFModal = ({ data, show, setData, setModal }) => {
             isSearchable
             options={departments}
             onChange={(v) => {
-              setDepartment(v);
+              setDepartment(v.value);
             }}
           />
         </Col>
@@ -116,7 +116,7 @@ const ModifyGFModal = ({ data, show, setData, setModal }) => {
             isSearchable
             options={grades}
             onChange={(v) => {
-              setGrade(v);
+              setGrade(v.value);
             }}
           />
         </Col>
@@ -128,7 +128,7 @@ const ModifyGFModal = ({ data, show, setData, setModal }) => {
             menu_style={{ border: "1px solid var(--n-200)" }}
             options={types}
             onChange={(v) => {
-              setType(v);
+              setType(v.value);
             }}
           />
         </Col>
@@ -153,7 +153,7 @@ const ModifyGFModal = ({ data, show, setData, setModal }) => {
                 },
               ]}
               onChange={(v) => {
-                setGender(v);
+                setGender(v.value);
               }}
             />
           </Col>

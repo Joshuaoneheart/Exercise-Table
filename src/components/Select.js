@@ -59,7 +59,10 @@ const MySelect = ({
       }}
       styles={{
         menuPortal: (base) => ({ ...base, zIndex: 9999 }),
-        container: (base) => ({ ...base, ...container_style }),
+        container: (base) => ({
+          ...base,
+          ...container_style,
+        }),
         indicatorContainer: (base) => ({ ...base, padding: "0" }),
         indicatorSeparator: () => ({ display: "none" }),
         control: (base) => {
@@ -84,7 +87,7 @@ const MySelect = ({
           paddingRight: "4px !important",
           borderRadius: "4px",
           paddingLeft: "8px !important",
-        })
+        }),
       }}
       isSearchable={isSearchable}
     />

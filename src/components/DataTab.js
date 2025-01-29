@@ -1,5 +1,4 @@
-import { CCol, CForm, CRow, CButton } from "@coreui/react";
-import { useEffect, useRef, useState, useContext } from "react";
+import { useEffect, useState, useContext } from "react";
 import Problem from "./Problem";
 import { DB, firebase } from "db/firebase";
 import {
@@ -12,6 +11,8 @@ import { message } from "antd";
 import { useTranslation } from "react-i18next";
 import i18n from "i18n";
 import SemesterContext from "hooks/semester";
+import Col from "./Col";
+import Row from "./Row";
 
 const DataTabs = ({ data, account, default_data, thisWeek, setThisWeek }) => {
   const { t } = useTranslation("translation", { i18n });
@@ -48,7 +49,6 @@ const DataTabs = ({ data, account, default_data, thisWeek, setThisWeek }) => {
     };
     GetGF();
   }, [account, thisWeek]);
-  var form = useRef();
   if (GF === null) return loading;
   var tabpanes = [];
   const calculateScore = async () => {
@@ -205,10 +205,11 @@ const DataTabs = ({ data, account, default_data, thisWeek, setThisWeek }) => {
     tabpanes.push(contents);
   }
   return (
-    <div className="form">
+    <Col style={{ alignItems: "center" }}>
       <div
         style={{
           backgroundColor: "var(--p-100)",
+          width: "100%",
         }}
       >
         {ContextHolder}
@@ -241,16 +242,13 @@ const DataTabs = ({ data, account, default_data, thisWeek, setThisWeek }) => {
             )}
           </div>
         </div>
-        <CRow className="align-items-center">
-          <CCol>
-            <CRow
-              className="align-items-center"
-              style={{ justifyContent: "center" }}
-            >
-              <CButton
-                className="week-button text-dark-blue primary-medium"
-                variant="outline"
-                active={!thisWeek}
+        <Row>
+          <Col>
+            <Row style={{ justifyContent: "center", alignItems: "center" }}>
+              <button
+                className={
+                  "week-button primary-medium " + (!thisWeek ? "active" : "")
+                }
                 onClick={() => setThisWeek(false)}
                 disabled={
                   GetWeeklyBase() - 1 ===
@@ -258,26 +256,21 @@ const DataTabs = ({ data, account, default_data, thisWeek, setThisWeek }) => {
                 }
               >
                 {t("上週")}
-              </CButton>
-              <CButton
-                className="week-button text-dark-blue primary-medium"
+              </button>
+              <button
+                className={
+                  "week-button primary-medium " + (thisWeek ? "active" : "")
+                }
                 style={{ marginLeft: "16px" }}
-                variant="outline"
-                active={thisWeek}
                 onClick={() => setThisWeek(true)}
               >
                 {t("本週")}
-              </CButton>
-            </CRow>
-          </CCol>
-        </CRow>
+              </button>
+            </Row>
+          </Col>
+        </Row>
       </div>
-      <CForm
-        innerRef={form}
-        onSubmit={(e) => {
-          e.preventDefault();
-        }}
-      >
+      <div style={{ maxWidth: "768px", width: "100%" }}>
         {tabpanes.map((x, i) => (
           <div
             style={{
@@ -292,8 +285,8 @@ const DataTabs = ({ data, account, default_data, thisWeek, setThisWeek }) => {
             {GF && x}
           </div>
         ))}
-      </CForm>
-    </div>
+      </div>
+    </Col>
   );
 };
 
