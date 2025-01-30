@@ -132,6 +132,18 @@ const SignedIn = (props) => {
 };
 
 const App = () => {
+  const [width, setWidth] = useState(window.innerWidth);
+  useEffect(() => {
+    setWidth(window.innerWidth);
+    window.addEventListener("resize", () => {
+      setWidth(window.innerWidth);
+    });
+    return () => {
+      window.removeEventListener("resize", () => {
+        setWidth(window.innerWidth);
+      });
+    };
+  }, []);
   return (
     <HashRouter history={history}>
       <Suspense fallback={loading}>
@@ -142,7 +154,9 @@ const App = () => {
               path="/register"
               name="Register Page"
               render={(props) => {
-                return <Register firebase={firebase} {...props} />;
+                return (
+                  <Register firebase={firebase} width={width} {...props} />
+                );
               }}
             />
             <Route
@@ -166,7 +180,7 @@ const App = () => {
                           user.email === "admin@hall19.com")
                       ) {
                         return <SignedIn user={user} />;
-                      } else return <Login firebase={firebase} />;
+                      } else return <Login firebase={firebase} width={width}/>;
                     }}
                   </FirebaseAuthConsumer>
                 </FirestoreProvider>

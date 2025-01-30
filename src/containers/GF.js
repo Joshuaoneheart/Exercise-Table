@@ -169,162 +169,178 @@ const GFCard = ({ init_data }) => {
     content = tableData.filter((x) => x.start_date.getFullYear() === year);
   }
   return (
-    <div
+    <Row
       className="GF-background"
-      style={{ paddingLeft: "16px", paddingRight: "16px" }}
+      style={{
+        paddingLeft: "16px",
+        paddingRight: "16px",
+        justifyContent: "center",
+      }}
     >
-      <div className="GF-banner">
-        <span className="heading2-bold">{t("牧養對象資料")}</span>
-        <img
-          src={process.env.PUBLIC_URL + "/Images/edit.svg"}
-          alt="編輯牧養對象"
-          onClick={() => {
-            setModifyModal(true);
-          }}
-          style={{
-            width: "24px",
-            height: "24px",
-            marginTop: "2px",
-            marginBottom: "2px",
-          }}
+      <div style={{ maxWidth: "768px", width: "100%" }}>
+        <div className="GF-banner">
+          <span className="heading2-bold">{t("牧養對象資料")}</span>
+          <img
+            src={process.env.PUBLIC_URL + "/Images/edit.svg"}
+            alt="編輯牧養對象"
+            onClick={() => {
+              setModifyModal(true);
+            }}
+            style={{
+              width: "24px",
+              height: "24px",
+              marginTop: "2px",
+              marginBottom: "2px",
+            }}
+          />
+        </div>
+        <ModifyGFModal
+          data={data}
+          setData={setData}
+          show={modifyModal}
+          setModal={setModifyModal}
         />
-      </div>
-      <ModifyGFModal
-        data={data}
-        setData={setData}
-        show={modifyModal}
-        setModal={setModifyModal}
-      />
 
-      <div className="secondary-medium">
-        <Row className="GF-row">
-          <Col>
-            <Row className="GF-item">
-              <span style={{ color: "var(--n-500)" }}>{t("姓名")}</span>
-              <span>{data.name}</span>
-            </Row>
-          </Col>
-          <Col style={{ marginLeft: "8px" }}>
-            <Row className="GF-item">
-              <span style={{ color: "var(--n-500)" }}>{t("學校")}</span>
-              <span>{data.school}</span>
-            </Row>
-          </Col>
-        </Row>
-        <Row className="GF-row">
-          <Col>
-            <Row className="GF-item">
-              <span style={{ color: "var(--n-500)" }}>{t("科系")}</span>
-              <span>{data.department}</span>
-            </Row>
-          </Col>
-        </Row>
-        <Row className="GF-row">
-          <Col>
-            <Row className="GF-item">
-              <span style={{ color: "var(--n-500)" }}>{t("年級")}</span>
-              <span>{data.grade}</span>
-            </Row>
-          </Col>
-        </Row>
-        <Row className="GF-row">
-          <Col>
-            <Row className="GF-item">
-              <span style={{ color: "var(--n-500)" }}>{t("身份")}</span>
-              <span>{data.type}</span>
-            </Row>
-          </Col>
-        </Row>
-        <Row className="GF-row">
-          <Col>
-            <Row className="GF-item" style={{ height: "max-content" }}>
-              <span style={{ color: "var(--n-500)" }}>{t("牧養人")}</span>
-              <p
-                style={{
-                  wordBreak: "break-all",
-                  width: "60%",
-                  textAlign: "end",
-                }}
-              >
-                {data.shepherd &&
-                  data.shepherd.map((x) => accountsMap[x]).join(",")}
-              </p>
-            </Row>
-          </Col>
-        </Row>
-        <Row className="GF-row">
-          <Col>
-            <Row className="GF-item">
-              <span style={{ color: "var(--n-500)" }}>{t("備註")}</span>
-              <span>{data.note}</span>
-            </Row>
-          </Col>
-        </Row>
-      </div>
-      <div className="heading2-bold" style={{ marginBottom: "16px" }}>
-        {t("累計出席次數")}
-      </div>
-      <Row
-        className="secondary-medium"
-        style={{ justifyContent: "space-between", marginBottom: "40px" }}
-      >
-        <Col className="GF-attendance">
-          <div className="GF-attendance-top">{t("主日聚會")}</div>
-          <div className="GF-attendance-bottom">
-            {data["主日聚會"] ? data["主日聚會"] : "--"}
-          </div>
-        </Col>
-        <Col className="GF-attendance">
-          <div className="GF-attendance-top">{t("家聚會")}</div>
-          <div className="GF-attendance-bottom">
-            {data["家聚會"] ? data["家聚會"] : "--"}
-          </div>
-        </Col>
-        <Col className="GF-attendance">
-          <div className="GF-attendance-top">{t("小排")}</div>
-          <div className="GF-attendance-bottom">
-            {data["小排"] ? data["小排"] : "--"}
-          </div>
-        </Col>
-      </Row>
-      <Row style={{ justifyContent: "space-between", marginBottom: "16px" }}>
-        <Col>
-          <Row className="heading3-medium">{t("牧養情況")}</Row>
-          <Row className="secondary-medium" style={{ color: "var(--n-400)" }}>
-            {t("欄位顯示邀約人名稱")}
+        <div className="secondary-medium">
+          <Row className="GF-row">
+            <Col>
+              <Row className="GF-item">
+                <span style={{ color: "var(--n-500)" }}>{t("姓名")}</span>
+                <span>{data.name}</span>
+              </Row>
+            </Col>
+            <Col style={{ marginLeft: "8px" }}>
+              <Row className="GF-item">
+                <span style={{ color: "var(--n-500)" }}>{t("學校")}</span>
+                <span>{data.school}</span>
+              </Row>
+            </Col>
           </Row>
-        </Col>
-        <Select
-          options={years.map((x) => {
-            return { value: x, label: x };
-          })}
-          value={{ value: year, label: year }}
-          onChange={(v) => {
-            setYear(v.value);
-            setActive(0);
-          }}
-          container_style={{ width: "133px" }}
-        />
-      </Row>
-      {content ? (
-        <>
-          <Datatable
-            tableClassName="rounded-table"
-            fields={fields}
-            content={content}
-            maxDisplay={maxDisplay}
-            start={active * maxDisplay}
+          <Row className="GF-row">
+            <Col>
+              <Row className="GF-item">
+                <span style={{ color: "var(--n-500)" }}>{t("科系")}</span>
+                <span>{data.department}</span>
+              </Row>
+            </Col>
+          </Row>
+          <Row className="GF-row">
+            <Col>
+              <Row className="GF-item">
+                <span style={{ color: "var(--n-500)" }}>{t("年級")}</span>
+                <span>{data.grade}</span>
+              </Row>
+            </Col>
+          </Row>
+          <Row className="GF-row">
+            <Col>
+              <Row className="GF-item">
+                <span style={{ color: "var(--n-500)" }}>{t("身份")}</span>
+                <span>{data.type}</span>
+              </Row>
+            </Col>
+          </Row>
+          <Row className="GF-row">
+            <Col>
+              <Row className="GF-item">
+                <span style={{ color: "var(--n-500)" }}>{t("牧養人")}</span>
+                <p
+                  style={{
+                    wordBreak: "break-all",
+                    width: "60%",
+                    textAlign: "end",
+                    margin: 0,
+                  }}
+                >
+                  {data.shepherd &&
+                    data.shepherd.map((x) => accountsMap[x]).join(",")}
+                </p>
+              </Row>
+            </Col>
+          </Row>
+          <Row className="GF-row">
+            <Col>
+              <Row className="GF-item">
+                <span style={{ color: "var(--n-500)" }}>{t("備註")}</span>
+                <span>{data.note}</span>
+              </Row>
+            </Col>
+          </Row>
+        </div>
+        <div className="heading2-bold" style={{ marginBottom: "16px" }}>
+          {t("累計出席次數")}
+        </div>
+        <Row
+          className="secondary-medium"
+          style={{ justifyContent: "space-between", marginBottom: "40px" }}
+        >
+          <Col className="GF-attendance">
+            <div className="GF-attendance-top">{t("主日聚會")}</div>
+            <div className="GF-attendance-bottom">
+              {data["主日聚會"] ? data["主日聚會"] : "--"}
+            </div>
+          </Col>
+          <Col className="GF-attendance">
+            <div className="GF-attendance-top">{t("家聚會")}</div>
+            <div className="GF-attendance-bottom">
+              {data["家聚會"] ? data["家聚會"] : "--"}
+            </div>
+          </Col>
+          <Col className="GF-attendance">
+            <div className="GF-attendance-top">{t("小排")}</div>
+            <div className="GF-attendance-bottom">
+              {data["小排"] ? data["小排"] : "--"}
+            </div>
+          </Col>
+        </Row>
+        <Row style={{ justifyContent: "space-between", marginBottom: "16px" }}>
+          <Col style={{ width: "50%" }}>
+            <Row className="heading3-medium">{t("牧養情況")}</Row>
+            <Row className="secondary-medium" style={{ color: "var(--n-400)" }}>
+              {t("欄位顯示邀約人名稱")}
+            </Row>
+          </Col>
+          <Select
+            options={years.map((x) => {
+              return { value: x, label: x };
+            })}
+            value={{ value: year, label: year }}
+            onChange={(v) => {
+              setYear(v.value);
+              setActive(0);
+            }}
+            container_style={{ width: "133px" }}
           />
-          <Pagination
-            totalPage={Math.ceil(content.length / maxDisplay)}
-            active={active}
-            setActive={setActive}
-          />
-        </>
-      ) : (
-        <div></div>
-      )}
-    </div>
+        </Row>
+        {!content ? (
+          <>
+            <Datatable
+              tableClassName="rounded-table"
+              fields={fields}
+              content={content}
+              maxDisplay={maxDisplay}
+              start={active * maxDisplay}
+            />
+            <Pagination
+              totalPage={Math.ceil(content.length / maxDisplay)}
+              active={active}
+              setActive={setActive}
+            />
+          </>
+        ) : (
+          <div
+            className="GFList-empty-container"
+            style={{ marginBottom: "66px" }}
+          >
+            <img
+              src={process.env.PUBLIC_URL + "Images/empty.svg"}
+              alt="empty"
+            />
+            <span className="heading3-regular">{t("暫無資料")}</span>
+          </div>
+        )}
+      </div>
+    </Row>
   );
 };
 const GF = () => {

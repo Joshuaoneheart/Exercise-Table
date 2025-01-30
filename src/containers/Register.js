@@ -1,286 +1,311 @@
 import CIcon from "@coreui/icons-react";
 import { message } from "antd";
-import {
-  CButton,
-  CCard,
-  CCardBody,
-  CCol,
-  CContainer,
-  CForm,
-  CInput,
-  CInputGroup,
-  CInputGroupPrepend,
-  CInputGroupText,
-  CInvalidFeedback,
-  CLink,
-  CRow,
-} from "@coreui/react";
 import { FirebaseAuthConsumer } from "@react-firebase/auth";
-import { firebase, DB } from "db/firebase";
+import { DB } from "db/firebase";
 import Account from "Models/Account";
-import Select from "react-select";
 import React, { useEffect, useState } from "react";
+import Row from "components/Row";
+import Select from "components/Select";
+import Input from "components/Input";
 
-const Register = (props) => {
-  const register_form = React.useRef();
+const Register = ({ width, firebase }) => {
   const [create, setCreate] = useState(false);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [pw, setPw] = useState("");
+  const [pwCheck, setPwCheck] = useState("");
   const [gender, setGender] = useState("男");
+  const register = (event) => {
+    if (pw !== pwCheck) {
+      message.error("兩次輸入密碼不一致");
+      return;
+    }
+    if (!pw) {
+      message.error("密碼為必填");
+      return;
+    }
+    if (!email) {
+      message.error("電子郵件地址為必填");
+      return;
+    }
+    if (!name) {
+      message.error("姓名為必填");
+      return;
+    }
+    if (/@ntu\.edu\.tw$/.test(email) || /@mail\.ntust\.edu\.tw/.test(email)) {
+      message.error(
+        "請使用非台大或台科大的學校信箱進行註冊，因台大或台科大信箱會擋驗證信"
+      );
+      return;
+    }
+    event.target.disabled = true;
+    setCreate(true);
+    firebase
+      .auth()
+      .createUserWithEmailAndPassword(email, pw)
+      .then(async (user_data) => {
+        let account = new Account(
+          {
+            id: user_data.user.uid,
+            displayName: name,
+            email: email,
+            registered: firebase.firestore.FieldValue.serverTimestamp(),
+            role: "Member",
+            status: "Pending",
+            gender,
+          },
+          true
+        );
+        await firebase.auth().currentUser.sendEmailVerification();
+        await account.save(true);
+        message.success("成功創建帳戶");
+        await DB.signOut();
+        window.location = window.location.href.replace("register", "/");
+      })
+      .catch((error) => {
+        message.error(error.message);
+        event.target.disabled = false;
+      });
+  };
   useEffect(() => {
     // if have signed in, sign out
     let checkSignedIn = async () => {
-      if (!create && props.firebase.auth().uid) {
+      if (!create && firebase.auth().uid) {
         await DB.signOut();
         window.location = window.location.href.replace("register", "/");
       }
     };
     checkSignedIn();
-  }, [props, create]);
-  return (
-    <FirebaseAuthConsumer>
-      <div className="c-app c-default-layout flex-row align-items-center">
-        <CContainer>
-          <CRow className="justify-content-center">
-            <CCol md="9" lg="7" xl="6">
-              <CCard className="mx-4">
-                <CCardBody className="p-4">
-                  <CForm innerRef={register_form}>
-                    <h1>Register</h1>
-                    <p className="text-muted">Create your account</p>
-                    <CInputGroup className="mb-3">
-                      <CInputGroupPrepend>
-                        <CInputGroupText>
-                          <CIcon name="cil-user" />
-                        </CInputGroupText>
-                      </CInputGroupPrepend>
-                      <CInput
-                        name="username"
-                        type="text"
-                        placeholder="Username(請使用本名)"
-                        autoComplete="username"
-                        required
-                        onChange={(event) => {
-                          if (event.target.value) {
-                            event.target.classList.remove("is-invalid");
-                          }
-                        }}
-                      />
-                      <CInvalidFeedback>
-                        Username cannot be empty.
-                      </CInvalidFeedback>
-                    </CInputGroup>
-                    <CInputGroup className="mb-3">
-                      <CInputGroupPrepend>
-                        <CInputGroupText>@</CInputGroupText>
-                      </CInputGroupPrepend>
-                      <CInput
-                        name="email"
-                        type="text"
-                        placeholder="Email"
-                        autoComplete="email"
-                        required
-                        onChange={(event) => {
-                          if (event.target.value) {
-                            event.target.classList.remove("is-invalid");
-                          }
-                        }}
-                      />
-                      <CInvalidFeedback>
-                        Email cannot be empty.
-                      </CInvalidFeedback>
-                    </CInputGroup>
-                    <CInputGroup className="mb-3">
-                      <CInputGroupPrepend>
-                        <CInputGroupText>
-                          <CIcon name="cil-lock-locked" />
-                        </CInputGroupText>
-                      </CInputGroupPrepend>
-                      <CInput
-                        name="password"
-                        type="password"
-                        placeholder="Password"
-                        autoComplete="new-password"
-                        required
-                        onChange={(event) => {
-                          if (event.target.value) {
-                            event.target.classList.remove("is-invalid");
-                          }
-                        }}
-                      />
-                      <CInvalidFeedback>
-                        Password cannot be empty.
-                      </CInvalidFeedback>
-                    </CInputGroup>
-
-                    <CInputGroup className="mb-4">
-                      <CInputGroupPrepend>
-                        <CInputGroupText>
-                          <CIcon name="cil-lock-locked" />
-                        </CInputGroupText>
-                      </CInputGroupPrepend>
-                      <CInput
-                        name="repeat_password"
-                        type="password"
-                        placeholder="Repeat password"
-                        autoComplete="new-password"
-                        onChange={(event) => {
-                          if (
-                            register_form.current.elements.password.value ===
-                            event.target.value
-                          ) {
-                            event.target.classList.remove("is-invalid");
-                          }
-                        }}
-                        required
-                      />
-                      <CInvalidFeedback>
-                        Please enter the same password as above.
-                      </CInvalidFeedback>
-                    </CInputGroup>
-                    <CInputGroup className="mb-4">
-                      <CCol xs="12" md="12" style={{ padding: "0" }}>
-                        <Select
-                          defaultValue={{
-                            value: "男",
-                            label: (
-                              <span style={{ whiteSpace: "pre" }}>弟兄</span>
-                            ),
-                          }}
-                          options={[
-                            {
-                              value: "男",
-                              label: (
-                                <span style={{ whiteSpace: "pre" }}>弟兄</span>
-                              ),
-                            },
-                            {
-                              value: "女",
-                              label: (
-                                <span style={{ whiteSpace: "pre" }}>姊妹</span>
-                              ),
-                            },
-                          ]}
-                          onChange={(v) => {
-                            setGender(v.value);
-                          }}
-                          name="gender"
-                        />
-                      </CCol>
-                    </CInputGroup>
-                    <CRow>
-                      <CCol>
-                        <CButton
-                          color="success"
-                          onClick={(event) => {
-                            let pass_flag = true;
-                            if (
-                              register_form.current.elements.password.value !==
-                              register_form.current.elements.repeat_password
-                                .value
-                            ) {
-                              register_form.current.elements.repeat_password.classList.add(
-                                "is-invalid"
-                              );
-                              pass_flag = false;
-                            }
-                            if (
-                              !register_form.current.elements.password.value
-                            ) {
-                              register_form.current.elements.password.classList.add(
-                                "is-invalid"
-                              );
-                              pass_flag = false;
-                            }
-                            if (!register_form.current.elements.email.value) {
-                              register_form.current.elements.email.classList.add(
-                                "is-invalid"
-                              );
-                              pass_flag = false;
-                            }
-                            if (
-                              !register_form.current.elements.username.value
-                            ) {
-                              register_form.current.elements.username.classList.add(
-                                "is-invalid"
-                              );
-                              pass_flag = false;
-                            }
-                            if (pass_flag) {
-                              if (
-                                /@ntu\.edu\.tw$/.test(
-                                  register_form.current.elements.email.value
-                                ) ||
-                                /@mail\.ntust\.edu\.tw/.test(
-                                  register_form.current.elements.email.value
-                                )
-                              ) {
-                                message.error(
-                                  "請使用非台大或台科大的學校信箱進行註冊，因台大或台科大信箱會擋驗證信"
-                                );
-                                return;
-                              }
-                              event.target.disabled = true;
-                              setCreate(true);
-                              props.firebase
-                                .auth()
-                                .createUserWithEmailAndPassword(
-                                  register_form.current.elements.email.value,
-                                  register_form.current.elements.password.value
-                                )
-                                .then(async (user_data) => {
-                                  let account = new Account(
-                                    {
-                                      id: user_data.user.uid,
-                                      displayName:
-                                        register_form.current.elements.username
-                                          .value,
-                                      email:
-                                        register_form.current.elements.email
-                                          .value,
-                                      registered:
-                                        firebase.firestore.FieldValue.serverTimestamp(),
-                                      role: "Member",
-                                      status: "Pending",
-                                      gender
-                                    },
-                                    true
-                                  );
-                                  await props.firebase
-                                    .auth()
-                                    .currentUser.sendEmailVerification();
-                                  await account.save(true);
-                                  message.success("成功創建帳戶");
-                                  await DB.signOut();
-                                  window.location =
-                                    window.location.href.replace(
-                                      "register",
-                                      "/"
-                                    );
-                                })
-                                .catch((error) => {
-                                  message.error(error.message);
-                                  event.target.disabled = false;
-                                });
-                            }
-                          }}
-                        >
-                          Create Account
-                        </CButton>
-                      </CCol>
-                      <CCol className="text-right">
-                        <CLink to="/login">
-                          <CButton color="primary">Back</CButton>
-                        </CLink>
-                      </CCol>
-                    </CRow>
-                  </CForm>
-                </CCardBody>
-              </CCard>
-            </CCol>
-          </CRow>
-        </CContainer>
-      </div>
-    </FirebaseAuthConsumer>
-  );
+  }, [firebase, create]);
+  if (width <= 375)
+    return (
+      <FirebaseAuthConsumer>
+        <Row
+          style={{
+            justifyContent: "center",
+            width: "100%",
+            paddingLeft: "36px",
+            paddingRight: "36px",
+            backgroundImage: "url(Images/signup.svg)",
+            height: "100vh",
+            backgroundRepeat: "no-repeat",
+            backgroundColor: "var(--light-blue)",
+            overflowY: "scroll",
+            backgroundAttachment: "local"
+          }}
+        >
+          <div>
+            <Row>
+              <span
+                className="heading0-medium"
+                style={{
+                  marginTop: "110px",
+                  color: "var(--dark-blue)",
+                  marginBottom: "36px",
+                }}
+              >
+                創建新帳號
+              </span>
+            </Row>
+            <Row style={{ marginBottom: "4px" }}>
+              <span>姓名（請使用本名）</span>
+            </Row>
+            <Input
+              type="text"
+              placeholder="請輸入姓名"
+              onChange={(v) => {
+                setName(v);
+              }}
+              style={{ marginBottom: "16px" }}
+            />
+            <Row style={{ marginBottom: "4px" }}>
+              <span>電子郵件地址</span>
+            </Row>
+            <Input
+              type="text"
+              placeholder="請輸入電子郵件地址"
+              onChange={(v) => {
+                setEmail(v);
+              }}
+              style={{ marginBottom: "16px" }}
+            />
+            <Row style={{ marginBottom: "4px" }}>
+              <span>密碼</span>
+            </Row>
+            <Input
+              type="password"
+              placeholder="請輸入密碼"
+              required
+              onChange={(v) => {
+                setPw(v);
+              }}
+              style={{ marginBottom: "16px" }}
+            />
+            <Row style={{ marginBottom: "4px" }}>
+              <span>再次確認密碼</span>
+            </Row>
+            <Input
+              type="password"
+              placeholder="請再次輸入密碼"
+              onChange={(v) => {
+                setPwCheck(v);
+              }}
+              style={{ marginBottom: "16px" }}
+            />
+            <Row style={{ marginBottom: "4px" }}>
+              <span>性別</span>
+            </Row>
+            <Select
+              defaultValue={{
+                value: "男",
+                label: <span style={{ whiteSpace: "pre" }}>弟兄</span>,
+              }}
+              options={[
+                {
+                  value: "男",
+                  label: <span style={{ whiteSpace: "pre" }}>弟兄</span>,
+                },
+                {
+                  value: "女",
+                  label: <span style={{ whiteSpace: "pre" }}>姊妹</span>,
+                },
+              ]}
+              onChange={(v) => {
+                setGender(v.value);
+              }}
+              name="gender"
+            />
+            <button
+              style={{ marginBottom: "32px", marginTop: "70px" }}
+              className="primary-medium login-button"
+              onClick={register}
+            >
+              完成
+            </button>
+          </div>
+        </Row>
+      </FirebaseAuthConsumer>
+    );
+  else
+    return (
+      <FirebaseAuthConsumer>
+        <Row
+          style={{
+            justifyContent: "center",
+            width: "100%",
+            height: "100vh",
+            background:
+              "url(Images/star.svg), linear-gradient(180deg, #5292A2 0%, #E8F8FC 86%)",
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              backgroundColor: "var(--light-blue)",
+              paddingLeft: "36px",
+              paddingRight: "36px",
+              height: "fit-content",
+              width: "375px",
+              borderRadius: "24px",
+              boxShadow: "0px 4px 20px rgb(0 0 0 / 10%)",
+            }}
+          >
+            <Row>
+              <span
+                className="heading0-medium"
+                style={{
+                  marginTop: "32px",
+                  color: "var(--dark-blue)",
+                  marginBottom: "36px",
+                }}
+              >
+                創建新帳號
+              </span>
+            </Row>
+            <Row style={{ marginBottom: "4px" }}>
+              <span>姓名（請使用本名）</span>
+            </Row>
+            <Input
+              type="text"
+              placeholder="請輸入姓名"
+              onChange={(v) => {
+                setName(v);
+              }}
+              style={{ marginBottom: "16px" }}
+            />
+            <Row style={{ marginBottom: "4px" }}>
+              <span>電子郵件地址</span>
+            </Row>
+            <Input
+              type="text"
+              placeholder="請輸入電子郵件地址"
+              onChange={(v) => {
+                setEmail(v);
+              }}
+              style={{ marginBottom: "16px" }}
+            />
+            <Row style={{ marginBottom: "4px" }}>
+              <span>密碼</span>
+            </Row>
+            <Input
+              type="password"
+              placeholder="請輸入密碼"
+              required
+              onChange={(v) => {
+                setPw(v);
+              }}
+              style={{ marginBottom: "16px" }}
+            />
+            <Row style={{ marginBottom: "4px" }}>
+              <span>再次確認密碼</span>
+            </Row>
+            <Input
+              type="password"
+              placeholder="請再次輸入密碼"
+              onChange={(v) => {
+                setPwCheck(v);
+              }}
+              style={{ marginBottom: "16px" }}
+            />
+            <Row style={{ marginBottom: "4px" }}>
+              <span>性別</span>
+            </Row>
+            <Select
+              defaultValue={{
+                value: "男",
+                label: <span style={{ whiteSpace: "pre" }}>弟兄</span>,
+              }}
+              options={[
+                {
+                  value: "男",
+                  label: <span style={{ whiteSpace: "pre" }}>弟兄</span>,
+                },
+                {
+                  value: "女",
+                  label: <span style={{ whiteSpace: "pre" }}>姊妹</span>,
+                },
+              ]}
+              onChange={(v) => {
+                setGender(v.value);
+              }}
+              name="gender"
+            />
+            <button
+              style={{ marginBottom: "32px", marginTop: "48px" }}
+              className="primary-medium login-button"
+              onClick={register}
+            >
+              完成
+            </button>
+          </div>
+        </Row>
+      </FirebaseAuthConsumer>
+    );
 };
 
 export default Register;

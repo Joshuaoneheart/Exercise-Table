@@ -5,7 +5,7 @@
 // Some temp fixes
 @import "fixes";
 
-//@import "~@coreui/coreui/scss/coreui.scss";
+@import "~@coreui/coreui/scss/coreui.scss";
 // If you want to add something do it here
 @import "custom";
 
@@ -697,6 +697,7 @@ border-bottom-right-radius: 8px;
     border-radius: 16px;
     top: 0; 
     left: 0;
+    max-width: 768px;
     transform: translate(calc(50vw - 50%), calc(50vh - 50%));
 }
 
@@ -721,6 +722,19 @@ border-bottom-right-radius: 8px;
     user-select: none;
 }
 
+.login-button {
+    border: 0;
+    border-radius: 8px;
+    color: var(--white);
+    background-color: var(--dark-blue);
+    height: 44px;
+    width: 295px;
+    -webkit-user-select: none;  
+    -moz-user-select: none;    
+    -ms-user-select: none;      
+    user-select: none;
+}
+
 .col {
     display: flex;
     flex-direction: column;
@@ -729,6 +743,7 @@ border-bottom-right-radius: 8px;
 .row {
     display: flex;
     width: 100%;
+    margin: 0;
 }
 
 // Background
@@ -760,6 +775,13 @@ border-bottom-right-radius: 8px;
     font-size: 16px;
     letter-spacing: 0.06em;
     line-height: 24px;
+}
+
+.heading0-medium {
+    font-family: "PingFang Medium";
+    font-size: 28px;
+    line-height: 40px;
+    letter-spacing: 0.06em;
 }
 
 .heading2-bold {
