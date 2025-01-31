@@ -2,7 +2,7 @@ const { createPortal } = require("react-dom");
 
 const Portal = ({ children, customRootId }) => {
     let portalRoot;
-    const rootId = customRootId || 'portal-root';
+    const rootId = customRootId || 'root';
   
     if (document.getElementById(rootId)) {
       portalRoot = document.getElementById(rootId);

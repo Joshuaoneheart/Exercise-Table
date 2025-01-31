@@ -604,6 +604,7 @@ div .GF-attendance:not(:last-child) {
 
 .datatable-container {
     overflow-x: scroll;
+    min-width: 100%;
 }
 
 .datatable th:first-child {
@@ -630,18 +631,18 @@ div .GF-attendance:not(:last-child) {
 
 .rounded-table tr:first-child th:first-child {
     border-top-left-radius: 8px;
-  }
+}
   
 .rounded-table tr:first-child th:last-child {
-border-top-right-radius: 8px;
+    border-top-right-radius: 8px;
 }
 
 .rounded-table tr:last-child td:first-child {
-border-bottom-left-radius: 8px;
+    border-bottom-left-radius: 8px;
 }
 
 .rounded-table tr:last-child td:last-child {
-border-bottom-right-radius: 8px;
+    border-bottom-right-radius: 8px;
 }
   
 .pagination {
@@ -735,15 +736,40 @@ border-bottom-right-radius: 8px;
     user-select: none;
 }
 
-.col {
+.announcements tr td:last-child {
+    color: var(--main-blue);
+    text-decoration: underline;
+}
+
+.announcements tr td:first-child {
+    color: #000000;
+    text-decoration: none;
+}
+
+.announcement-content{
+    max-height: 368px;
+    overflow-y: scroll;
+    padding: 16px;
+    border-width: 0px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-style: solid;
+    border-color: var(--n-200);
+}
+
+.announcement-content img {
+    width: 260px !important;
+    cursor: pointer;
+}
+
+.mycol {
     display: flex;
     flex-direction: column;
     width: 100%;
 }
-.row {
+.myrow {
     display: flex;
     width: 100%;
-    margin: 0;
 }
 
 // Background

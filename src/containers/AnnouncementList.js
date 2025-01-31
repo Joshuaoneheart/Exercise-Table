@@ -1,28 +1,34 @@
-import CIcon from "@coreui/icons-react";
-import {
-  CRow,
-  CCol,
-  CCard,
-  CCardHeader,
-  CCardBody,
-  CDataTable,
-  CButton,
-} from "@coreui/react";
 import { FirestoreCollection } from "@react-firebase/firestore";
 import { loading } from "components";
 import AddAnnouncementModal from "components/AddAnnouncementModal";
+import AnnouncementPreviewModal from "components/AnnouncementPreviewModal";
 import { AccountContext } from "hooks/context";
 import { useContext, useEffect, useState } from "react";
 import { GetAccountsMap } from "utils/account";
-import { FormatDate } from "utils/date";
 import { useHistory } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import i18n from "i18n";
-const AnnouncementListBody = ({ data, account, addModal, setAddModal }) => {
+import Datatable from "components/Datatable";
+import Select from "components/Select";
+import Input from "components/Input";
+import Row from "components/Row";
+import Col from "components/Col";
+import Pagination from "components/Pagination";
+import Portal from "components/Portal";
+const AnnouncementListBody = ({ data, account }) => {
   const { t } = useTranslation("translation", { i18n });
   const [announcements, setAnnouncements] = useState(data);
   const [accountsMap, setAccountsMap] = useState(null);
   const history = useHistory();
+  const [previewSrc, setPreviewSrc] = useState(null);
+  const [active, setActive] = useState(0);
+  const [previewModal, setPreviewModal] = useState(null);
+  const [addModal, setAddModal] = useState(false);
+  const [condition, setCondition] = useState({
+    value: "all",
+    label: t("全部"),
+  });
+  const [search, setSearch] = useState("");
   data = data.reverse();
   useEffect(() => {
     let FetchAccountsMap = async () => {
@@ -33,23 +39,142 @@ const AnnouncementListBody = ({ data, account, addModal, setAddModal }) => {
   useEffect(() => {
     setAnnouncements(Array.from(data));
   }, [data]);
+  useEffect(() => {
+    if (previewModal) {
+      const container = document.getElementsByClassName(
+        "announcement-content"
+      )[0];
+      if (!container) return;
+
+      const images = container.querySelectorAll("img"); // 只選取特定 `div` 內的圖片
+      const handleClick = (event) => {
+        setPreviewSrc(event.target.src);
+      };
+
+      images.forEach((img) => img.addEventListener("click", handleClick));
+
+      return () => {
+        images.forEach((img) => img.removeEventListener("click", handleClick));
+      };
+    }
+  }, [previewModal]);
+
   if (accountsMap === null) return loading;
   const fields = [
-    { key: "title", label: t("主題"), _style: { width: "7%" } },
-    { key: "timestamp", label: t("發佈時間"), _style: { width: "20%" } },
-    { key: "posted_by", label: t("發佈人"), _style: { width: "7%" } },
-    { key: "content", label: t("內容預覽"), _style: { width: "50%" } },
-    {
-      key: "top",
-      label: "",
-      _style: { width: "1%" },
-      sorter: false,
-      filter: false,
-    },
+    { value: "all", label: t("全部") },
+    { value: "timestamp", label: t("日期") },
+    { value: "title", label: t("主題") },
   ];
-
+  const maxDisplay = 10;
+  let content = [];
+  for (let item of announcements.sort((a, b) => {
+    if (a.top === b.top) {
+      return a.timestamp.toDate() < b.timestamp.toDate() ? 1 : -1;
+    }
+    return a.top < b.top ? 1 : -1;
+  })) {
+    let date = item["timestamp"].toDate();
+    content.push({
+      title: item["title"],
+      timestamp: `${date.getFullYear()}.${
+        date.getMonth() + 1
+      }.${date.getDate()}`,
+      content: item["content"],
+      posted_by: item["posted_by"],
+      id: item["id"],
+    });
+  }
+  if (condition.value === "all")
+    content = content.filter((x) => {
+      let qualified = false;
+      for (let i = 1; i < 3; i++)
+        qualified |= x[fields[i].value].includes(search);
+      return qualified;
+    });
+  else content = content.filter((x) => x[condition.value].includes(search));
   return (
-    <CCardBody>
+    <>
+      <Portal>
+        {previewSrc && (
+          <>
+            <img
+              style={{
+                marginLeft: "16px",
+                marginRight: "16px",
+                position: "fixed",
+                zIndex: "1033",
+                width: "calc(100% - 32px)",
+                top: 0,
+                transform: "translateY(50%)",
+              }}
+              src={previewSrc}
+              alt="image-previewer"
+            />
+            <img
+              onClick={() => setPreviewSrc(null)}
+              style={{
+                position: "fixed",
+                zIndex: "1033",
+                top: "45px",
+                right: "27px",
+                cursor: "pointer",
+              }}
+              src={process.env.PUBLIC_URL + "/Images/white_close.svg"}
+              alt="close"
+            />
+            <div
+              onClick={() => setPreviewSrc(null)}
+              style={{
+                zIndex: "1032",
+                backgroundColor: "rgb(0 0 0 / 60%)",
+                width: "100vw",
+                height: "100vh",
+                position: "fixed",
+                top: 0,
+              }}
+            />
+          </>
+        )}
+      </Portal>
+      <div className="GFList-banner">
+        <span className="heading2-bold GFList-topic">{t("公告")}</span>
+        {account.role === "Admin" && (
+          <img
+            src={process.env.PUBLIC_URL + "/Images/plus.svg"}
+            alt="新增公告"
+            className="plus-icon"
+            onClick={() => {
+              setAddModal(true);
+            }}
+          />
+        )}
+      </div>
+      <div className="GFList-search-banner" style={{ marginBottom: "24px" }}>
+        <Select
+          container_style={{
+            marginLeft: "16px",
+            width: "133px",
+          }}
+          value={condition}
+          options={fields}
+          onChange={(key) => {
+            setCondition(key);
+            setActive(0);
+          }}
+        />
+        <Input
+          style={{
+            marginLeft: "8px",
+            marginRight: "16px",
+            width: "calc(100% - 165px)",
+          }}
+          onChange={(key) => {
+            setSearch(key);
+            setActive(0);
+          }}
+          placeholder="請輸入關鍵字"
+        />
+      </div>
       <AddAnnouncementModal
         show={addModal}
         data={announcements}
@@ -57,101 +182,70 @@ const AnnouncementListBody = ({ data, account, addModal, setAddModal }) => {
         setModal={setAddModal}
         setData={setAnnouncements}
       />
-
-      <CDataTable
-        sorterValue={{ column: "top", asc: false }}
-        items={announcements}
-        fields={fields}
-        columnFilter
-        tableFilter
-        itemsPerPage={10}
-        hover
-        sorter
-        pagination
-        clickableRows
-        onRowClick={(item) => {
-          history.push(`/Announcement/${item.id}`);
-        }}
-        scopedSlots={{
-          top: (item) => {
-            return <td></td>;
-          },
-          posted_by: (item) => {
-            return <td>{accountsMap[item.posted_by]}</td>;
-          },
-          timestamp: (item) => {
-            if (!item.timestamp) return <td></td>;
-            if (item.timestamp.toDate)
-              return <td>{FormatDate(item.timestamp.toDate())}</td>;
-            else return <td>{FormatDate(item.timestamp)}</td>;
-          },
-          content: (item) => {
-            let tmp = item.content;
-            if (tmp.length >= 50) {
-              tmp = tmp.substring(0, 100);
-              tmp += " ...";
-            }
-            return (
-              <td>
-                <div dangerouslySetInnerHTML={{ __html: tmp }} />
-              </td>
-            );
-          },
-        }}
+      <AnnouncementPreviewModal
+        content={previewModal}
+        setContent={setPreviewModal}
+        accountsMap={accountsMap}
       />
-    </CCardBody>
+      <Row
+        style={{
+          paddingLeft: "16px",
+          paddingRight: "16px",
+          justifyContent: "center",
+        }}
+      >
+        {content.length !== 0 ? (
+          <Col>
+            <Datatable
+              fields={fields.slice(1, 3)}
+              tableClassName="rounded-table announcements"
+              content={content}
+              onRowClick={(item) => {
+                //if (account.role === "Admin")
+                //history.push(`/Announcement/${item.id}`);
+                //else
+                setPreviewModal(item);
+              }}
+              maxDisplay={maxDisplay}
+              start={active * maxDisplay}
+            />
+            <Pagination
+              totalPage={Math.ceil(content.length / maxDisplay)}
+              active={active}
+              setActive={setActive}
+            />
+          </Col>
+        ) : (
+          <div className="GFList-empty-container">
+            <img
+              src={process.env.PUBLIC_URL + "Images/empty.svg"}
+              alt="empty"
+            />
+            <span className="heading3-regular">{t("暫無資料")}</span>
+          </div>
+        )}
+      </Row>
+    </>
   );
 };
 const AnnouncementList = () => {
   const { t } = useTranslation("translation", { i18n });
   const account = useContext(AccountContext);
-  const [addModal, setAddModal] = useState(false);
   return (
-    <CRow>
-      <CCol>
-        <CCard>
-          <CCardHeader>
-            <CRow>
-              <CCol xs="10" md="11">
-                {t("公告")}
-              </CCol>
-              {account.role === "Admin" && (
-                <CCol xs="1" md="1">
-                  <CButton
-                    variant="ghost"
-                    color="primary"
-                    onClick={() => {
-                      setAddModal(true);
-                    }}
-                  >
-                    <CIcon name="cil-plus" />
-                  </CButton>
-                </CCol>
-              )}
-            </CRow>
-          </CCardHeader>
-          <FirestoreCollection path="/announcement/">
-            {(d) => {
-              if (d.isLoading) return loading;
-              if (d && d.value) {
-                // add "id" to data
-                for (var i = 0; i < d.value.length; i++) {
-                  d.value[i]["id"] = d.ids[i];
-                }
-                return (
-                  <AnnouncementListBody
-                    account={account}
-                    data={d.value}
-                    addModal={addModal}
-                    setAddModal={setAddModal}
-                  />
-                );
-              } else return null;
-            }}
-          </FirestoreCollection>
-        </CCard>
-      </CCol>
-    </CRow>
+    <div className="GF-background">
+      <FirestoreCollection path="/announcement/">
+        {(d) => {
+          if (d.isLoading) return loading;
+          if (d && d.value) {
+            // add "id" to data
+            for (var i = 0; i < d.value.length; i++) {
+              d.value[i]["id"] = d.ids[i];
+            }
+            return <AnnouncementListBody account={account} data={d.value} />;
+          } else return null;
+        }}
+      </FirestoreCollection>
+    </div>
   );
 };
 export default AnnouncementList;

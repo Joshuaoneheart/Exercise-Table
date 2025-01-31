@@ -312,7 +312,7 @@ const GFCard = ({ init_data }) => {
             container_style={{ width: "133px" }}
           />
         </Row>
-        {!content ? (
+        {content.length !== 0 ? (
           <>
             <Datatable
               tableClassName="rounded-table"

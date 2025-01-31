@@ -1,6 +1,6 @@
 const Col = ({ children, style, className }) => {
   return (
-    <div className={"col " + className} style={style}>
+    <div className={"mycol " + className} style={style}>
       {children}
     </div>
   );
