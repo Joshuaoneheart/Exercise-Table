@@ -81,7 +81,7 @@ const RadarChart = ({
       svg
         .append("text")
         .attr("x", x * 1.15)
-        .attr("y", y * (y > 0 ? 1.15 : 1.3))
+        .attr("y", y * (y > 0 ? 1.18 : 1.35))
         .attr("text-anchor", "middle")
         .attr("dominant-baseline", "middle")
         .attr("class", "content-regular")
@@ -89,7 +89,7 @@ const RadarChart = ({
       svg
         .append("text")
         .attr("x", x * 1.15)
-        .attr("y", y * (1.15 + (y > 0 ? 0.17 : -0.03)))
+        .attr("y", y * (1.15 + (y > 0 ? 0.2 : 0.02)))
         .attr("text-anchor", "middle")
         .attr("dominant-baseline", "middle")
         .attr("class", "content-regular")

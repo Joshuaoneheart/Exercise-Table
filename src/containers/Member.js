@@ -257,11 +257,11 @@ const Tab1 = ({ data, semester }) => {
           <div style={{ display: "flex", flexDirection: "column" }}>
             <span
               style={{
-                paddingTop: "10px",
-                paddingBottom: "10px",
-                marginLeft: "16px",
+                paddingTop: "24px",
+                paddingBottom: "16px",
+                marginLeft: "24px",
               }}
-              className="primary-regular"
+              className="heading3-bold"
             >
               各項操練分析
             </span>
@@ -278,11 +278,11 @@ const Tab1 = ({ data, semester }) => {
             {" "}
             <span
               style={{
-                paddingTop: "8px",
-                paddingBottom: "8px",
-                marginLeft: "16px",
+                paddingTop: "36px",
+                paddingBottom: "24px",
+                marginLeft: "24px",
               }}
-              className="primary-regular"
+              className="heading3-bold"
             >
               各週總分記錄
             </span>
@@ -376,10 +376,6 @@ const Tab2 = ({ data }) => {
                 { label: "總分", value: "總分" },
               ]}
             />
-            <span
-              style={{ paddingTop: "12px", paddingBottom: "12px" }}
-              className="heading2-medium"
-            >{`本週:${WeeklyBase2String(GetWeeklyBase())}`}</span>
           </Row>
           <Datatable
             content={data.items.reverse()}

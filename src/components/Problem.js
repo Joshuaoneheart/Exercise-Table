@@ -275,15 +275,18 @@ const Problem = ({
       break;
     case "Number":
       frame.push(
-        <InputNumber
-          name={data.id}
-          max={data.max}
-          min={0}
+        <Input
+          style={{
+            border: "1px solid var(--n-200)",
+            marginRight: "16px",
+            width: "calc(100vw - 32px)",
+          }}
+          type="number"
           defaultValue={default_data ? default_data.ans : 0}
           onChange={async (v) => {
             if (account_id) {
               let tmp = {};
-              tmp[[data.id + ".ans"]] = v;
+              tmp[[data.id + ".ans"]] = Math.min(Math.max(v, 0), data.max);
               tmp[[data.id + ".score"]] = v * parseInt(data.score[0]);
               await DB.OnDemandUpdate(
                 "/accounts/" + account_id + "/data/" + week,

@@ -28,7 +28,7 @@ const VerticalBarChart = ({ data, max_bar, width, height, top_data }) => {
         .append("text")
         .attr("fill", top_data[i].text_color)
         .text(top_data[i].label)
-        .attr("x", 40 - width / 2)
+        .attr("x", 28 - width / 2)
         .attr("y", i * 18 + 13 - height / 2)
         .attr("class", "content-medium");
       svg
@@ -52,7 +52,7 @@ const VerticalBarChart = ({ data, max_bar, width, height, top_data }) => {
         .append("text")
         .attr("fill", data[i].text_color)
         .text(data[i].label)
-        .attr("x", 40 - width / 2)
+        .attr("x", 28 - width / 2)
         .attr("y", padding + i * 18 + 13 - height / 2)
         .attr("class", "content-medium");
       svg
