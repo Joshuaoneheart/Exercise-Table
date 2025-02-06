@@ -1,18 +1,18 @@
 import { memo, useContext, useState } from "react";
 
 import { AccountContext } from "hooks/context";
-import { history } from "utils/history";
 import { DB } from "db/firebase";
 import { message } from "antd";
 import { useTranslation } from "react-i18next";
 import i18n from "i18n";
-import { useLocation } from "react-router-dom";
+import { useLocation, useHistory } from "react-router-dom";
 
 var error_num = 0;
 
 const TheSidebar = ({ show, setShow }) => {
   const location = useLocation();
   var account = useContext(AccountContext);
+  const history = useHistory();
   const { t } = useTranslation("translation", { i18n });
   var navigation;
   if (account.is_admin)
@@ -80,11 +80,6 @@ const TheSidebar = ({ show, setShow }) => {
         icon: "table.svg",
       },
       {
-        name: t("時間表"),
-        to: "/schedule",
-        icon: "time.svg",
-      },
-      {
         name: t("個人"),
         to: "/member/" + account.id,
         icon: "personal.svg",
@@ -124,8 +119,7 @@ const TheSidebar = ({ show, setShow }) => {
       ) : (
         <li
           className={
-            "primary-medium sidebar-list-item " +
-            (active === i ? "active" : "")
+            "primary-medium sidebar-list-item " + (active === i ? "active" : "")
           }
           onClick={() => {
             setActive(i);
@@ -139,7 +133,7 @@ const TheSidebar = ({ show, setShow }) => {
               style={{
                 marginRight: "16px",
                 paddingTop: "10px",
-                paddingBottom: "10px"
+                paddingBottom: "10px",
               }}
             />
           )}

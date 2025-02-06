@@ -370,7 +370,7 @@ const Problem = ({
         );
 
         for (let j = 0; j < suboptions.length; j++) {
-          let suboption = suboptions[i];
+          let suboption = suboptions[j];
           tmp_col.push(
             <div
               key={j}
@@ -382,8 +382,8 @@ const Problem = ({
               <input
                 type="checkbox"
                 className="input-checkbox"
-                name={data.id + "-" + option}
                 value={suboption}
+                name={data.id + "-" + option + "-" + suboption}
                 defaultChecked={
                   default_data &&
                   option in default_data &&
