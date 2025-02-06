@@ -15,7 +15,7 @@ const TheHeader = ({ props, setShow }) => {
       <img
         onClick={() => setShow(true)}
         style={{ padding: "8px" }}
-        src={process.env.PUBLIC_URL + "Images/burger.svg"}
+        src={process.env.PUBLIC_URL + "/Images/burger.svg"}
         alt="sidebar"
       />
       <Brand />

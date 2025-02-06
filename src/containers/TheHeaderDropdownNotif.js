@@ -68,7 +68,7 @@ const TheHeaderDropdownNotif = () => {
         }}
       >
         <img
-          src={process.env.PUBLIC_URL + "Images/bell.svg"}
+          src={process.env.PUBLIC_URL + "/Images/bell.svg"}
           alt="notification"
         />
         {announcements.length > 0 && (
