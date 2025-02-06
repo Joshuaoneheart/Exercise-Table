@@ -1,5 +1,28 @@
-import Modal from "./Modal";
-const AnnouncementPreviewModal = ({ content, setContent, accountsMap }) => {
+import { Modal } from ".";
+import { DB } from "db/firebase";
+import { useEffect } from "react";
+const AnnouncementPreviewModal = ({
+  content,
+  setContent,
+  accountsMap,
+  account,
+}) => {
+  useEffect(() => {
+    const check = async () => {
+      if (!content.checked) {
+        content.checked = account.id;
+        await DB.updateByUrl("/announcement/" + content.id, {
+          checked: content.checked,
+        });
+      } else if (!content.checked.split(";").includes(account.id)) {
+        content.checked += ";" + account.id;
+        await DB.updateByUrl("/announcement/" + content.id, {
+          checked: content.checked,
+        });
+      }
+    };
+    if (content) check();
+  }, [account, content]);
   return (
     <Modal
       title="公告內容"

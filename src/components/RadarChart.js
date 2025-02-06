@@ -19,6 +19,9 @@ const RadarChart = ({
 }) => {
   const svgRef = useRef();
   useEffect(() => {
+    let exit = true;
+    for (let item of dataset.data) if (item.length >= num_points) exit = false;
+    if (exit) return;
     const radius = 135.72;
     d3.select(svgRef.current).selectAll("*").remove();
 

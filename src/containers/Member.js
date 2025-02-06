@@ -1,6 +1,14 @@
-import { CCol, CDataTable, CRow } from "@coreui/react";
-import { CChartLine } from "@coreui/react-chartjs";
-import { loading } from "components";
+import {
+  loading,
+  Col,
+  Tab,
+  Select,
+  RadarChart,
+  VerticalBarChart,
+  Datatable,
+  Row,
+  Portal,
+} from "components";
 import {
   GetWeeklyBase,
   GetWeeklyBaseFromTime,
@@ -14,159 +22,76 @@ import { GetSemesterData } from "utils/account";
 import { useTranslation } from "react-i18next";
 import i18n from "i18n";
 import SemesterContext from "hooks/semester";
-import Row from "components/Row";
 import { registFormat } from "utils/date";
-import Col from "components/Col";
-import Tab from "components/Tab";
-import RadarChart from "components/RadarChart";
-import VerticalBarChart from "components/VerticalBarChart";
-const RenderLineChart = ({ data, semester }) => {
-  let labels = [];
-  let chart_data = [];
-  let ids = data.ids.map((x) => parseInt(x));
-  let lower = GetWeeklyBaseFromTime(semester.start.toDate());
-  let upper = Math.max(
-    GetWeeklyBaseFromTime(semester.start.toDate()),
-    Math.min(GetWeeklyBase(), GetWeeklyBaseFromTime(semester.end.toDate()))
-  );
-  for (let i = lower; i <= upper; i++) {
-    labels.push(WeeklyBase2String(i));
-    if (ids.includes(i)) {
-      chart_data.push(data.value[ids.indexOf(i)].scores);
-    } else chart_data.push(0);
-  }
-  const line = {
-    labels,
-    datasets: [
-      {
-        label: "Total Score",
-        fill: false,
-        lineTension: 0.1,
-        backgroundColor: "rgba(75,192,192,0.4)",
-        borderColor: "rgba(75,192,192,1)",
-        borderCapStyle: "butt",
-        borderDash: [],
-        borderDashOffset: 0.0,
-        borderJoinStyle: "miter",
-        pointBorderColor: "rgba(75,192,192,1)",
-        pointBackgroundColor: "#fff",
-        pointBorderWidth: 1,
-        pointHoverRadius: 5,
-        pointHoverBackgroundColor: "rgba(75,192,192,1)",
-        pointHoverBorderColor: "rgba(220,220,220,1)",
-        pointHoverBorderWidth: 2,
-        pointRadius: 1,
-        pointHitRadius: 10,
-        cubicInterpolationMode: "default",
-        data: chart_data,
-        spanGaps: true,
-      },
-    ],
-  };
+
+const HeadPicker = ({ account, show, setShow, setAccount, id }) => {
+  const [head, setHead] = useState(account.head);
+  useEffect(() => {
+    if (!show && head !== account.head) setHead(account.head);
+  }, [account, show, head]);
+  const images = [
+    "/Images/lion.svg",
+    "/Images/rabbit_2.svg",
+    "/Images/fox.svg",
+    "/Images/giraffe.svg",
+    "/Images/rabbit.svg",
+    "/Images/elephant.svg",
+    "/Images/panda.svg",
+    "/Images/human.svg",
+    "/Images/hedgehog.svg",
+  ];
   return (
-    <CRow className="col-md-6">
-      <CCol>
-        <h4>Total Score Curve</h4>
-        <div className="chart-wrapper">
-          <CChartLine datasets={line.datasets} labels={line.labels} />
-        </div>
-        <hr />
-      </CCol>
-    </CRow>
+    <Portal customRootId="root">
+      <div
+        className="headpicker-container"
+        style={{ display: show ? "grid" : "none" }}
+      >
+        {images.map((x, i) => (
+          <div key={`headpicker-${i}`} className={head === x ? "active" : ""}>
+            <img
+              alt={x}
+              src={process.env.PUBLIC_URL + x}
+              onClick={() => setHead(x)}
+            />
+          </div>
+        ))}
+      </div>
+      <div
+        className="headpicker-mask"
+        style={{ display: show ? "block" : "none" }}
+      >
+        <img
+          style={{
+            position: "fixed",
+            bottom: "56px",
+            left: "calc(50vw - 34px)",
+          }}
+          src={process.env.PUBLIC_URL + "/Images/check.svg"}
+          alt="check"
+          onClick={async () => {
+            await DB.updateByUrl("/accounts/" + id, { head });
+            account.head = head;
+            setAccount(Object.assign({}, account));
+            setShow(false);
+          }}
+        />
+        <img
+          style={{ position: "fixed", top: "52px", left: "36px" }}
+          src={process.env.PUBLIC_URL + "/Images/close_2.svg"}
+          alt="close"
+          onClick={() => setShow(false)}
+        />
+      </div>
+    </Portal>
   );
 };
-
-const MemberTable = ({ data, id }) => {
-  const { t } = useTranslation("translation", { i18n });
-  const [items, setItems] = useState(null);
-  const [columns, setColumns] = useState(null);
-  useEffect(() => {
-    const GetProblemData = async () => {
-      let problems = await GetProblems(null, false);
-      let columns = [
-        {
-          key: "week_base",
-          label: "Week",
-          _style: { minWidth: "100px", flexWrap: "nowrap" },
-        },
-      ];
-
-      let { items, result, column_keys, column_labels } = await SummaryScore(
-        data,
-        problems,
-        id
-      );
-      items = items.reverse();
-      for (let i = 0; i < column_keys.length; i++) {
-        columns.push({
-          key: column_keys[i],
-          label: t(column_labels[i]),
-          _style: { minWidth: "100px", flexWrap: "nowrap" },
-        });
-      }
-      columns.push(
-        {
-          key: "召會生活操練",
-          label: t("召會生活操練"),
-          _style: { minWidth: "100px", flexWrap: "nowrap" },
-        },
-        {
-          key: "神人生活操練",
-          label: t("神人生活操練"),
-          _style: { minWidth: "100px", flexWrap: "nowrap" },
-        },
-        {
-          key: "福音牧養操練",
-          label: t("福音牧養操練"),
-          _style: { minWidth: "100px", flexWrap: "nowrap" },
-        },
-        {
-          key: "score",
-          label: t("總分"),
-          _style: { minWidth: "100px", flexWrap: "nowrap" },
-        }
-      );
-      await DB.updateByUrl("/accounts/" + id, result);
-      setItems(items);
-      setColumns(columns);
-    };
-    GetProblemData();
-  }, [id, data, t]);
-  if (items === null) return loading;
-  return (
-    <CDataTable
-      style={{ flexWrap: "nowrap" }}
-      pagination
-      itemsPerPage={20}
-      fields={columns}
-      items={items}
-    />
-  );
-};
-
-const Member = () => {
-  const { t } = useTranslation("translation", { i18n });
-  const { id } = useParams();
-  const [data, setData] = useState(null);
-  const [account, setAccount] = useState(null);
-  const { semester } = useContext(SemesterContext);
-  const [active, setActive] = useState(0);
-  const [curChart, setCurChart] = useState(0);
-  useEffect(() => {
-    const GetData = async () => {
-      let res = await DB.getByUrl("/accounts/" + id);
-      setAccount(res);
-      let tmp = await GetSemesterData(id, semester);
-      let problems = await GetProblems(null, false);
-      setData(await SummaryScore(tmp, problems, id));
-    };
-    if (semester) GetData();
-  }, [id, semester]);
-  if (data === null || account === null) return loading;
+const Tab1 = ({ data, semester }) => {
   const weekBase = Math.min(
     GetWeeklyBase(),
     GetWeeklyBaseFromTime(semester.end.toDate())
   );
+  const semester_span =
+    weekBase - GetWeeklyBaseFromTime(semester.start.toDate()) + 1;
   const isValidDate = (week) => {
     return GetWeeklyBaseFromTime(semester.start.toDate()) <= week;
   };
@@ -200,21 +125,18 @@ const Member = () => {
   let all_mean = [0, 0, 0];
   let mean_3 = [0, 0, 0];
   const max_total_score = [0, 0, 0];
-  let cnt = 0;
   for (let item of data.items) {
     all_mean[0] += item["召會生活操練"];
     all_mean[1] += item["神人生活操練"];
     all_mean[2] += item["福音牧養操練"];
     let score = isNaN(item.score) ? 0 : item.score;
     semester_score += score;
-    console.log(score)
     max_bar = Math.max(max_bar, score);
     if (dataset.legend.includes(item.week_base)) {
       score_3 += score;
       mean_3[0] += item["召會生活操練"];
       mean_3[1] += item["神人生活操練"];
       mean_3[2] += item["福音牧養操練"];
-      cnt += 1;
       let idx = dataset.legend.indexOf(item.week_base);
       bar_chart_data.push({
         label: item.week_base,
@@ -269,60 +191,263 @@ const Member = () => {
         text_color: "rgb(0 0 0 / 10%)",
       });
   }
-  score_3 = Math.round((score_3 / cnt) * 100) / 100;
-  semester_score = Math.round((semester_score / data.items.length) * 100) / 100;
+
+  score_3 = Math.round((score_3 / 3) * 100) / 100;
+  semester_score = Math.round((semester_score / semester_span) * 100) / 100;
 
   dataset.label[3] = [
     [
       "召會生活",
-      `分數:${Math.round((mean_3[0] / cnt) * 100) / 100}/${max_total_score[0]}`,
+      `分數:${Math.round((mean_3[0] / 3) * 100) / 100}/${max_total_score[0]}`,
     ],
     [
       "神人生活",
-      `分數:${Math.round((mean_3[1] / cnt) * 100) / 100}/${max_total_score[1]}`,
+      `分數:${Math.round((mean_3[1] / 3) * 100) / 100}/${max_total_score[1]}`,
     ],
     [
       "福音牧養",
-      `分數:${Math.round((mean_3[2] / cnt) * 100) / 100}/${max_total_score[2]}`,
+      `分數:${Math.round((mean_3[2] / 3) * 100) / 100}/${max_total_score[2]}`,
     ],
   ];
   dataset.data[3] = [
-    mean_3[0] / cnt / max_total_score[0],
-    mean_3[1] / cnt / max_total_score[1],
-    mean_3[2] / cnt / max_total_score[2],
+    mean_3[0] / 3 / max_total_score[0],
+    mean_3[1] / 3 / max_total_score[1],
+    mean_3[2] / 3 / max_total_score[2],
   ];
   dataset.label[4] = [
     [
       "召會生活",
-      `分數:${Math.round((all_mean[0] / data.items.length) * 100) / 100}/${
+      `分數:${Math.round((all_mean[0] / semester_span) * 100) / 100}/${
         max_total_score[0]
       }`,
     ],
     [
       "神人生活",
-      `分數:${Math.round((all_mean[1] / data.items.length) * 100) / 100}/${
+      `分數:${Math.round((all_mean[1] / semester_span) * 100) / 100}/${
         max_total_score[1]
       }`,
     ],
     [
       "福音牧養",
-      `分數:${Math.round((all_mean[2] / data.items.length) * 100) / 100}/${
+      `分數:${Math.round((all_mean[2] / semester_span) * 100) / 100}/${
         max_total_score[2]
       }`,
     ],
   ];
   dataset.data[4] = [
-    all_mean[0] / data.items.length / max_total_score[0],
-    all_mean[1] / data.items.length / max_total_score[1],
-    all_mean[2] / data.items.length / max_total_score[2],
+    all_mean[0] / semester_span / max_total_score[0],
+    all_mean[1] / semester_span / max_total_score[1],
+    all_mean[2] / semester_span / max_total_score[2],
   ];
+  let start_chart = 0;
+  while (dataset.data[start_chart].length < 3 && start_chart < 5)
+    start_chart += 1;
+  const [curChart, setCurChart] = useState(start_chart);
+  return (
+    <Row
+      style={{
+        flexWrap: "wrap",
+        backgroundColor: "var(--white)",
+        minHeight: "calc(100vh - 248px)",
+        width: "100%",
+      }}
+    >
+      {data.items.length > 0 ? (
+        <>
+          <div style={{ display: "flex", flexDirection: "column" }}>
+            <span
+              style={{
+                paddingTop: "10px",
+                paddingBottom: "10px",
+                marginLeft: "16px",
+              }}
+              className="primary-regular"
+            >
+              各項操練分析
+            </span>
+            <RadarChart
+              width={375}
+              height={290}
+              num_points={3}
+              dataset={dataset}
+              curChart={curChart}
+              setCurChart={setCurChart}
+            />
+          </div>
+          <div style={{ display: "flex", flexDirection: "column" }}>
+            {" "}
+            <span
+              style={{
+                paddingTop: "8px",
+                paddingBottom: "8px",
+                marginLeft: "16px",
+              }}
+              className="primary-regular"
+            >
+              各週總分記錄
+            </span>
+            <VerticalBarChart
+              width={375}
+              height={336}
+              max_bar={max_bar}
+              data={bar_chart_data.reverse()}
+              top_data={[
+                {
+                  label: "三週平均分數",
+                  value: score_3,
+                  color: "#FFBA6B",
+                  text_color: "#000000",
+                },
+                {
+                  label: "學期平均分數",
+                  value: semester_score,
+                  color: "#B1A48D",
+                  text_color: "#000000",
+                },
+              ]}
+            />
+          </div>
+        </>
+      ) : (
+        <div
+          style={{
+            justifyContent: "flex-start",
+            alignItems: "center",
+            flexGrow: 1,
+            height: "100%",
+            width: "100%",
+            display: "flex",
+            marginTop: "80px",
+            flexDirection: "column",
+          }}
+        >
+          <img alt="empty" src={process.env.PUBLIC_URL + "/Images/empty.svg"} />
+          <span className="heading3-regular">暫無資料</span>
+        </div>
+      )}
+    </Row>
+  );
+};
+const Tab2 = ({ data }) => {
+  const [page, setPage] = useState({
+    label: "召會生活操練",
+    value: "召會生活操練",
+  });
+  let fields = [{ label: "日期", value: "week_base" }];
+  if (page.value !== "總分") {
+    for (let i = 0; i < data.column_keys.length; i++) {
+      if (data.column_problems[i].section === page.value)
+        fields.push({
+          label: data.column_labels[i],
+          value: data.column_keys[i],
+        });
+    }
+  } else
+    fields = [
+      { label: "日期", value: "week_base" },
+      { label: "召會生活操練", value: "召會生活操練" },
+      { label: "神人生活操練", value: "神人生活操練" },
+      { label: "福音牧養操練", value: "福音牧養操練" },
+      { label: "總分", value: "score" },
+    ];
+  return (
+    <div
+      style={{
+        backgroundColor: "var(--light-blue)",
+        minHeight: "calc(100vh - 248px)",
+        paddingBottom: "34px",
+      }}
+    >
+      {data.items.length > 0 ? (
+        <>
+          <Row style={{ paddingTop: "20px", paddingBottom: "20px" }}>
+            <Select
+              style={{
+                marginLeft: "16px",
+                marginRight: "12px",
+                width: "170px",
+              }}
+              value={page}
+              onChange={(v) => setPage(v)}
+              options={[
+                { label: "召會生活操練", value: "召會生活操練" },
+                { label: "神人生活操練", value: "神人生活操練" },
+                { label: "福音牧養操練", value: "福音牧養操練" },
+                { label: "總分", value: "總分" },
+              ]}
+            />
+            <span
+              style={{ paddingTop: "12px", paddingBottom: "12px" }}
+              className="heading2-medium"
+            >{`本週:${WeeklyBase2String(GetWeeklyBase())}`}</span>
+          </Row>
+          <Datatable
+            content={data.items.reverse()}
+            maxDisplay={100}
+            start={0}
+            fields={fields}
+          />
+        </>
+      ) : (
+        <div
+          style={{
+            justifyContent: "flex-start",
+            alignItems: "center",
+            flexGrow: 1,
+            height: "100%",
+            width: "100%",
+            display: "flex",
+            paddingTop: "80px",
+            flexDirection: "column",
+          }}
+        >
+          <img alt="empty" src={process.env.PUBLIC_URL + "/Images/empty.svg"} />
+          <span className="heading3-regular">暫無資料</span>
+        </div>
+      )}
+    </div>
+  );
+};
+const Member = () => {
+  const { t } = useTranslation("translation", { i18n });
+  const { id } = useParams();
+  const [data, setData] = useState(null);
+  const [account, setAccount] = useState(null);
+  const { semester } = useContext(SemesterContext);
+  const [active, setActive] = useState(0);
+  const [show, setShow] = useState(false);
+  useEffect(() => {
+    const GetData = async () => {
+      let res = await DB.getByUrl("/accounts/" + id);
+      if (!res.head) res.head = "/Images/lion.svg";
+      setAccount(res);
+      let tmp = await GetSemesterData(id, semester);
+      let problems = await GetProblems(null, false);
+      setData(await SummaryScore(tmp, problems, id));
+    };
+    if (semester) GetData();
+  }, [id, semester]);
+  if (data === null || account === null) return loading;
+
   return (
     <>
+      <HeadPicker
+        id={id}
+        account={account}
+        show={show}
+        setShow={setShow}
+        setAccount={setAccount}
+      />
       <div style={{ backgroundColor: "var(--white)", paddingTop: "8px" }}>
         <Row>
           <img
             style={{ marginLeft: "12px", marginRight: "16px" }}
-            src={process.env.PUBLIC_URL + "/Images/lion.svg"}
+            src={
+              account.head.includes("/Images/")
+                ? account.head
+                : process.env.PUBLIC_URL + account.head
+            }
+            onClick={() => setShow(true)}
             alt="head"
           />
           <Col style={{ paddingTop: "11px", paddingBottom: "11px" }}>
@@ -363,67 +488,10 @@ const Member = () => {
         tabStyle={{ position: "sticky", top: "0px", zIndex: 90 }}
       />
       {active === 0 ? (
-        <Row
-          style={{
-            flexWrap: "wrap",
-            backgroundColor: "var(--white)",
-          }}
-        >
-          <Col>
-            <span
-              style={{
-                paddingTop: "10px",
-                paddingBottom: "10px",
-                marginLeft: "16px",
-              }}
-              className="primary-regular"
-            >
-              各項操練分析
-            </span>
-            <RadarChart
-              width={375}
-              height={290}
-              num_points={3}
-              dataset={dataset}
-              curChart={curChart}
-              setCurChart={setCurChart}
-            />
-          </Col>
-          <Col>
-            {" "}
-            <span
-              style={{
-                paddingTop: "8px",
-                paddingBottom: "8px",
-                marginLeft: "16px",
-              }}
-              className="primary-regular"
-            >
-              各週總分記錄
-            </span>
-            <VerticalBarChart
-              width={375}
-              height={336}
-              max_bar={max_bar}
-              data={bar_chart_data.reverse()}
-              top_data={[
-                {
-                  label: "三週平均分數",
-                  value: score_3,
-                  color: "#FFBA6B",
-                  text_color: "#000000",
-                },
-                {
-                  label: "學期平均分數",
-                  value: semester_score,
-                  color: "#B1A48D",
-                  text_color: "#000000",
-                },
-              ]}
-            />
-          </Col>
-        </Row>
-      ) : null}
+        <Tab1 data={data} semester={semester} />
+      ) : (
+        <Tab2 data={data} />
+      )}
     </>
   );
 };

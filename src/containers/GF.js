@@ -10,12 +10,7 @@ import { GetAccountsMap } from "utils/account";
 import { useTranslation } from "react-i18next";
 import i18n from "i18n";
 import SemesterContext from "hooks/semester";
-import Row from "components/Row";
-import Col from "components/Col";
-import Select from "components/Select";
-import Datatable from "components/Datatable";
-import Pagination from "components/Pagination";
-import Tooltip from "components/Tooltip";
+import { Row, Col, Select, Datatable, Pagination, Tooltip } from "components";
 
 const GFCard = ({ init_data }) => {
   const { t } = useTranslation("translation", { i18n });

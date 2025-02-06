@@ -1,12 +1,9 @@
 import { InputNumber } from "antd";
 import { DB, firebase } from "db/firebase";
-import Select from "components/Select";
+import { Select, Row, Input, Col } from ".";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import i18n from "i18n";
-import Row from "./Row";
-import Input from "./Input";
-import Col from "./Col";
 
 const GFSelect = ({
   GF,

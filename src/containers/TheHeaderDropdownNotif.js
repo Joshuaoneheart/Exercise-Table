@@ -1,13 +1,15 @@
 import { useContext, useEffect, useState } from "react";
 import { AccountContext } from "hooks/context";
 import { firebase } from "db/firebase";
-import { history } from "utils/history";
+import { useHistory } from "react-router-dom";
 import useOuterClick from "hooks/outerClick";
 const TheHeaderDropdownNotif = () => {
   const account = useContext(AccountContext);
   const [refresh, setRefresh] = useState(false);
   const [announcements, setAnnouncements] = useState([]);
   const [show, setShow] = useState(false);
+  const history = useHistory();
+
   const ref = useOuterClick(() => setShow(false));
   useEffect(() => {
     firebase
@@ -28,7 +30,7 @@ const TheHeaderDropdownNotif = () => {
   for (let i = 0; i < announcements.length; i++) {
     announcement_list.push(
       <li
-        key={i}
+        key={`notification-${i}`}
         style={{
           alignItems: "center",
           textAlign: "center",
@@ -43,7 +45,7 @@ const TheHeaderDropdownNotif = () => {
           setRefresh((old_refresh) => {
             return !old_refresh;
           });
-          history.push(`/Announcement/${announcements[i].id}`);
+          history.push(`/AnnouncementList`, { id: announcements[i].id });
         }}
       >
         {announcements[i].title}
@@ -100,7 +102,7 @@ const TheHeaderDropdownNotif = () => {
           display: show ? "block" : "none",
           listStyle: "none",
           position: "fixed",
-          top: "30px",
+          top: "36px",
           right: "30px",
           borderRadius: "8px",
           backgroundColor: "#FFFFFF",

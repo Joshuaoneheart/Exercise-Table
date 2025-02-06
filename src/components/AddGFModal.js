@@ -8,10 +8,7 @@ import {
   GF_GRADE,
   GF_TYPE,
 } from "const/GF";
-import Modal from "./Modal";
-import Col from "./Col";
-import Row from "./Row";
-import Input from "./Input";
+import { Modal, Col, Row, Input } from ".";
 import { message } from "antd";
 const AddGFModal = ({ data, account, show, setData, setModal }) => {
   const [school, setSchool] = useState("台大");
@@ -86,7 +83,8 @@ const AddGFModal = ({ data, account, show, setData, setModal }) => {
             onChange={(v) => {
               setSchool(v.value);
               if (v.value === "台大") setDepartment(GF_NTU_DEPARTMENT[0]);
-              else if (v.value === "台科大") setDepartment(GF_NTUST_DEPARTMENT[0]);
+              else if (v.value === "台科大")
+                setDepartment(GF_NTUST_DEPARTMENT[0]);
             }}
           />
         </Col>

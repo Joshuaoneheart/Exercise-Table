@@ -7,11 +7,7 @@ import {
   GF_GRADE,
   GF_TYPE,
 } from "const/GF";
-import Modal from "./Modal";
-import Select from "./Select";
-import Input from "./Input";
-import Row from "./Row";
-import Col from "./Col";
+import { Modal, Select, Input, Row, Col } from ".";
 import { AccountContext } from "hooks/context";
 const ModifyGFModal = ({ data, show, setData, setModal }) => {
   const account = useContext(AccountContext);

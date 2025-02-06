@@ -3,10 +3,7 @@ import { FirebaseAuthConsumer } from "@react-firebase/auth";
 import { DB } from "db/firebase";
 import Account from "Models/Account";
 import React, { useEffect, useState } from "react";
-import Row from "components/Row";
-import Select from "components/Select";
-import Input from "components/Input";
-
+import { Row, Select, Input } from "components";
 const Register = ({ width, firebase }) => {
   const [create, setCreate] = useState(false);
   const [name, setName] = useState("");
@@ -90,7 +87,7 @@ const Register = ({ width, firebase }) => {
             backgroundRepeat: "no-repeat",
             backgroundColor: "var(--light-blue)",
             overflowY: "scroll",
-            backgroundAttachment: "local"
+            backgroundAttachment: "local",
           }}
         >
           <div>

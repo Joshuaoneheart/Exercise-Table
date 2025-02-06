@@ -4,7 +4,6 @@ import * as d3 from "d3";
 const VerticalBarChart = ({ data, max_bar, width, height, top_data }) => {
   const svgRef = useRef();
   useEffect(() => {
-    const radius = 135.72;
     d3.select(svgRef.current).selectAll("*").remove();
 
     const svg = d3
@@ -16,7 +15,7 @@ const VerticalBarChart = ({ data, max_bar, width, height, top_data }) => {
     const xScale = d3
       .scaleLinear()
       .domain([0, max_bar])
-      .range([0, width -168]);
+      .range([0, width - 168]);
     for (let i = 0; i < top_data.length; i++) {
       svg
         .append("rect")
@@ -42,29 +41,29 @@ const VerticalBarChart = ({ data, max_bar, width, height, top_data }) => {
     }
     let padding = top_data.length ? top_data.length * 18 + 12 : 0;
     for (let i = 0; i < data.length; i++) {
-        svg
-          .append("rect")
-          .attr("x", 120 - width / 2)
-          .attr("y", padding + i * 18 + 3 - height / 2)
-          .attr("fill", data[i].color)
-          .attr("width", xScale(data[i].value))
-          .attr("height", 12);
-        svg
-          .append("text")
-          .attr("fill", data[i].text_color)
-          .text(data[i].label)
-          .attr("x", 40 - width / 2)
-          .attr("y", padding + i * 18 + 13 - height / 2)
-          .attr("class", "content-medium");
-        svg
-          .append("text")
-          .attr("fill", data[i].text_color)
-          .text(data[i].value)
-          .attr("x", 128 - width / 2 + xScale(data[i].value))
-          .attr("y", padding + i * 18 + 13 - height / 2)
-          .attr("class", "content-medium");
-      }
-}, [data, width, height]);
+      svg
+        .append("rect")
+        .attr("x", 120 - width / 2)
+        .attr("y", padding + i * 18 + 3 - height / 2)
+        .attr("fill", data[i].color)
+        .attr("width", xScale(data[i].value))
+        .attr("height", 12);
+      svg
+        .append("text")
+        .attr("fill", data[i].text_color)
+        .text(data[i].label)
+        .attr("x", 40 - width / 2)
+        .attr("y", padding + i * 18 + 13 - height / 2)
+        .attr("class", "content-medium");
+      svg
+        .append("text")
+        .attr("fill", data[i].text_color)
+        .text(data[i].value)
+        .attr("x", 128 - width / 2 + xScale(data[i].value))
+        .attr("y", padding + i * 18 + 13 - height / 2)
+        .attr("class", "content-medium");
+    }
+  }, [data, width, height, max_bar, top_data]);
   return <svg ref={svgRef} />;
 };
 export default VerticalBarChart;

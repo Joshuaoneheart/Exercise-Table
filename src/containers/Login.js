@@ -1,11 +1,8 @@
 import { message } from "antd";
 import { firebase } from "db/firebase";
 import React, { useState } from "react";
-import Input from "components/Input";
-import Row from "components/Row";
-import Col from "components/Col";
+import { Input, Row, Col, Modal } from "components";
 import { history } from "utils/history";
-import Modal from "components/Modal";
 
 const ForgetPasswdModal = ({ show, setModal }) => {
   const [email, setEmail] = useState("");

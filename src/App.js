@@ -1,5 +1,5 @@
 import { lazy, Suspense, useEffect, useState } from "react";
-import { HashRouter, Route, Switch } from "react-router-dom";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
 import "scss/style.scss";
 
 import {
@@ -145,7 +145,7 @@ const App = () => {
     };
   }, []);
   return (
-    <HashRouter history={history}>
+    <BrowserRouter history={history}>
       <Suspense fallback={loading}>
         <FirebaseAuthProvider {...config} firebase={firebase}>
           <Switch>
@@ -189,7 +189,7 @@ const App = () => {
           </Switch>
         </FirebaseAuthProvider>
       </Suspense>
-    </HashRouter>
+    </BrowserRouter>
   );
 };
 

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import styled, { css } from "styled-components";
-import Portal from "./Portal";
+import { Portal } from ".";
 import useOuterClick from "hooks/outerClick";
 
 const topStyle = css`

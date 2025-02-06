@@ -1,20 +1,23 @@
 import { FirestoreCollection } from "@react-firebase/firestore";
 import { loading } from "components";
-import AddAnnouncementModal from "components/AddAnnouncementModal";
-import AnnouncementPreviewModal from "components/AnnouncementPreviewModal";
 import { AccountContext } from "hooks/context";
 import { useContext, useEffect, useState } from "react";
 import { GetAccountsMap } from "utils/account";
 import { useHistory } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import i18n from "i18n";
-import Datatable from "components/Datatable";
-import Select from "components/Select";
-import Input from "components/Input";
-import Row from "components/Row";
-import Col from "components/Col";
-import Pagination from "components/Pagination";
-import Portal from "components/Portal";
+import {
+  Datatable,
+  Select,
+  Input,
+  Row,
+  Col,
+  Pagination,
+  Portal,
+  AnnouncementPreviewModal,
+  AddAnnouncementModal,
+} from "components";
+import { DB } from "db/firebase";
 const AnnouncementListBody = ({ data, account }) => {
   const { t } = useTranslation("translation", { i18n });
   const [announcements, setAnnouncements] = useState(data);
@@ -58,7 +61,28 @@ const AnnouncementListBody = ({ data, account }) => {
       };
     }
   }, [previewModal]);
-
+  useEffect(
+    () =>
+      history.listen((locationListener) => {
+        let id = locationListener?.state?.id;
+        if (id && previewModal === null) {
+          let notif = data.filter((x) => x.id === id)[0];
+          let date = notif["timestamp"].toDate();
+          setPreviewModal({
+            title: notif["title"],
+            timestamp: `${date.getFullYear()}.${
+              date.getMonth() + 1
+            }.${date.getDate()}`,
+            content: notif["content"],
+            posted_by: notif["posted_by"],
+            id: notif["id"],
+            checked: notif["checked"],
+          });
+          history.push("/AnnouncementList", { id: null });
+        }
+      }),
+    [history, data, previewModal]
+  );
   if (accountsMap === null) return loading;
   const fields = [
     { value: "all", label: t("全部") },
@@ -82,6 +106,7 @@ const AnnouncementListBody = ({ data, account }) => {
       content: item["content"],
       posted_by: item["posted_by"],
       id: item["id"],
+      checked: item["checked"],
     });
   }
   if (condition.value === "all")
@@ -186,6 +211,7 @@ const AnnouncementListBody = ({ data, account }) => {
         content={previewModal}
         setContent={setPreviewModal}
         accountsMap={accountsMap}
+        account={account}
       />
       <Row
         style={{
@@ -228,8 +254,22 @@ const AnnouncementListBody = ({ data, account }) => {
   );
 };
 const AnnouncementList = () => {
-  const { t } = useTranslation("translation", { i18n });
   const account = useContext(AccountContext);
+  const [data, setData] = useState(null);
+  useEffect(() => {
+    const GetData = async () => {
+      let { docs } = await DB.getByUrl("/announcement");
+      let tmp = [];
+      for (let doc of docs) {
+        let item = doc.data();
+        item.id = doc.id;
+        tmp.push(item);
+      }
+      setData(tmp);
+    };
+    if (!data) GetData();
+  });
+  if (data === null) return loading;
   return (
     <div className="GF-background">
       <FirestoreCollection path="/announcement/">

@@ -2,7 +2,6 @@ import { lazy } from "react";
 
 //Members
 const Members = lazy(() => import("../containers/Member"));
-const Profile = lazy(() => import("../containers/Profile"));
 const Form = lazy(() => import("../containers/Member/SubmitForm/SubmitForm"));
 const GF = lazy(() => import("../containers/GF"));
 const Dashboard = lazy(() => import("../containers/Dashboard"));
@@ -15,7 +14,6 @@ const routes = [
   { path: "/", exact: true, name: "Home", component: Dashboard },
   { path: "/dashboard", exact: true, name: "Dashboard", component: Dashboard },
   { path: "/form", exact: true, name: "Form", component: Form },
-  { path: "/profile", exact: true, name: "Profile", component: Profile },
   { path: "/GF/:id", exact: true, name: "GF", component: GF },
   {
     path: "/schedule",

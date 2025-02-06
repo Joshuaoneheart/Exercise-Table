@@ -1,15 +1,17 @@
 import { FirestoreCollection } from "@react-firebase/firestore";
-import { loading } from "components";
-import AddGFModal from "components/AddGFModal";
+import {
+  loading,
+  AddGFModal,
+  Datatable,
+  Pagination,
+  Select,
+  Input,
+} from "components";
 import { AccountContext } from "hooks/context";
 import { useState, useEffect, useContext } from "react";
 import { useHistory } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import i18n from "i18n";
-import Datatable from "components/Datatable";
-import Pagination from "components/Pagination";
-import Select from "components/Select";
-import Input from "components/Input";
 
 const GFListCard = ({ data }) => {
   const { t } = useTranslation("translation", { i18n });
