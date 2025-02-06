@@ -223,6 +223,7 @@ hr {
     -webkit-box-orient: vertical;
     text-overflow: ellipsis;
     word-break: break-word;
+    white-space: pre-wrap;
     color: var(--dark-blue);
 }
 
@@ -562,7 +563,9 @@ div .GF-row:last-child {
     height: 82px;
     border-radius: 8px;
     text-align: center;
+    box-shadow: 0px 2px 6px rgb(0 0 0 / 10%);
 }
+
 .GF-attendance-top {
     background-color: var(--blue);
     color: var(--main-blue);
@@ -644,7 +647,19 @@ div .GF-attendance:not(:last-child) {
 .rounded-table tr:last-child td:last-child {
     border-bottom-right-radius: 8px;
 }
-  
+ 
+.fixed-width-table {
+    max-width: 100%;
+    overflow: hidden;
+}
+
+.fixed-width-table td {
+    text-overflow: ellipsis;
+    max-height: 63px;
+    width: 7%;
+    white-space: break-spaces;
+}
+
 .pagination {
     margin-top: 28px;
     padding-bottom: 50px;
@@ -685,6 +700,31 @@ div .GF-attendance:not(:last-child) {
     display: inline-block;
     color: var(--white);
     background-color: var(--main-blue);
+}
+
+.tab {
+    background-color: var(--white);
+    height: 48px;
+    width: 100%;
+    color: rgb(0 0 0 / 20%);
+    border-bottom: 1px solid rgb(0 0 0 / 20%);
+}
+
+.tab-cell {
+    text-align: center;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    width: 187.5px !important;
+    min-width: 187.5px;
+}
+
+.tab-fill {
+    flex-grow: 1;
+}
+
+.tab-active {
+    color: black;
+    border-bottom: 2px solid rgb(0 0 0);
 }
 
 .modal-container {
@@ -812,6 +852,13 @@ div .GF-attendance:not(:last-child) {
 
 .heading2-bold {
     font-family: "PingFang Bold";
+    font-size: 20px;
+    line-height: 28px;
+    letter-spacing: 0.06em;
+}
+
+.heading2-medium {
+    font-family: "PingFang Medium";
     font-size: 20px;
     line-height: 28px;
     letter-spacing: 0.06em;

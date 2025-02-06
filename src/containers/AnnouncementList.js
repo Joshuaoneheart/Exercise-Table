@@ -108,7 +108,7 @@ const AnnouncementListBody = ({ data, account }) => {
                 transform: "translateY(50%)",
               }}
               src={previewSrc}
-              alt="image-previewer"
+              alt="previewer"
             />
             <img
               onClick={() => setPreviewSrc(null)}
@@ -201,10 +201,9 @@ const AnnouncementListBody = ({ data, account }) => {
               tableClassName="rounded-table announcements"
               content={content}
               onRowClick={(item) => {
-                //if (account.role === "Admin")
-                //history.push(`/Announcement/${item.id}`);
-                //else
-                setPreviewModal(item);
+                if (account.role === "Admin")
+                  history.push(`/Announcement/${item.id}`);
+                else setPreviewModal(item);
               }}
               maxDisplay={maxDisplay}
               start={active * maxDisplay}

@@ -1,6 +1,7 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import styled, { css } from "styled-components";
 import Portal from "./Portal";
+import useOuterClick from "hooks/outerClick";
 
 const topStyle = css`
   transform: translate(
@@ -159,7 +160,6 @@ const TooltipWrapper = styled.div`
   position: absolute;
   z-index: 999;
   top: ${(props) => {
-    console.log(window.scrollY);
     return props.position.top + window.scrollY;
   }}px;
   left: ${(props) => props.position.left}px;
@@ -196,7 +196,6 @@ const placementStyleMap = {
 };
 
 const Tooltip = ({ text, children, span_style, placement = "top" }) => {
-  const childrenRef = useRef();
   const [position, setPosition] = useState({
     top: 0,
     left: 0,
@@ -206,6 +205,7 @@ const Tooltip = ({ text, children, span_style, placement = "top" }) => {
     height: 0,
   });
   const [show, setShow] = useState(false);
+  const childrenRef = useOuterClick(() => setShow(false));
   const handleOnResize = () => {
     if (childrenRef.current) {
       setChildrenSize({
@@ -228,17 +228,13 @@ const Tooltip = ({ text, children, span_style, placement = "top" }) => {
       window.removeEventListener("resize", handleOnResize);
     };
   }, []);
-
   return (
     <>
       <span
         ref={childrenRef}
         style={span_style}
-        onMouseEnter={() => {
-          setShow(true);
-        }}
-        onMouseLeave={() => {
-          setShow(false);
+        onClick={() => {
+          setShow((s) => !s);
         }}
       >
         {children}

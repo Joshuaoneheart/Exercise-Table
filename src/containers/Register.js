@@ -1,4 +1,3 @@
-import CIcon from "@coreui/icons-react";
 import { message } from "antd";
 import { FirebaseAuthConsumer } from "@react-firebase/auth";
 import { DB } from "db/firebase";
@@ -199,7 +198,6 @@ const Register = ({ width, firebase }) => {
             backgroundPosition: "center",
             backgroundRepeat: "no-repeat",
             alignItems: "center",
-            justifyContent: "center",
           }}
         >
           <div

@@ -1,6 +1,6 @@
-const Col = ({ children, style, className }) => {
+const Col = ({ children, style, className, onClick }) => {
   return (
-    <div className={"mycol " + className} style={style}>
+    <div className={className + " mycol"} onClick={onClick} style={style}>
       {children}
     </div>
   );

@@ -1,27 +1,6 @@
-import CIcon from "@coreui/icons-react";
 import { message } from "antd";
-import {
-  CButton,
-  CCard,
-  CCardBody,
-  CCol,
-  CContainer,
-  CForm,
-  CInput,
-  CInputGroup,
-  CInputGroupPrepend,
-  CInputGroupText,
-  CLink,
-  CRow,
-  CLabel,
-  CModal,
-  CModalBody,
-  CModalFooter,
-  CModalHeader,
-  CModalTitle,
-} from "@coreui/react";
 import { firebase } from "db/firebase";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Input from "components/Input";
 import Row from "components/Row";
 import Col from "components/Col";
@@ -197,7 +176,6 @@ const Login = ({ width, firebase }) => {
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
           alignItems: "center",
-          justifyContent: "center",
         }}
       >
         <div

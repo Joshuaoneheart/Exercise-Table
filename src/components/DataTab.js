@@ -76,6 +76,12 @@ const DataTabs = ({ data, account, default_data, thisWeek, setThisWeek }) => {
       var v = { scores: 0 };
       let lord_table = 0;
       let life_study = 0;
+      let total_score = {
+        召會生活操練: 0,
+        神人生活操練: 0,
+        福音牧養操練: 0,
+        其他: 0
+      };
       for (let i = 0; i < data.sections.length; i++) {
         v[data.sections[i]] = 0;
         for (var j = 0; j < data.value[i].length; j++) {
@@ -95,17 +101,30 @@ const DataTabs = ({ data, account, default_data, thisWeek, setThisWeek }) => {
           let score = 0;
           switch (problem.type) {
             case "GF":
+              total_score[problem.section] +=
+                problem.score
+                  .map((x) => parseInt(x))
+                  .reduce((a, b) => a + b, 0) * parseInt(problem.max);
               if (!GF_data || !GF_data[problem.title]) continue;
               score =
                 parseInt(problem.score) *
                 Math.min(GF_data[problem.title].length, problem.max);
+
               break;
             case "Number":
+              total_score[problem.section] +=
+                problem.score
+                  .map((x) => parseInt(x))
+                  .reduce((a, b) => a + b, 0) * parseInt(problem.max);
               if (!form_data || !form_data[problem.id]) continue;
               score =
-                parseInt(problem.score) * parseInt(form_data[problem.id].ans);
+                parseInt(problem.score) * parseFloat(form_data[problem.id].ans);
               break;
             case "MultiGrid":
+              total_score[problem.section] +=
+                problem.score
+                  .map((x) => parseInt(x))
+                  .reduce((a, b) => a + b, 0) * problem["子選項"].length;
               if (!form_data || !form_data[problem.id]) continue;
               let options = problem["選項"];
               for (let k = 0; k < options.length; k++) {
@@ -116,6 +135,9 @@ const DataTabs = ({ data, account, default_data, thisWeek, setThisWeek }) => {
               }
               break;
             case "Grid":
+              total_score[problem.section] +=
+                Math.max(...problem.score.map((x) => parseInt(x))) *
+                problem["子選項"].length;
               if (!form_data || !form_data[problem.id]) continue;
               let suboptions = problem["子選項"];
               for (let k = 0; k < suboptions.length; k++) {
@@ -129,19 +151,6 @@ const DataTabs = ({ data, account, default_data, thisWeek, setThisWeek }) => {
                   );
               }
               break;
-            case "MultiChoice":
-              if (!form_data || !form_data[problem.id]) continue;
-              score = parseInt(
-                problem.score[
-                  problem["選項"].indexOf(form_data[problem.id].ans)
-                ]
-              );
-              break;
-            case "MultiAnswer":
-              if (!form_data || !form_data[problem.id]) continue;
-              score =
-                parseInt(problem.score) * form_data[problem.id].ans.length;
-              break;
             default:
               break;
           }
@@ -149,6 +158,7 @@ const DataTabs = ({ data, account, default_data, thisWeek, setThisWeek }) => {
           v.scores += score;
         }
       }
+      v["total_score"] = total_score;
       v.week_base = thisWeek ? GetWeeklyBase() : GetWeeklyBase() - 1;
       await DB.OnDemandUpdate(
         "/accounts/" +

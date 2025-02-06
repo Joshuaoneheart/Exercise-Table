@@ -1,31 +1,8 @@
-import { useContext, useRef, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AccountContext } from "hooks/context";
 import { firebase } from "db/firebase";
 import { history } from "utils/history";
-function useOuterClick(callback) {
-  const callbackRef = useRef(); // initialize mutable ref, which stores callback
-  const innerRef = useRef(); // returned to client, who marks "border" element
-  // update cb on each render, so second useEffect has access to current value
-  useEffect(() => {
-    callbackRef.current = callback;
-  });
-
-  useEffect(() => {
-    document.addEventListener("click", handleClick);
-    return () => document.removeEventListener("click", handleClick);
-    function handleClick(e) {
-      if (
-        innerRef.current &&
-        callbackRef.current &&
-        !innerRef.current.contains(e.target)
-      )
-        callbackRef.current(e);
-    }
-  }, []); // no dependencies -> stable click listener
-
-  return innerRef; // convenience for client (doesn't need to init ref himself)
-}
-
+import useOuterClick from "hooks/outerClick";
 const TheHeaderDropdownNotif = () => {
   const account = useContext(AccountContext);
   const [refresh, setRefresh] = useState(false);

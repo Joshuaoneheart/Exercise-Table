@@ -17,7 +17,16 @@ const TheContent = () => {
     <Suspense fallback={loading}>
       <Switch>
         {
-          <div id="content" style={{ overflowY: "scroll", width: "100%" }}>
+          <div
+            id="content"
+            style={{
+              overflowY: "scroll",
+              width: "100%",
+              top: "44px",
+              position: "fixed",
+              bottom: "0",
+            }}
+          >
             {routes.map((route, idx) => {
               return (
                 route.component && (

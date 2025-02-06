@@ -158,7 +158,7 @@ const GFCard = ({ init_data }) => {
   ];
   const maxDisplay = 10;
   let years = [year];
-  let content = undefined;
+  let content = [];
   if (tableData) {
     years = [];
     for (let d of tableData.keys()) {
@@ -315,7 +315,7 @@ const GFCard = ({ init_data }) => {
         {content.length !== 0 ? (
           <>
             <Datatable
-              tableClassName="rounded-table"
+              tableClassName="rounded-table fixed-width-table"
               fields={fields}
               content={content}
               maxDisplay={maxDisplay}

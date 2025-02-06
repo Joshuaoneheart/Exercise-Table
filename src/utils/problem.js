@@ -96,6 +96,7 @@ const SummaryScore = async (data, problems, id) => {
       }
     }
     items[i].score = data.value[i].scores;
+    items[i].total_score = data.value[i].total_score
     items[i]["召會生活操練"] = data.value[i]["召會生活操練"];
     items[i]["神人生活操練"] = data.value[i]["神人生活操練"];
     items[i]["福音牧養操練"] = data.value[i]["福音牧養操練"];
