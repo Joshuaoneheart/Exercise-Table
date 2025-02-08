@@ -39,8 +39,12 @@ const TheSidebar = ({ show, setShow }) => {
       },
       "hr",
       {
-        name: t("活力組"),
+        name: t("活力組狀態"),
         to: "/biblegroupList",
+      },
+      {
+        name: t("住處狀態"),
+        to: "/residenceList",
       },
       {
         name: t("住戶管理"),

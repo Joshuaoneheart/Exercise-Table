@@ -22,7 +22,10 @@ const BibleGroup = lazy(() => import("../containers/BibleGroup"));
 const BibleGroupList = lazy(() =>
   import("../containers/Admin/BibleGroupList/BibleGroupList")
 );
-
+const Residence = lazy(() => import("../containers/Residence"));
+const ResidenceList = lazy(() =>
+  import("../containers/Admin/ResidenceList/ResidenceList")
+);
 const Settings = lazy(() => import("../containers/Admin/Settings/Settings"));
 const Form = lazy(() => import("../containers/Admin/ReviewForm/ReviewForm"));
 const Users = lazy(() => import("../containers/Admin/Users/Users"));
@@ -86,10 +89,23 @@ const routes = [
     component: BibleGroupList,
   },
   {
+    path: "/residenceList",
+    exact: true,
+    name: "residence list",
+    component: ResidenceList,
+    
+  },
+  {
     path: "/biblegroup/:id",
     exact: true,
     name: "biblegroup",
     component: BibleGroup,
+  },
+  {
+    path: "/residence/:id",
+    exact: true,
+    name: "residence",
+    component: Residence,
   },
   {
     path: "/summary",

@@ -349,7 +349,7 @@ const ProblemStatistic = ({
 // FIXME:
 // May need to add the necessary hooks
 const StatisticCard = ({ group_id, groups, accountsMap }) => {
-  groups.groupBy("group");
+  groups.groupBy("residence");
   const { semester } = useContext(SemesterContext);
   const [week_base, setWeekBase] = useState({
     id: GetWeeklyBase(),
@@ -442,13 +442,13 @@ const StatisticCard = ({ group_id, groups, accountsMap }) => {
 // FIXME:
 // Need to add hooks for each dropdown item
 // Also needed for search
-const BibleGroup = () => {
+const Residence = () => {
   const { id } = useParams();
   const [groupMap, setGroupMap] = useState(null);
   useEffect(() => {
     let FetchGroupMap = async () => {
       let tmp = {};
-      let group = await DB.getByUrl("/group");
+      let group = await DB.getByUrl("/residence");
       await group.forEach((doc) => {
         tmp[doc.id] = doc.data().name;
       });
@@ -483,4 +483,4 @@ const BibleGroup = () => {
   );
 };
 
-export default BibleGroup;
+export default Residence;
