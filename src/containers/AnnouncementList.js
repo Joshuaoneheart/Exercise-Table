@@ -1,9 +1,8 @@
-import { FirestoreCollection } from "@react-firebase/firestore";
 import { loading } from "components";
 import { AccountContext } from "hooks/context";
 import { useContext, useEffect, useState } from "react";
 import { GetAccountsMap } from "utils/account";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import i18n from "i18n";
 import {
@@ -21,6 +20,9 @@ import { DB } from "db/firebase";
 const AnnouncementListBody = ({ data, account }) => {
   const { t } = useTranslation("translation", { i18n });
   const [announcements, setAnnouncements] = useState(data);
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const id = searchParams.get("id");
   const [accountsMap, setAccountsMap] = useState(null);
   const history = useHistory();
   const [previewSrc, setPreviewSrc] = useState(null);
@@ -32,7 +34,6 @@ const AnnouncementListBody = ({ data, account }) => {
     label: t("全部"),
   });
   const [search, setSearch] = useState("");
-  data = data.reverse();
   useEffect(() => {
     let FetchAccountsMap = async () => {
       setAccountsMap(await GetAccountsMap(true));
@@ -40,7 +41,7 @@ const AnnouncementListBody = ({ data, account }) => {
     FetchAccountsMap();
   }, []);
   useEffect(() => {
-    setAnnouncements(Array.from(data));
+    if (data) setAnnouncements(Array.from(data));
   }, [data]);
   useEffect(() => {
     if (previewModal) {
@@ -61,29 +62,14 @@ const AnnouncementListBody = ({ data, account }) => {
       };
     }
   }, [previewModal]);
-  useEffect(
-    () =>
-      history.listen((locationListener) => {
-        let id = locationListener?.state?.id;
-        if (id && previewModal === null) {
-          let notif = data.filter((x) => x.id === id)[0];
-          let date = notif["timestamp"].toDate();
-          setPreviewModal({
-            title: notif["title"],
-            timestamp: `${date.getFullYear()}.${
-              date.getMonth() + 1
-            }.${date.getDate()}`,
-            content: notif["content"],
-            posted_by: notif["posted_by"],
-            id: notif["id"],
-            checked: notif["checked"],
-          });
-          history.push("/AnnouncementList", { id: null });
-        }
-      }),
-    [history, data, previewModal]
-  );
-  if (accountsMap === null) return loading;
+  useEffect(() => {
+    if (id && previewModal === null) {
+      setPreviewModal(id);
+    }
+  }, [id, previewModal]);
+  if (accountsMap === null || data === null || announcements === null)
+    return loading;
+  data = data.reverse();
   const fields = [
     { value: "all", label: t("全部") },
     { value: "timestamp", label: t("日期") },
@@ -208,8 +194,9 @@ const AnnouncementListBody = ({ data, account }) => {
         setData={setAnnouncements}
       />
       <AnnouncementPreviewModal
-        content={previewModal}
-        setContent={setPreviewModal}
+        id={previewModal}
+        data={data}
+        setId={setPreviewModal}
         accountsMap={accountsMap}
         account={account}
       />
@@ -229,7 +216,7 @@ const AnnouncementListBody = ({ data, account }) => {
               onRowClick={(item) => {
                 if (account.role === "Admin")
                   history.push(`/Announcement/${item.id}`);
-                else setPreviewModal(item);
+                else setPreviewModal(item.id);
               }}
               maxDisplay={maxDisplay}
               start={active * maxDisplay}
@@ -269,21 +256,9 @@ const AnnouncementList = () => {
     };
     if (!data) GetData();
   });
-  if (data === null) return loading;
   return (
     <div className="GF-background">
-      <FirestoreCollection path="/announcement/">
-        {(d) => {
-          if (d.isLoading) return loading;
-          if (d && d.value) {
-            // add "id" to data
-            for (var i = 0; i < d.value.length; i++) {
-              d.value[i]["id"] = d.ids[i];
-            }
-            return <AnnouncementListBody account={account} data={d.value} />;
-          } else return null;
-        }}
-      </FirestoreCollection>
+      <AnnouncementListBody account={account} data={data} />;
     </div>
   );
 };

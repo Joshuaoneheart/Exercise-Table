@@ -1,4 +1,4 @@
-import { memo, useContext, useState } from "react";
+import { memo, useContext } from "react";
 
 import { AccountContext } from "hooks/context";
 import { DB } from "db/firebase";
@@ -95,7 +95,7 @@ const TheSidebar = ({ show, setShow }) => {
       },
     ];
   }
-  let start_page = 1;
+  let start_page = 0;
   for (let i = 0; i < navigation.length; i++) {
     if (typeof navigation[i] === "string") continue;
     if (location.pathname.split("/")[1] === navigation[i].to.split("/")[1]) {
@@ -103,7 +103,6 @@ const TheSidebar = ({ show, setShow }) => {
       break;
     }
   }
-  const [active, setActive] = useState(start_page);
   if (account == null) error_num++;
   if (account == null && error_num >= 3) message.error("連線錯誤");
   if (!account) return null;
@@ -123,10 +122,10 @@ const TheSidebar = ({ show, setShow }) => {
       ) : (
         <li
           className={
-            "primary-medium sidebar-list-item " + (active === i ? "active" : "")
+            "primary-medium sidebar-list-item " +
+            (start_page === i ? "active" : "")
           }
           onClick={() => {
-            setActive(i);
             history.push(item.to);
           }}
         >

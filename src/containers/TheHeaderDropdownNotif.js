@@ -45,7 +45,7 @@ const TheHeaderDropdownNotif = () => {
           setRefresh((old_refresh) => {
             return !old_refresh;
           });
-          history.push(`/AnnouncementList`, { id: announcements[i].id });
+          history.push(`/AnnouncementList?id=${announcements[i].id}`);
         }}
       >
         {announcements[i].title}

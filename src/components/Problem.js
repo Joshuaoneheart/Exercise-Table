@@ -1,4 +1,3 @@
-import { InputNumber } from "antd";
 import { DB, firebase } from "db/firebase";
 import { Select, Row, Input, Col } from ".";
 import { useEffect, useState } from "react";

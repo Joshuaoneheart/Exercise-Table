@@ -1,12 +1,16 @@
 import { Modal } from ".";
 import { DB } from "db/firebase";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 const AnnouncementPreviewModal = ({
-  content,
-  setContent,
+  id,
+  data,
+  setId,
   accountsMap,
   account,
 }) => {
+  const [content, setContent] = useState(null);
+  const history = useHistory();
   useEffect(() => {
     const check = async () => {
       if (!content.checked) {
@@ -23,11 +27,24 @@ const AnnouncementPreviewModal = ({
     };
     if (content) check();
   }, [account, content]);
+  useEffect(() => {
+    if (data !== null && id !== null) {
+      let tmp = Object.assign({}, data.filter((x) => x.id === id)[0]);
+      let date = tmp["timestamp"].toDate();
+      tmp.timestamp = `${date.getFullYear()}.${
+        date.getMonth() + 1
+      }.${date.getDate()}`;
+      setContent(tmp);
+    }
+  }, [data, id]);
   return (
     <Modal
       title="公告內容"
-      show={content !== null}
-      setShow={() => setContent(null)}
+      show={id !== null}
+      setShow={() => {
+        history.push({ search: "" });
+        setId(null);
+      }}
       container_style={{ backgroundColor: "var(--light-blue)" }}
     >
       {content && (
@@ -72,7 +89,10 @@ const AnnouncementPreviewModal = ({
       <button
         className="login-button"
         style={{ width: "100%", marginBottom: "16px" }}
-        onClick={() => setContent(null)}
+        onClick={() => {
+          history.push({ search: "" });
+          setId(null);
+        }}
       >
         確認
       </button>
