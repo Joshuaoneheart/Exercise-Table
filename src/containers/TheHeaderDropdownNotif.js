@@ -65,6 +65,10 @@ const TheHeaderDropdownNotif = () => {
           display: "flex",
           justifyContent: "center",
           paddingRight: "18px",
+          webkitUserSelect: "none",
+          mozUserSelect: "none",
+          msSserSelect: "none",
+          userSelect: "none",
         }}
       >
         <img

@@ -13,6 +13,12 @@ const TheHeaderDropdown = (props) => {
         if (i18next.language === "zh-tw") i18next.changeLanguage("en");
         else i18next.changeLanguage("zh-tw");
       }}
+      style={{
+        webkitUserSelect: "none",
+        mozUserSelect: "none",
+        msSserSelect: "none",
+        userSelect: "none",
+      }}
     >
       {i18next.language !== "zh-tw" ? (
         <img

@@ -67,6 +67,9 @@ const AnnouncementListBody = ({ data, account }) => {
       setPreviewModal(id);
     }
   }, [id, previewModal]);
+  useEffect(() => {
+    setCondition({ value: "all", label: t("全部") });
+  }, [t]);
   if (accountsMap === null || data === null || announcements === null)
     return loading;
   data = data.reverse();

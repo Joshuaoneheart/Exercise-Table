@@ -37,6 +37,12 @@ const GFListCard = ({ data }) => {
   useEffect(() => {
     setD(data);
   }, [data]);
+  useEffect(() => {
+    setCondition({
+      value: "all",
+      label: t("全部"),
+    });
+  }, [t]);
   const maxDisplay = 10;
   let content;
   if (condition.value === "all")

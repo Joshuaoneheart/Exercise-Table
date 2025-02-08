@@ -14,7 +14,13 @@ const TheHeader = ({ props, setShow }) => {
     <div className="header">
       <img
         onClick={() => setShow(true)}
-        style={{ padding: "8px" }}
+        style={{
+          padding: "8px",
+          webkitUserSelect: "none",
+          mozUserSelect: "none",
+          msSserSelect: "none",
+          userSelect: "none",
+        }}
         src={process.env.PUBLIC_URL + "/Images/burger.svg"}
         alt="sidebar"
       />

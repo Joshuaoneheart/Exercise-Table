@@ -8,7 +8,11 @@ const Brand = (props) => {
         letterSpacing: "0.04em",
         textDecoration: "none",
         cursor: "pointer",
-        marginTop: "8px"
+        marginTop: "8px",
+        webkitUserSelect: "none",
+        mozUserSelect: "none",
+        msSserSelect: "none",
+        userSelect: "none",
       }}
     >
       Exercise Table

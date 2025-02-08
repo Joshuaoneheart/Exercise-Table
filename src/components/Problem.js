@@ -13,6 +13,7 @@ const GFSelect = ({
   calculateScore,
   week,
 }) => {
+  const { t } = useTranslation("translation", { i18n });
   let id_to_v = {};
   for (let i = 0; i < GF.length; i++) {
     id_to_v[GF[i].id] =
@@ -152,7 +153,7 @@ const GFSelect = ({
           container_style={{ width: "100%", marginRight: "16px" }}
           style={{ border: "1px solid var(--n-200)" }}
           menu_style={{ border: "1px solid var(--n-200)" }}
-          placeholder="選擇牧養對象"
+          placeholder={t("選擇牧養對象")}
           value={options}
           defaultValue={options}
           isMulti={true}
