@@ -95,7 +95,7 @@ const TheSidebar = ({ show, setShow }) => {
       },
     ];
   }
-  let start_page = 0;
+  let start_page = 1;
   for (let i = 0; i < navigation.length; i++) {
     if (typeof navigation[i] === "string") continue;
     if (location.pathname.split("/")[1] === navigation[i].to.split("/")[1]) {
