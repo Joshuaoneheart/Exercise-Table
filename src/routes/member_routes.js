@@ -6,28 +6,21 @@ const Form = lazy(() => import("../containers/Member/SubmitForm/SubmitForm"));
 const GF = lazy(() => import("../containers/GF"));
 const Dashboard = lazy(() => import("../containers/Dashboard"));
 const AnnouncementList = lazy(() => import("../containers/AnnouncementList"));
-const Announcement = lazy(() => import("../containers/Announcement"));
 const GFList = lazy(() => import("../containers/GFList"));
 
 const routes = [
   { path: "/", exact: true, name: "Home", component: Dashboard },
   { path: "/dashboard", exact: true, name: "Dashboard", component: Dashboard },
   { path: "/form", exact: true, name: "Form", component: Form },
-  { path: "/GF/:id", exact: true, name: "GF", component: GF },
+  { path: "/GF/:id", name: "GF", component: GF },
   {
     path: "/announcementList",
     exact: true,
     name: "announcement list",
     component: AnnouncementList,
   },
-  {
-    path: "/announcement/:id",
-    exact: true,
-    name: "announcement",
-    component: Announcement,
-  },
   { path: "/GFList", exact: true, name: "GFList", component: GFList },
-  { path: "/member/:id", exact: true, name: "members", component: Members },
+  { path: "/member/:id", name: "members", component: Members },
 ];
 
 export default routes;
