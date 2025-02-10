@@ -11,7 +11,6 @@ import { loading } from "components";
 import { config, DB, firebase } from "db/firebase";
 import { AccountContext } from "hooks/context";
 import Account from "Models/Account";
-import { history } from "utils/history";
 import { GetWeeklyBase } from "utils/date";
 import { GF_GRADE_NEXT } from "const/GF";
 import { message } from "antd";
@@ -145,7 +144,7 @@ const App = () => {
     };
   }, []);
   return (
-    <BrowserRouter history={history}>
+    <BrowserRouter>
       <Suspense fallback={loading}>
         <FirebaseAuthProvider {...config} firebase={firebase}>
           <Switch>

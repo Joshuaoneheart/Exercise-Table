@@ -2,8 +2,8 @@ import { message } from "antd";
 import { firebase } from "db/firebase";
 import React, { useState } from "react";
 import { Input, Row, Col, Modal } from "components";
-import { history } from "utils/history";
 
+import { useHistory } from "react-router-dom";
 const ForgetPasswdModal = ({ show, setModal }) => {
   const [email, setEmail] = useState("");
   const submit = async () => {
@@ -49,6 +49,7 @@ const ForgetPasswdModal = ({ show, setModal }) => {
 const Login = ({ width, firebase }) => {
   const [modal, setModal] = useState(false);
   var username = React.useRef();
+  const history = useHistory();
   var password = React.useRef();
   const verse =
     "因為耶和華你神領你進入美地，那地有川，有泉，有源，從谷中和山上流出水來。（申8:7）";
