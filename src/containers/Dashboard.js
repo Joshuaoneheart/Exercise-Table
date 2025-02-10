@@ -166,7 +166,6 @@ const Dashboard = () => {
             backgroundPositionX: "center",
             backgroundRepeat: "no-repeat",
             backgroundSize: "1280 307px",
-            marginBottom: "-30px",
             overflow: "clip",
             backgroundPosition: "top center",
           }}
@@ -326,7 +325,6 @@ const Dashboard = () => {
             height: "98px",
             backgroundColor: "#FFFFFF",
             width: "100%",
-            marginLeft: "-15px",
             display: "flex",
             justifyContent: "center",
           }}
