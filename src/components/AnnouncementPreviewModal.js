@@ -51,7 +51,7 @@ const AnnouncementPreviewModal = ({
 
         images.forEach((img) => img.addEventListener("click", handleClick));
       }
-    }, 2000);
+    }, 500);
   }
   return (
     <Modal
