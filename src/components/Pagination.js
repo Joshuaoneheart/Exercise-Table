@@ -18,7 +18,7 @@ const Pagination = ({ totalPage, active, setActive }) => {
     <ul className="pagination">
       <li onClick={() => setActive(Math.max(active - 1, 0))}>
         <img
-          src={process.env.PUBLIC_URL + "/Images/arrow_left.svg"}
+          src={"/Images/arrow_left.svg"}
           alt="arrow_left"
         />
       </li>
@@ -36,7 +36,7 @@ const Pagination = ({ totalPage, active, setActive }) => {
 
       <li onClick={() => setActive(Math.min(active + 1, totalPage - 1))}>
         <img
-          src={process.env.PUBLIC_URL + "/Images/arrow_right.svg"}
+          src={"/Images/arrow_right.svg"}
           alt="arrow_right"
         />
       </li>

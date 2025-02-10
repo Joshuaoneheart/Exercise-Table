@@ -58,7 +58,7 @@ const GFListCard = ({ data }) => {
       <div className="GFList-banner">
         <span className="heading2-bold GFList-topic">{t("牧養對象資料")}</span>
         <img
-          src={process.env.PUBLIC_URL + "/Images/plus.svg"}
+          src={"/Images/plus.svg"}
           alt="新增牧養對象"
           className="plus-icon"
           onClick={() => {
@@ -118,7 +118,7 @@ const GFListCard = ({ data }) => {
         </>
       ) : (
         <div className="GFList-empty-container">
-          <img src={process.env.PUBLIC_URL + "/Images/empty.svg"} alt="empty" />
+          <img src={"/Images/empty.svg"} alt="empty" />
           <span className="heading3-regular">{t("暫無資料")}</span>
         </div>
       )}

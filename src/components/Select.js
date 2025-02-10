@@ -11,10 +11,7 @@ const DropdownIndicator = (props) => {
     <components.DropdownIndicator {...props}>
       <img
         alt={menuIsOpen ? "up" : "down"}
-        src={
-          process.env.PUBLIC_URL +
-          (menuIsOpen ? "/Images/arrow_up.svg" : "/Images/arrow_down.svg")
-        }
+        src={menuIsOpen ? "/Images/arrow_up.svg" : "/Images/arrow_down.svg"}
       />
     </components.DropdownIndicator>
   );

@@ -27,7 +27,7 @@ const Modal = ({
               {title}
             </div>
             <img
-              src={process.env.PUBLIC_URL + "/Images/close.svg"}
+              src={"/Images/close.svg"}
               alt="close"
               onClick={() => setShow(false)}
               style={{ height: "24px", marginRight: "4px" }}

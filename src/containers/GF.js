@@ -176,7 +176,7 @@ const GFCard = ({ init_data }) => {
         <div className="GF-banner">
           <span className="heading2-bold">{t("牧養對象資料")}</span>
           <img
-            src={process.env.PUBLIC_URL + "/Images/edit.svg"}
+            src={"/Images/edit.svg"}
             alt="編輯牧養對象"
             onClick={() => {
               setModifyModal(true);
@@ -328,7 +328,7 @@ const GFCard = ({ init_data }) => {
             style={{ marginBottom: "66px" }}
           >
             <img
-              src={process.env.PUBLIC_URL + "/Images/empty.svg"}
+              src={"/Images/empty.svg"}
               alt="empty"
             />
             <span className="heading3-regular">{t("暫無資料")}</span>

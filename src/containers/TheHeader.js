@@ -21,7 +21,7 @@ const TheHeader = ({ props, setShow }) => {
           msSserSelect: "none",
           userSelect: "none",
         }}
-        src={process.env.PUBLIC_URL + "/Images/burger.svg"}
+        src={"/Images/burger.svg"}
         alt="sidebar"
       />
       <Brand />

@@ -131,7 +131,7 @@ const TheSidebar = ({ show, setShow }) => {
         >
           {item.icon && (
             <img
-              src={process.env.PUBLIC_URL + "/Images/" + item.icon}
+              src={"/Images/" + item.icon}
               alt={item.icon}
               style={{
                 marginRight: "16px",
@@ -156,7 +156,7 @@ const TheSidebar = ({ show, setShow }) => {
         }}
       >
         <img
-          src={process.env.PUBLIC_URL + "/Images/close.svg"}
+          src={"/Images/close.svg"}
           alt="close"
           style={{
             marginTop: "24px",

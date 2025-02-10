@@ -22,12 +22,12 @@ const TheHeaderDropdown = (props) => {
     >
       {i18next.language !== "zh-tw" ? (
         <img
-          src={process.env.PUBLIC_URL + "/Images/flag_US.svg"}
+          src={"/Images/flag_US.svg"}
           alt="flag_US"
         />
       ) : (
         <img
-          src={process.env.PUBLIC_URL + "/Images/flag_TW.svg"}
+          src={"/Images/flag_TW.svg"}
           alt="flag_TW"
         />
       )}

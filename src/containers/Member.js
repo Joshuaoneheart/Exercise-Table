@@ -50,7 +50,7 @@ const HeadPicker = ({ account, show, setShow, setAccount, id }) => {
           <div key={`headpicker-${i}`} className={head === x ? "active" : ""}>
             <img
               alt={x}
-              src={process.env.PUBLIC_URL + x}
+              src={x}
               onClick={() => setHead(x)}
             />
           </div>
@@ -66,7 +66,7 @@ const HeadPicker = ({ account, show, setShow, setAccount, id }) => {
             bottom: "56px",
             left: "calc(50vw - 34px)",
           }}
-          src={process.env.PUBLIC_URL + "/Images/check.svg"}
+          src={"/Images/check.svg"}
           alt="check"
           onClick={async () => {
             await DB.updateByUrl("/accounts/" + id, { head });
@@ -77,7 +77,7 @@ const HeadPicker = ({ account, show, setShow, setAccount, id }) => {
         />
         <img
           style={{ position: "fixed", top: "52px", left: "36px" }}
-          src={process.env.PUBLIC_URL + "/Images/close_2.svg"}
+          src={"/Images/close_2.svg"}
           alt="close"
           onClick={() => setShow(false)}
         />
@@ -321,7 +321,7 @@ const Tab1 = ({ data, semester }) => {
             flexDirection: "column",
           }}
         >
-          <img alt="empty" src={process.env.PUBLIC_URL + "/Images/empty.svg"} />
+          <img alt="empty" src={"/Images/empty.svg"} />
           <span className="heading3-regular">暫無資料</span>
         </div>
       )}
@@ -397,7 +397,7 @@ const Tab2 = ({ data }) => {
             flexDirection: "column",
           }}
         >
-          <img alt="empty" src={process.env.PUBLIC_URL + "/Images/empty.svg"} />
+          <img alt="empty" src={"/Images/empty.svg"} />
           <span className="heading3-regular">暫無資料</span>
         </div>
       )}
@@ -441,7 +441,7 @@ const Member = () => {
             src={
               account.head.includes("/Images/")
                 ? account.head
-                : process.env.PUBLIC_URL + account.head
+                : account.head
             }
             onClick={() => setShow(true)}
             alt="head"

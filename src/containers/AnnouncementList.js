@@ -133,7 +133,7 @@ const AnnouncementListBody = ({ data, account }) => {
                 right: "27px",
                 cursor: "pointer",
               }}
-              src={process.env.PUBLIC_URL + "/Images/white_close.svg"}
+              src={"/Images/white_close.svg"}
               alt="close"
             />
             <div
@@ -154,7 +154,7 @@ const AnnouncementListBody = ({ data, account }) => {
         <span className="heading2-bold GFList-topic">{t("公告")}</span>
         {account.role === "Admin" && (
           <img
-            src={process.env.PUBLIC_URL + "/Images/plus.svg"}
+            src={"/Images/plus.svg"}
             alt="新增公告"
             className="plus-icon"
             onClick={() => {
@@ -233,7 +233,7 @@ const AnnouncementListBody = ({ data, account }) => {
         ) : (
           <div className="GFList-empty-container">
             <img
-              src={process.env.PUBLIC_URL + "/Images/empty.svg"}
+              src={"/Images/empty.svg"}
               alt="empty"
             />
             <span className="heading3-regular">{t("暫無資料")}</span>

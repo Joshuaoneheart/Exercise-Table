@@ -172,7 +172,7 @@ const Dashboard = () => {
           }}
         >
           <img
-            src={process.env.PUBLIC_URL + "/Images/banner.png"}
+            src={"/Images/banner.png"}
             alt="banner"
             className="banner"
             style={{
@@ -193,7 +193,7 @@ const Dashboard = () => {
               }}
             >
               <img
-                src={process.env.PUBLIC_URL + "/Images/medal_2.png"}
+                src={"/Images/medal_2.png"}
                 alt="medal_2"
                 className="winner-medal"
               />
@@ -206,7 +206,7 @@ const Dashboard = () => {
             </CCol>
             <CCol className="winner-badge">
               <img
-                src={process.env.PUBLIC_URL + "/Images/medal_1.png"}
+                src={"/Images/medal_1.png"}
                 alt="medal_1"
                 className="winner-medal-large"
               />
@@ -228,7 +228,7 @@ const Dashboard = () => {
               }}
             >
               <img
-                src={process.env.PUBLIC_URL + "/Images/medal_3.svg"}
+                src={"/Images/medal_3.svg"}
                 alt="medal_3"
                 className="winner-medal"
               />
@@ -262,7 +262,7 @@ const Dashboard = () => {
                   e.preventDefault();
                   input_ref.current.value = "";
                 }}
-                src={process.env.PUBLIC_URL + "/Images/clear.png"}
+                src={"/Images/clear.png"}
                 alt="clear"
                 className="input-icon"
               />
@@ -271,7 +271,7 @@ const Dashboard = () => {
                 onClick={() => {
                   input_ref.current.focus();
                 }}
-                src={process.env.PUBLIC_URL + "/Images/edit.png"}
+                src={"/Images/edit.png"}
                 alt="edit"
                 className="input-icon"
               />
