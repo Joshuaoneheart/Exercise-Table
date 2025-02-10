@@ -1,9 +1,9 @@
 import { lazy } from "react";
-
+import GF from "containers/GF";
+import Member from "containers/Member";
 //Members
-const Members = lazy(() => import("../containers/Member"));
 const Form = lazy(() => import("../containers/Member/SubmitForm/SubmitForm"));
-const GF = lazy(() => import("../containers/GF"));
+
 const Dashboard = lazy(() => import("../containers/Dashboard"));
 const AnnouncementList = lazy(() => import("../containers/AnnouncementList"));
 const GFList = lazy(() => import("../containers/GFList"));
@@ -20,7 +20,7 @@ const routes = [
     component: AnnouncementList,
   },
   { path: "/GFList", exact: true, name: "GFList", component: GFList },
-  { path: "/member/:id", name: "members", component: Members },
+  { path: "/member/:id", name: "members", component: Member },
 ];
 
 export default routes;
