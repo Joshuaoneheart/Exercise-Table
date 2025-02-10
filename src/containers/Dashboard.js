@@ -249,33 +249,8 @@ const Dashboard = () => {
               defaultValue={account.nickname ? account.nickname : ""}
               placeholder={t("請輸入暱稱")}
               className="nickname-input primary-medium"
-              onChange={async (e) => {
-                await DB.updateByUrl("/accounts/" + account.id, {
-                  nickname: e.target.value,
-                });
-                setNickname(e.target.value);
-              }}
+              disabled={true}
             />
-            {isFocus ? (
-              <img
-                onMouseDown={(e) => {
-                  e.preventDefault();
-                  input_ref.current.value = "";
-                }}
-                src={"/Images/clear.png"}
-                alt="clear"
-                className="input-icon"
-              />
-            ) : (
-              <img
-                onClick={() => {
-                  input_ref.current.focus();
-                }}
-                src={"/Images/edit.png"}
-                alt="edit"
-                className="input-icon"
-              />
-            )}
             <div className="LSNum content-medium">{myLSNum} 篇</div>
           </div>
           <div

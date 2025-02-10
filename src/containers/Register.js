@@ -39,24 +39,35 @@ const Register = ({ width, firebase }) => {
     firebase
       .auth()
       .createUserWithEmailAndPassword(email, pw)
-      .then(async (user_data) => {
-        let account = new Account(
-          {
-            id: user_data.user.uid,
-            displayName: name,
-            email: email,
-            registered: firebase.firestore.FieldValue.serverTimestamp(),
-            role: "Member",
-            status: "Pending",
-            gender,
-          },
-          true
-        );
-        await firebase.auth().currentUser.sendEmailVerification();
-        await account.save(true);
-        message.success("成功創建帳戶");
-        await DB.signOut();
-        window.location = window.location.href.replace("register", "/");
+      .then((user_data) => {
+        const db = firebase.firestore();
+        const docRef = db.collection("info").doc("counter");
+        db.runTransaction((transaction) => {
+          return transaction.get(docRef).then((doc) => {
+            transaction.update(docRef, { user: doc.data().user + 1 });
+            const saveAccount = async () => {
+              let account = new Account(
+                {
+                  id: user_data.user.uid,
+                  displayName: name,
+                  email: email,
+                  registered: firebase.firestore.FieldValue.serverTimestamp(),
+                  role: "Member",
+                  status: "Pending",
+                  gender,
+                  nickname: `得勝者${doc.data().user + 1}號`,
+                },
+                true
+              );
+              await firebase.auth().currentUser.sendEmailVerification();
+              await account.save(true);
+              message.success("成功創建帳戶");
+              await DB.signOut();
+              window.location = window.location.href.replace("register", "/");
+            };
+            saveAccount();
+          });
+        });
       })
       .catch((error) => {
         message.error(error.message);

@@ -160,7 +160,7 @@ const TooltipWrapper = styled.div`
   position: absolute;
   z-index: 999;
   top: ${(props) => {
-    return props.position.top + window.scrollY;
+    return props.position.top - 44 + document.getElementById("content").scrollTop;
   }}px;
   left: ${(props) => props.position.left}px;
   box-shadow: 0 3px 6px -4px rgb(0 0 0 / 12%), 0 6px 16px 0 rgb(0 0 0 / 8%),
@@ -222,11 +222,9 @@ const Tooltip = ({ text, children, span_style, placement = "top" }) => {
   useEffect(() => {
     handleOnResize();
     window.addEventListener("resize", handleOnResize);
-    window.addEventListener("scroll", handleOnResize);
-    return () => {
-      window.removeEventListener("scroll", handleOnResize);
-      window.removeEventListener("resize", handleOnResize);
-    };
+    document
+      .getElementById("content")
+      .addEventListener("scroll", handleOnResize);
   }, []);
   return (
     <>

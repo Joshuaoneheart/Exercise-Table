@@ -179,7 +179,7 @@ const App = () => {
                           user.email === "admin@hall19.com")
                       ) {
                         return <SignedIn user={user} />;
-                      } else return <Login firebase={firebase} width={width}/>;
+                      } else return <Login firebase={firebase} width={width} />;
                     }}
                   </FirebaseAuthConsumer>
                 </FirestoreProvider>
