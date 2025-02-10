@@ -8,6 +8,7 @@ const AnnouncementPreviewModal = ({
   setId,
   accountsMap,
   account,
+  setPreviewSrc,
 }) => {
   const [content, setContent] = useState(null);
   const history = useHistory();
@@ -37,6 +38,21 @@ const AnnouncementPreviewModal = ({
       setContent(tmp);
     }
   }, [data, id]);
+  if (id) {
+    setTimeout(() => {
+      const container = document.getElementsByClassName(
+        "announcement-content"
+      )[0];
+      if (container) {
+        const images = container.querySelectorAll("img"); // 只選取特定 `div` 內的圖片
+        const handleClick = (event) => {
+          setPreviewSrc(event.target.src);
+        };
+
+        images.forEach((img) => img.addEventListener("click", handleClick));
+      }
+    }, 2000);
+  }
   return (
     <Modal
       title="公告內容"

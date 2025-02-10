@@ -44,25 +44,6 @@ const AnnouncementListBody = ({ data, account }) => {
     if (data) setAnnouncements(Array.from(data));
   }, [data]);
   useEffect(() => {
-    if (previewModal) {
-      const container = document.getElementsByClassName(
-        "announcement-content"
-      )[0];
-      if (!container) return;
-
-      const images = container.querySelectorAll("img"); // 只選取特定 `div` 內的圖片
-      const handleClick = (event) => {
-        setPreviewSrc(event.target.src);
-      };
-
-      images.forEach((img) => img.addEventListener("click", handleClick));
-
-      return () => {
-        images.forEach((img) => img.removeEventListener("click", handleClick));
-      };
-    }
-  }, [previewModal]);
-  useEffect(() => {
     if (id && previewModal === null) {
       setPreviewModal(id);
     }
@@ -202,6 +183,7 @@ const AnnouncementListBody = ({ data, account }) => {
         setId={setPreviewModal}
         accountsMap={accountsMap}
         account={account}
+        setPreviewSrc={setPreviewSrc}
       />
       <Row
         style={{
@@ -232,10 +214,7 @@ const AnnouncementListBody = ({ data, account }) => {
           </Col>
         ) : (
           <div className="GFList-empty-container">
-            <img
-              src={"/Images/empty.svg"}
-              alt="empty"
-            />
+            <img src={"/Images/empty.svg"} alt="empty" />
             <span className="heading3-regular">{t("暫無資料")}</span>
           </div>
         )}
