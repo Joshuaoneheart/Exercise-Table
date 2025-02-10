@@ -118,7 +118,7 @@ const GFListCard = ({ data }) => {
         </>
       ) : (
         <div className="GFList-empty-container">
-          <img src={process.env.PUBLIC_URL + "Images/empty.svg"} alt="empty" />
+          <img src={process.env.PUBLIC_URL + "/Images/empty.svg"} alt="empty" />
           <span className="heading3-regular">{t("暫無資料")}</span>
         </div>
       )}

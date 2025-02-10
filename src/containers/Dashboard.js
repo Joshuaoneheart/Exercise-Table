@@ -206,7 +206,7 @@ const Dashboard = () => {
             </CCol>
             <CCol className="winner-badge">
               <img
-                src={process.env.PUBLIC_URL + "Images/medal_1.png"}
+                src={process.env.PUBLIC_URL + "/Images/medal_1.png"}
                 alt="medal_1"
                 className="winner-medal-large"
               />
@@ -228,7 +228,7 @@ const Dashboard = () => {
               }}
             >
               <img
-                src={process.env.PUBLIC_URL + "Images/medal_3.svg"}
+                src={process.env.PUBLIC_URL + "/Images/medal_3.svg"}
                 alt="medal_3"
                 className="winner-medal"
               />

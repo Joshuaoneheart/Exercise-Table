@@ -328,7 +328,7 @@ const GFCard = ({ init_data }) => {
             style={{ marginBottom: "66px" }}
           >
             <img
-              src={process.env.PUBLIC_URL + "Images/empty.svg"}
+              src={process.env.PUBLIC_URL + "/Images/empty.svg"}
               alt="empty"
             />
             <span className="heading3-regular">{t("暫無資料")}</span>
