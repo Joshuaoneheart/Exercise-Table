@@ -39,6 +39,7 @@
     "antd": "^5.15.2",
     "classnames": "^2.2.6",
     "core-js": "^3.16.0",
+    "d3": "^7.9.0",
     "danfojs": "^1.1.2",
     "dayjs": "^1.11.10",
     "draft-js": "^0.11.7",
@@ -63,10 +64,11 @@
     "react-redux": "^7.2.3",
     "react-router-dom": "^5.2.0",
     "react-scripts": "^4.0.3",
-    "react-select": "^4.3.1",
+    "react-select": "^5.10.0",
     "redux": "^4.0.5",
     "sass": "^1.32.8",
     "spinkit": "^2.0.1",
+    "styled-components": "^6.1.14",
     "xlsx": "^0.17.2"
   },
   "devDependencies": {

@@ -1,20 +1,16 @@
-import React, { useContext, useEffect, useState } from "react";
-import {
-  CBadge,
-  CDropdown,
-  CDropdownItem,
-  CDropdownMenu,
-  CDropdownToggle,
-  CLink,
-} from "@coreui/react";
-import CIcon from "@coreui/icons-react";
+import { useContext, useEffect, useState } from "react";
 import { AccountContext } from "hooks/context";
 import { firebase } from "db/firebase";
-
+import { useHistory } from "react-router-dom";
+import useOuterClick from "hooks/outerClick";
 const TheHeaderDropdownNotif = () => {
   const account = useContext(AccountContext);
   const [refresh, setRefresh] = useState(false);
   const [announcements, setAnnouncements] = useState([]);
+  const [show, setShow] = useState(false);
+  const history = useHistory();
+
+  const ref = useOuterClick(() => setShow(false));
   useEffect(() => {
     firebase
       .firestore()
@@ -33,37 +29,108 @@ const TheHeaderDropdownNotif = () => {
   let announcement_list = [];
   for (let i = 0; i < announcements.length; i++) {
     announcement_list.push(
-      <CDropdownItem
-        key={i}
-        tag={CLink}
-        to={`/Announcement/${announcements[i].id}`}
+      <li
+        key={`notification-${i}`}
+        style={{
+          alignItems: "center",
+          textAlign: "center",
+          paddingTop: "9px",
+          paddingBottom: "9px",
+          paddingLeft: "16px",
+          paddingRight: "16px",
+        }}
+        className="primary-bold"
         onClick={() => {
+          setShow(false);
           setRefresh((old_refresh) => {
             return !old_refresh;
           });
+          history.push(`/AnnouncementList?id=${announcements[i].id}`);
         }}
       >
-        <strong>{announcements[i].title}</strong>
-      </CDropdownItem>
+        {announcements[i].title}
+      </li>
     );
+    if (i !== announcements.length - 1)
+      announcement_list.push(<hr style={{ margin: 0 }} />);
   }
   return (
-    <CDropdown inNav className="c-header-nav-item mx-2">
-      <CDropdownToggle className="c-header-nav-link" caret={false}>
-        <CIcon name="cil-bell" />
+    <div ref={ref}>
+      <div
+        onClick={() => {
+          setShow((v) => !v);
+        }}
+        style={{
+          alignItems: "center",
+          display: "flex",
+          justifyContent: "center",
+          paddingRight: "18px",
+          webkitUserSelect: "none",
+          mozUserSelect: "none",
+          msSserSelect: "none",
+          userSelect: "none",
+        }}
+      >
+        <img
+          src={"/Images/bell.svg"}
+          alt="notification"
+        />
         {announcements.length > 0 && (
-          <CBadge shape="pill" color="danger">
-            {announcements.length}
-          </CBadge>
+          <div
+            style={{
+              width: 0,
+              overflow: "visible",
+            }}
+          >
+            <span
+              style={{
+                position: "relative",
+                right: "13px",
+                bottom: "11px",
+                paddingLeft: "8px",
+                paddingRight: "8px",
+                borderRadius: "8px",
+                fontSize: "12px",
+                color: "var(--white)",
+                height: "8px",
+                backgroundColor: "var(--red)",
+              }}
+            >
+              {announcements.length}
+            </span>
+          </div>
         )}
-      </CDropdownToggle>
-      <CDropdownMenu placement="bottom-end" className="pt-0">
-        <CDropdownItem header tag="div" className="text-center" color="light">
+      </div>
+      <ul
+        style={{
+          display: show ? "block" : "none",
+          listStyle: "none",
+          position: "fixed",
+          top: "36px",
+          right: "30px",
+          borderRadius: "8px",
+          backgroundColor: "#FFFFFF",
+          padding: 0,
+        }}
+      >
+        <li
+          style={{
+            alignItems: "center",
+            textAlign: "center",
+            paddingTop: "9px",
+            backgroundColor: "#E8E8E8",
+            paddingBottom: "9px",
+            paddingLeft: "16px",
+            paddingRight: "16px",
+            borderRadius:
+              "8px 8px " + (announcements.length === 0 ? "8px 8px" : "0px 0px"),
+          }}
+        >
           <strong>You have {announcements.length} notifications</strong>
-        </CDropdownItem>
+        </li>
         {announcement_list}
-      </CDropdownMenu>
-    </CDropdown>
+      </ul>
+    </div>
   );
 };
 

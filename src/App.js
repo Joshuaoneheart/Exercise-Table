@@ -1,5 +1,5 @@
 import { lazy, Suspense, useEffect, useState } from "react";
-import { HashRouter, Route, Switch } from "react-router-dom";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
 import "scss/style.scss";
 
 import {
@@ -11,7 +11,6 @@ import { loading } from "components";
 import { config, DB, firebase } from "db/firebase";
 import { AccountContext } from "hooks/context";
 import Account from "Models/Account";
-import { history } from "utils/history";
 import { GetWeeklyBase } from "utils/date";
 import { GF_GRADE_NEXT } from "const/GF";
 import { message } from "antd";
@@ -132,8 +131,20 @@ const SignedIn = (props) => {
 };
 
 const App = () => {
+  const [width, setWidth] = useState(window.innerWidth);
+  useEffect(() => {
+    setWidth(window.innerWidth);
+    window.addEventListener("resize", () => {
+      setWidth(window.innerWidth);
+    });
+    return () => {
+      window.removeEventListener("resize", () => {
+        setWidth(window.innerWidth);
+      });
+    };
+  }, []);
   return (
-    <HashRouter history={history}>
+    <BrowserRouter>
       <Suspense fallback={loading}>
         <FirebaseAuthProvider {...config} firebase={firebase}>
           <Switch>
@@ -142,7 +153,9 @@ const App = () => {
               path="/register"
               name="Register Page"
               render={(props) => {
-                return <Register firebase={firebase} {...props} />;
+                return (
+                  <Register firebase={firebase} width={width} {...props} />
+                );
               }}
             />
             <Route
@@ -166,7 +179,7 @@ const App = () => {
                           user.email === "admin@hall19.com")
                       ) {
                         return <SignedIn user={user} />;
-                      } else return <Login firebase={firebase} />;
+                      } else return <Login firebase={firebase} width={width} />;
                     }}
                   </FirebaseAuthConsumer>
                 </FirestoreProvider>
@@ -175,7 +188,7 @@ const App = () => {
           </Switch>
         </FirebaseAuthProvider>
       </Suspense>
-    </HashRouter>
+    </BrowserRouter>
   );
 };
 

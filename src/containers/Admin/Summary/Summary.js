@@ -163,11 +163,17 @@ const Summary = () => {
           />
         </CCol>
       );
-    } else if (conditions[i].data && conditions[i].data.type === "GF") {
+    } else if (
+      conditions[i].data &&
+      (conditions[i].data.type === "GF" ||
+        conditions[i].data.type === "section")
+    ) {
       choice_select = (
         <>
           <CCol>
-            <CLabel style={{ width: "100%" }}>次條件</CLabel>
+            <CLabel style={{ width: "100%" }}>
+              {conditions[i].data.type === "section" ? "分數" : "次"}條件
+            </CLabel>
             <Select
               options={[
                 {
@@ -187,7 +193,9 @@ const Summary = () => {
             />
           </CCol>
           <CCol xs="4" md="2">
-            <CLabel style={{ width: "100%" }}>幾次</CLabel>
+            <CLabel style={{ width: "100%" }}>
+              幾{conditions[i].data.type === "section" ? "分" : "次"}
+            </CLabel>
             <InputNumber
               min={0}
               onChange={(v) => {
@@ -325,7 +333,17 @@ const Summary = () => {
   let items = [];
   for (let item of raw) {
     let flag = true;
-    let df = item.dataframe;
+    let df = item.dataframe; /*
+    let revival = undefined;
+    if (df.columns.includes("ogtvt8BvPJutlQ4DLCWe - 團體晨興"))
+      revival = df.get("ogtvt8BvPJutlQ4DLCWe - 團體晨興");
+    if (df.columns.includes("ogtvt8BvPJutlQ4DLCWe - 個人晨興"))
+      if (revival !== undefined)
+        revival = revival.add(df.get("ogtvt8BvPJutlQ4DLCWe - 個人晨興"));
+      else revival = df.get("ogtvt8BvPJutlQ4DLCWe - 個人晨興");
+    if (revival !== undefined && revival.filter(revival.gte(5)).length === 9) {
+      console.log(item.name);
+    }*/
     for (let condition of conditions) {
       if (!condition.active) continue;
       if (!condition.problem || !condition.data || !condition.c) continue;
@@ -353,6 +371,7 @@ const Summary = () => {
       if (df.columns.includes(condition.problem))
         problem_data = df.get(condition.problem);
       else nan_cnt = total_num;
+
       let cnt = 0;
       if (problem_data !== null) {
         if (

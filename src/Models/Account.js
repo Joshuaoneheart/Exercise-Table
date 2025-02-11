@@ -36,6 +36,7 @@ class Account {
     if (this.role) res.role = this.role;
     if (this.status) res.status = this.status;
     if (this.gender) res.gender = this.gender;
+    if (this.gender) res.nickname = this.nickname;
     if (this.is_changed) {
       if (set) await DB.setByUrl(this.dbUrl, res);
       else await DB.updateByUrl(this.dbUrl, res);

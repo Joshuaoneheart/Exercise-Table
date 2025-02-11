@@ -1,36 +1,30 @@
-import { lazy } from "react";
-
 //Admin
-const ModifyResidence = lazy(() =>
-  import("../containers/Admin/ModifyResidence/ModifyResidence")
-);
-const ModifyGroup = lazy(() =>
-  import("../containers/Admin/ModifyGroup/ModifyGroup")
-);
-const FormList = lazy(() =>
-  import("../containers/Admin/FormList/FormList")
-);
-const ModifyForm = lazy(() =>
-  import("../containers/Admin/ModifyForm/ModifyForm")
-);
-const Member = lazy(() => import("../containers/Member"));
-const MemberList = lazy(() =>
-  import("../containers/Admin/MemberList/MemberList")
-);
-const BibleGroup = lazy(() => import("../containers/BibleGroup"));
-const BibleGroupList = lazy(() =>
-  import("../containers/Admin/BibleGroupList/BibleGroupList")
-);
+import ModifyResidence from "../containers/Admin/ModifyResidence/ModifyResidence";
 
-const Profile = lazy(() => import("../containers/Profile"));
-const Settings = lazy(() => import("../containers/Admin/Settings/Settings"));
-const Form = lazy(() => import("../containers/Admin/ReviewForm/ReviewForm"));
-const Users = lazy(() => import("../containers/Admin/Users/Users"));
-const GF = lazy(() => import("../containers/GF"));
-const GFList = lazy(() => import("../containers/GFList"));
-const AnnouncementList = lazy(() => import("../containers/AnnouncementList"));
-const Announcement = lazy(() => import("../containers/Announcement"));
-const Summary = lazy(() => import("../containers/Admin/Summary/Summary"));
+import ModifyGroup from "../containers/Admin/ModifyGroup/ModifyGroup";
+
+import FormList from "../containers/Admin/FormList/FormList";
+
+import Dashboard from "../containers/Dashboard";
+import ModifyForm from "../containers/Admin/ModifyForm/ModifyForm";
+
+import Member from "../containers/Member";
+import MemberList from "../containers/Admin/MemberList/MemberList";
+
+import BibleGroup from "../containers/BibleGroup";
+import BibleGroupList from "../containers/Admin/BibleGroupList/BibleGroupList";
+
+import Residence from "../containers/Residence";
+import ResidenceList from "../containers/Admin/ResidenceList/ResidenceList";
+
+import Settings from "../containers/Admin/Settings/Settings";
+import Form from "../containers/Admin/ReviewForm/ReviewForm";
+import Users from "../containers/Admin/Users/Users";
+import GF from "../containers/GF";
+import GFList from "../containers/GFList";
+import AnnouncementList from "../containers/AnnouncementList";
+import Announcement from "../containers/Announcement";
+import Summary from "../containers/Admin/Summary/Summary";
 
 const routes = [
   { path: "/", exact: true, name: "Home", component: AnnouncementList },
@@ -55,11 +49,11 @@ const routes = [
   },
   { path: "/form/:id", exact: true, name: "ModifyForm", component: ModifyForm },
   { path: "/form", exact: true, name: "Form", component: Form },
+  { path: "/dashboard", exact: true, name: "Dashboard", component: Dashboard },
   { path: "/settings", exact: true, name: "Settings", component: Settings },
-  { path: "/profile", exact: true, name: "Profile", component: Profile },
   { path: "/GFList", exact: true, name: "GFList", component: GFList },
   { path: "/GF/:id", exact: true, name: "GF", component: GF },
-  
+
   {
     path: "/announcementList",
     exact: true,
@@ -86,10 +80,22 @@ const routes = [
     component: BibleGroupList,
   },
   {
+    path: "/residenceList",
+    exact: true,
+    name: "residence list",
+    component: ResidenceList,
+  },
+  {
     path: "/biblegroup/:id",
     exact: true,
     name: "biblegroup",
     component: BibleGroup,
+  },
+  {
+    path: "/residence/:id",
+    exact: true,
+    name: "residence",
+    component: Residence,
   },
   {
     path: "/summary",

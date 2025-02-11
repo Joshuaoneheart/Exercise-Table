@@ -30,9 +30,13 @@ const SummaryScore = async (data, problems, id) => {
   };
   const lord_table_id = "0it0L8KlnfUVO1i4VUqi";
   // record if the problem is used in this semester
-  let column_keys = [];
-  let column_labels = [];
-  let column_problems = [];
+  let column_keys = ["召會生活操練", "神人生活操練", "福音牧養操練"];
+  let column_labels = ["召會生活操練", "神人生活操練", "福音牧養操練"];
+  let column_problems = [
+    { type: "section" },
+    { type: "section" },
+    { type: "section" },
+  ];
   for (let i = 0; i < data.value.length; i++) {
     items.push({
       week_base: WeeklyBase2String(parseInt(data.ids[i])),
@@ -67,8 +71,8 @@ const SummaryScore = async (data, problems, id) => {
           if (!column_keys.includes(problem.id + " - " + suboption)) {
             column_keys.push(problem.id + " - " + suboption);
             column_labels.push(problem.title + " - " + suboption);
-          column_problems.push(problem);
-        }
+            column_problems.push(problem);
+          }
           items[i][problem.id + " - " + suboption] =
             data.value[i][problem.id][suboption].ans;
         }
@@ -77,7 +81,7 @@ const SummaryScore = async (data, problems, id) => {
           if (!column_keys.includes(problem.id + " - " + option)) {
             column_keys.push(problem.id + " - " + option);
             column_labels.push(problem.title + " - " + option);
-          column_problems.push(problem);
+            column_problems.push(problem);
           }
           items[i][problem.id + " - " + option] =
             data.value[i][problem.id][option].ans.length;
@@ -92,6 +96,7 @@ const SummaryScore = async (data, problems, id) => {
       }
     }
     items[i].score = data.value[i].scores;
+    items[i].total_score = data.value[i].total_score
     items[i]["召會生活操練"] = data.value[i]["召會生活操練"];
     items[i]["神人生活操練"] = data.value[i]["神人生活操練"];
     items[i]["福音牧養操練"] = data.value[i]["福音牧養操練"];

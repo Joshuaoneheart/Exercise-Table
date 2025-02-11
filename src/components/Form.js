@@ -1,10 +1,8 @@
-import { CCol } from "@coreui/react";
 import DataTabs from "./DataTab";
 import loading from "./loading";
 import { useEffect, useState } from "react";
 import { DB } from "db/firebase";
 import { GetProblems } from "utils/problem";
-import Dashboard from "containers/Dashboard";
 
 const GatherProblemsBySection = (d) => {
   var data = { value: [], sections: [] };
@@ -30,11 +28,12 @@ const Form = ({ default_data, account, thisWeek, setThisWeek }) => {
     if (problems === null) GetData();
   });
   useEffect(() => setRefresh(true), [thisWeek]);
-  useEffect(() => setRefresh(false), [refresh]);
+  useEffect(() => {
+    setRefresh(false);
+  }, [refresh]);
   if (problems === null) return loading;
   return (
-    <CCol>
-      <Dashboard />
+    <>
       {!refresh && (
         <DataTabs
           data={GatherProblemsBySection(problems)}
@@ -44,7 +43,7 @@ const Form = ({ default_data, account, thisWeek, setThisWeek }) => {
           setThisWeek={setThisWeek}
         />
       )}
-    </CCol>
+    </>
   );
 };
 

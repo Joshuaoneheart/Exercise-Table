@@ -1,15 +1,5 @@
-import {
-  CCol,
-  CFormGroup,
-  CInput,
-  CInputCheckbox,
-  CInputRadio,
-  CLabel,
-  CRow,
-} from "@coreui/react";
-import { InputNumber } from "antd";
 import { DB, firebase } from "db/firebase";
-import Select from "react-select";
+import { Select, Row, Input, Col } from ".";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import i18n from "i18n";
@@ -23,6 +13,7 @@ const GFSelect = ({
   calculateScore,
   week,
 }) => {
+  const { t } = useTranslation("translation", { i18n });
   let id_to_v = {};
   for (let i = 0; i < GF.length; i++) {
     id_to_v[GF[i].id] =
@@ -157,25 +148,22 @@ const GFSelect = ({
   }
   return (
     <>
-      <CFormGroup>
+      <Row>
         <Select
+          container_style={{ width: "100%", marginRight: "16px" }}
+          style={{ border: "1px solid var(--n-200)" }}
+          menu_style={{ border: "1px solid var(--n-200)" }}
+          placeholder={t("選擇牧養對象")}
           value={options}
           defaultValue={options}
-          isMulti
-          isSearchable
-          autoFocus
+          isMulti={true}
+          isSearchable={true}
+          autoFocus={true}
           options={GF_options}
-          defaultMenuIsOpen={false}
-          menuPortalTarget={document.body}
-          styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
           onChange={async (v) => {
             setOptions(
               v.map((x) => {
-                x.label = (
-                  <span style={{ whiteSpace: "pre" }}>
-                    <b>{x.value.split("|")[2]}</b>
-                  </span>
-                );
+                x.label = x.value.split("|")[2];
                 return x;
               })
             );
@@ -198,29 +186,36 @@ const GFSelect = ({
             }
           }}
         />
-      </CFormGroup>
+      </Row>
       {note &&
         options.map((x, i) => {
           if (!x) return undefined;
           return (
-            <CRow
-              key={i}
-              className="align-items-center"
-              style={{ marginBottom: "10px" }}
+            <Row
+              key={`row-${i}`}
+              className="primary-regular"
+              style={{ marginTop: "8px" }}
             >
-              <CCol xs="3" md="2">
-                <CLabel>{x.value.split("|")[2]}</CLabel>
-              </CCol>
-              <CCol xs="9" md="10">
-                <CInput
+              <Col
+                style={{
+                  width: "20%",
+                  paddingTop: "12px",
+                  paddingLeft: "16px",
+                }}
+              >
+                {x.value.split("|")[2]}
+              </Col>
+              <Col style={{ width: "calc(80% - 16px)" }}>
+                <Input
+                  style={{ width: "100%", border: "1px solid var(--n-200)" }}
                   defaultValue={
                     notes[x.value.split("|")[1]]
                       ? notes[x.value.split("|")[1]]
                       : ""
                   }
-                  onChange={(e) => {
+                  onChange={(v) => {
                     let new_notes = Object.assign({}, notes);
-                    new_notes[x.value.split("|")[1]] = e.target.value;
+                    new_notes[x.value.split("|")[1]] = v;
                     let tmp = {};
                     tmp[title] = Array.from(
                       options.map((x) => {
@@ -240,8 +235,8 @@ const GFSelect = ({
                     );
                   }}
                 />
-              </CCol>
-            </CRow>
+              </Col>
+            </Row>
           );
         })}
     </>
@@ -257,11 +252,9 @@ const Problem = ({
   week,
   GF,
 }) => {
+  const [scrollLeft, setScrollLeft] = useState(0);
   const { t } = useTranslation("translation", { i18n });
   var frame = [];
-  var option_style = { color: "#000000", fontSize: "16px" };
-  var title_style = { color: "#636f83", fontSize: "22px" };
-  var button_style = { height: "20px", width: "16px" };
   switch (data.type) {
     case "GF":
       frame.push(
@@ -282,15 +275,18 @@ const Problem = ({
       break;
     case "Number":
       frame.push(
-        <InputNumber
-          name={data.id}
-          max={data.max}
-          min={0}
+        <Input
+          style={{
+            border: "1px solid var(--n-200)",
+            marginRight: "16px",
+            width: "calc(100vw - 32px)",
+          }}
+          type="number"
           defaultValue={default_data ? default_data.ans : 0}
           onChange={async (v) => {
             if (account_id) {
               let tmp = {};
-              tmp[[data.id + ".ans"]] = v;
+              tmp[[data.id + ".ans"]] = Math.min(Math.max(v, 0), data.max);
               tmp[[data.id + ".score"]] = v * parseInt(data.score[0]);
               await DB.OnDemandUpdate(
                 "/accounts/" + account_id + "/data/" + week,
@@ -303,49 +299,91 @@ const Problem = ({
       );
       break;
     case "MultiGrid":
-      var option_row = [];
-      var row = [];
-      option_row.push(<CCol xs="4" md="2"></CCol>);
+      var suboption_col = [];
       let options = data["選項"];
-      for (let i = 0; i < options.length; i++) {
-        let option = options[i];
-        option_row.push(
-          <CCol
-            xs="4"
-            md="2"
-            key={i}
-            style={Object.assign({}, option_style, { textAlign: "center" })}
-          >
-            {t(option)}
-          </CCol>
-        );
-      }
       let suboptions = data["子選項"];
+      let columns = [];
+      suboption_col.push(
+        <div style={{ height: "40px" }} className="background-white"></div>
+      );
       for (let i = 0; i < suboptions.length; i++) {
         let suboption = suboptions[i];
-        let subframe = [];
-        subframe.push(
-          <CCol xs="4" md="2" style={option_style}>
+        suboption_col.push(
+          <div
+            className={
+              "suboption-col primary-regular " +
+              (i % 2 === 0 ? "background-p-50" : "background-white")
+            }
+            style={{
+              height: "46px",
+              boxShadow:
+                scrollLeft !== 0 ? "2px 0px 2px 0px rgb(0 0 0 /10%)" : "none",
+            }}
+          >
             {t(suboption)}
-          </CCol>
+          </div>
         );
-        for (var option of options) {
-          subframe.push(
-            <CCol
-              xs="4"
-              md="2"
-              key={i}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
+      }
+      columns.push(
+        <div
+          style={{
+            minWidth: "82px",
+            width: "fit-content",
+            display: "flex",
+            flexDirection: "column",
+            position: "sticky",
+            left: "0px",
+          }}
+        >
+          {suboption_col}
+        </div>
+      );
+      let padding_col = [
+        <div style={{ height: "40px" }} className="background-white"></div>,
+      ];
+      for (let i = 0; i < suboptions.length; i++) {
+        padding_col.push(
+          <div
+            className={i % 2 === 0 ? "background-p-50" : "background-white"}
+            style={{ height: "46px" }}
+          ></div>
+        );
+      }
+      columns.push(
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            flexGrow: 1,
+          }}
+        >
+          {padding_col}
+        </div>
+      );
+      for (let i = 0; i < options.length; i++) {
+        let tmp_col = [];
+        let option = options[i];
+        tmp_col.push(
+          <div key={i} className="content-regular option-row">
+            {t(option)}
+          </div>
+        );
+
+        for (let j = 0; j < suboptions.length; j++) {
+          let suboption = suboptions[j];
+          tmp_col.push(
+            <div
+              key={j}
+              className={
+                "form-row-container " +
+                (j % 2 === 0 ? "background-p-50" : "background-white")
+              }
             >
-              <CInputCheckbox
-                className="form-check-input"
-                name={data.id + "-" + option}
+              <input
+                type="checkbox"
+                className="input-checkbox"
                 value={suboption}
-                style={Object.assign({}, button_style, { marginLeft: "2px" })}
+                name={data.id + "-" + option + "-" + suboption}
                 defaultChecked={
                   default_data &&
                   option in default_data &&
@@ -380,62 +418,125 @@ const Problem = ({
                   }
                 }.bind(null, account_id, suboption, option, data)}
               />
-            </CCol>
+            </div>
           );
         }
-        row.push(<CRow style={{ flexWrap: "nowrap" }}>{subframe}</CRow>);
+        columns.push(
+          <div
+            style={{
+              display: "flex",
+              flexWrap: "nowrap",
+              flexDirection: "column",
+              minWidth: "fit-content",
+            }}
+          >
+            {tmp_col}
+          </div>
+        );
       }
       frame.push(
-        <>
-          <CRow style={{ flexWrap: "nowrap" }}>{option_row}</CRow>
-          {row}
-        </>
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "nowrap",
+            paddingRight: "16px",
+            minWidth: "100%",
+            width: "fit-content",
+          }}
+        >
+          {columns}
+        </div>
       );
       break;
     case "Grid":
-      option_row = [];
-      row = [];
-      option_row.push(<CCol xs="4" md="2"></CCol>);
+      suboption_col = [];
       options = data["選項"];
-      for (let i = 0; i < options.length; i++) {
-        let option = options[i];
-        option_row.push(
-          <CCol
-            xs="4"
-            md="2"
-            key={i}
-            style={Object.assign({}, option_style, { textAlign: "center" })}
-          >
-            {t(option)}
-          </CCol>
-        );
-      }
       suboptions = data["子選項"];
+      columns = [];
+      suboption_col.push(
+        <div
+          style={{
+            height: "40px",
+          }}
+          className="background-white"
+        ></div>
+      );
       for (let i = 0; i < suboptions.length; i++) {
         let suboption = suboptions[i];
-        var subframe = [];
-        subframe.push(
-          <CCol xs="4" md="2" style={option_style}>
+        suboption_col.push(
+          <div
+            className={
+              "primary-regular suboption-col " +
+              (i % 2 === 0 ? "background-p-50" : "background-white")
+            }
+            style={{
+              boxShadow:
+                scrollLeft !== 0 ? "2px 0px 2px 0px rgb(0 0 0 /10%)" : "none",
+            }}
+          >
             {t(suboption)}
-          </CCol>
+          </div>
         );
-        for (option of options) {
-          subframe.push(
-            <CCol
-              xs="4"
-              md="2"
+      }
+      columns.push(
+        <div
+          style={{
+            minWidth: "82px",
+            width: "fit-content",
+            display: "flex",
+            flexDirection: "column",
+            position: "sticky",
+            left: "0px",
+          }}
+        >
+          {suboption_col}
+        </div>
+      );
+      padding_col = [
+        <div style={{ height: "40px" }} className="background-white"></div>,
+      ];
+      for (let i = 0; i < suboptions.length; i++) {
+        padding_col.push(
+          <div
+            className={i % 2 === 0 ? "background-p-50" : "background-white"}
+            style={{ height: "46px" }}
+          ></div>
+        );
+      }
+      columns.push(
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            flexGrow: 1,
+          }}
+        >
+          {padding_col}
+        </div>
+      );
+      for (let i = 0; i < options.length; i++) {
+        let option = options[i];
+        let tmp_col = [];
+        tmp_col.push(
+          <div key={i} className="content-regular option-row">
+            {t(option)}
+          </div>
+        );
+        for (let i = 0; i < suboptions.length; i++) {
+          let suboption = suboptions[i];
+          tmp_col.push(
+            <div
               key={i}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
+              className={
+                "form-row-container " +
+                (i % 2 === 0 ? "background-p-50" : "background-white")
+              }
             >
-              <CInputRadio
-                className="form-check-input"
+              <input
+                type="radio"
+                className="input-radio"
                 name={data.id + "-" + suboption}
                 value={option}
-                style={Object.assign({}, button_style, { marginLeft: "2px" })}
                 defaultChecked={
                   default_data &&
                   suboption in default_data &&
@@ -453,110 +554,61 @@ const Problem = ({
                   }
                 }.bind(null, account_id, suboption, data)}
               />
-            </CCol>
+            </div>
           );
         }
-        row.push(<CRow style={{ flexWrap: "nowrap" }}>{subframe}</CRow>);
+
+        columns.push(
+          <div
+            style={{
+              display: "flex",
+              flexWrap: "nowrap",
+              flexDirection: "column",
+              minWidth: "fit-content",
+            }}
+          >
+            {tmp_col}
+          </div>
+        );
       }
       frame.push(
-        <>
-          <CRow style={{ flexWrap: "nowrap" }}>{option_row}</CRow>
-          {row}
-        </>
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "nowrap",
+            paddingRight: "16px",
+            minWidth: "100%",
+            width: "fit-content",
+          }}
+        >
+          {columns}
+        </div>
       );
-      break;
-    case "MultiChoice":
-      options = data["選項"];
-      for (let i = 0; i < options.length; i++) {
-        let option = options[i];
-        frame.push(
-          <CFormGroup variant="checkbox" key={i}>
-            <CInputRadio
-              className="form-check-input"
-              name={data.id}
-              value={option}
-              style={button_style}
-              defaultChecked={default_data && default_data.ans === option}
-              onChange={async function (account_id, data, e) {
-                if (account_id) {
-                  let tmp = {};
-                  tmp[[data.id + ".ans"]] = e.target.value;
-                  await DB.OnDemandUpdate(
-                    "/accounts/" + account_id + "/data/" + week,
-                    tmp
-                  );
-                  calculateScore();
-                }
-              }.bind(null, account_id, data)}
-            />
-            <CLabel
-              variant="checkbox"
-              style={Object.assign({}, option_style, { marginLeft: "10px" })}
-            >
-              {t(option)}
-            </CLabel>
-          </CFormGroup>
-        );
-      }
-      break;
-    case "MultiAnswer":
-      options = data["子選項"];
-      for (let i = 0; i < options.length; i++) {
-        frame.push(
-          <CFormGroup variant="checkbox" key={i}>
-            <CInputCheckbox
-              className="form-check-input"
-              name={data.id}
-              value={options[i]}
-              style={button_style}
-              defaultChecked={
-                default_data && default_data.ans.includes(options[i])
-              }
-              onChange={async (e) => {
-                if (account_id) {
-                  if (e.target.checked) {
-                    let tmp = {};
-                    tmp[[data.id + ".ans"]] =
-                      firebase.firestore.FieldValue.arrayUnion(options[i]);
-                    await DB.OnDemandUpdate(
-                      "/accounts/" + account_id + "/data/" + week,
-                      tmp
-                    );
-                  } else {
-                    let tmp = {};
-                    tmp[[data.id + ".ans"]] =
-                      firebase.firestore.FieldValue.arrayRemove(options[i]);
-                    await DB.OnDemandUpdate(
-                      "/accounts/" + account_id + "/data/" + week,
-                      tmp
-                    );
-                  }
-                  calculateScore();
-                }
-              }}
-            />
-            <CLabel
-              variant="checkbox"
-              style={Object.assign({}, option_style, { marginLeft: "10px" })}
-            >
-              {t(options[i])}
-            </CLabel>
-          </CFormGroup>
-        );
-      }
       break;
     default:
       break;
   }
   return (
     <>
-      <CFormGroup style={{ marginBottom: "25px" }}>
-        <h4 style={title_style}>{t(data.title)}</h4>
-        <hr />
-        <CCol style={{ overflowX: "scroll", overflowY: "visible" }}>
-          {frame}
-        </CCol>
-      </CFormGroup>
+      <Row style={{ minWidth: "100%", paddingBottom: "16px", marginBottom: 0 }}>
+        <Col>
+          {data && data.showTitle && (
+            <p className="primary-regular problem-title">{t(data.title)}</p>
+          )}
+          <div
+            onScroll={(e) => {
+              setScrollLeft(e.target.scrollLeft);
+            }}
+            style={{
+              overflowX: "scroll",
+              overflowY: "visible",
+              marginLeft: "16px",
+            }}
+          >
+            {frame}
+          </div>
+        </Col>
+      </Row>
     </>
   );
 };

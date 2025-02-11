@@ -65,10 +65,10 @@ const AnnouncementCard = ({ init_data, id }) => {
     const check = async () => {
       if (!data.checked) {
         data.checked = account.id;
-        await DB.updateByUrl("/announcement/" + id, data);
+        await DB.updateByUrl("/announcement/" + id, { checked: data.checked });
       } else if (!data.checked.split(";").includes(account.id)) {
         data.checked += ";" + account.id;
-        await DB.updateByUrl("/announcement/" + id, data);
+        await DB.updateByUrl("/announcement/" + id, { checked: data.checked });
       }
     };
     if (data) check();

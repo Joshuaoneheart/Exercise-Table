@@ -203,58 +203,7 @@ const RenderPieChart = ({ title, labels, data, tooltip_label }) => {
 const ProblemChart = ({ problem, data, accountsMap }) => {
   let options;
   let suboptions;
-  if (problem.type === "MultiChoice") {
-    options = problem["選項"];
-    let polar_area = [];
-    let tooltip_label = [];
-    for (let i = 0; i < options.length; i++) {
-      polar_area.push(0);
-      tooltip_label.push([]);
-    }
-    for (let i = 0; i < data.length; i++) {
-      if (data[i][problem.id] && options.includes(data[i][problem.id].ans)) {
-        polar_area[options.indexOf(data[i][problem.id].ans)]++;
-        tooltip_label[options.indexOf(data[i][problem.id].ans)].push(
-          accountsMap[data[i].id]
-        );
-      }
-    }
-    return (
-      <RenderPieChart
-        title={problem.title}
-        labels={options}
-        data={polar_area}
-        tooltip_label={tooltip_label}
-      />
-    );
-  } else if (problem.type === "MultiAnswer") {
-    suboptions = problem["子選項"];
-    let h_bar_data = [];
-    let tooltip_label = [];
-    for (let i = 0; i < suboptions.length; i++) {
-      h_bar_data.push(0);
-      tooltip_label.push([]);
-    }
-    for (let i = 0; i < data.length; i++) {
-      if (data[i][problem.id]) {
-        for (let j = 0; j < data[i][problem.id].ans.length; j++) {
-          if (suboptions.includes(data[i][problem.id].ans[j])) {
-            h_bar_data[suboptions.indexOf(data[i][problem.id].ans[j])]++;
-            tooltip_label[suboptions.indexOf(data[i][problem.id].ans[j])].push(
-              accountsMap[data[i].id]
-            );
-          }
-        }
-      }
-    }
-    return (
-      <RenderPieChart
-        data={h_bar_data}
-        labels={suboptions}
-        title={problem.title}
-      />
-    );
-  } else if (problem.type === "Grid") {
+  if (problem.type === "Grid") {
     suboptions = problem["子選項"];
     options = problem["選項"];
     let bar_data = [];
@@ -281,6 +230,10 @@ const ProblemChart = ({ problem, data, accountsMap }) => {
         }
       }
     }
+    if (
+      bar_data.filter((x) => x.filter((y) => y !== 0).length !== 0).length === 0
+    )
+      return null;
     return (
       <RenderBarChart
         title={problem.title}
@@ -316,6 +269,10 @@ const ProblemChart = ({ problem, data, accountsMap }) => {
           }
       }
     }
+    if (
+      bar_data.filter((x) => x.filter((y) => y !== 0).length !== 0).length === 0
+    )
+      return null;
     return (
       <RenderBarChart
         title={problem.title}
@@ -329,6 +286,7 @@ const ProblemChart = ({ problem, data, accountsMap }) => {
     let bar_data = [
       data.map((x) => (x[problem.id] ? parseInt(x[problem.id].ans) : 0)),
     ];
+    if (bar_data[0].filter((x) => x !== 0).length === 0) return null;
     return (
       <RenderBarChart
         title={problem.title}

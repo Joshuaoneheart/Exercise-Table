@@ -1,17 +1,17 @@
-import React from "react";
-import { TheContent, TheSidebar, TheFooter, TheHeader } from "./index";
-
+import { useEffect, useState } from "react";
+import { TheContent, TheSidebar, TheHeader } from "./index";
+import { useHistory } from "react-router-dom";
 const TheLayout = (props) => {
+  const [show, setShow] = useState(false);
+  const history = useHistory();
+  useEffect(() => {
+    history.push("/");
+  }, [history]);
   return (
-    <div className="c-app c-default-layout">
-      <TheSidebar />
-      <div className="c-wrapper">
-        <TheHeader {...props} />
-        <div className="c-body">
-          <TheContent />
-        </div>
-        <TheFooter />
-      </div>
+    <div>
+      <TheSidebar setShow={setShow} show={show} />
+      <TheHeader {...props} setShow={setShow} />
+      <TheContent />
     </div>
   );
 };

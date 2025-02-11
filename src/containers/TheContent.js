@@ -1,4 +1,3 @@
-import { CContainer, CFade } from "@coreui/react";
 import { memo, Suspense, useContext } from "react";
 import { Redirect, Route, Switch } from "react-router-dom";
 
@@ -15,10 +14,19 @@ const TheContent = () => {
   if (account.is_admin) routes = admin_routes;
   else routes = member_routes;
   return (
-    <main className="c-main">
-      <CContainer fluid>
-        <Suspense fallback={loading}>
-          <Switch>
+    <Suspense fallback={loading}>
+      <Switch>
+        {
+          <div
+            id="content"
+            style={{
+              overflowY: "scroll",
+              width: "100%",
+              top: "44px",
+              position: "fixed",
+              bottom: "0",
+            }}
+          >
             {routes.map((route, idx) => {
               return (
                 route.component && (
@@ -27,20 +35,16 @@ const TheContent = () => {
                     path={route.path}
                     exact={route.exact}
                     name={route.name}
-                    render={(props) => (
-                      <CFade>
-                        <route.component {...props} />
-                      </CFade>
-                    )}
+                    render={(props) => <route.component {...props} />}
                   />
                 )
               );
             })}
-            <Redirect from="/" to="/form" />
-          </Switch>
-        </Suspense>
-      </CContainer>
-    </main>
+          </div>
+        }
+        <Redirect from="/" to="/form" />
+      </Switch>
+    </Suspense>
   );
 };
 
