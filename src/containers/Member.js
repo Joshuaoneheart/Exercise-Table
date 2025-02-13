@@ -30,15 +30,15 @@ const HeadPicker = ({ account, show, setShow, setAccount, id }) => {
     if (!show && head !== account.head) setHead(account.head);
   }, [account, show, head]);
   const images = [
-    "/Images/lion.svg",
-    "/Images/rabbit_2.svg",
-    "/Images/fox.svg",
-    "/Images/giraffe.svg",
-    "/Images/rabbit.svg",
-    "/Images/elephant.svg",
-    "/Images/panda.svg",
-    "/Images/human.svg",
-    "/Images/hedgehog.svg",
+    "/Images/小獅子可愛.png",
+    "/Images/兔子.png",
+    "/Images/狐狸.png",
+    "/Images/長頸鹿.png",
+    "/Images/兔兔.png",
+    "/Images/大象.png",
+    "/Images/熊貓.png",
+    "/Images/圖片21.png",
+    "/Images/刺蝟.png",
   ];
   return (
     <Portal customRootId="root">
@@ -49,6 +49,7 @@ const HeadPicker = ({ account, show, setShow, setAccount, id }) => {
         {images.map((x, i) => (
           <div key={`headpicker-${i}`} className={head === x ? "active" : ""}>
             <img
+              style={{ width: "70px", borderRadius: "35px" }}
               alt={x}
               src={x}
               onClick={() => setHead(x)}
@@ -415,7 +416,7 @@ const Member = () => {
   useEffect(() => {
     const GetData = async () => {
       let res = await DB.getByUrl("/accounts/" + id);
-      if (!res.head) res.head = "/Images/lion.svg";
+      if (!res.head) res.head = "/Images/小獅子可愛.png";
       setAccount(res);
       let tmp = await GetSemesterData(id, semester);
       let problems = await GetProblems(null, false);
@@ -434,14 +435,17 @@ const Member = () => {
         setShow={setShow}
         setAccount={setAccount}
       />
-      <div style={{ backgroundColor: "var(--white)", paddingTop: "8px" }}>
+      <div style={{ backgroundColor: "var(--white)", paddingTop: "24px" }}>
         <Row>
           <img
-            style={{ marginLeft: "12px", marginRight: "16px" }}
+            style={{
+              width: "70px",
+              borderRadius: "35px",
+              marginLeft: "12px",
+              marginRight: "16px",
+            }}
             src={
-              account.head.includes("/Images/")
-                ? account.head
-                : account.head
+              account.head.includes("/Images/") ? account.head : account.head
             }
             onClick={() => setShow(true)}
             alt="head"
