@@ -158,10 +158,9 @@ const Dashboard = () => {
       <div className="dashboard">
         <div
           style={{
-            marginLeft: "-15px",
-            marginRight: "-15px",
             paddingLeft: "calc(50% - 187.5px)",
             width: "100vw",
+            height: "481.5px",
             backgroundImage: "url(Images/bg.svg)",
             backgroundPositionX: "center",
             backgroundRepeat: "no-repeat",
@@ -327,6 +326,7 @@ const Dashboard = () => {
             width: "100%",
             display: "flex",
             justifyContent: "center",
+            bottom: "0px"
           }}
         >
           <button

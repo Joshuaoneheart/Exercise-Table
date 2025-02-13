@@ -8,11 +8,11 @@ const TheLayout = (props) => {
     history.push("/");
   }, [history]);
   return (
-    <div>
+    <>
       <TheSidebar setShow={setShow} show={show} />
       <TheHeader {...props} setShow={setShow} />
       <TheContent />
-    </div>
+    </>
   );
 };
 
