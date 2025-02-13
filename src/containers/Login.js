@@ -64,13 +64,6 @@ const Login = ({ width, firebase }) => {
       )
       .catch((error) => message.error(error.message, 1.5));
   };
-  const db = firebase.firestore();
-  const docs = db
-    .collection("accounts")
-    .get()
-    .then((docs) => {
-      docs.forEach((doc) => console.log(doc.id));
-    });
 
   if (width <= 375)
     return (
