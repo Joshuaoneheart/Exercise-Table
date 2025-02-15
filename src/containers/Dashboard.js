@@ -1,4 +1,4 @@
-import { CRow, CCol } from "@coreui/react";
+import { Row, Col } from "components";
 import { DB } from "db/firebase";
 import { AccountContext } from "hooks/context";
 import SemesterContext from "hooks/semester";
@@ -16,10 +16,10 @@ const Dashboard = () => {
   const [myImage, setMyImage] = useState("");
   const input_ref = useRef();
   const account = useContext(AccountContext);
-  const [isFocus, setFocus] = useState(false);
-  const [nickname, setNickname] = useState(
+  /*const [isFocus, setFocus] = useState(false);
+   const [nickname, setNickname] = useState(
     account.nickname ? account.nickname : ""
-  );
+  );*/
   const { semester } = useContext(SemesterContext);
   const history = useHistory();
   useEffect(() => {
@@ -64,7 +64,7 @@ const Dashboard = () => {
     };
     if (semester && account) getAccounts();
     if (myImage === "") getImage();
-  }, [account, t, semester, nickname, myImage]);
+  }, [account, t, semester, myImage]);
   if (!account || !semester) return null;
   let after_3 = [
     <div
@@ -169,24 +169,12 @@ const Dashboard = () => {
             backgroundPosition: "top center",
           }}
         >
-          <img
-            src={"/Images/banner.png"}
-            alt="banner"
-            className="banner"
-            style={{
-              width: "288px",
-              height: "60px",
-              marginTop: "23px",
-              marginLeft: "46.5px",
-              marginRight: "46.5px",
-              marginBottom: "47px",
-            }}
-          />
-          <CRow>
-            <CCol
+          <img src={"/Images/banner.png"} alt="banner" className="banner" />
+          <div style={{ display: "flex", width: "fit-content" }}>
+            <div
               className="winner-badge"
               style={{
-                marginLeft: "45px",
+                marginLeft: "30px",
                 marginRight: "12px",
               }}
             >
@@ -201,8 +189,8 @@ const Dashboard = () => {
               <p className="winner-number content-medium">
                 {ranks.length >= 2 ? ranks[1].number : "--"} 篇
               </p>
-            </CCol>
-            <CCol className="winner-badge">
+            </div>
+            <div className="winner-badge">
               <img
                 src={"/Images/medal_1.png"}
                 alt="medal_1"
@@ -217,8 +205,8 @@ const Dashboard = () => {
               <p className="winner-number content-medium">
                 {ranks.length >= 1 ? ranks[0].number : "--"} 篇
               </p>
-            </CCol>
-            <CCol
+            </div>
+            <div
               className="winner-badge"
               style={{
                 marginLeft: "12px",
@@ -236,14 +224,12 @@ const Dashboard = () => {
               <p className="winner-number content-medium">
                 {ranks.length >= 3 ? ranks[2].number : "--"} 篇
               </p>
-            </CCol>
-          </CRow>
+            </div>
+          </div>
           <div className="nickname-container">
             <div className="rank heading3-bold">{myRank}</div>
             <input
               ref={input_ref}
-              onFocus={() => setFocus(true)}
-              onBlur={() => setFocus(false)}
               defaultValue={account.nickname ? account.nickname : ""}
               placeholder={t("請輸入暱稱")}
               className="nickname-input primary-medium"
@@ -254,6 +240,7 @@ const Dashboard = () => {
           <div
             style={{
               position: "relative",
+              width: "100vw",
               backgroundColor: "#FFFFFF",
               paddingTop: "30px",
               zIndex: 0,
@@ -264,7 +251,7 @@ const Dashboard = () => {
               paddingLeft: "calc(50vw - 187.5px)",
             }}
           >
-            <CCol style={{ paddingLeft: "36px", paddingRight: "36px" }}>
+            <div style={{ paddingLeft: "36px", paddingRight: "36px" }}>
               {after_3.map((x, i) => {
                 if (i + 3 !== ranks.length - 1 && x !== undefined) {
                   return (
@@ -276,7 +263,7 @@ const Dashboard = () => {
                 }
                 return x;
               })}
-            </CCol>
+            </div>
           </div>
         </div>
         <div
@@ -297,7 +284,7 @@ const Dashboard = () => {
           >
             {t("生命讀經進度")}
           </p>
-          <CCol
+          <Col
             style={{
               width: "100%",
               overflowX: "scroll",
@@ -314,7 +301,7 @@ const Dashboard = () => {
               border="0"
               style={{ maxWidth: "800px" }}
             />
-          </CCol>
+          </Col>
         </div>
       </div>
       <div className="dashboard-footer">
@@ -326,7 +313,8 @@ const Dashboard = () => {
             width: "100%",
             display: "flex",
             justifyContent: "center",
-            bottom: "0px"
+            bottom: "0px",
+            zIndex: 2,
           }}
         >
           <button
