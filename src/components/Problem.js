@@ -251,6 +251,8 @@ const Problem = ({
   calculateScore,
   week,
   GF,
+  showFirstRow,
+  paddingBottom = true,
 }) => {
   const [scrollLeft, setScrollLeft] = useState(0);
   const { t } = useTranslation("translation", { i18n });
@@ -453,14 +455,15 @@ const Problem = ({
       options = data["選項"];
       suboptions = data["子選項"];
       columns = [];
-      suboption_col.push(
-        <div
-          style={{
-            height: "40px",
-          }}
-          className="background-white"
-        ></div>
-      );
+      if (showFirstRow)
+        suboption_col.push(
+          <div
+            style={{
+              height: "40px",
+            }}
+            className="background-white"
+          ></div>
+        );
       for (let i = 0; i < suboptions.length; i++) {
         let suboption = suboptions[i];
         suboption_col.push(
@@ -492,9 +495,11 @@ const Problem = ({
           {suboption_col}
         </div>
       );
-      padding_col = [
-        <div style={{ height: "40px" }} className="background-white"></div>,
-      ];
+      padding_col = [];
+      if (showFirstRow)
+        padding_col.push(
+          <div style={{ height: "40px" }} className="background-white"></div>
+        );
       for (let i = 0; i < suboptions.length; i++) {
         padding_col.push(
           <div
@@ -517,11 +522,12 @@ const Problem = ({
       for (let i = 0; i < options.length; i++) {
         let option = options[i];
         let tmp_col = [];
-        tmp_col.push(
-          <div key={i} className="content-regular option-row">
-            {t(option)}
-          </div>
-        );
+        if (showFirstRow)
+          tmp_col.push(
+            <div key={i} className="content-regular option-row">
+              {t(option)}
+            </div>
+          );
         for (let i = 0; i < suboptions.length; i++) {
           let suboption = suboptions[i];
           tmp_col.push(
@@ -590,7 +596,13 @@ const Problem = ({
   }
   return (
     <>
-      <Row style={{ minWidth: "100%", paddingBottom: "16px", marginBottom: 0 }}>
+      <Row
+        style={{
+          minWidth: "100%",
+          paddingBottom: paddingBottom ? "16px" : "0px",
+          marginBottom: 0,
+        }}
+      >
         <Col>
           {data && data.showTitle && (
             <p className="primary-regular problem-title">{t(data.title)}</p>

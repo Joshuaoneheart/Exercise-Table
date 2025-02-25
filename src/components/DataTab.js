@@ -76,13 +76,9 @@ const DataTabs = ({ data, account, default_data, thisWeek, setThisWeek }) => {
       var v = { scores: 0 };
       let lord_table = 0;
       let life_study = 0;
-      let total_score = {
-        召會生活操練: 0,
-        神人生活操練: 0,
-        福音牧養操練: 0,
-        其他: 0
-      };
+      let total_score = {};
       for (let i = 0; i < data.sections.length; i++) {
+        total_score[data.sections[i]] = 0;
         v[data.sections[i]] = 0;
         for (var j = 0; j < data.value[i].length; j++) {
           let problem = data.value[i][j];
@@ -91,7 +87,7 @@ const DataTabs = ({ data, account, default_data, thisWeek, setThisWeek }) => {
             form_data &&
             form_data[problem.id]
           )
-            life_study = form_data[problem.id].ans;
+            life_study = form_data[problem.id]["生命讀經"].ans.length;
           if (
             problem.id === "0it0L8KlnfUVO1i4VUqi" &&
             form_data &&
@@ -118,7 +114,11 @@ const DataTabs = ({ data, account, default_data, thisWeek, setThisWeek }) => {
                   .reduce((a, b) => a + b, 0) * parseInt(problem.max);
               if (!form_data || !form_data[problem.id]) continue;
               score =
-                parseInt(problem.score) * parseFloat(form_data[problem.id].ans);
+                parseInt(problem.score) *
+                Math.min(
+                  parseInt(problem.max),
+                  parseFloat(form_data[problem.id].ans)
+                );
               break;
             case "MultiGrid":
               total_score[problem.section] +=
@@ -190,10 +190,32 @@ const DataTabs = ({ data, account, default_data, thisWeek, setThisWeek }) => {
       api.destroy("saving");
     }
   };
-  for (var i = 0; i < data.sections.length; i++) {
-    var contents = [];
-    for (var j = 0; j < data.value[i].length; j++) {
-      var problem = data.value[i][j];
+  const order = { Grid: 0, MultiGrid: 1, GF: 2, Number: 3 };
+  for (let i = 0; i < data.sections.length; i++) {
+    let contents = [];
+    data.value[i].sort((a, b) =>
+      order[a.type] === order[b.type] && a.type === "Grid"
+        ? a["選項"].join(";") >= b["選項"].join(";")
+          ? 1
+          : -1
+        : order[a.type] > order[b.type]
+        ? 1
+        : -1
+    );
+    let prev_option = "";
+    for (let j = 0; j < data.value[i].length; j++) {
+      let problem = data.value[i][j];
+      let showFirstRow = true;
+      let paddingBottom = true;
+      if (problem.type === "Grid" && problem["選項"].join(";") === prev_option)
+        showFirstRow = false;
+      if (
+        problem.type === "Grid" &&
+        j !== data.value[i].length - 1 &&
+        data.value[i][j + 1].type === "Grid" &&
+        problem["選項"].join(";") === data.value[i][j + 1]["選項"].join(";")
+      )
+        paddingBottom = false;
       contents.push(
         <Problem
           calculateScore={calculateScore}
@@ -203,6 +225,8 @@ const DataTabs = ({ data, account, default_data, thisWeek, setThisWeek }) => {
           week={thisWeek ? GetWeeklyBase() : GetWeeklyBase() - 1}
           GF={GF}
           GF_data={GF_data}
+          showFirstRow={showFirstRow}
+          paddingBottom={paddingBottom}
           default_data={
             default_data && default_data.value
               ? default_data.value[problem.id]
@@ -211,6 +235,8 @@ const DataTabs = ({ data, account, default_data, thisWeek, setThisWeek }) => {
           key={j}
         />
       );
+      if (problem.type === "Grid") prev_option = problem["選項"].join(";");
+      else prev_option = "";
     }
     tabpanes.push(contents);
   }
