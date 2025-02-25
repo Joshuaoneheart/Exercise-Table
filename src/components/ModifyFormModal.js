@@ -4,6 +4,7 @@ import {
   CForm,
   CFormGroup,
   CInput,
+  CInputCheckbox,
   CLabel,
   CModal,
   CModalBody,
@@ -83,6 +84,7 @@ const AddModal = ({ show, data, setData, sections, setSections, setModal }) => {
         tmp["title"] = form.current.elements.title.value;
         tmp["type"] = form.current.elements.type.value;
         tmp["score"] = [];
+        tmp["showTitle"] = form.current.elements.showTitle.checked;
         if (["Grid", "MultiGrid"].includes(tmp["type"])) tmp["選項"] = [];
         let i = 0;
         if (tmp["type"] === "GF")
@@ -194,6 +196,17 @@ const AddModal = ({ show, data, setData, sections, setSections, setModal }) => {
               </CCol>
             </CFormGroup>
           )}
+          <CFormGroup row inline>
+            <CCol md="3">
+              <CLabel>顯示標題</CLabel>
+            </CCol>
+            <CCol xs="12" md="9">
+              <CInputCheckbox
+                style={{ height: "20px", width: "20px" }}
+                name="showTitle"
+              />
+            </CCol>
+          </CFormGroup>
         </CForm>
       </CModalBody>
       <CModalFooter>
@@ -288,6 +301,7 @@ const ModifyModal = ({ show, data, setData, setModal }) => {
     tmp["title"] = form.current.elements.title.value;
     tmp["type"] = form.current.elements.type.value;
     tmp["score"] = [];
+    tmp["showTitle"] = form.current.elements.showTitle.checked;
     if (tmp["type"] === "GF")
       tmp["note"] = form.current.elements["note"].checked;
     if (["Number", "GF"].includes(tmp["type"])) {
@@ -383,6 +397,18 @@ const ModifyModal = ({ show, data, setData, setModal }) => {
               </CCol>
             </CFormGroup>
             {fields[type]}
+            <CFormGroup row inline>
+              <CCol md="3">
+                <CLabel>顯示標題</CLabel>
+              </CCol>
+              <CCol xs="12" md="9">
+                <CInputCheckbox
+                  defaultChecked={data[show].showTitle}
+                  style={{ height: "20px", width: "20px" }}
+                  name="showTitle"
+                />
+              </CCol>
+            </CFormGroup>
           </CForm>
         )}
       </CModalBody>

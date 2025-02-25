@@ -1,4 +1,4 @@
-import { Row, Col } from "components";
+import { Col } from "components";
 import { DB } from "db/firebase";
 import { AccountContext } from "hooks/context";
 import SemesterContext from "hooks/semester";
