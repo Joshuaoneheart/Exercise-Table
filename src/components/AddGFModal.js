@@ -42,6 +42,7 @@ const AddGFModal = ({ data, account, show, setData, setModal }) => {
   let schools = GF_SCHOOL.map((x) => {
     return { label: x, value: x };
   });
+  schools.push({ label: "其他", value: "其他" });
   let departments;
   if (school === "台大") {
     departments = GF_NTU_DEPARTMENT.map((x) => {
@@ -57,6 +58,7 @@ const AddGFModal = ({ data, account, show, setData, setModal }) => {
         value: x,
       };
     });
+  else departments = [{ label: "詳見備註", value: "詳見備註" }];
   let grades = GF_GRADE.map((x) => {
     return { label: x, value: x };
   });
@@ -85,6 +87,7 @@ const AddGFModal = ({ data, account, show, setData, setModal }) => {
               if (v.value === "台大") setDepartment(GF_NTU_DEPARTMENT[0]);
               else if (v.value === "台科大")
                 setDepartment(GF_NTUST_DEPARTMENT[0]);
+              else setDepartment("詳見備註");
             }}
           />
         </Col>
