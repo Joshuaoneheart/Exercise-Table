@@ -45,25 +45,20 @@ const GFCard = ({ init_data }) => {
             家聚會: [],
           };
         if (
-          doc_data["主日聚會&真理課程"] &&
-          doc_data["主日聚會&真理課程"].includes(init_data.id)
+          (doc_data["主日聚會&真理課程"] &&
+            doc_data["主日聚會&真理課程"].includes(init_data.id)) ||
+          (doc_data["主日聚會"] && doc_data["主日聚會"].includes(init_data.id))
         ) {
           lord_table++;
           data_by_week[doc.id]["主日聚會"].push(shepherd_id);
           shepherd.push(shepherd_id);
         }
-        if (
-          doc_data["小排"] &&
-          doc_data["小排"].includes(init_data.id)
-        ) {
+        if (doc_data["小排"] && doc_data["小排"].includes(init_data.id)) {
           group_meeting++;
           data_by_week[doc.id]["小排"].push(shepherd_id);
           shepherd.push(shepherd_id);
         }
-        if (
-          doc_data["家聚會"] &&
-          doc_data["家聚會"].includes(init_data.id)
-        ) {
+        if (doc_data["家聚會"] && doc_data["家聚會"].includes(init_data.id)) {
           home_meeting++;
           data_by_week[doc.id]["家聚會"].push(shepherd_id);
           shepherd.push(shepherd_id);
