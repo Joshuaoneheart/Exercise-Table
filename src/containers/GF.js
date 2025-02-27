@@ -45,20 +45,22 @@ const GFCard = ({ init_data }) => {
             家聚會: [],
           };
         if (
-          doc_data["主日聚會"] &&
-          doc_data["主日聚會"].includes(init_data.id)
+          doc_data["主日聚會&真理課程"] &&
+          doc_data["主日聚會&真理課程"].includes(init_data.id)
         ) {
           lord_table++;
           data_by_week[doc.id]["主日聚會"].push(shepherd_id);
           shepherd.push(shepherd_id);
-        } else if (
+        }
+        if (
           doc_data["小排"] &&
           doc_data["小排"].includes(init_data.id)
         ) {
           group_meeting++;
           data_by_week[doc.id]["小排"].push(shepherd_id);
           shepherd.push(shepherd_id);
-        } else if (
+        }
+        if (
           doc_data["家聚會"] &&
           doc_data["家聚會"].includes(init_data.id)
         ) {
@@ -66,6 +68,8 @@ const GFCard = ({ init_data }) => {
           data_by_week[doc.id]["家聚會"].push(shepherd_id);
           shepherd.push(shepherd_id);
         } else {
+          if (shepherd_id === "gtvGkq6kGvWUVvw7g09oRtMajt32")
+            console.log(doc_data);
           if (!doc_data["家聚會"]) continue;
           for (let tmp of doc_data["家聚會"]) {
             if (typeof tmp !== "string" && tmp.id === init_data.id) {
@@ -327,10 +331,7 @@ const GFCard = ({ init_data }) => {
             className="GFList-empty-container"
             style={{ marginBottom: "66px" }}
           >
-            <img
-              src={"/Images/empty.svg"}
-              alt="empty"
-            />
+            <img src={"/Images/empty.svg"} alt="empty" />
             <span className="heading3-regular">{t("暫無資料")}</span>
           </div>
         )}
