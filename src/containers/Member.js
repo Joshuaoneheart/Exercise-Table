@@ -330,6 +330,7 @@ const Tab1 = ({ data, semester }) => {
   );
 };
 const Tab2 = ({ data }) => {
+  const [GFMap, setGFMap] = useState({});
   const [page, setPage] = useState({
     label: "召會生活操練",
     value: "召會生活操練",
@@ -351,6 +352,30 @@ const Tab2 = ({ data }) => {
       { label: "福音牧養操練", value: "福音牧養操練" },
       { label: "總分", value: "score" },
     ];
+  useEffect(() => {
+    const GetGFMAP = async () => {
+      const GFs = await DB.getByUrl("/GF");
+      let tmp = {};
+      GFs.forEach((x) => {
+        tmp[x.id] = x.data()["name"];
+      });
+      setGFMap(tmp);
+    };
+    GetGFMAP();
+  }, [data]);
+  for (let i = 0;i < data.items.length;i++) {
+    let item = data.items[i];
+    for (let key of Object.keys(item)) {
+      if (Array.isArray(item[key])) {
+        let tmp = [];
+        for (let id of item[key]) {
+          if (typeof id === "string" && id in GFMap) tmp.push(GFMap[id]);
+          else if (id["id"] in GFMap) tmp.push(GFMap[id["id"]]);
+        }
+        data.items[i][key] = tmp.join(",");
+      }
+    }
+  }
   return (
     <div
       style={{
@@ -425,7 +450,6 @@ const Member = () => {
     if (semester) GetData();
   }, [id, semester]);
   if (data === null || account === null) return loading;
-
   return (
     <>
       <HeadPicker

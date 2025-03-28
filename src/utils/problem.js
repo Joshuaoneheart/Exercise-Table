@@ -44,7 +44,7 @@ const SummaryScore = async (data, problems, id) => {
     });
     for (let problem of problems) {
       if (problem.type === "GF" && problem.title in data.value[i]) {
-        items[i][problem.id] = data.value[i][problem.title].length;
+        items[i][problem.id] = data.value[i][problem.title];
         if (!column_keys.includes(problem.id)) {
           column_keys.push(problem.id);
           column_labels.push("邀約 - " + problem.title);
@@ -73,8 +73,9 @@ const SummaryScore = async (data, problems, id) => {
             column_labels.push(problem.title + " - " + suboption);
             column_problems.push(problem);
           }
-          items[i][problem.id + " - " + suboption] =
-            data.value[i][problem.id][suboption].ans;
+          if (data.value[i][problem.id][suboption])
+            items[i][problem.id + " - " + suboption] =
+              data.value[i][problem.id][suboption].ans;
         }
       } else if (problem.type === "MultiGrid") {
         for (let option of Object.keys(data.value[i][problem.id])) {
