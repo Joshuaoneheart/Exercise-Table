@@ -386,6 +386,9 @@ const Summary = () => {
             })
           ).length;
         } else {
+          if (condition.data.type === "GF"){
+            problem_data = problem_data.map((x) => x.length);
+          }
           let non_nan = problem_data
             .filter(
               problem_data.map((x) => {
