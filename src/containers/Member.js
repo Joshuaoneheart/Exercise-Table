@@ -329,12 +329,42 @@ const Tab1 = ({ data, semester }) => {
     </Row>
   );
 };
-const Tab2 = ({ data }) => {
-  const [GFMap, setGFMap] = useState({});
+const Tab2 = ({ default_data }) => {
+  const [data, setData] = useState(default_data);
   const [page, setPage] = useState({
     label: "召會生活操練",
     value: "召會生活操練",
   });
+  useEffect(() => {
+    const GetGFMAP = async () => {
+      const GFs = await DB.getByUrl("/GF");
+      let GFMap = {};
+      GFs.forEach((x) => {
+        GFMap[x.id] = x.data()["name"];
+      });
+      let tmp_data = Object.assign({}, default_data);
+      for (let i = 0; i < tmp_data.items.length; i++) {
+        let item = tmp_data.items[i];
+        for (let key of Object.keys(item)) {
+          if (Array.isArray(item[key])) {
+            let tmp = [];
+            for (let id of item[key]) {
+              if (typeof id === "string" && id in GFMap) tmp.push(GFMap[id]);
+              else if (id["id"] in GFMap) tmp.push(GFMap[id["id"]]);
+            }
+            tmp_data.items[i][key] = tmp.join(",");
+            console.log(tmp_data)
+          }
+        }
+      }
+      setData(tmp_data);
+    };
+    if (data) GetGFMAP();
+  }, [default_data]);
+  useEffect(() => {
+    setData(default_data);
+  }, [default_data]);
+  if (!data) return null;
   let fields = [{ label: "日期", value: "week_base" }];
   if (page.value !== "總分") {
     for (let i = 0; i < data.column_keys.length; i++) {
@@ -352,30 +382,6 @@ const Tab2 = ({ data }) => {
       { label: "福音牧養操練", value: "福音牧養操練" },
       { label: "總分", value: "score" },
     ];
-  useEffect(() => {
-    const GetGFMAP = async () => {
-      const GFs = await DB.getByUrl("/GF");
-      let tmp = {};
-      GFs.forEach((x) => {
-        tmp[x.id] = x.data()["name"];
-      });
-      setGFMap(tmp);
-    };
-    GetGFMAP();
-  }, [data]);
-  for (let i = 0;i < data.items.length;i++) {
-    let item = data.items[i];
-    for (let key of Object.keys(item)) {
-      if (Array.isArray(item[key])) {
-        let tmp = [];
-        for (let id of item[key]) {
-          if (typeof id === "string" && id in GFMap) tmp.push(GFMap[id]);
-          else if (id["id"] in GFMap) tmp.push(GFMap[id["id"]]);
-        }
-        data.items[i][key] = tmp.join(",");
-      }
-    }
-  }
   return (
     <div
       style={{
@@ -514,7 +520,7 @@ const Member = () => {
       {active === 0 ? (
         <Tab1 data={data} semester={semester} />
       ) : (
-        <Tab2 data={data} />
+        <Tab2 default_data={data} />
       )}
     </>
   );
